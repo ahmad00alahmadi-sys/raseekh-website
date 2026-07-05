@@ -7,7 +7,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@400;700;800&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<!-- مكتبة Supabase JS الرسمية من خلال CDN -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   :root{
@@ -51,7 +50,7 @@
   .mono{font-family:'IBM Plex Mono', monospace; letter-spacing:0.02em;}
   a{color:inherit;text-decoration:none;}
 
-  /* NAV */
+  /* NAV & HEADER ACTIONS */
   header{
     position:sticky; top:0; z-index:50;
     background:rgba(11,11,13,0.85);
@@ -60,25 +59,20 @@
   }
   nav{display:flex;align-items:center;justify-content:space-between;padding:18px 24px;max-width:1120px;margin:0 auto; gap:16px;}
   .logo{font-family:'Almarai',sans-serif;font-weight:800;font-size:22px;color:var(--text);}
-  body.lang-en .logo{font-family:'Inter',sans-serif;}
   .logo span{color:var(--blue);}
   .nav-links{display:flex;gap:28px;font-size:15px;color:var(--muted); align-items:center;}
   .nav-links a:hover{color:var(--blue);}
   
-  .nav-actions{display:flex; align-items:center; gap:16px;}
-  .nav-terms-label{
-    display:flex; align-items:center; gap:6px; font-size:13px; color:var(--muted); cursor:pointer; user-select:none;
+  .nav-actions{display:flex; align-items:center; gap:12px;}
+  .nav-btn{
+    background:none; border:1px solid var(--line); color:var(--text);
+    padding:8px 16px; border-radius:6px; font-size:14px; cursor:pointer; font-family:inherit;
   }
-  .nav-terms-label input{cursor:pointer; accent-color:var(--blue);}
-  
-  .nav-cta{
-    background:var(--blue); color:#0B0B0D; font-weight:700;
-    padding:10px 20px; border-radius:6px; font-size:14px;
-    white-space:nowrap; border:none; cursor:pointer;
-    box-shadow:0 6px 16px -6px rgba(212,175,55,0.4);
-    font-family:inherit; transition: background 0.2s;
+  .nav-btn:hover{border-color:var(--blue); color:var(--blue);}
+  .nav-btn.primary{
+    background:var(--coral); border-color:var(--coral); color:#0B0B0D; font-weight:600;
   }
-  .nav-cta:hover{background:var(--coral);}
+  .nav-btn.primary:hover{background:var(--blue); border-color:var(--blue); color:#0B0B0D;}
   
   .lang-btn{
     border:1px solid var(--line); background:var(--panel); color:var(--text);
@@ -135,7 +129,6 @@
   .node{fill:var(--panel-2); stroke:var(--line); stroke-width:1.5;}
   .node-core{fill:var(--blue); stroke:var(--blue);}
   .node-label{font-family:'IBM Plex Sans Arabic',sans-serif; font-size:15px; fill:var(--text); font-weight:500;}
-  body.lang-en .node-label{font-family:'Inter',sans-serif;}
   .node-tag{font-family:'IBM Plex Mono',monospace; font-size:10px; fill:var(--muted);}
 
   section{padding:90px 0; position:relative;}
@@ -172,7 +165,7 @@
   .team-card h3{font-size:17px; margin-bottom:8px;}
   .team-card p{color:var(--muted); font-size:14px;}
 
-  /* CONTACT & AUTH BOX */
+  /* CONTACT BOX */
   .contact-box{
     background:var(--panel); border:1px solid var(--line); border-radius:18px;
     padding:56px 40px; display:grid; grid-template-columns:1fr 1fr; gap:48px;
@@ -182,56 +175,45 @@
   .contact-box p{color:var(--muted); margin-bottom:26px;}
   .contact-info{display:flex; flex-direction:column; gap:14px; font-size:15px;}
   .contact-info .mono{color:var(--blue);}
-  form, .auth-form-wrapper{display:flex; flex-direction:column; gap:14px;}
+  form {display:flex; flex-direction:column; gap:14px;}
   input,select,textarea{
     background:var(--panel-2); border:1px solid var(--line); color:var(--text);
     padding:13px 16px; border-radius:8px; font-family:inherit; font-size:14px;
   }
   input:focus,select:focus,textarea:focus{outline:2px solid var(--blue); border-color:transparent;}
-  textarea{resize:vertical; min-height:90px;}
+  textarea{resize:vertical; min-height:120px;}
   
-  .submit-btn, .auth-btn{
+  .submit-btn {
     background:var(--coral); color:#0B0B0D; font-weight:700;
     padding:14px; border:none; border-radius:8px; cursor:pointer; font-size:15px; font-family:inherit;
-    transition: background 0.2s;
   }
-  .submit-btn:hover, .auth-btn:hover{background:var(--blue);}
+  .submit-btn:hover {background:var(--blue);}
 
-  /* AUTH CONTAINER SPECIFIC */
-  .auth-container-box {
-    background:var(--panel-2); border:1px solid var(--line); border-radius:14px; padding:32px 24px;
+  /* AGREEMENT CHECKBOX INSIDE AUTH MODAL */
+  .agreement-container {
+    display: flex; align-items: flex-start; gap: 10px; margin: 10px 0; font-size: 13px; color: var(--muted);
   }
-  .auth-tabs {
-    display:flex; border-bottom:1px solid var(--line); margin-bottom:20px; gap:16px;
-  }
-  .auth-tab {
-    padding:8px 0; color:var(--muted); cursor:pointer; font-weight:700; font-size:15px; border-bottom:2px solid transparent;
-  }
-  .auth-tab.active {
-    color:var(--blue); border-bottom-color:var(--blue);
-  }
-  .auth-msg {
-    padding:12px; border-radius:6px; font-size:13px; text-align:center; display:none; margin-top:10px;
-  }
-  .auth-msg.success { background:var(--success-bg); color:var(--success); display:block; }
-  .auth-msg.error { background:var(--error-bg); color:var(--error); display:block; }
+  .agreement-container input { width: auto; margin-top: 4px; cursor: pointer; }
+  .agreement-link { color: var(--blue); text-decoration: underline; cursor: pointer; }
 
   footer{border-top:1px solid var(--line); padding:32px 0; text-align:center; color:var(--muted); font-size:14px;}
   footer .footer-links{display:flex; gap:20px; justify-content:center; margin-top:12px; flex-wrap:wrap;}
   footer .footer-links a{color:var(--muted); font-size:13px;}
   footer .footer-links a:hover{color:var(--blue);}
 
-  /* TERMS MODAL */
+  /* MODALS STYLE */
   .modal-overlay{
     display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7);
     z-index:100; align-items:center; justify-content:center; padding:20px;
+    backdrop-filter: blur(4px);
   }
   .modal-overlay.active{display:flex;}
   .modal-box{
     background:var(--panel); border:1px solid var(--line); border-radius:16px;
-    max-width:640px; width:100%; max-height:80vh; overflow-y:auto; padding:36px;
+    max-width:500px; width:100%; max-height:85vh; overflow-y:auto; padding:36px;
     position:relative;
   }
+  .modal-box.wide { max-width: 680px; }
   .modal-close{
     position:absolute; top:18px; left:18px; background:none; border:none;
     color:var(--muted); font-size:22px; cursor:pointer; line-height:1;
@@ -242,15 +224,11 @@
   .modal-box p{color:var(--muted); font-size:14px; margin-bottom:10px;}
 
   @media (max-width:860px){
-    .nav-links, .nav-terms-label{display:none;}
+    .nav-links{display:none;}
     .nav-toggle{display:flex;}
     .services-grid, .team-grid{grid-template-columns:1fr;}
     .contact-box{grid-template-columns:1fr; padding:36px 24px;}
     .process-item{grid-template-columns:50px 1fr;}
-  }
-  @media (prefers-reduced-motion:reduce){
-    .diagram-path{animation:none; stroke-dashoffset:0;}
-    .service-card{transition:none;}
   }
 </style>
 </head>
@@ -266,11 +244,8 @@
       <a href="#contact" data-ar="تواصل معنا" data-en="Contact">تواصل معنا</a>
     </div>
     <div class="nav-actions">
-      <label class="nav-terms-label" id="termsLabel">
-        <input type="checkbox" id="navTermsCheckbox">
-        <span data-ar="أوافق على الشروط والأحكام" data-en="I agree to the Terms">أوافق على الشروط والأحكام</span>
-      </label>
-      <button class="nav-cta" onclick="scrollToAuth()" data-ar="تسجيل الدخول" data-en="Login / Sign Up">تسجيل الدخول</button>
+      <button class="nav-btn" id="loginHeaderBtn" data-ar="تسجيل الدخول" data-en="Login">تسجيل الدخول</button>
+      <button class="nav-btn primary" id="registerHeaderBtn" data-ar="إنشاء حساب" data-en="Sign Up">إنشاء حساب</button>
       <button class="lang-btn" id="langToggle">EN</button>
     </div>
     <button class="nav-toggle" aria-label="menu" id="navToggle">
@@ -397,43 +372,29 @@
 
 <section id="contact">
   <div class="wrap">
-    <div class="contact-box" id="authSection">
+    <div class="contact-box">
       <div>
         <h2 data-ar="جاهز تبدأ؟" data-en="Ready to Start?">جاهز تبدأ؟</h2>
         <p data-ar="عبّي البيانات وفريقنا بيتواصل معك خلال يوم عمل واحد." data-en="Fill in your details and our team will reach out within one business day.">عبّي البيانات وفريقنا بيتواصل معك خلال يوم عمل واحد.</p>
-        <div class="contact-info" style="margin-bottom: 30px;">
+        <div class="contact-info">
           <div><span class="mono" data-ar="واتساب:" data-en="WhatsApp:">واتساب:</span> XXX-XXX-XXXX</div>
           <div><span class="mono" data-ar="إيميل:" data-en="Email:">إيميل:</span> hello@raseekh.com</div>
         </div>
-        
-        <div class="auth-container-box">
-          <div class="auth-tabs">
-            <div class="auth-tab active" id="loginTab" onclick="switchAuthTab('login')" data-ar="تسجيل الدخول" data-en="Login">تسجيل الدخول</div>
-            <div class="auth-tab" id="signupTab" onclick="switchAuthTab('signup')" data-ar="حساب جديد" data-en="Sign Up">حساب جديد</div>
-          </div>
-          <div class="auth-form-wrapper">
-            <input type="email" id="auth_username" placeholder="البريد الإلكتروني" data-ar-ph="البريد الإلكتروني" data-en-ph="Email Address" required>
-            <!-- إضافة حقل رقم الجوال هنا (يظهر فقط في وضع إنشاء حساب جديد عن طريق السكريبت) -->
-            <input type="tel" id="auth_phone" placeholder="رقم الجوال" data-ar-ph="رقم الجوال" data-en-ph="Phone Number" style="display: none;">
-            <input type="password" id="auth_password" placeholder="كلمة المرور" data-ar-ph="كلمة المرور" data-en-ph="Password" required>
-            <button type="button" class="auth-btn" id="authSubmitBtn" onclick="handleAuthSubmit()" data-ar="دخول" data-en="Login">دخول</button>
-            <div class="auth-msg" id="authMsgBox"></div>
-          </div>
-        </div>
       </div>
       
-      <form onsubmit="event.preventDefault(); alert(currentLang==='ar' ? 'تم إرسال طلبك، بنتواصل معك قريباً!' : 'Your request has been sent, we will contact you soon!');">
+      <form id="leadForm" onsubmit="handleSubmit(event)">
         <input type="text" id="f_name" placeholder="الاسم" data-ar-ph="الاسم" data-en-ph="Name" required>
         <input type="text" id="f_company" placeholder="اسم الشركة أو المحل" data-ar-ph="اسم الشركة أو المحل" data-en-ph="Company or Store Name">
-        <select id="f_type">
-          <option data-ar="نوع النظام المطلوب" data-en="Type of System Needed">نوع النظام المطلوب</option>
-          <option data-ar="نظام مخزون ومبيعات" data-en="Inventory & Sales System">نظام مخزون ومبيعات</option>
-          <option data-ar="نظام إدارة عملاء" data-en="Customer Management System">نظام إدارة عملاء</option>
-          <option data-ar="نظام حجوزات" data-en="Booking System">نظام حجوزات</option>
-          <option data-ar="شي ثاني" data-en="Something Else">شي ثاني</option>
+        <input type="tel" id="f_phone" placeholder="رقم الجوال" data-ar-ph="رقم الجوال" data-en-ph="Phone Number" required>
+        <select id="f_type" required>
+          <option value="" disabled selected data-ar="نوع النظام المطلوب" data-en="Type of System Needed">نوع النظام المطلوب</option>
+          <option value="نظام مخزون ومبيعات" data-ar="نظام مخزون ومبيعات" data-en="Inventory & Sales System">نظام مخزون ومبيعات</option>
+          <option value="نظام إدارة عملاء" data-ar="نظام إدارة عملاء" data-en="Customer Management System">نظام إدارة عملاء</option>
+          <option value="نظام حجوزات" data-ar="نظام حجوزات" data-en="Booking System">نظام حجوزات</option>
+          <option value="شي ثاني" data-ar="شي ثاني" data-en="Something Else">شي ثاني</option>
         </select>
-        <textarea id="f_msg" placeholder="اشرح لنا احتياجك بسرعة" data-ar-ph="اشرح لنا احتياجك بسرعة" data-en-ph="Briefly describe what you need"></textarea>
-        <button type="submit" class="submit-btn" data-ar="إرسال الطلب" data-en="Send Request">إرسال الطلب</button>
+        <textarea id="f_msg" placeholder="اشرح لنا احتياجك بسرعة" data-ar-ph="اشرح لنا احتياجك بسرعة" data-en-ph="Briefly describe what you need" required></textarea>
+        <button type="submit" class="submit-btn" id="submitBtn" data-ar="إرسال الطلب" data-en="Send Request">إرسال الطلب</button>
       </form>
     </div>
   </div>
@@ -443,197 +404,173 @@
   <div class="wrap">
     <div data-ar="رَسِيخ — تطوير أنظمة إدارة مخصصة © 2026" data-en="Raseekh — Custom Management Systems Development © 2026">رَسِيخ — تطوير أنظمة إدارة مخصصة © 2026</div>
     <div class="footer-links">
-      <a href="#" id="termsLink" data-ar="الشروط والأحكام" data-en="Terms & Conditions">الشروط والأحكام</a>
+      <a href="#" id="termsLink" data-ar="الشروط والأحكام وعقد الخدمات" data-en="Terms, Conditions & Service Contract">الشروط والأحكام وعقد الخدمات</a>
     </div>
   </div>
 </footer>
 
-<div class="modal-overlay" id="termsModal">
+<!-- AUTH MODAL (LOGIN / REGISTER) -->
+<div class="modal-overlay" id="authModal">
   <div class="modal-box">
+    <button class="modal-close" id="authClose">&times;</button>
+    <h2 id="authModalTitle" data-ar="تسجيل الدخول" data-en="Login">تسجيل الدخول</h2>
+    
+    <form id="authForm" onsubmit="handleAuthSubmit(event)">
+      <input type="email" id="authEmail" placeholder="البريد الإلكتروني" data-ar-ph="البريد الإلكتروني" data-en-ph="Email" required>
+      <input type="password" id="authPassword" placeholder="كلمة المرور" data-ar-ph="كلمة المرور" data-en-ph="Password" required>
+      
+      <!-- شروط الاستخدام وعقد الخدمات مدمجة قبل الإنشاء -->
+      <div class="agreement-container" id="registerAgreement">
+        <input type="checkbox" id="authAgreeCheck" required>
+        <label for="authAgreeCheck">
+          <span data-ar="أوافق على" data-en="I agree to the">أوافق على</span>
+          <span class="agreement-link" id="viewTermsInside" data-ar="الشروط والأحكام وعقد الخدمات" data-en="Terms, Conditions & Service Contract">الشروط والأحكام وعقد الخدمات</span>
+        </label>
+      </div>
+
+      <button type="submit" class="submit-btn" id="authSubmitBtn" data-ar="دخول" data-en="Login">دخول</button>
+    </form>
+  </div>
+</div>
+
+<!-- TERMS MODAL -->
+<div class="modal-overlay" id="termsModal">
+  <div class="modal-box wide">
     <button class="modal-close" id="termsClose">&times;</button>
-    <h2 data-ar="الشروط والأحكام" data-en="Terms & Conditions">الشروط والأحكام</h2>
+    <h2 data-ar="الشروط والأحكام وعقد الخدمات" data-en="Terms, Conditions & Service Contract">الشروط والأحكام وعقد الخدمات</h2>
 
     <h3 data-ar="١. نطاق الخدمة" data-en="1. Scope of Service">١. نطاق الخدمة</h3>
-    <p data-ar="تقدم رَسِيخ خدمات تطوير أنظمة إدارة مخصصة (مخزون، عملاء، حجوزات) حسب الاتفاق المكتوب مع كل عميل. يتم تحديد نطاق العمل بدقة قبل بدء أي مشروع." data-en="Raseekh provides custom management system development services (inventory, customers, bookings) according to a written agreement with each client. The scope of work is precisely defined before any project begins.">تقدم رَسِيخ خدمات تطوير أنظمة إدارة مخصصة (مخزون، عملاء، حجوزات) حسب الاتفاق المكتوب مع كل عميل. يتم تحديد نطاق العمل بدقة قبل بدء أي مشروع.</p>
+    <p data-ar="تقدم رَسِيخ خدمات تطوير أنظمة إدارة مخصصة (مخزون، عملاء، حجوزات) حسب الاتفاق المكتوب مع كل عميل." data-en="Raseekh provides custom management system development services (inventory, customers, bookings) according to a written agreement with each client.">تقدم رَسِيخ خدمات تطوير أنظمة إدارة مخصصة (مخزون، عملاء، حجوزات) حسب الاتفاق المكتوب مع كل عميل.</p>
 
-    <h3 data-ar="٢. الدفع" data-en="2. Payment">٢. الدفع</h3>
+    <h3 data-ar="٢. الدفع والالتزامات" data-en="2. Payment & Obligations">٢. الدفع والالتزامات</h3>
     <p data-ar="يتم تحديد آلية الدفع ودفعاته حسب العقد الموقع مع العميل قبل بدء المشروع." data-en="Payment terms and installments are determined according to the contract signed with the client before the project begins.">يتم تحديد آلية الدفع ودفعاته حسب العقد الموقع مع العميل قبل بدء المشروع.</p>
 
-    <h3 data-ar="٣. الضمان" data-en="3. Warranty">٣. الضمان</h3>
+    <h3 data-ar="٣. الضمان والدعم" data-en="3. Warranty & Support">٣. الضمان والدعم</h3>
     <p data-ar="نقدم ضمان تشغيل مدته 30 يوماً بعد تسليم النظام، يغطي إصلاح الأخطاء التقنية الناتجة عن التطوير." data-en="We provide a 30-day operational guarantee after system delivery, covering fixes for technical errors resulting from development.">نقدم ضمان تشغيل مدته 30 يوماً بعد تسليم النظام، يغطي إصلاح الأخطاء التقنية الناتجة عن التطوير.</p>
 
-    <h3 data-ar="٤. الملكية الفكرية" data-en="4. Intellectual Property">٤. الملكية الفكرية</h3>
-    <p data-ar="تنتقل ملكية النظام المطوَّر للعميل بعد استكمال جميع الدفعات المتفق عليها بالكامل." data-en="Ownership of the developed system transfers to the client after all agreed payments are completed in full.">تنتقل ملكية النظام المطوَّر للعميل بعد استكمال جميع الدفعات المتفق عليها بالكامل.</p>
-
-    <h3 data-ar="٥. التعديلات" data-en="5. Amendments">٥. التعديلات</h3>
-    <p data-ar="تحتفظ رَسِيخ بحق تحديث هذه الشروط من وقت لآخر، وسيتم إشعار العملاء الحاليين بأي تغييرات جوهرية." data-en="Raseekh reserves the right to update these terms from time to time, and existing clients will be notified of any material changes.">تحتفظ رَسِيخ بحق تحديث هذه الشروط من وقت لآخر، وسيتم إشعار العملاء الحاليين بأي تغييرات جوهرية.</p>
-
-    <p style="margin-top:20px; font-size:12px;" data-ar="ملاحظة: هذا نص مبدئي عام، يُنصح بمراجعته من محامٍ مختص قبل اعتماده رسمياً." data-en="Note: this is a general starter template. We recommend having it reviewed by a qualified lawyer before formal adoption.">ملاحظة: هذا نص مبدئي عام، يُنصح بمراجعته من محامٍ مختص قبل اعتماده رسمياً.</p>
+    <h3 data-ar="٤. الملكية الفكرية وسرية البيانات" data-en="4. Intellectual Property & Privacy">٤. الملكية الفكرية وسرية البيانات</h3>
+    <p data-ar="تنتقل ملكية النظام المطوَّر للعميل بعد استكمال جميع الدفعات المتفق عليها بالكامل، ونلتزم بسرية تامة لبيانات مشروعكم." data-en="Ownership of the developed system transfers to the client after all agreed payments are completed in full, and we strictly maintain your data privacy.">تنتقل ملكية النظام المطوَّر للعميل بعد استكمال جميع الدفعات المتفق عليها بالكامل، ونلتزم بسرية تامة لبيانات مشروعكم.</p>
   </div>
 </div>
 
 <script>
-  // تهيئة اتصال Supabase
-  // استبدل الروابط والمفاتيح بالقيم الخاصة بمشروعك من لوحة تحكم Supabase (Settings -> API)
-  const SUPABASE_URL = "YOUR_SUPABASE_URL"; 
-  const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
+  const SUPABASE_URL = "https://nzqoggjfwcdpvvvganmd.supabase.co"; 
+  const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY"; // استبدله بمفتاح الـ Anon الخاص بك
   
   const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
   let currentLang = 'ar';
-  let authMode = 'login';
+  let authMode = 'login'; // 'login' أو 'register'
 
   function applyLanguage(lang){
     currentLang = lang;
     const html = document.getElementById('htmlRoot');
-    const body = document.body;
     html.lang = lang;
     html.dir = lang === 'ar' ? 'rtl' : 'ltr';
-    body.classList.toggle('lang-en', lang === 'en');
+    document.body.classList.toggle('lang-en', lang === 'en');
 
-    document.querySelectorAll('[data-ar][data-en]').forEach(function(el){
+    document.querySelectorAll('[data-ar][data-en]').forEach(el => {
       el.textContent = lang === 'ar' ? el.getAttribute('data-ar') : el.getAttribute('data-en');
     });
-    document.querySelectorAll('[data-ar-ph][data-en-ph]').forEach(function(el){
+    document.querySelectorAll('[data-ar-ph][data-en-ph]').forEach(el => {
       el.setAttribute('placeholder', lang === 'ar' ? el.getAttribute('data-ar-ph') : el.getAttribute('data-en-ph'));
     });
 
-    document.getElementById('pageTitle').textContent = lang === 'ar'
-      ? 'رَسِيخ — تطوير أنظمة إدارة مخصصة'
-      : 'Raseekh — Custom Management Systems Development';
-
+    document.getElementById('pageTitle').textContent = lang === 'ar' ? 'رَسِيخ — تطوير أنظمة إدارة مخصصة' : 'Raseekh — Custom Management Systems Development';
     document.getElementById('langToggle').textContent = lang === 'ar' ? 'EN' : 'AR';
     
-    updateAuthButtonText();
+    updateAuthModalLabels();
   }
 
-  function switchAuthTab(mode) {
+  document.getElementById('langToggle').addEventListener('click', () => applyLanguage(currentLang === 'ar' ? 'en' : 'ar'));
+
+  // Modals Management
+  const termsModal = document.getElementById('termsModal');
+  const authModal = document.getElementById('authModal');
+
+  document.getElementById('termsLink').addEventListener('click', (e) => { e.preventDefault(); termsModal.classList.add('active'); });
+  document.getElementById('viewTermsInside').addEventListener('click', () => termsModal.classList.add('active'));
+  document.getElementById('termsClose').addEventListener('click', () => termsModal.classList.remove('active'));
+
+  // Header Auth Actions
+  document.getElementById('loginHeaderBtn').addEventListener('click', () => openAuth('login'));
+  document.getElementById('registerHeaderBtn').addEventListener('click', () => openAuth('register'));
+  document.getElementById('authClose').addEventListener('click', () => authModal.classList.remove('active'));
+
+  function openAuth(mode) {
     authMode = mode;
-    document.getElementById('loginTab').classList.toggle('active', mode === 'login');
-    document.getElementById('signupTab').classList.toggle('active', mode === 'signup');
-    document.getElementById('authMsgBox').className = 'auth-msg';
-    document.getElementById('authMsgBox').style.display = 'none';
-    
-    // إظهار حقل رقم الجوال فقط عند اختيار "حساب جديد" وإخفائه عند تسجيل الدخول
-    const phoneInput = document.getElementById('auth_phone');
-    if (mode === 'signup') {
-      phoneInput.style.display = 'block';
-    } else {
-      phoneInput.style.display = 'none';
-    }
-    
-    updateAuthButtonText();
+    authModal.classList.add('active');
+    updateAuthModalLabels();
   }
 
-  function updateAuthButtonText() {
-    const btn = document.getElementById('authSubmitBtn');
+  function updateAuthModalLabels() {
+    const title = document.getElementById('authModalTitle');
+    const submitBtn = document.getElementById('authSubmitBtn');
+    const agreement = document.getElementById('registerAgreement');
+    const checkInput = document.getElementById('authAgreeCheck');
+
     if (authMode === 'login') {
-      btn.textContent = currentLang === 'ar' ? 'دخول' : 'Login';
+      title.textContent = currentLang === 'ar' ? 'تسجيل الدخول' : 'Login';
+      submitBtn.textContent = currentLang === 'ar' ? 'دخول' : 'Login';
+      agreement.style.display = 'none';
+      checkInput.required = false;
     } else {
-      btn.textContent = currentLang === 'ar' ? 'إنشاء حساب وإرسال' : 'Sign Up & Submit';
+      title.textContent = currentLang === 'ar' ? 'إنشاء حساب جديد' : 'Sign Up';
+      submitBtn.textContent = currentLang === 'ar' ? 'تسجيل جديد' : 'Register';
+      agreement.style.display = 'flex';
+      checkInput.required = true;
     }
   }
 
-  function scrollToAuth() {
-    document.getElementById('authSection').scrollIntoView({ behavior: 'smooth' });
-  }
+  // Submit Logic for Contact Form (Leads Table)
+  async function handleSubmit(event) {
+    event.preventDefault();
+    const submitBtn = document.getElementById('submitBtn');
+    submitBtn.innerText = currentLang === 'ar' ? "جاري الإرسال..." : "Sending...";
+    submitBtn.disabled = true;
 
-  async function handleAuthSubmit() {
-    const email = document.getElementById('auth_username').value.trim();
-    const password = document.getElementById('auth_password').value.trim();
-    const phone = document.getElementById('auth_phone').value.trim();
-    const agree = document.getElementById('navTermsCheckbox').checked;
-
-    if (!email || !password) {
-      showAuthMsg(currentLang === 'ar' ? 'الرجاء تعبئة جميع حقول الحساب.' : 'Please fill in all account fields.', 'error');
-      return;
-    }
-
-    if (authMode === 'signup' && !phone) {
-      showAuthMsg(currentLang === 'ar' ? 'الرجاء إدخال رقم الجوال.' : 'Please enter your phone number.', 'error');
-      return;
-    }
-
-    if (authMode === 'signup' && !agree) {
-      showAuthMsg(currentLang === 'ar' ? 'يجب عليك تحديد المربع العلوي للموافقة على الشروط والأحكام المعتمدة للموقع.' : 'You must check the box at the top to agree to the Terms and Conditions.', 'error');
-      return;
-    }
+    const formData = {
+      name: document.getElementById('f_name').value.trim(),
+      company_name: document.getElementById('f_company').value.trim(),
+      phone: document.getElementById('f_phone').value.trim(),
+      system_type: document.getElementById('f_type').value,
+      notes: document.getElementById('f_msg').value.trim(),
+      created_at: new Date()
+    };
 
     try {
-      if (authMode === 'signup') {
-        // إنشاء حساب مستخدم جديد في Supabase Auth وحفظ رقم الجوال في الـ metadata
-        const { data, error } = await supabase.auth.signUp({
-          email: email,
-          password: password,
-          options: {
-            data: {
-              phone_number: phone
-            }
-          }
-        });
+      const { error } = await supabase.from('leads').insert([formData]);
+      if (error) throw error;
+      alert(currentLang === 'ar' ? 'تم إرسال طلبك بنجاح!' : 'Your request has been sent successfully!');
+      document.getElementById('leadForm').reset();
+    } catch (error) {
+      alert(currentLang === 'ar' ? 'حدث خطأ أثناء الإرسال.' : 'An error occurred.');
+    } finally {
+      submitBtn.innerText = currentLang === 'ar' ? "إرسال الطلب" : "Send Request";
+      submitBtn.disabled = false;
+    }
+  }
 
+  // Submit Logic for Auth Modal
+  async function handleAuthSubmit(event) {
+    event.preventDefault();
+    const email = document.getElementById('authEmail').value.trim();
+    const password = document.getElementById('authPassword').value;
+
+    try {
+      if (authMode === 'login') {
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-
-        showAuthMsg(currentLang === 'ar' ? 'تم إنشاء الحساب بنجاح! يرجى التحقق من بريدك الإلكتروني.' : 'Account created successfully! Please check your email.', 'success');
-        setTimeout(() => switchAuthTab('login'), 2000);
-
+        alert(currentLang === 'ar' ? 'تم تسجيل الدخول بنجاح!' : 'Logged in successfully!');
       } else {
-        // تسجيل الدخول باستخدام البيانات في Supabase Auth
-        const { data, error } = await supabase.auth.signInWithPassword({
-          email: email,
-          password: password,
-        });
-
+        const { data, error } = await supabase.auth.signUp({ email, password });
         if (error) throw error;
-
-        showAuthMsg(currentLang === 'ar' ? 'تم تسجيل الدخول بنجاح!' : 'Logged in successfully!', 'success');
-        console.log("User session data:", data);
+        alert(currentLang === 'ar' ? 'تم إنشاء الحساب! تفقد بريدك لتأكيد التسجيل.' : 'Account created! Please check your email to verify.');
       }
-    } catch (err) {
-      showAuthMsg(err.message || (currentLang === 'ar' ? 'حدث خطأ أثناء الاتصال بالخادم.' : 'An error occurred while connecting to the server.'), 'error');
+      authModal.classList.remove('active');
+    } catch (error) {
+      alert(error.message);
     }
   }
-
-  function showAuthMsg(text, type) {
-    const msgBox = document.getElementById('authMsgBox');
-    msgBox.textContent = text;
-    msgBox.className = 'auth-msg ' + type;
-  }
-
-  document.getElementById('langToggle').addEventListener('click', function(){
-    applyLanguage(currentLang === 'ar' ? 'en' : 'ar');
-  });
-
-  document.getElementById('navToggle').addEventListener('click', function(){
-    const links = document.querySelector('.nav-links');
-    const visible = links.style.display === 'flex';
-    links.style.display = visible ? 'none' : 'flex';
-    if (!visible) {
-      links.style.flexDirection = 'column';
-      links.style.position = 'absolute';
-      links.style.top = '64px';
-      links.style.insetInlineEnd = '24px';
-      links.style.background = '#151517';
-      links.style.border = '1px solid #33322C';
-      links.style.borderRadius = '10px';
-      links.style.padding = '16px';
-    }
-  });
-
-  // التحكم بفتح وإغلاق المودال الخاص بالشروط والأحكام
-  const modal = document.getElementById('termsModal');
-  document.getElementById('termsLink').addEventListener('click', function(e){
-    e.preventDefault();
-    modal.classList.add('active');
-  });
-  document.getElementById('termsClose').addEventListener('click', function(){
-    modal.classList.remove('active');
-  });
-  window.addEventListener('click', function(e){
-    if (e.target === modal) {
-      modal.classList.remove('active');
-    }
-  });
 </script>
 </body>
 </html>
