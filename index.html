@@ -10,10 +10,10 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   :root{
-    --bg:#0B0B0D;
-    --panel:#151517;
-    --panel-2:#1D1D20;
-    --line:#33322C;
+    --bg:#17171A;
+    --panel:#1F1F23;
+    --panel-2:#28282D;
+    --line:#3B3A34;
     --blue:#D4AF37;
     --coral:#B8912F;
     --text:#F3F0E8;
@@ -693,6 +693,7 @@
       <button class="dash-logout-btn" id="dashLogoutBtn" data-ar="تسجيل الخروج" data-en="Log Out">تسجيل الخروج</button>
     </div>
   </aside>
+ ahmad00alahmadi-sys-patch-2-1
 
   <main class="dash-main">
 
@@ -858,12 +859,181 @@
   </main>
 </div>
 
+
+  <main class="dash-main">
+
+    <!-- PAGE: OVERVIEW -->
+    <div class="dash-page active" id="page-overview">
+      <div class="dash-topbar">
+        <div>
+          <h1 data-ar="أهلاً فيك 👋" data-en="Welcome back 👋">أهلاً فيك 👋</h1>
+          <div class="dash-breadcrumb">رَسِيخ <span>/</span> <span data-ar="نظرة عامة" data-en="Overview">نظرة عامة</span></div>
+        </div>
+        <div class="dash-clock mono" id="dashClock">—</div>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-label"><span data-ar="إجمالي الطلبات" data-en="Total Requests">إجمالي الطلبات</span><span class="stat-icon">01</span></div>
+          <div class="stat-value" data-count="0" id="statTotal">0</div>
+          <div class="stat-trend" data-ar="كل طلباتك من البداية" data-en="All requests since day one">كل طلباتك من البداية</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label"><span data-ar="قيد التنفيذ" data-en="In Progress">قيد التنفيذ</span><span class="stat-icon">02</span></div>
+          <div class="stat-value" data-count="0" id="statProgress">0</div>
+          <div class="stat-trend" data-ar="يشتغل عليها الفريق حالياً" data-en="Team is actively working on these">يشتغل عليها الفريق حالياً</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label"><span data-ar="مكتملة" data-en="Completed">مكتملة</span><span class="stat-icon">03</span></div>
+          <div class="stat-value" data-count="0" id="statDone">0</div>
+          <div class="stat-trend" data-ar="تم تسليمها بنجاح" data-en="Successfully delivered">تم تسليمها بنجاح</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label"><span data-ar="ضمان فعّال" data-en="Active Warranty">ضمان فعّال</span><span class="stat-icon">04</span></div>
+          <div class="stat-value" data-count="30" id="statWarranty">0</div>
+          <div class="stat-trend" data-ar="يوم ضمان تشغيل متبقي" data-en="days of operational warranty left">يوم ضمان تشغيل متبقي</div>
+        </div>
+      </div>
+
+      <div class="dash-grid-2">
+        <div class="panel-card">
+          <h3><span data-ar="آخر نشاط" data-en="Recent Activity">آخر نشاط</span> <span class="see-all" data-goto="requests" data-ar="عرض الطلبات" data-en="View requests">عرض الطلبات</span></h3>
+          <div id="activityTimeline">
+            <div class="timeline-item">
+              <div class="timeline-dot"></div>
+              <div class="timeline-body">
+                <p data-ar="تم إنشاء حسابك في رَسِيخ بنجاح" data-en="Your Raseekh account was created successfully">تم إنشاء حسابك في رَسِيخ بنجاح</p>
+                <span id="activityNow">—</span>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-dot" style="background:var(--muted);"></div>
+              <div class="timeline-body">
+                <p data-ar="بانتظار أول طلب منك — جرّب تسوي طلب جديد" data-en="Waiting on your first request — try creating one">بانتظار أول طلب منك — جرّب تسوي طلب جديد</p>
+                <span data-ar="نصيحة" data-en="Tip">نصيحة</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="panel-card">
+          <h3><span data-ar="نسبة إنجاز المشروع" data-en="Project Completion">نسبة إنجاز المشروع</span></h3>
+          <div class="progress-ring-wrap">
+            <svg width="140" height="140" viewBox="0 0 140 140">
+              <circle cx="70" cy="70" r="60" fill="none" stroke="var(--panel-2)" stroke-width="12"/>
+              <circle id="progressRingCircle" cx="70" cy="70" r="60" fill="none" stroke="url(#ringGrad)" stroke-width="12" stroke-linecap="round" stroke-dasharray="377" stroke-dashoffset="377" transform="rotate(-90 70 70)" style="transition:stroke-dashoffset 1.4s cubic-bezier(.4,0,.2,1);"/>
+              <defs>
+                <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#D4AF37"/>
+                  <stop offset="100%" stop-color="#B8912F"/>
+                </linearGradient>
+              </defs>
+              <text x="70" y="66" text-anchor="middle" font-size="26" font-weight="800" fill="#F3F0E8" id="progressRingText">0%</text>
+              <text x="70" y="86" text-anchor="middle" font-size="10" fill="#9C9585" font-family="IBM Plex Mono, monospace" data-ar="بدون مشروع نشط" data-en="No active project" id="progressRingSub">بدون مشروع نشط</text>
+            </svg>
+            <div class="progress-ring-label" data-ar="تظهر النسبة تلقائياً بمجرد ما يبدأ فريقنا بالتنفيذ" data-en="Progress appears automatically once our team starts building">تظهر النسبة تلقائياً بمجرد ما يبدأ فريقنا بالتنفيذ</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE: REQUESTS -->
+    <div class="dash-page" id="page-requests">
+      <div class="dash-topbar">
+        <div>
+          <h1 data-ar="طلباتي" data-en="My Requests">طلباتي</h1>
+          <div class="dash-breadcrumb">رَسِيخ <span>/</span> <span data-ar="طلباتي" data-en="My Requests">طلباتي</span></div>
+        </div>
+        <button class="new-req-btn" id="newReqBtn" data-ar="+ طلب جديد" data-en="+ New Request">+ طلب جديد</button>
+      </div>
+
+      <div class="dash-table-wrap">
+        <div class="dash-table-head">
+          <h3 data-ar="كل الطلبات" data-en="All Requests">كل الطلبات</h3>
+          <div class="dash-filters" id="reqFilters">
+            <button class="filter-chip active" data-filter="all" data-ar="الكل" data-en="All">الكل</button>
+            <button class="filter-chip" data-filter="pending" data-ar="قيد المراجعة" data-en="Pending">قيد المراجعة</button>
+            <button class="filter-chip" data-filter="progress" data-ar="قيد التنفيذ" data-en="In Progress">قيد التنفيذ</button>
+            <button class="filter-chip" data-filter="done" data-ar="مكتمل" data-en="Done">مكتمل</button>
+          </div>
+        </div>
+        <div id="requestsTableHolder">
+          <!-- filled by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE: INVOICES (demo) -->
+    <div class="dash-page" id="page-invoices">
+      <div class="dash-topbar">
+        <div>
+          <h1 data-ar="الفواتير" data-en="Invoices">الفواتير</h1>
+          <div class="dash-breadcrumb">رَسِيخ <span>/</span> <span data-ar="الفواتير" data-en="Invoices">الفواتير</span></div>
+        </div>
+      </div>
+      <div class="panel-card">
+        <h3><span data-ar="سجل الفواتير" data-en="Invoice History">سجل الفواتير</span></h3>
+        <div id="invoicesHolder"></div>
+      </div>
+    </div>
+
+    <!-- PAGE: SUPPORT (demo) -->
+    <div class="dash-page" id="page-support">
+      <div class="dash-topbar">
+        <div>
+          <h1 data-ar="الدعم الفني" data-en="Support">الدعم الفني</h1>
+          <div class="dash-breadcrumb">رَسِيخ <span>/</span> <span data-ar="الدعم الفني" data-en="Support">الدعم الفني</span></div>
+        </div>
+        <button class="new-req-btn" id="openTicketBtn" data-ar="فتح تذكرة دعم" data-en="Open a Ticket">فتح تذكرة دعم</button>
+      </div>
+      <div class="panel-card">
+        <h3 data-ar="أسئلة شائعة" data-en="Frequently Asked Questions">أسئلة شائعة</h3>
+        <div id="faqHolder"></div>
+      </div>
+    </div>
+
+    <!-- PAGE: SETTINGS -->
+    <div class="dash-page" id="page-settings">
+      <div class="dash-topbar">
+        <div>
+          <h1 data-ar="الإعدادات" data-en="Settings">الإعدادات</h1>
+          <div class="dash-breadcrumb">رَسِيخ <span>/</span> <span data-ar="الإعدادات" data-en="Settings">الإعدادات</span></div>
+        </div>
+      </div>
+      <div class="panel-card">
+        <h3 data-ar="بيانات الحساب" data-en="Account Details">بيانات الحساب</h3>
+        <form class="settings-form" id="settingsForm">
+          <div>
+            <label data-ar="البريد الإلكتروني" data-en="Email">البريد الإلكتروني</label>
+            <input type="email" id="settingsEmail" disabled>
+          </div>
+          <div>
+            <label data-ar="اسم العرض" data-en="Display Name">اسم العرض</label>
+            <input type="text" id="settingsName" placeholder="مثال: أحمد العلي" data-ar-ph="مثال: أحمد العلي" data-en-ph="e.g. Ahmad Al-Ali">
+          </div>
+          <div class="full">
+            <label data-ar="كلمة مرور جديدة (اختياري)" data-en="New Password (optional)">كلمة مرور جديدة (اختياري)</label>
+            <input type="password" id="settingsPassword" placeholder="اتركها فاضية إذا ما تبي تغييرها" data-ar-ph="اتركها فاضية إذا ما تبي تغييرها" data-en-ph="Leave blank to keep current password">
+          </div>
+          <div class="full">
+            <button type="submit" class="submit-btn" style="max-width:220px;" data-ar="حفظ التغييرات" data-en="Save Changes">حفظ التغييرات</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+ main
 <!-- NEW REQUEST MODAL -->
 <div class="modal-overlay" id="newReqModal">
   <div class="modal-box">
     <button class="modal-close" id="newReqClose">&times;</button>
     <h2 id="reqModalTitle" data-ar="طلب جديد" data-en="New Request">طلب جديد</h2>
     <form id="newReqForm">
+      <input type="text" id="nr_name" placeholder="الاسم الكامل" data-ar-ph="الاسم الكامل" data-en-ph="Full name" required>
+      <input type="tel" id="nr_phone" placeholder="رقم الجوال" data-ar-ph="رقم الجوال" data-en-ph="Phone number" required>
+ main
       <input type="text" id="nr_title" placeholder="عنوان الطلب" data-ar-ph="عنوان الطلب" data-en-ph="Request title" required>
       <select id="nr_type" required>
         <option value="" disabled data-ar="نوع النظام" data-en="System type">نوع النظام</option>
@@ -1175,7 +1345,7 @@
       const dateStr = new Date(r.created_at || Date.now()).toLocaleDateString(currentLang === 'ar' ? 'ar-SA' : 'en-US');
       rows += `<tr style="animation-delay:${i * 0.05}s">
         <td class="req-id">#${String(r.id).slice(-5)}</td>
-        <td>${escapeHtml(title)}</td>
+        <td>${escapeHtml(title)}${r.phone ? `<br><span class="mono" style="color:var(--muted); font-size:11.5px;">${escapeHtml(r.phone)}</span>` : ''}</td>
         <td>${escapeHtml(type)}</td>
         <td class="mono">${dateStr}</td>
         <td><span class="badge ${meta.cls}">${label}</span></td>
@@ -1216,6 +1386,8 @@
     const req = allRequests.find(r => String(r.id) === String(id));
     if (!req) return;
     editingRequestId = id;
+    document.getElementById('nr_name').value = req.customer_name || '';
+    document.getElementById('nr_phone').value = req.phone || '';
     document.getElementById('nr_title').value = req.title || '';
     document.getElementById('nr_type').value = req.system_type || req.type || '';
     document.getElementById('nr_desc').value = req.description || '';
@@ -1293,6 +1465,7 @@
   document.getElementById('newReqBtn').addEventListener('click', () => {
     editingRequestId = null;
     document.getElementById('newReqForm').reset();
+    document.getElementById('nr_name').value = currentUser?.user_metadata?.display_name || '';
     document.getElementById('reqModalTitle').textContent = currentLang === 'ar' ? 'طلب جديد' : 'New Request';
     document.getElementById('reqModalSubmitBtn').textContent = currentLang === 'ar' ? 'إرسال الطلب' : 'Submit Request';
     newReqModal.classList.add('active');
@@ -1301,16 +1474,24 @@
 
   document.getElementById('newReqForm').addEventListener('submit', async (e) => {
     e.preventDefault();
+    const customer_name = document.getElementById('nr_name').value.trim();
+    const phone = document.getElementById('nr_phone').value.trim();
     const title = document.getElementById('nr_title').value.trim();
     const type = document.getElementById('nr_type').value;
     const description = document.getElementById('nr_desc').value.trim();
+
+    // رقم الجوال والاسم إجباريين — بدونهم ما يتم إرسال أو تعديل الطلب
+    if (!customer_name || !phone) {
+      showToast(currentLang === 'ar' ? 'الاسم ورقم الجوال مطلوبين لإرسال الطلب' : 'Name and phone number are required');
+      return;
+    }
 
     if (editingRequestId) {
       // ------- EDIT MODE: update an existing request -------
       try {
         const { data, error } = await supabase
           .from('customer_requests')
-          .update({ title, system_type: type, description })
+          .update({ customer_name, phone, title, system_type: type, description })
           .eq('id', editingRequestId)
           .select();
         if (error) throw error;
@@ -1320,7 +1501,7 @@
         // جدول غير موجود بعد أو الطلب محلي — نحدّث النسخة المحلية مباشرة
         const idx = allRequests.findIndex(r => String(r.id) === String(editingRequestId));
         if (idx > -1) {
-          allRequests[idx] = { ...allRequests[idx], title, system_type: type, description };
+          allRequests[idx] = { ...allRequests[idx], customer_name, phone, title, system_type: type, description };
           saveLocalRequests(allRequests.filter(r => String(r.id).startsWith('local-')));
         }
       }
@@ -1329,14 +1510,14 @@
       // ------- CREATE MODE: new request -------
       const fallbackReq = {
         id: 'local-' + Date.now(),
-        title, system_type: type, description,
+        customer_name, phone, title, system_type: type, description,
         status: 'pending', created_at: new Date().toISOString(),
         user_id: currentUser?.id
       };
       try {
         const { data, error } = await supabase
           .from('customer_requests')
-          .insert([{ title, system_type: type, description, status: 'pending', user_id: currentUser.id }])
+          .insert([{ customer_name, phone, title, system_type: type, description, status: 'pending', user_id: currentUser.id }])
           .select();
         if (error) throw error;
         allRequests.unshift(data[0]);
