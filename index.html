@@ -412,8 +412,9 @@
             <div class="auth-tab" id="signupTab" onclick="switchAuthTab('signup')" data-ar="حساب جديد" data-en="Sign Up">حساب جديد</div>
           </div>
           <div class="auth-form-wrapper">
-            <!-- تم تبديل النوع إلى email للتوافق مع نظام مصادقة Supabase التلقائي -->
             <input type="email" id="auth_username" placeholder="البريد الإلكتروني" data-ar-ph="البريد الإلكتروني" data-en-ph="Email Address" required>
+            <!-- إضافة حقل رقم الجوال هنا (يظهر فقط في وضع إنشاء حساب جديد عن طريق السكريبت) -->
+            <input type="tel" id="auth_phone" placeholder="رقم الجوال" data-ar-ph="رقم الجوال" data-en-ph="Phone Number" style="display: none;">
             <input type="password" id="auth_password" placeholder="كلمة المرور" data-ar-ph="كلمة المرور" data-en-ph="Password" required>
             <button type="button" class="auth-btn" id="authSubmitBtn" onclick="handleAuthSubmit()" data-ar="دخول" data-en="Login">دخول</button>
             <div class="auth-msg" id="authMsgBox"></div>
@@ -512,6 +513,15 @@
     document.getElementById('signupTab').classList.toggle('active', mode === 'signup');
     document.getElementById('authMsgBox').className = 'auth-msg';
     document.getElementById('authMsgBox').style.display = 'none';
+    
+    // إظهار حقل رقم الجوال فقط عند اختيار "حساب جديد" وإخفائه عند تسجيل الدخول
+    const phoneInput = document.getElementById('auth_phone');
+    if (mode === 'signup') {
+      phoneInput.style.display = 'block';
+    } else {
+      phoneInput.style.display = 'none';
+    }
+    
     updateAuthButtonText();
   }
 
@@ -531,10 +541,16 @@
   async function handleAuthSubmit() {
     const email = document.getElementById('auth_username').value.trim();
     const password = document.getElementById('auth_password').value.trim();
+    const phone = document.getElementById('auth_phone').value.trim();
     const agree = document.getElementById('navTermsCheckbox').checked;
 
     if (!email || !password) {
       showAuthMsg(currentLang === 'ar' ? 'الرجاء تعبئة جميع حقول الحساب.' : 'Please fill in all account fields.', 'error');
+      return;
+    }
+
+    if (authMode === 'signup' && !phone) {
+      showAuthMsg(currentLang === 'ar' ? 'الرجاء إدخال رقم الجوال.' : 'Please enter your phone number.', 'error');
       return;
     }
 
@@ -545,15 +561,19 @@
 
     try {
       if (authMode === 'signup') {
-        // إنشاء حساب مستخدم جديد في Supabase Auth
+        // إنشاء حساب مستخدم جديد في Supabase Auth وحفظ رقم الجوال في الـ metadata
         const { data, error } = await supabase.auth.signUp({
           email: email,
           password: password,
+          options: {
+            data: {
+              phone_number: phone
+            }
+          }
         });
 
         if (error) throw error;
 
-        // إشعار المستخدم بالنجاح وحاجته لتأكيد البريد الإلكتروني إن وجد
         showAuthMsg(currentLang === 'ar' ? 'تم إنشاء الحساب بنجاح! يرجى التحقق من بريدك الإلكتروني.' : 'Account created successfully! Please check your email.', 'success');
         setTimeout(() => switchAuthTab('login'), 2000);
 
@@ -567,7 +587,6 @@
         if (error) throw error;
 
         showAuthMsg(currentLang === 'ar' ? 'تم تسجيل الدخول بنجاح!' : 'Logged in successfully!', 'success');
-        // هنا يمكنك توجيه المستخدم أو توفير الجلسة النشطة
         console.log("User session data:", data);
       }
     } catch (err) {
@@ -589,30 +608,32 @@
     const links = document.querySelector('.nav-links');
     const visible = links.style.display === 'flex';
     links.style.display = visible ? 'none' : 'flex';
-    links.style.flexDirection = 'column';
-    links.style.position = 'absolute';
-    links.style.top = '64px';
-    links.style.insetInlineEnd = '24px';
-    links.style.background = '#151517';
-    links.style.border = '1px solid #33322C';
-    links.style.borderRadius = '10px';
-    links.style.padding = '16px 24px';
-    links.style.gap = '14px';
-    links.style.boxShadow = '0 12px 30px -12px rgba(0,0,0,0.6)';
+    if (!visible) {
+      links.style.flexDirection = 'column';
+      links.style.position = 'absolute';
+      links.style.top = '64px';
+      links.style.insetInlineEnd = '24px';
+      links.style.background = '#151517';
+      links.style.border = '1px solid #33322C';
+      links.style.borderRadius = '10px';
+      links.style.padding = '16px';
+    }
   });
 
-  const termsModal = document.getElementById('termsModal');
+  // التحكم بفتح وإغلاق المودال الخاص بالشروط والأحكام
+  const modal = document.getElementById('termsModal');
   document.getElementById('termsLink').addEventListener('click', function(e){
     e.preventDefault();
-    termsModal.classList.add('active');
+    modal.classList.add('active');
   });
   document.getElementById('termsClose').addEventListener('click', function(){
-    termsModal.classList.remove('active');
+    modal.classList.remove('active');
   });
-  termsModal.addEventListener('click', function(e){
-    if(e.target === termsModal){ termsModal.classList.remove('active'); }
+  window.addEventListener('click', function(e){
+    if (e.target === modal) {
+      modal.classList.remove('active');
+    }
   });
 </script>
-
 </body>
 </html>
