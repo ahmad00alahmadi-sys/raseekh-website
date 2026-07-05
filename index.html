@@ -7,14 +7,13 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@400;700;800&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<!-- مكتبة Supabase JS الرسمية من خلال CDN -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   :root{
-    --bg:#0B0B0D;
-    --panel:#151517;
-    --panel-2:#1D1D20;
-    --line:#33322C;
+    --bg:#17171A;
+    --panel:#1F1F23;
+    --panel-2:#28282D;
+    --line:#3B3A34;
     --blue:#D4AF37;
     --coral:#B8912F;
     --text:#F3F0E8;
@@ -51,7 +50,7 @@
   .mono{font-family:'IBM Plex Mono', monospace; letter-spacing:0.02em;}
   a{color:inherit;text-decoration:none;}
 
-  /* NAV */
+  /* NAV & HEADER ACTIONS */
   header{
     position:sticky; top:0; z-index:50;
     background:rgba(11,11,13,0.85);
@@ -60,25 +59,20 @@
   }
   nav{display:flex;align-items:center;justify-content:space-between;padding:18px 24px;max-width:1120px;margin:0 auto; gap:16px;}
   .logo{font-family:'Almarai',sans-serif;font-weight:800;font-size:22px;color:var(--text);}
-  body.lang-en .logo{font-family:'Inter',sans-serif;}
   .logo span{color:var(--blue);}
   .nav-links{display:flex;gap:28px;font-size:15px;color:var(--muted); align-items:center;}
   .nav-links a:hover{color:var(--blue);}
   
-  .nav-actions{display:flex; align-items:center; gap:16px;}
-  .nav-terms-label{
-    display:flex; align-items:center; gap:6px; font-size:13px; color:var(--muted); cursor:pointer; user-select:none;
+  .nav-actions{display:flex; align-items:center; gap:12px;}
+  .nav-btn{
+    background:none; border:1px solid var(--line); color:var(--text);
+    padding:8px 16px; border-radius:6px; font-size:14px; cursor:pointer; font-family:inherit;
   }
-  .nav-terms-label input{cursor:pointer; accent-color:var(--blue);}
-  
-  .nav-cta{
-    background:var(--blue); color:#0B0B0D; font-weight:700;
-    padding:10px 20px; border-radius:6px; font-size:14px;
-    white-space:nowrap; border:none; cursor:pointer;
-    box-shadow:0 6px 16px -6px rgba(212,175,55,0.4);
-    font-family:inherit; transition: background 0.2s;
+  .nav-btn:hover{border-color:var(--blue); color:var(--blue);}
+  .nav-btn.primary{
+    background:var(--coral); border-color:var(--coral); color:#0B0B0D; font-weight:600;
   }
-  .nav-cta:hover{background:var(--coral);}
+  .nav-btn.primary:hover{background:var(--blue); border-color:var(--blue); color:#0B0B0D;}
   
   .lang-btn{
     border:1px solid var(--line); background:var(--panel); color:var(--text);
@@ -135,7 +129,6 @@
   .node{fill:var(--panel-2); stroke:var(--line); stroke-width:1.5;}
   .node-core{fill:var(--blue); stroke:var(--blue);}
   .node-label{font-family:'IBM Plex Sans Arabic',sans-serif; font-size:15px; fill:var(--text); font-weight:500;}
-  body.lang-en .node-label{font-family:'Inter',sans-serif;}
   .node-tag{font-family:'IBM Plex Mono',monospace; font-size:10px; fill:var(--muted);}
 
   section{padding:90px 0; position:relative;}
@@ -172,7 +165,7 @@
   .team-card h3{font-size:17px; margin-bottom:8px;}
   .team-card p{color:var(--muted); font-size:14px;}
 
-  /* CONTACT & AUTH BOX */
+  /* CONTACT BOX */
   .contact-box{
     background:var(--panel); border:1px solid var(--line); border-radius:18px;
     padding:56px 40px; display:grid; grid-template-columns:1fr 1fr; gap:48px;
@@ -182,56 +175,45 @@
   .contact-box p{color:var(--muted); margin-bottom:26px;}
   .contact-info{display:flex; flex-direction:column; gap:14px; font-size:15px;}
   .contact-info .mono{color:var(--blue);}
-  form, .auth-form-wrapper{display:flex; flex-direction:column; gap:14px;}
+  form {display:flex; flex-direction:column; gap:14px;}
   input,select,textarea{
     background:var(--panel-2); border:1px solid var(--line); color:var(--text);
     padding:13px 16px; border-radius:8px; font-family:inherit; font-size:14px;
   }
   input:focus,select:focus,textarea:focus{outline:2px solid var(--blue); border-color:transparent;}
-  textarea{resize:vertical; min-height:90px;}
+  textarea{resize:vertical; min-height:120px;}
   
-  .submit-btn, .auth-btn{
+  .submit-btn {
     background:var(--coral); color:#0B0B0D; font-weight:700;
     padding:14px; border:none; border-radius:8px; cursor:pointer; font-size:15px; font-family:inherit;
-    transition: background 0.2s;
   }
-  .submit-btn:hover, .auth-btn:hover{background:var(--blue);}
+  .submit-btn:hover {background:var(--blue);}
 
-  /* AUTH CONTAINER SPECIFIC */
-  .auth-container-box {
-    background:var(--panel-2); border:1px solid var(--line); border-radius:14px; padding:32px 24px;
+  /* AGREEMENT CHECKBOX INSIDE AUTH MODAL */
+  .agreement-container {
+    display: flex; align-items: flex-start; gap: 10px; margin: 10px 0; font-size: 13px; color: var(--muted);
   }
-  .auth-tabs {
-    display:flex; border-bottom:1px solid var(--line); margin-bottom:20px; gap:16px;
-  }
-  .auth-tab {
-    padding:8px 0; color:var(--muted); cursor:pointer; font-weight:700; font-size:15px; border-bottom:2px solid transparent;
-  }
-  .auth-tab.active {
-    color:var(--blue); border-bottom-color:var(--blue);
-  }
-  .auth-msg {
-    padding:12px; border-radius:6px; font-size:13px; text-align:center; display:none; margin-top:10px;
-  }
-  .auth-msg.success { background:var(--success-bg); color:var(--success); display:block; }
-  .auth-msg.error { background:var(--error-bg); color:var(--error); display:block; }
+  .agreement-container input { width: auto; margin-top: 4px; cursor: pointer; accent-color: var(--blue); }
+  .agreement-link { color: var(--blue); text-decoration: underline; cursor: pointer; }
 
   footer{border-top:1px solid var(--line); padding:32px 0; text-align:center; color:var(--muted); font-size:14px;}
   footer .footer-links{display:flex; gap:20px; justify-content:center; margin-top:12px; flex-wrap:wrap;}
   footer .footer-links a{color:var(--muted); font-size:13px;}
   footer .footer-links a:hover{color:var(--blue);}
 
-  /* TERMS MODAL */
+  /* MODALS STYLE */
   .modal-overlay{
     display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7);
     z-index:100; align-items:center; justify-content:center; padding:20px;
+    backdrop-filter: blur(4px);
   }
   .modal-overlay.active{display:flex;}
   .modal-box{
     background:var(--panel); border:1px solid var(--line); border-radius:16px;
-    max-width:640px; width:100%; max-height:80vh; overflow-y:auto; padding:36px;
+    max-width:500px; width:100%; max-height:85vh; overflow-y:auto; padding:36px;
     position:relative;
   }
+  .modal-box.wide { max-width: 680px; }
   .modal-close{
     position:absolute; top:18px; left:18px; background:none; border:none;
     color:var(--muted); font-size:22px; cursor:pointer; line-height:1;
@@ -242,20 +224,231 @@
   .modal-box p{color:var(--muted); font-size:14px; margin-bottom:10px;}
 
   @media (max-width:860px){
-    .nav-links, .nav-terms-label{display:none;}
+    .nav-links{display:none;}
     .nav-toggle{display:flex;}
     .services-grid, .team-grid{grid-template-columns:1fr;}
     .contact-box{grid-template-columns:1fr; padding:36px 24px;}
     .process-item{grid-template-columns:50px 1fr;}
   }
-  @media (prefers-reduced-motion:reduce){
-    .diagram-path{animation:none; stroke-dashoffset:0;}
-    .service-card{transition:none;}
+
+  /* ============================= */
+  /* CUSTOMER DASHBOARD             */
+  /* ============================= */
+  #dashboardView{
+    display:none;
+    min-height:100vh;
+    grid-template-columns:260px 1fr;
+    position:relative; z-index:1;
+  }
+  #dashboardView.active{display:grid;}
+
+  @keyframes fadeSlideIn{
+    from{opacity:0; transform:translateY(14px);}
+    to{opacity:1; transform:translateY(0);}
+  }
+  @keyframes fadeIn{ from{opacity:0;} to{opacity:1;} }
+  @keyframes popIn{
+    from{opacity:0; transform:scale(0.9);}
+    to{opacity:1; transform:scale(1);}
+  }
+  @keyframes slideDown{
+    from{opacity:0; max-height:0;}
+    to{opacity:1; max-height:400px;}
+  }
+  @keyframes pulseDot{
+    0%,100%{box-shadow:0 0 0 0 rgba(212,175,55,0.5);}
+    50%{box-shadow:0 0 0 6px rgba(212,175,55,0);}
+  }
+  @keyframes shimmer{
+    0%{background-position:-200px 0;}
+    100%{background-position:200px 0;}
+  }
+
+  .dash-sidebar{
+    background:var(--panel);
+    border-left:1px solid var(--line);
+    padding:26px 18px;
+    display:flex; flex-direction:column;
+    position:sticky; top:0; height:100vh;
+  }
+  body.lang-en .dash-sidebar{border-left:none; border-right:1px solid var(--line);}
+  .dash-logo{display:flex; align-items:center; gap:10px; padding:0 8px 26px; margin-bottom:20px; border-bottom:1px solid var(--line);}
+  .dash-logo .logo{font-size:20px;}
+  .dash-nav{display:flex; flex-direction:column; gap:4px; flex:1;}
+  .dash-nav-item{
+    display:flex; align-items:center; gap:12px;
+    padding:12px 14px; border-radius:9px; cursor:pointer;
+    color:var(--muted); font-size:14.5px; border:1px solid transparent;
+    transition:background 0.2s, color 0.2s, border-color 0.2s;
+    background:none; width:100%; text-align:right; font-family:inherit;
+  }
+  body.lang-en .dash-nav-item{text-align:left;}
+  .dash-nav-item .dni{width:18px; text-align:center; font-family:'IBM Plex Mono',monospace; font-size:13px;}
+  .dash-nav-item:hover{color:var(--text); background:var(--panel-2);}
+  .dash-nav-item.active{
+    color:var(--blue); background:var(--panel-2); border-color:var(--line);
+    font-weight:600;
+  }
+  .dash-nav-item.active .dni{color:var(--blue);}
+  .dash-foot{border-top:1px solid var(--line); padding-top:16px; margin-top:10px;}
+  .dash-user{display:flex; align-items:center; gap:10px; padding:8px; margin-bottom:10px;}
+  .dash-avatar{
+    width:36px;height:36px;border-radius:50%; background:linear-gradient(135deg,var(--blue),var(--coral));
+    display:flex; align-items:center; justify-content:center; color:#0B0B0D; font-weight:800; font-size:14px;
+    flex-shrink:0;
+  }
+  .dash-user-info{overflow:hidden;}
+  .dash-user-email{font-size:12.5px; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .dash-user-status{font-size:11px; color:var(--muted); display:flex; align-items:center; gap:5px;}
+  .dash-user-status::before{content:""; width:6px; height:6px; border-radius:50%; background:#3aa76d; animation:pulseDot 2s infinite;}
+  .dash-logout-btn{
+    width:100%; background:none; border:1px solid var(--line); color:var(--muted);
+    padding:10px; border-radius:8px; cursor:pointer; font-size:13.5px; font-family:inherit;
+  }
+  .dash-logout-btn:hover{border-color:#a24545; color:#e08585;}
+
+  .dash-main{padding:32px 40px; overflow-x:hidden;}
+  .dash-topbar{display:flex; align-items:center; justify-content:space-between; margin-bottom:30px; gap:16px; flex-wrap:wrap;}
+  .dash-topbar h1{font-size:26px; font-weight:800;}
+  .dash-breadcrumb{font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--muted); margin-top:4px;}
+  .dash-breadcrumb span{color:var(--blue);}
+  .dash-clock{font-family:'IBM Plex Mono',monospace; font-size:13px; color:var(--muted); border:1px solid var(--line); background:var(--panel); padding:8px 14px; border-radius:8px;}
+
+  .dash-page{display:none;}
+  .dash-page.active{display:block; animation:fadeSlideIn 0.4s ease;}
+
+  .stat-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:18px; margin-bottom:32px;}
+  .stat-card{
+    background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:22px;
+    position:relative; overflow:hidden;
+  }
+  .stat-card::after{
+    content:""; position:absolute; inset:0; opacity:0;
+    background:radial-gradient(circle at 100% 0%, rgba(212,175,55,0.15), transparent 60%);
+    transition:opacity 0.3s;
+  }
+  .stat-card:hover::after{opacity:1;}
+  .stat-card:hover{border-color:var(--blue); transform:translateY(-3px); transition:transform 0.25s, border-color 0.25s;}
+  .stat-label{font-size:13px; color:var(--muted); margin-bottom:10px; display:flex; align-items:center; justify-content:space-between;}
+  .stat-icon{font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--coral); border:1px solid var(--line); padding:2px 7px; border-radius:5px;}
+  .stat-value{font-size:32px; font-weight:800; font-family:'IBM Plex Mono',monospace;}
+  .stat-trend{font-size:12px; margin-top:8px; color:#3aa76d;}
+  .stat-trend.down{color:#c76767;}
+
+  .dash-grid-2{display:grid; grid-template-columns:1.4fr 1fr; gap:20px; margin-bottom:20px;}
+  .panel-card{background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:26px;}
+  .panel-card h3{font-size:16px; margin-bottom:18px; display:flex; align-items:center; justify-content:space-between;}
+  .panel-card h3 .see-all{font-size:12px; color:var(--blue); font-weight:400; cursor:pointer;}
+
+  .timeline-item{display:flex; gap:14px; padding:14px 0; border-bottom:1px solid var(--line);}
+  .timeline-item:last-child{border-bottom:none;}
+  .timeline-dot{width:8px; height:8px; border-radius:50%; background:var(--blue); margin-top:6px; flex-shrink:0;}
+  .timeline-body p{color:var(--text); font-size:14px; margin-bottom:3px;}
+  .timeline-body span{color:var(--muted); font-size:12px; font-family:'IBM Plex Mono',monospace;}
+
+  .progress-ring-wrap{display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px; padding:10px 0;}
+  .progress-ring-label{font-size:13px; color:var(--muted); text-align:center;}
+  .progress-ring-label strong{color:var(--text); display:block; font-size:15px; margin-bottom:2px;}
+
+  .dash-table-wrap{background:var(--panel); border:1px solid var(--line); border-radius:14px; overflow:hidden;}
+  .dash-table-head{
+    display:flex; align-items:center; justify-content:space-between; padding:20px 24px;
+    border-bottom:1px solid var(--line); gap:16px; flex-wrap:wrap;
+  }
+  .dash-table-head h3{font-size:17px;}
+  .dash-filters{display:flex; gap:8px; flex-wrap:wrap;}
+  .filter-chip{
+    font-size:12.5px; padding:7px 14px; border-radius:100px; border:1px solid var(--line);
+    background:var(--panel-2); color:var(--muted); cursor:pointer; font-family:inherit;
+  }
+  .filter-chip.active{background:var(--coral); border-color:var(--coral); color:#0B0B0D; font-weight:600;}
+  table.req-table{width:100%; border-collapse:collapse;}
+  table.req-table th{
+    text-align:right; font-size:12px; color:var(--muted); font-weight:500; padding:12px 24px;
+    border-bottom:1px solid var(--line); font-family:'IBM Plex Mono',monospace;
+  }
+  body.lang-en table.req-table th{text-align:left;}
+  table.req-table td{padding:16px 24px; border-bottom:1px solid var(--line); font-size:14px;}
+  table.req-table tbody tr{opacity:0; animation:fadeSlideIn 0.4s ease forwards;}
+  table.req-table tbody tr:hover{background:var(--panel-2);}
+  table.req-table tr:last-child td{border-bottom:none;}
+  .req-id{font-family:'IBM Plex Mono',monospace; color:var(--muted); font-size:12.5px;}
+  .row-actions{display:flex; gap:6px;}
+  .row-action-btn{
+    width:30px; height:30px; border-radius:7px; border:1px solid var(--line); background:var(--panel-2);
+    color:var(--muted); cursor:pointer; font-size:13px; display:inline-flex; align-items:center; justify-content:center;
+    transition:border-color 0.2s, color 0.2s, background 0.2s;
+  }
+  .row-action-btn:hover{border-color:var(--blue); color:var(--blue);}
+  .row-action-btn.danger:hover{border-color:#c76767; color:#e08585;}
+
+  .badge{
+    display:inline-flex; align-items:center; gap:6px; padding:5px 12px; border-radius:100px;
+    font-size:12px; font-weight:600;
+  }
+  .badge::before{content:""; width:6px; height:6px; border-radius:50%;}
+  .badge.pending{background:rgba(212,175,55,0.15); color:var(--blue);}
+  .badge.pending::before{background:var(--blue);}
+  .badge.progress{background:rgba(80,140,220,0.15); color:#6fa8f5;}
+  .badge.progress::before{background:#6fa8f5;}
+  .badge.done{background:rgba(58,167,109,0.15); color:#3aa76d;}
+  .badge.done::before{background:#3aa76d;}
+  .badge.rejected{background:rgba(199,103,103,0.15); color:#c76767;}
+  .badge.rejected::before{background:#c76767;}
+
+  .empty-state{padding:60px 24px; text-align:center; color:var(--muted);}
+  .empty-state .es-icon{font-size:34px; margin-bottom:14px; opacity:0.6;}
+
+  .new-req-btn{
+    background:var(--coral); color:#0B0B0D; font-weight:700; border:none;
+    padding:11px 20px; border-radius:8px; cursor:pointer; font-size:14px; font-family:inherit;
+  }
+  .new-req-btn:hover{background:var(--blue);}
+
+  .invoice-row{display:flex; align-items:center; justify-content:space-between; padding:16px 0; border-bottom:1px solid var(--line);}
+  .invoice-row:last-child{border-bottom:none;}
+  .invoice-info p{font-size:14px; margin-bottom:3px;}
+  .invoice-info span{font-size:12px; color:var(--muted); font-family:'IBM Plex Mono',monospace;}
+  .invoice-amount{font-family:'IBM Plex Mono',monospace; font-weight:600;}
+
+  .faq-item{border:1px solid var(--line); border-radius:10px; margin-bottom:10px; overflow:hidden;}
+  .faq-q{padding:16px 18px; cursor:pointer; display:flex; justify-content:space-between; align-items:center; font-size:14.5px; background:var(--panel-2);}
+  .faq-q .faq-arrow{transition:transform 0.25s; color:var(--blue);}
+  .faq-item.open .faq-arrow{transform:rotate(180deg);}
+  .faq-a{padding:0 18px; max-height:0; overflow:hidden; opacity:0; color:var(--muted); font-size:13.5px; transition:all 0.3s;}
+  .faq-item.open .faq-a{padding:14px 18px; max-height:300px; opacity:1;}
+
+  .settings-form{display:grid; grid-template-columns:1fr 1fr; gap:16px; max-width:640px;}
+  .settings-form .full{grid-column:1/-1;}
+  .settings-form label{font-size:12.5px; color:var(--muted); margin-bottom:6px; display:block;}
+
+  .toast{
+    position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(20px);
+    background:var(--panel-2); border:1px solid var(--blue); color:var(--text);
+    padding:14px 22px; border-radius:10px; font-size:14px; z-index:200;
+    opacity:0; pointer-events:none; transition:all 0.35s;
+    display:flex; align-items:center; gap:10px;
+  }
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+
+  .skeleton{background:linear-gradient(90deg, var(--panel-2) 25%, var(--line) 37%, var(--panel-2) 63%); background-size:400px 100%; animation:shimmer 1.4s infinite linear; border-radius:6px;}
+
+  @media (max-width:960px){
+    #dashboardView.active{display:flex; flex-direction:column;}
+    .dash-sidebar{position:relative; height:auto; flex-direction:row; overflow-x:auto; align-items:center; padding:14px;}
+    .dash-logo{display:none;}
+    .dash-nav{flex-direction:row;}
+    .dash-foot{display:none;}
+    .dash-main{padding:24px 18px;}
+    .stat-grid{grid-template-columns:1fr 1fr;}
+    .dash-grid-2{grid-template-columns:1fr;}
+    .settings-form{grid-template-columns:1fr;}
   }
 </style>
 </head>
 <body>
 
+<div id="siteView">
 <header>
   <nav class="wrap">
     <div class="logo" data-ar="رَسِيخ" data-en="Raseekh"><span data-ar="رَ" data-en="Ra">رَ</span><span data-ar="سِيخ" data-en="seekh">سِيخ</span></div>
@@ -266,11 +459,8 @@
       <a href="#contact" data-ar="تواصل معنا" data-en="Contact">تواصل معنا</a>
     </div>
     <div class="nav-actions">
-      <label class="nav-terms-label" id="termsLabel">
-        <input type="checkbox" id="navTermsCheckbox">
-        <span data-ar="أوافق على الشروط والأحكام" data-en="I agree to the Terms">أوافق على الشروط والأحكام</span>
-      </label>
-      <button class="nav-cta" onclick="scrollToAuth()" data-ar="تسجيل الدخول" data-en="Login / Sign Up">تسجيل الدخول</button>
+      <button class="nav-btn" id="loginHeaderBtn" data-ar="تسجيل الدخول" data-en="Login">تسجيل الدخول</button>
+      <button class="nav-btn primary" id="registerHeaderBtn" data-ar="إنشاء حساب" data-en="Sign Up">إنشاء حساب</button>
       <button class="lang-btn" id="langToggle">EN</button>
     </div>
     <button class="nav-toggle" aria-label="menu" id="navToggle">
@@ -397,43 +587,29 @@
 
 <section id="contact">
   <div class="wrap">
-    <div class="contact-box" id="authSection">
+    <div class="contact-box">
       <div>
         <h2 data-ar="جاهز تبدأ؟" data-en="Ready to Start?">جاهز تبدأ؟</h2>
         <p data-ar="عبّي البيانات وفريقنا بيتواصل معك خلال يوم عمل واحد." data-en="Fill in your details and our team will reach out within one business day.">عبّي البيانات وفريقنا بيتواصل معك خلال يوم عمل واحد.</p>
-        <div class="contact-info" style="margin-bottom: 30px;">
+        <div class="contact-info">
           <div><span class="mono" data-ar="واتساب:" data-en="WhatsApp:">واتساب:</span> XXX-XXX-XXXX</div>
           <div><span class="mono" data-ar="إيميل:" data-en="Email:">إيميل:</span> hello@raseekh.com</div>
         </div>
-        
-        <div class="auth-container-box">
-          <div class="auth-tabs">
-            <div class="auth-tab active" id="loginTab" onclick="switchAuthTab('login')" data-ar="تسجيل الدخول" data-en="Login">تسجيل الدخول</div>
-            <div class="auth-tab" id="signupTab" onclick="switchAuthTab('signup')" data-ar="حساب جديد" data-en="Sign Up">حساب جديد</div>
-          </div>
-          <div class="auth-form-wrapper">
-            <input type="email" id="auth_username" placeholder="البريد الإلكتروني" data-ar-ph="البريد الإلكتروني" data-en-ph="Email Address" required>
-            <!-- إضافة حقل رقم الجوال هنا (يظهر فقط في وضع إنشاء حساب جديد عن طريق السكريبت) -->
-            <input type="tel" id="auth_phone" placeholder="رقم الجوال" data-ar-ph="رقم الجوال" data-en-ph="Phone Number" style="display: none;">
-            <input type="password" id="auth_password" placeholder="كلمة المرور" data-ar-ph="كلمة المرور" data-en-ph="Password" required>
-            <button type="button" class="auth-btn" id="authSubmitBtn" onclick="handleAuthSubmit()" data-ar="دخول" data-en="Login">دخول</button>
-            <div class="auth-msg" id="authMsgBox"></div>
-          </div>
-        </div>
       </div>
       
-      <form onsubmit="event.preventDefault(); alert(currentLang==='ar' ? 'تم إرسال طلبك، بنتواصل معك قريباً!' : 'Your request has been sent, we will contact you soon!');">
+      <form id="leadForm" onsubmit="handleSubmit(event)">
         <input type="text" id="f_name" placeholder="الاسم" data-ar-ph="الاسم" data-en-ph="Name" required>
         <input type="text" id="f_company" placeholder="اسم الشركة أو المحل" data-ar-ph="اسم الشركة أو المحل" data-en-ph="Company or Store Name">
-        <select id="f_type">
-          <option data-ar="نوع النظام المطلوب" data-en="Type of System Needed">نوع النظام المطلوب</option>
-          <option data-ar="نظام مخزون ومبيعات" data-en="Inventory & Sales System">نظام مخزون ومبيعات</option>
-          <option data-ar="نظام إدارة عملاء" data-en="Customer Management System">نظام إدارة عملاء</option>
-          <option data-ar="نظام حجوزات" data-en="Booking System">نظام حجوزات</option>
-          <option data-ar="شي ثاني" data-en="Something Else">شي ثاني</option>
+        <input type="tel" id="f_phone" placeholder="رقم الجوال" data-ar-ph="رقم الجوال" data-en-ph="Phone Number" required>
+        <select id="f_type" required>
+          <option value="" disabled selected data-ar="نوع النظام المطلوب" data-en="Type of System Needed">نوع النظام المطلوب</option>
+          <option value="نظام مخزون ومبيعات" data-ar="نظام مخزون ومبيعات" data-en="Inventory & Sales System">نظام مخزون ومبيعات</option>
+          <option value="نظام إدارة عملاء" data-ar="نظام إدارة عملاء" data-en="Customer Management System">نظام إدارة عملاء</option>
+          <option value="نظام حجوزات" data-ar="نظام حجوزات" data-en="Booking System">نظام حجوزات</option>
+          <option value="شي ثاني" data-ar="شي ثاني" data-en="Something Else">شي ثاني</option>
         </select>
-        <textarea id="f_msg" placeholder="اشرح لنا احتياجك بسرعة" data-ar-ph="اشرح لنا احتياجك بسرعة" data-en-ph="Briefly describe what you need"></textarea>
-        <button type="submit" class="submit-btn" data-ar="إرسال الطلب" data-en="Send Request">إرسال الطلب</button>
+        <textarea id="f_msg" placeholder="اشرح لنا احتياجك بسرعة" data-ar-ph="اشرح لنا احتياجك بسرعة" data-en-ph="Briefly describe what you need" required></textarea>
+        <button type="submit" class="submit-btn" id="submitBtn" data-ar="إرسال الطلب" data-en="Send Request">إرسال الطلب</button>
       </form>
     </div>
   </div>
@@ -443,197 +619,827 @@
   <div class="wrap">
     <div data-ar="رَسِيخ — تطوير أنظمة إدارة مخصصة © 2026" data-en="Raseekh — Custom Management Systems Development © 2026">رَسِيخ — تطوير أنظمة إدارة مخصصة © 2026</div>
     <div class="footer-links">
-      <a href="#" id="termsLink" data-ar="الشروط والأحكام" data-en="Terms & Conditions">الشروط والأحكام</a>
+      <a href="#" id="termsLink" data-ar="الشروط والأحكام وعقد الخدمات" data-en="Terms, Conditions & Service Contract">الشروط والأحكام وعقد الخدمات</a>
     </div>
   </div>
 </footer>
+</div><!-- /siteView -->
 
-<div class="modal-overlay" id="termsModal">
+<!-- AUTH MODAL (LOGIN / REGISTER) -->
+<div class="modal-overlay" id="authModal">
   <div class="modal-box">
-    <button class="modal-close" id="termsClose">&times;</button>
-    <h2 data-ar="الشروط والأحكام" data-en="Terms & Conditions">الشروط والأحكام</h2>
+    <button class="modal-close" id="authClose">&times;</button>
+    <h2 id="authModalTitle" data-ar="تسجيل الدخول" data-en="Login">تسجيل الدخول</h2>
+    
+    <form id="authForm" onsubmit="handleAuthSubmit(event)">
+      <input type="email" id="authEmail" placeholder="البريد الإلكتروني" data-ar-ph="البريد الإلكتروني" data-en-ph="Email" required>
+      <input type="password" id="authPassword" placeholder="كلمة المرور" data-ar-ph="كلمة المرور" data-en-ph="Password" required>
+      
+      <!-- شروط الاستخدام وعقد الخدمات مدمجة قبل الإنشاء -->
+      <div class="agreement-container" id="registerAgreement">
+        <input type="checkbox" id="authAgreeCheck" required>
+        <label for="authAgreeCheck">
+          <span data-ar="أوافق على" data-en="I agree to the">أوافق على</span>
+          <span class="agreement-link" id="viewTermsInside" data-ar="الشروط والأحكام وعقد الخدمات" data-en="Terms, Conditions & Service Contract">الشروط والأحكام وعقد الخدمات</span>
+        </label>
+      </div>
 
-    <h3 data-ar="١. نطاق الخدمة" data-en="1. Scope of Service">١. نطاق الخدمة</h3>
-    <p data-ar="تقدم رَسِيخ خدمات تطوير أنظمة إدارة مخصصة (مخزون، عملاء، حجوزات) حسب الاتفاق المكتوب مع كل عميل. يتم تحديد نطاق العمل بدقة قبل بدء أي مشروع." data-en="Raseekh provides custom management system development services (inventory, customers, bookings) according to a written agreement with each client. The scope of work is precisely defined before any project begins.">تقدم رَسِيخ خدمات تطوير أنظمة إدارة مخصصة (مخزون، عملاء، حجوزات) حسب الاتفاق المكتوب مع كل عميل. يتم تحديد نطاق العمل بدقة قبل بدء أي مشروع.</p>
-
-    <h3 data-ar="٢. الدفع" data-en="2. Payment">٢. الدفع</h3>
-    <p data-ar="يتم تحديد آلية الدفع ودفعاته حسب العقد الموقع مع العميل قبل بدء المشروع." data-en="Payment terms and installments are determined according to the contract signed with the client before the project begins.">يتم تحديد آلية الدفع ودفعاته حسب العقد الموقع مع العميل قبل بدء المشروع.</p>
-
-    <h3 data-ar="٣. الضمان" data-en="3. Warranty">٣. الضمان</h3>
-    <p data-ar="نقدم ضمان تشغيل مدته 30 يوماً بعد تسليم النظام، يغطي إصلاح الأخطاء التقنية الناتجة عن التطوير." data-en="We provide a 30-day operational guarantee after system delivery, covering fixes for technical errors resulting from development.">نقدم ضمان تشغيل مدته 30 يوماً بعد تسليم النظام، يغطي إصلاح الأخطاء التقنية الناتجة عن التطوير.</p>
-
-    <h3 data-ar="٤. الملكية الفكرية" data-en="4. Intellectual Property">٤. الملكية الفكرية</h3>
-    <p data-ar="تنتقل ملكية النظام المطوَّر للعميل بعد استكمال جميع الدفعات المتفق عليها بالكامل." data-en="Ownership of the developed system transfers to the client after all agreed payments are completed in full.">تنتقل ملكية النظام المطوَّر للعميل بعد استكمال جميع الدفعات المتفق عليها بالكامل.</p>
-
-    <h3 data-ar="٥. التعديلات" data-en="5. Amendments">٥. التعديلات</h3>
-    <p data-ar="تحتفظ رَسِيخ بحق تحديث هذه الشروط من وقت لآخر، وسيتم إشعار العملاء الحاليين بأي تغييرات جوهرية." data-en="Raseekh reserves the right to update these terms from time to time, and existing clients will be notified of any material changes.">تحتفظ رَسِيخ بحق تحديث هذه الشروط من وقت لآخر، وسيتم إشعار العملاء الحاليين بأي تغييرات جوهرية.</p>
-
-    <p style="margin-top:20px; font-size:12px;" data-ar="ملاحظة: هذا نص مبدئي عام، يُنصح بمراجعته من محامٍ مختص قبل اعتماده رسمياً." data-en="Note: this is a general starter template. We recommend having it reviewed by a qualified lawyer before formal adoption.">ملاحظة: هذا نص مبدئي عام، يُنصح بمراجعته من محامٍ مختص قبل اعتماده رسمياً.</p>
+      <button type="submit" class="submit-btn" id="authSubmitBtn" data-ar="دخول" data-en="Login">دخول</button>
+    </form>
   </div>
 </div>
 
+<!-- TERMS MODAL -->
+<div class="modal-overlay" id="termsModal">
+  <div class="modal-box wide">
+    <button class="modal-close" id="termsClose">&times;</button>
+    <h2 data-ar="الشروط والأحكام وعقد الخدمات" data-en="Terms, Conditions & Service Contract">الشروط والأحكام وعقد الخدمات</h2>
+
+    <h3 data-ar="١. نطاق الخدمة" data-en="1. Scope of Service">١. نطاق الخدمة</h3>
+    <p data-ar="تقدم رَسِيخ خدمات تطوير أنظمة إدارة مخصصة (مخزون، عملاء، حجوزات) حسب الاتفاق المكتوب مع كل عميل." data-en="Raseekh provides custom management system development services (inventory, customers, bookings) according to a written agreement with each client.">تقدم رَسِيخ خدمات تطوير أنظمة إدارة مخصصة (مخزون، عملاء، حجوزات) حسب الاتفاق المكتوب مع كل عميل.</p>
+
+    <h3 data-ar="٢. الدفع والالتزامات" data-en="2. Payment & Obligations">٢. الدفع والالتزامات</h3>
+    <p data-ar="يتم تحديد آلية الدفع ودفعاته حسب العقد الموقع مع العميل قبل بدء المشروع." data-en="Payment terms and installments are determined according to the contract signed with the client before the project begins.">يتم تحديد آلية الدفع ودفعاته حسب العقد الموقع مع العميل قبل بدء المشروع.</p>
+
+    <h3 data-ar="٣. الضمان والدعم" data-en="3. Warranty & Support">٣. الضمان والدعم</h3>
+    <p data-ar="نقدم ضمان تشغيل مدته 30 يوماً بعد تسليم النظام، يغطي إصلاح الأخطاء التقنية الناتجة عن التطوير." data-en="We provide a 30-day operational guarantee after system delivery, covering fixes for technical errors resulting from development.">نقدم ضمان تشغيل مدته 30 يوماً بعد تسليم النظام، يغطي إصلاح الأخطاء التقنية الناتجة عن التطوير.</p>
+
+    <h3 data-ar="٤. الملكية الفكرية وسرية البيانات" data-en="4. Intellectual Property & Privacy">٤. الملكية الفكرية وسرية البيانات</h3>
+    <p data-ar="تنتقل ملكية النظام المطوَّر للعميل بعد استكمال جميع الدفعات المتفق عليها بالكامل، ونلتزم بسرية تامة لبيانات مشروعكم." data-en="Ownership of the developed system transfers to the client after all agreed payments are completed in full, and we strictly maintain your data privacy.">تنتقل ملكية النظام المطوَّر للعميل بعد استكمال جميع الدفعات المتفق عليها بالكامل، ونلتزم بسرية تامة لبيانات مشروعكم.</p>
+  </div>
+</div>
+
+<!-- CUSTOMER DASHBOARD (shown after successful login) -->
+<div id="dashboardView">
+  <aside class="dash-sidebar">
+    <div class="dash-logo">
+      <div class="logo"><span>رَ</span>سِيخ</div>
+    </div>
+    <nav class="dash-nav">
+      <button class="dash-nav-item active" data-page="overview"><span class="dni">◈</span><span data-ar="نظرة عامة" data-en="Overview">نظرة عامة</span></button>
+      <button class="dash-nav-item" data-page="requests"><span class="dni">▤</span><span data-ar="طلباتي" data-en="My Requests">طلباتي</span></button>
+      <button class="dash-nav-item" data-page="invoices"><span class="dni">฿</span><span data-ar="الفواتير" data-en="Invoices">الفواتير</span></button>
+      <button class="dash-nav-item" data-page="support"><span class="dni">?</span><span data-ar="الدعم الفني" data-en="Support">الدعم الفني</span></button>
+      <button class="dash-nav-item" data-page="settings"><span class="dni">⚙</span><span data-ar="الإعدادات" data-en="Settings">الإعدادات</span></button>
+    </nav>
+    <div class="dash-foot">
+      <div class="dash-user">
+        <div class="dash-avatar" id="dashAvatarInitial">؟</div>
+        <div class="dash-user-info">
+          <div class="dash-user-email" id="dashUserEmail">—</div>
+          <div class="dash-user-status" data-ar="متصل الآن" data-en="Online">متصل الآن</div>
+        </div>
+      </div>
+      <button class="dash-logout-btn" id="dashLogoutBtn" data-ar="تسجيل الخروج" data-en="Log Out">تسجيل الخروج</button>
+    </div>
+  </aside>
+
+  <main class="dash-main">
+
+    <!-- PAGE: OVERVIEW -->
+    <div class="dash-page active" id="page-overview">
+      <div class="dash-topbar">
+        <div>
+          <h1 data-ar="أهلاً فيك 👋" data-en="Welcome back 👋">أهلاً فيك 👋</h1>
+          <div class="dash-breadcrumb">رَسِيخ <span>/</span> <span data-ar="نظرة عامة" data-en="Overview">نظرة عامة</span></div>
+        </div>
+        <div class="dash-clock mono" id="dashClock">—</div>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-label"><span data-ar="إجمالي الطلبات" data-en="Total Requests">إجمالي الطلبات</span><span class="stat-icon">01</span></div>
+          <div class="stat-value" data-count="0" id="statTotal">0</div>
+          <div class="stat-trend" data-ar="كل طلباتك من البداية" data-en="All requests since day one">كل طلباتك من البداية</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label"><span data-ar="قيد التنفيذ" data-en="In Progress">قيد التنفيذ</span><span class="stat-icon">02</span></div>
+          <div class="stat-value" data-count="0" id="statProgress">0</div>
+          <div class="stat-trend" data-ar="يشتغل عليها الفريق حالياً" data-en="Team is actively working on these">يشتغل عليها الفريق حالياً</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label"><span data-ar="مكتملة" data-en="Completed">مكتملة</span><span class="stat-icon">03</span></div>
+          <div class="stat-value" data-count="0" id="statDone">0</div>
+          <div class="stat-trend" data-ar="تم تسليمها بنجاح" data-en="Successfully delivered">تم تسليمها بنجاح</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label"><span data-ar="ضمان فعّال" data-en="Active Warranty">ضمان فعّال</span><span class="stat-icon">04</span></div>
+          <div class="stat-value" data-count="30" id="statWarranty">0</div>
+          <div class="stat-trend" data-ar="يوم ضمان تشغيل متبقي" data-en="days of operational warranty left">يوم ضمان تشغيل متبقي</div>
+        </div>
+      </div>
+
+      <div class="dash-grid-2">
+        <div class="panel-card">
+          <h3><span data-ar="آخر نشاط" data-en="Recent Activity">آخر نشاط</span> <span class="see-all" data-goto="requests" data-ar="عرض الطلبات" data-en="View requests">عرض الطلبات</span></h3>
+          <div id="activityTimeline">
+            <div class="timeline-item">
+              <div class="timeline-dot"></div>
+              <div class="timeline-body">
+                <p data-ar="تم إنشاء حسابك في رَسِيخ بنجاح" data-en="Your Raseekh account was created successfully">تم إنشاء حسابك في رَسِيخ بنجاح</p>
+                <span id="activityNow">—</span>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-dot" style="background:var(--muted);"></div>
+              <div class="timeline-body">
+                <p data-ar="بانتظار أول طلب منك — جرّب تسوي طلب جديد" data-en="Waiting on your first request — try creating one">بانتظار أول طلب منك — جرّب تسوي طلب جديد</p>
+                <span data-ar="نصيحة" data-en="Tip">نصيحة</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="panel-card">
+          <h3><span data-ar="نسبة إنجاز المشروع" data-en="Project Completion">نسبة إنجاز المشروع</span></h3>
+          <div class="progress-ring-wrap">
+            <svg width="140" height="140" viewBox="0 0 140 140">
+              <circle cx="70" cy="70" r="60" fill="none" stroke="var(--panel-2)" stroke-width="12"/>
+              <circle id="progressRingCircle" cx="70" cy="70" r="60" fill="none" stroke="url(#ringGrad)" stroke-width="12" stroke-linecap="round" stroke-dasharray="377" stroke-dashoffset="377" transform="rotate(-90 70 70)" style="transition:stroke-dashoffset 1.4s cubic-bezier(.4,0,.2,1);"/>
+              <defs>
+                <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#D4AF37"/>
+                  <stop offset="100%" stop-color="#B8912F"/>
+                </linearGradient>
+              </defs>
+              <text x="70" y="66" text-anchor="middle" font-size="26" font-weight="800" fill="#F3F0E8" id="progressRingText">0%</text>
+              <text x="70" y="86" text-anchor="middle" font-size="10" fill="#9C9585" font-family="IBM Plex Mono, monospace" data-ar="بدون مشروع نشط" data-en="No active project" id="progressRingSub">بدون مشروع نشط</text>
+            </svg>
+            <div class="progress-ring-label" data-ar="تظهر النسبة تلقائياً بمجرد ما يبدأ فريقنا بالتنفيذ" data-en="Progress appears automatically once our team starts building">تظهر النسبة تلقائياً بمجرد ما يبدأ فريقنا بالتنفيذ</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE: REQUESTS -->
+    <div class="dash-page" id="page-requests">
+      <div class="dash-topbar">
+        <div>
+          <h1 data-ar="طلباتي" data-en="My Requests">طلباتي</h1>
+          <div class="dash-breadcrumb">رَسِيخ <span>/</span> <span data-ar="طلباتي" data-en="My Requests">طلباتي</span></div>
+        </div>
+        <button class="new-req-btn" id="newReqBtn" data-ar="+ طلب جديد" data-en="+ New Request">+ طلب جديد</button>
+      </div>
+
+      <div class="dash-table-wrap">
+        <div class="dash-table-head">
+          <h3 data-ar="كل الطلبات" data-en="All Requests">كل الطلبات</h3>
+          <div class="dash-filters" id="reqFilters">
+            <button class="filter-chip active" data-filter="all" data-ar="الكل" data-en="All">الكل</button>
+            <button class="filter-chip" data-filter="pending" data-ar="قيد المراجعة" data-en="Pending">قيد المراجعة</button>
+            <button class="filter-chip" data-filter="progress" data-ar="قيد التنفيذ" data-en="In Progress">قيد التنفيذ</button>
+            <button class="filter-chip" data-filter="done" data-ar="مكتمل" data-en="Done">مكتمل</button>
+          </div>
+        </div>
+        <div id="requestsTableHolder">
+          <!-- filled by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE: INVOICES (demo) -->
+    <div class="dash-page" id="page-invoices">
+      <div class="dash-topbar">
+        <div>
+          <h1 data-ar="الفواتير" data-en="Invoices">الفواتير</h1>
+          <div class="dash-breadcrumb">رَسِيخ <span>/</span> <span data-ar="الفواتير" data-en="Invoices">الفواتير</span></div>
+        </div>
+      </div>
+      <div class="panel-card">
+        <h3><span data-ar="سجل الفواتير" data-en="Invoice History">سجل الفواتير</span></h3>
+        <div id="invoicesHolder"></div>
+      </div>
+    </div>
+
+    <!-- PAGE: SUPPORT (demo) -->
+    <div class="dash-page" id="page-support">
+      <div class="dash-topbar">
+        <div>
+          <h1 data-ar="الدعم الفني" data-en="Support">الدعم الفني</h1>
+          <div class="dash-breadcrumb">رَسِيخ <span>/</span> <span data-ar="الدعم الفني" data-en="Support">الدعم الفني</span></div>
+        </div>
+        <button class="new-req-btn" id="openTicketBtn" data-ar="فتح تذكرة دعم" data-en="Open a Ticket">فتح تذكرة دعم</button>
+      </div>
+      <div class="panel-card">
+        <h3 data-ar="أسئلة شائعة" data-en="Frequently Asked Questions">أسئلة شائعة</h3>
+        <div id="faqHolder"></div>
+      </div>
+    </div>
+
+    <!-- PAGE: SETTINGS -->
+    <div class="dash-page" id="page-settings">
+      <div class="dash-topbar">
+        <div>
+          <h1 data-ar="الإعدادات" data-en="Settings">الإعدادات</h1>
+          <div class="dash-breadcrumb">رَسِيخ <span>/</span> <span data-ar="الإعدادات" data-en="Settings">الإعدادات</span></div>
+        </div>
+      </div>
+      <div class="panel-card">
+        <h3 data-ar="بيانات الحساب" data-en="Account Details">بيانات الحساب</h3>
+        <form class="settings-form" id="settingsForm">
+          <div>
+            <label data-ar="البريد الإلكتروني" data-en="Email">البريد الإلكتروني</label>
+            <input type="email" id="settingsEmail" disabled>
+          </div>
+          <div>
+            <label data-ar="اسم العرض" data-en="Display Name">اسم العرض</label>
+            <input type="text" id="settingsName" placeholder="مثال: أحمد العلي" data-ar-ph="مثال: أحمد العلي" data-en-ph="e.g. Ahmad Al-Ali">
+          </div>
+          <div class="full">
+            <label data-ar="كلمة مرور جديدة (اختياري)" data-en="New Password (optional)">كلمة مرور جديدة (اختياري)</label>
+            <input type="password" id="settingsPassword" placeholder="اتركها فاضية إذا ما تبي تغييرها" data-ar-ph="اتركها فاضية إذا ما تبي تغييرها" data-en-ph="Leave blank to keep current password">
+          </div>
+          <div class="full">
+            <button type="submit" class="submit-btn" style="max-width:220px;" data-ar="حفظ التغييرات" data-en="Save Changes">حفظ التغييرات</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- NEW REQUEST MODAL -->
+<div class="modal-overlay" id="newReqModal">
+  <div class="modal-box">
+    <button class="modal-close" id="newReqClose">&times;</button>
+    <h2 id="reqModalTitle" data-ar="طلب جديد" data-en="New Request">طلب جديد</h2>
+    <form id="newReqForm">
+      <input type="text" id="nr_name" placeholder="الاسم الكامل" data-ar-ph="الاسم الكامل" data-en-ph="Full name" required>
+      <input type="tel" id="nr_phone" placeholder="رقم الجوال" data-ar-ph="رقم الجوال" data-en-ph="Phone number" required>
+      <input type="text" id="nr_title" placeholder="عنوان الطلب" data-ar-ph="عنوان الطلب" data-en-ph="Request title" required>
+      <select id="nr_type" required>
+        <option value="" disabled data-ar="نوع النظام" data-en="System type">نوع النظام</option>
+        <option value="مخزون ومبيعات" data-ar="مخزون ومبيعات" data-en="Inventory & Sales">مخزون ومبيعات</option>
+        <option value="إدارة عملاء" data-ar="إدارة عملاء" data-en="Customer Management">إدارة عملاء</option>
+        <option value="حجوزات" data-ar="حجوزات" data-en="Bookings">حجوزات</option>
+        <option value="أخرى" data-ar="أخرى" data-en="Other">أخرى</option>
+      </select>
+      <textarea id="nr_desc" placeholder="وضّح تفاصيل طلبك" data-ar-ph="وضّح تفاصيل طلبك" data-en-ph="Describe your request" required></textarea>
+      <button type="submit" class="submit-btn" id="reqModalSubmitBtn" data-ar="إرسال الطلب" data-en="Submit Request">إرسال الطلب</button>
+    </form>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
 <script>
-  // تهيئة اتصال Supabase
-  // استبدل الروابط والمفاتيح بالقيم الخاصة بمشروعك من لوحة تحكم Supabase (Settings -> API)
-  const SUPABASE_URL = "YOUR_SUPABASE_URL"; 
-  const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
+  const SUPABASE_URL = "https://nzqoggjfwcdpvvvganmd.supabase.co"; 
+  const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY"; // استبدله بمفتاح الـ Anon الخاص بك
   
   const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
   let currentLang = 'ar';
-  let authMode = 'login';
+  let authMode = 'login'; // 'login' أو 'register'
 
   function applyLanguage(lang){
     currentLang = lang;
     const html = document.getElementById('htmlRoot');
-    const body = document.body;
     html.lang = lang;
     html.dir = lang === 'ar' ? 'rtl' : 'ltr';
-    body.classList.toggle('lang-en', lang === 'en');
+    document.body.classList.toggle('lang-en', lang === 'en');
 
-    document.querySelectorAll('[data-ar][data-en]').forEach(function(el){
+    document.querySelectorAll('[data-ar][data-en]').forEach(el => {
       el.textContent = lang === 'ar' ? el.getAttribute('data-ar') : el.getAttribute('data-en');
     });
-    document.querySelectorAll('[data-ar-ph][data-en-ph]').forEach(function(el){
+    document.querySelectorAll('[data-ar-ph][data-en-ph]').forEach(el => {
       el.setAttribute('placeholder', lang === 'ar' ? el.getAttribute('data-ar-ph') : el.getAttribute('data-en-ph'));
     });
 
-    document.getElementById('pageTitle').textContent = lang === 'ar'
-      ? 'رَسِيخ — تطوير أنظمة إدارة مخصصة'
-      : 'Raseekh — Custom Management Systems Development';
-
+    document.getElementById('pageTitle').textContent = lang === 'ar' ? 'رَسِيخ — تطوير أنظمة إدارة مخصصة' : 'Raseekh — Custom Management Systems Development';
     document.getElementById('langToggle').textContent = lang === 'ar' ? 'EN' : 'AR';
     
-    updateAuthButtonText();
+    updateAuthModalLabels();
+
+    // Re-render dynamic dashboard content (tables/lists built by JS) in the new language
+    if (document.getElementById('dashboardView')?.classList.contains('active')) {
+      renderRequestsTable();
+      renderInvoicesDemo();
+      renderFaqDemo();
+      renderStats();
+    }
   }
 
-  function switchAuthTab(mode) {
+  document.getElementById('langToggle').addEventListener('click', () => applyLanguage(currentLang === 'ar' ? 'en' : 'ar'));
+
+  // Modals Management
+  const termsModal = document.getElementById('termsModal');
+  const authModal = document.getElementById('authModal');
+
+  document.getElementById('termsLink').addEventListener('click', (e) => { e.preventDefault(); termsModal.classList.add('active'); });
+  document.getElementById('viewTermsInside').addEventListener('click', () => termsModal.classList.add('active'));
+  document.getElementById('termsClose').addEventListener('click', () => termsModal.classList.remove('active'));
+
+  // Header Auth Actions
+  document.getElementById('loginHeaderBtn').addEventListener('click', () => openAuth('login'));
+  document.getElementById('registerHeaderBtn').addEventListener('click', () => openAuth('register'));
+  document.getElementById('authClose').addEventListener('click', () => authModal.classList.remove('active'));
+
+  function openAuth(mode) {
     authMode = mode;
-    document.getElementById('loginTab').classList.toggle('active', mode === 'login');
-    document.getElementById('signupTab').classList.toggle('active', mode === 'signup');
-    document.getElementById('authMsgBox').className = 'auth-msg';
-    document.getElementById('authMsgBox').style.display = 'none';
-    
-    // إظهار حقل رقم الجوال فقط عند اختيار "حساب جديد" وإخفائه عند تسجيل الدخول
-    const phoneInput = document.getElementById('auth_phone');
-    if (mode === 'signup') {
-      phoneInput.style.display = 'block';
-    } else {
-      phoneInput.style.display = 'none';
-    }
-    
-    updateAuthButtonText();
+    authModal.classList.add('active');
+    updateAuthModalLabels();
   }
 
-  function updateAuthButtonText() {
-    const btn = document.getElementById('authSubmitBtn');
+  function updateAuthModalLabels() {
+    const title = document.getElementById('authModalTitle');
+    const submitBtn = document.getElementById('authSubmitBtn');
+    const agreement = document.getElementById('registerAgreement');
+    const checkInput = document.getElementById('authAgreeCheck');
+
     if (authMode === 'login') {
-      btn.textContent = currentLang === 'ar' ? 'دخول' : 'Login';
+      title.textContent = currentLang === 'ar' ? 'تسجيل الدخول' : 'Login';
+      submitBtn.textContent = currentLang === 'ar' ? 'دخول' : 'Login';
+      agreement.style.display = 'flex';
+      checkInput.required = true;
     } else {
-      btn.textContent = currentLang === 'ar' ? 'إنشاء حساب وإرسال' : 'Sign Up & Submit';
+      title.textContent = currentLang === 'ar' ? 'إنشاء حساب جديد' : 'Sign Up';
+      submitBtn.textContent = currentLang === 'ar' ? 'تسجيل جديد' : 'Register';
+      agreement.style.display = 'flex';
+      checkInput.required = true;
     }
   }
 
-  function scrollToAuth() {
-    document.getElementById('authSection').scrollIntoView({ behavior: 'smooth' });
-  }
+  // Submit Logic for Contact Form (Leads Table)
+  async function handleSubmit(event) {
+    event.preventDefault();
+    const submitBtn = document.getElementById('submitBtn');
+    submitBtn.innerText = currentLang === 'ar' ? "جاري الإرسال..." : "Sending...";
+    submitBtn.disabled = true;
 
-  async function handleAuthSubmit() {
-    const email = document.getElementById('auth_username').value.trim();
-    const password = document.getElementById('auth_password').value.trim();
-    const phone = document.getElementById('auth_phone').value.trim();
-    const agree = document.getElementById('navTermsCheckbox').checked;
-
-    if (!email || !password) {
-      showAuthMsg(currentLang === 'ar' ? 'الرجاء تعبئة جميع حقول الحساب.' : 'Please fill in all account fields.', 'error');
-      return;
-    }
-
-    if (authMode === 'signup' && !phone) {
-      showAuthMsg(currentLang === 'ar' ? 'الرجاء إدخال رقم الجوال.' : 'Please enter your phone number.', 'error');
-      return;
-    }
-
-    if (authMode === 'signup' && !agree) {
-      showAuthMsg(currentLang === 'ar' ? 'يجب عليك تحديد المربع العلوي للموافقة على الشروط والأحكام المعتمدة للموقع.' : 'You must check the box at the top to agree to the Terms and Conditions.', 'error');
-      return;
-    }
+    const formData = {
+      name: document.getElementById('f_name').value.trim(),
+      company_name: document.getElementById('f_company').value.trim(),
+      phone: document.getElementById('f_phone').value.trim(),
+      system_type: document.getElementById('f_type').value,
+      notes: document.getElementById('f_msg').value.trim(),
+      created_at: new Date()
+    };
 
     try {
-      if (authMode === 'signup') {
-        // إنشاء حساب مستخدم جديد في Supabase Auth وحفظ رقم الجوال في الـ metadata
-        const { data, error } = await supabase.auth.signUp({
-          email: email,
-          password: password,
-          options: {
-            data: {
-              phone_number: phone
-            }
-          }
-        });
+      const { error } = await supabase.from('leads').insert([formData]);
+      if (error) throw error;
+      alert(currentLang === 'ar' ? 'تم إرسال طلبك بنجاح!' : 'Your request has been sent successfully!');
+      document.getElementById('leadForm').reset();
+    } catch (error) {
+      alert(currentLang === 'ar' ? 'حدث خطأ أثناء الإرسال.' : 'An error occurred.');
+    } finally {
+      submitBtn.innerText = currentLang === 'ar' ? "إرسال الطلب" : "Send Request";
+      submitBtn.disabled = false;
+    }
+  }
 
+  // Submit Logic for Auth Modal
+  async function handleAuthSubmit(event) {
+    event.preventDefault();
+    const email = document.getElementById('authEmail').value.trim();
+    const password = document.getElementById('authPassword').value;
+    const submitBtn = document.getElementById('authSubmitBtn');
+    const originalLabel = submitBtn.textContent;
+    submitBtn.disabled = true;
+    submitBtn.textContent = currentLang === 'ar' ? 'جاري التحقق...' : 'Please wait...';
+
+    try {
+      if (authMode === 'login') {
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-
-        showAuthMsg(currentLang === 'ar' ? 'تم إنشاء الحساب بنجاح! يرجى التحقق من بريدك الإلكتروني.' : 'Account created successfully! Please check your email.', 'success');
-        setTimeout(() => switchAuthTab('login'), 2000);
-
+        authModal.classList.remove('active');
+        document.getElementById('authForm').reset();
+        showDashboard(data.user);
+        showToast(currentLang === 'ar' ? 'تم تسجيل الدخول بنجاح ✅' : 'Logged in successfully ✅');
       } else {
-        // تسجيل الدخول باستخدام البيانات في Supabase Auth
-        const { data, error } = await supabase.auth.signInWithPassword({
-          email: email,
-          password: password,
-        });
-
+        const { data, error } = await supabase.auth.signUp({ email, password });
         if (error) throw error;
-
-        showAuthMsg(currentLang === 'ar' ? 'تم تسجيل الدخول بنجاح!' : 'Logged in successfully!', 'success');
-        console.log("User session data:", data);
+        authModal.classList.remove('active');
+        document.getElementById('authForm').reset();
+        if (data.session && data.user) {
+          // تفعيل تلقائي بدون تأكيد بريد (حسب إعدادات Supabase)
+          showDashboard(data.user);
+          showToast(currentLang === 'ar' ? 'تم إنشاء حسابك بنجاح ✅' : 'Your account was created ✅');
+        } else {
+          showToast(currentLang === 'ar' ? 'تم إنشاء الحساب! تفقد بريدك لتأكيد التسجيل.' : 'Account created! Please check your email to verify.');
+        }
       }
+    } catch (error) {
+      showToast(error.message);
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalLabel;
+    }
+  }
+
+  /* ======================================================= */
+  /*  CUSTOMER DASHBOARD LOGIC                                */
+  /*  (fake client-side "pages" — no real page reloads/routes) */
+  /* ======================================================= */
+  let currentUser = null;
+  let allRequests = [];
+  let currentFilter = 'all';
+
+  function escapeHtml(str){
+    const div = document.createElement('div');
+    div.textContent = str == null ? '' : String(str);
+    return div.innerHTML;
+  }
+
+  // Toast helper
+  let toastTimer;
+  function showToast(msg){
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 3200);
+  }
+
+  // Enter the dashboard after a successful login/signup
+  function showDashboard(user){
+    currentUser = user;
+    document.getElementById('siteView').style.display = 'none';
+    document.getElementById('dashboardView').classList.add('active');
+
+    const email = user?.email || '';
+    const displayName = user?.user_metadata?.display_name || '';
+    document.getElementById('dashUserEmail').textContent = displayName || email || '—';
+    document.getElementById('dashAvatarInitial').textContent = (displayName || email || '؟').charAt(0).toUpperCase();
+    document.getElementById('settingsEmail').value = email;
+    document.getElementById('settingsName').value = displayName;
+    document.getElementById('activityNow').textContent = new Date().toLocaleString(currentLang === 'ar' ? 'ar-SA' : 'en-US');
+
+    startClock();
+    loadRequests();
+    renderInvoicesDemo();
+    renderFaqDemo();
+    switchPage('overview');
+  }
+
+  function hideDashboard(){
+    document.getElementById('dashboardView').classList.remove('active');
+    document.getElementById('siteView').style.display = '';
+  }
+
+  // Fake page navigation between dashboard sections (no real routing/reloads)
+  function switchPage(page){
+    document.querySelectorAll('.dash-nav-item').forEach(b => b.classList.toggle('active', b.dataset.page === page));
+    document.querySelectorAll('.dash-page').forEach(p => p.classList.remove('active'));
+    const target = document.getElementById('page-' + page);
+    if (!target) return;
+    void target.offsetWidth; // restart the fade/slide animation every time
+    target.classList.add('active');
+  }
+  document.querySelectorAll('.dash-nav-item').forEach(btn => {
+    btn.addEventListener('click', () => switchPage(btn.dataset.page));
+  });
+  document.querySelectorAll('[data-goto]').forEach(el => {
+    el.addEventListener('click', () => switchPage(el.dataset.goto));
+  });
+
+  document.getElementById('dashLogoutBtn').addEventListener('click', async () => {
+    await supabase.auth.signOut();
+    hideDashboard();
+    showToast(currentLang === 'ar' ? 'تم تسجيل الخروج' : 'Logged out');
+  });
+
+  // Live clock in the topbar
+  function startClock(){
+    function tick(){
+      const el = document.getElementById('dashClock');
+      if (el) el.textContent = new Date().toLocaleTimeString(currentLang === 'ar' ? 'ar-SA' : 'en-US');
+    }
+    tick();
+    clearInterval(window._dashClockInterval);
+    window._dashClockInterval = setInterval(tick, 1000);
+  }
+
+  // Local fallback storage — used only if the "customer_requests" table
+  // doesn't exist yet in Supabase, so the page still works end-to-end for demo purposes
+  function localReqKey(){ return 'raseekh_requests_' + (currentUser?.id || 'guest'); }
+  function getLocalRequests(){
+    try { return JSON.parse(localStorage.getItem(localReqKey())) || []; }
+    catch(e){ return []; }
+  }
+  function saveLocalRequests(list){
+    localStorage.setItem(localReqKey(), JSON.stringify(list));
+  }
+
+  async function loadRequests(){
+    const holder = document.getElementById('requestsTableHolder');
+    holder.innerHTML = renderSkeletonRows();
+    try {
+      const { data, error } = await supabase
+        .from('customer_requests')
+        .select('*')
+        .eq('user_id', currentUser.id)
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      allRequests = data || [];
+    } catch (e) {
+      // جدول customer_requests غير موجود بعد في Supabase — نستخدم تخزين محلي مؤقت للعرض
+      allRequests = getLocalRequests();
+    }
+    renderStats();
+    renderRequestsTable();
+  }
+
+  function renderSkeletonRows(){
+    let html = '<div style="padding:20px 24px; display:flex; flex-direction:column; gap:14px;">';
+    for (let i=0;i<3;i++) html += '<div class="skeleton" style="height:20px; width:100%;"></div>';
+    html += '</div>';
+    return html;
+  }
+
+  function statusMeta(status){
+    const map = {
+      pending:  { ar:'قيد المراجعة', en:'Pending',     cls:'pending'  },
+      progress: { ar:'قيد التنفيذ',  en:'In Progress',  cls:'progress' },
+      done:     { ar:'مكتمل',        en:'Done',         cls:'done'     },
+      rejected: { ar:'مرفوض',        en:'Rejected',     cls:'rejected' }
+    };
+    return map[status] || map.pending;
+  }
+
+  function renderRequestsTable(){
+    const holder = document.getElementById('requestsTableHolder');
+    const filtered = currentFilter === 'all' ? allRequests : allRequests.filter(r => (r.status || 'pending') === currentFilter);
+
+    if (!filtered.length){
+      holder.innerHTML = `<div class="empty-state">
+        <div class="es-icon">📭</div>
+        <p>${currentLang === 'ar' ? 'ما عندك أي طلبات هنا بعد. اضغط "طلب جديد" عشان تبدأ.' : 'No requests here yet. Click "New Request" to get started.'}</p>
+      </div>`;
+      return;
+    }
+
+    let rows = '';
+    filtered.forEach((r, i) => {
+      const meta = statusMeta(r.status || 'pending');
+      const label = currentLang === 'ar' ? meta.ar : meta.en;
+      const title = r.title || '—';
+      const type = r.system_type || r.type || '—';
+      const dateStr = new Date(r.created_at || Date.now()).toLocaleDateString(currentLang === 'ar' ? 'ar-SA' : 'en-US');
+      rows += `<tr style="animation-delay:${i * 0.05}s">
+        <td class="req-id">#${String(r.id).slice(-5)}</td>
+        <td>${escapeHtml(title)}${r.phone ? `<br><span class="mono" style="color:var(--muted); font-size:11.5px;">${escapeHtml(r.phone)}</span>` : ''}</td>
+        <td>${escapeHtml(type)}</td>
+        <td class="mono">${dateStr}</td>
+        <td><span class="badge ${meta.cls}">${label}</span></td>
+        <td>
+          <div class="row-actions">
+            <button class="row-action-btn" data-action="edit" data-id="${r.id}" title="${currentLang === 'ar' ? 'تعديل' : 'Edit'}">✎</button>
+            <button class="row-action-btn danger" data-action="delete" data-id="${r.id}" title="${currentLang === 'ar' ? 'حذف' : 'Delete'}">🗑</button>
+          </div>
+        </td>
+      </tr>`;
+    });
+
+    holder.innerHTML = `<table class="req-table">
+      <thead><tr>
+        <th>#</th>
+        <th>${currentLang === 'ar' ? 'العنوان' : 'Title'}</th>
+        <th>${currentLang === 'ar' ? 'النوع' : 'Type'}</th>
+        <th>${currentLang === 'ar' ? 'التاريخ' : 'Date'}</th>
+        <th>${currentLang === 'ar' ? 'الحالة' : 'Status'}</th>
+        <th>${currentLang === 'ar' ? 'الإجراءات' : 'Actions'}</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+  }
+
+  // Edit / delete a request (event delegation on the table container)
+  document.getElementById('requestsTableHolder').addEventListener('click', (e) => {
+    const btn = e.target.closest('.row-action-btn');
+    if (!btn) return;
+    const id = btn.dataset.id;
+    if (btn.dataset.action === 'edit') openEditRequestModal(id);
+    if (btn.dataset.action === 'delete') deleteRequest(id);
+  });
+
+  let editingRequestId = null;
+
+  function openEditRequestModal(id){
+    const req = allRequests.find(r => String(r.id) === String(id));
+    if (!req) return;
+    editingRequestId = id;
+    document.getElementById('nr_name').value = req.customer_name || '';
+    document.getElementById('nr_phone').value = req.phone || '';
+    document.getElementById('nr_title').value = req.title || '';
+    document.getElementById('nr_type').value = req.system_type || req.type || '';
+    document.getElementById('nr_desc').value = req.description || '';
+    document.getElementById('reqModalTitle').textContent = currentLang === 'ar' ? 'تعديل الطلب' : 'Edit Request';
+    document.getElementById('reqModalSubmitBtn').textContent = currentLang === 'ar' ? 'حفظ التعديلات' : 'Save Changes';
+    newReqModal.classList.add('active');
+  }
+
+  async function deleteRequest(id){
+    const ok = confirm(currentLang === 'ar' ? 'متأكد تبي تحذف هذا الطلب؟' : 'Are you sure you want to delete this request?');
+    if (!ok) return;
+    try {
+      const { error } = await supabase.from('customer_requests').delete().eq('id', id);
+      if (error) throw error;
     } catch (err) {
-      showAuthMsg(err.message || (currentLang === 'ar' ? 'حدث خطأ أثناء الاتصال بالخادم.' : 'An error occurred while connecting to the server.'), 'error');
+      // إذا الجدول غير موجود بعد، نحذف من التخزين المحلي فقط
     }
+    allRequests = allRequests.filter(r => String(r.id) !== String(id));
+    saveLocalRequests(allRequests.filter(r => String(r.id).startsWith('local-')));
+    renderStats();
+    renderRequestsTable();
+    showToast(currentLang === 'ar' ? 'تم حذف الطلب' : 'Request deleted');
   }
 
-  function showAuthMsg(text, type) {
-    const msgBox = document.getElementById('authMsgBox');
-    msgBox.textContent = text;
-    msgBox.className = 'auth-msg ' + type;
+  document.getElementById('reqFilters').addEventListener('click', (e) => {
+    const btn = e.target.closest('.filter-chip');
+    if (!btn) return;
+    document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    currentFilter = btn.dataset.filter;
+    renderRequestsTable();
+  });
+
+  // Overview stat cards + progress ring
+  function renderStats(){
+    const total = allRequests.length;
+    const progress = allRequests.filter(r => r.status === 'progress').length;
+    const done = allRequests.filter(r => r.status === 'done').length;
+    animateCount('statTotal', total);
+    animateCount('statProgress', progress);
+    animateCount('statDone', done);
+    animateCount('statWarranty', 30);
+    const pct = total ? Math.round((done / total) * 100) : 0;
+    updateProgressRing(pct, total > 0);
   }
 
-  document.getElementById('langToggle').addEventListener('click', function(){
-    applyLanguage(currentLang === 'ar' ? 'en' : 'ar');
-  });
-
-  document.getElementById('navToggle').addEventListener('click', function(){
-    const links = document.querySelector('.nav-links');
-    const visible = links.style.display === 'flex';
-    links.style.display = visible ? 'none' : 'flex';
-    if (!visible) {
-      links.style.flexDirection = 'column';
-      links.style.position = 'absolute';
-      links.style.top = '64px';
-      links.style.insetInlineEnd = '24px';
-      links.style.background = '#151517';
-      links.style.border = '1px solid #33322C';
-      links.style.borderRadius = '10px';
-      links.style.padding = '16px';
+  function animateCount(id, target){
+    const el = document.getElementById(id);
+    if (!el) return;
+    const duration = 900;
+    const startTime = performance.now();
+    function step(now){
+      const p = Math.min((now - startTime) / duration, 1);
+      const eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = Math.round(target * eased);
+      if (p < 1) requestAnimationFrame(step);
     }
-  });
+    requestAnimationFrame(step);
+  }
 
-  // التحكم بفتح وإغلاق المودال الخاص بالشروط والأحكام
-  const modal = document.getElementById('termsModal');
-  document.getElementById('termsLink').addEventListener('click', function(e){
+  function updateProgressRing(pct, hasProject){
+    const circle = document.getElementById('progressRingCircle');
+    const text = document.getElementById('progressRingText');
+    const sub = document.getElementById('progressRingSub');
+    const circumference = 377;
+    circle.style.strokeDashoffset = circumference - (circumference * pct / 100);
+    text.textContent = pct + '%';
+    sub.textContent = hasProject
+      ? (currentLang === 'ar' ? 'من طلباتك تم إنجازها' : 'of your requests completed')
+      : (currentLang === 'ar' ? 'بدون مشروع نشط' : 'No active project');
+  }
+
+  // New request modal
+  const newReqModal = document.getElementById('newReqModal');
+  document.getElementById('newReqBtn').addEventListener('click', () => {
+    editingRequestId = null;
+    document.getElementById('newReqForm').reset();
+    document.getElementById('nr_name').value = currentUser?.user_metadata?.display_name || '';
+    document.getElementById('reqModalTitle').textContent = currentLang === 'ar' ? 'طلب جديد' : 'New Request';
+    document.getElementById('reqModalSubmitBtn').textContent = currentLang === 'ar' ? 'إرسال الطلب' : 'Submit Request';
+    newReqModal.classList.add('active');
+  });
+  document.getElementById('newReqClose').addEventListener('click', () => newReqModal.classList.remove('active'));
+
+  document.getElementById('newReqForm').addEventListener('submit', async (e) => {
     e.preventDefault();
-    modal.classList.add('active');
+    const customer_name = document.getElementById('nr_name').value.trim();
+    const phone = document.getElementById('nr_phone').value.trim();
+    const title = document.getElementById('nr_title').value.trim();
+    const type = document.getElementById('nr_type').value;
+    const description = document.getElementById('nr_desc').value.trim();
+
+    // رقم الجوال والاسم إجباريين — بدونهم ما يتم إرسال أو تعديل الطلب
+    if (!customer_name || !phone) {
+      showToast(currentLang === 'ar' ? 'الاسم ورقم الجوال مطلوبين لإرسال الطلب' : 'Name and phone number are required');
+      return;
+    }
+
+    if (editingRequestId) {
+      // ------- EDIT MODE: update an existing request -------
+      try {
+        const { data, error } = await supabase
+          .from('customer_requests')
+          .update({ customer_name, phone, title, system_type: type, description })
+          .eq('id', editingRequestId)
+          .select();
+        if (error) throw error;
+        const idx = allRequests.findIndex(r => String(r.id) === String(editingRequestId));
+        if (idx > -1) allRequests[idx] = data[0];
+      } catch (err) {
+        // جدول غير موجود بعد أو الطلب محلي — نحدّث النسخة المحلية مباشرة
+        const idx = allRequests.findIndex(r => String(r.id) === String(editingRequestId));
+        if (idx > -1) {
+          allRequests[idx] = { ...allRequests[idx], customer_name, phone, title, system_type: type, description };
+          saveLocalRequests(allRequests.filter(r => String(r.id).startsWith('local-')));
+        }
+      }
+      showToast(currentLang === 'ar' ? 'تم حفظ التعديلات ✅' : 'Changes saved ✅');
+    } else {
+      // ------- CREATE MODE: new request -------
+      const fallbackReq = {
+        id: 'local-' + Date.now(),
+        customer_name, phone, title, system_type: type, description,
+        status: 'pending', created_at: new Date().toISOString(),
+        user_id: currentUser?.id
+      };
+      try {
+        const { data, error } = await supabase
+          .from('customer_requests')
+          .insert([{ customer_name, phone, title, system_type: type, description, status: 'pending', user_id: currentUser.id }])
+          .select();
+        if (error) throw error;
+        allRequests.unshift(data[0]);
+      } catch (err) {
+        allRequests.unshift(fallbackReq);
+        saveLocalRequests(allRequests.filter(r => String(r.id).startsWith('local-')));
+      }
+      showToast(currentLang === 'ar' ? 'تم إرسال طلبك بنجاح ✅' : 'Your request was submitted ✅');
+    }
+
+    editingRequestId = null;
+    newReqModal.classList.remove('active');
+    document.getElementById('newReqForm').reset();
+    renderStats();
+    renderRequestsTable();
   });
-  document.getElementById('termsClose').addEventListener('click', function(){
-    modal.classList.remove('active');
+
+  // Invoices — demo content until a real "invoices" table is connected
+  function renderInvoicesDemo(){
+    const holder = document.getElementById('invoicesHolder');
+    const demo = [
+      { id:'INV-1042', d:{ar:'دفعة أولى — نظام إدارة عملاء', en:'First payment — Customer Management System'}, amount:'1,200', status:'paid', date:'2026-05-02' },
+      { id:'INV-1043', d:{ar:'دفعة ثانية — نظام إدارة عملاء', en:'Second payment — Customer Management System'}, amount:'1,200', status:'pending', date:'2026-07-01' }
+    ];
+    holder.innerHTML = demo.map(inv => `
+      <div class="invoice-row">
+        <div class="invoice-info">
+          <p>${currentLang === 'ar' ? inv.d.ar : inv.d.en}</p>
+          <span>${inv.id} · ${inv.date}</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:14px;">
+          <span class="invoice-amount">${inv.amount} ${currentLang === 'ar' ? 'ر.س' : 'SAR'}</span>
+          <span class="badge ${inv.status === 'paid' ? 'done' : 'pending'}">${inv.status === 'paid' ? (currentLang === 'ar' ? 'مدفوعة' : 'Paid') : (currentLang === 'ar' ? 'مستحقة' : 'Due')}</span>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // Support FAQ — demo accordion content
+  function renderFaqDemo(){
+    const holder = document.getElementById('faqHolder');
+    const faqs = [
+      { q:{ar:'كم يستغرق تطوير نظام مخصص؟', en:'How long does building a custom system take?'},
+        a:{ar:'يعتمد على حجم النظام، لكن غالباً بين 3 إلى 8 أسابيع من التصميم للتسليم.', en:'It depends on system size, but usually 3–8 weeks from design to delivery.'} },
+      { q:{ar:'هل أقدر أطلب تعديلات بعد التسليم؟', en:'Can I request changes after delivery?'},
+        a:{ar:'نعم، ضمن ضمان التشغيل لمدة 30 يوم، وبعدها عبر باقات صيانة اختيارية.', en:'Yes, within the 30-day warranty, and afterward through optional maintenance plans.'} },
+      { q:{ar:'كيف أتواصل مع فريق الدعم؟', en:'How do I reach the support team?'},
+        a:{ar:'اضغط "فتح تذكرة دعم" أعلى الصفحة وبنرد عليك خلال يوم عمل.', en:'Click "Open a Ticket" above and we will respond within one business day.'} }
+    ];
+    holder.innerHTML = faqs.map(f => `
+      <div class="faq-item">
+        <div class="faq-q"><span>${currentLang === 'ar' ? f.q.ar : f.q.en}</span><span class="faq-arrow">⌄</span></div>
+        <div class="faq-a">${currentLang === 'ar' ? f.a.ar : f.a.en}</div>
+      </div>
+    `).join('');
+    holder.querySelectorAll('.faq-q').forEach(q => q.addEventListener('click', () => q.parentElement.classList.toggle('open')));
+  }
+
+  document.getElementById('openTicketBtn').addEventListener('click', () => {
+    showToast(currentLang === 'ar' ? 'تم فتح تذكرة دعم! بيتواصل معك فريقنا قريباً.' : 'Support ticket opened! Our team will reach out soon.');
   });
-  window.addEventListener('click', function(e){
-    if (e.target === modal) {
-      modal.classList.remove('active');
+
+  // Settings — update display name / password via Supabase Auth
+  document.getElementById('settingsForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const name = document.getElementById('settingsName').value.trim();
+    const pass = document.getElementById('settingsPassword').value;
+    try {
+      const updates = {};
+      if (pass) updates.password = pass;
+      if (name) updates.data = { display_name: name };
+      if (Object.keys(updates).length) {
+        const { error } = await supabase.auth.updateUser(updates);
+        if (error) throw error;
+      }
+      showToast(currentLang === 'ar' ? 'تم حفظ التغييرات ✅' : 'Changes saved ✅');
+      document.getElementById('settingsPassword').value = '';
+      if (name) document.getElementById('dashUserEmail').textContent = name;
+    } catch (err) {
+      showToast(err.message);
     }
   });
+
+  // If a session already exists (returning visitor), skip the landing page and go straight to the dashboard
+  (async function initSession(){
+    try {
+      const { data } = await supabase.auth.getSession();
+      if (data?.session?.user) showDashboard(data.session.user);
+    } catch(e) { /* no-op */ }
+  })();
 </script>
 </body>
 </html>
