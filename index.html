@@ -7,6 +7,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@400;700;800&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<!-- مكتبة Supabase JS الرسمية من خلال CDN -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   :root{
     --bg:#0B0B0D;
@@ -395,7 +397,6 @@
 
 <section id="contact">
   <div class="wrap">
-    <!-- صندوق التواصل وبجانبه صندوق البوابة الرقمية المدمج -->
     <div class="contact-box" id="authSection">
       <div>
         <h2 data-ar="جاهز تبدأ؟" data-en="Ready to Start?">جاهز تبدأ؟</h2>
@@ -405,14 +406,14 @@
           <div><span class="mono" data-ar="إيميل:" data-en="Email:">إيميل:</span> hello@raseekh.com</div>
         </div>
         
-        <!-- قسم تسجيل الدخول وإنشاء الحساب المدمج -->
         <div class="auth-container-box">
           <div class="auth-tabs">
             <div class="auth-tab active" id="loginTab" onclick="switchAuthTab('login')" data-ar="تسجيل الدخول" data-en="Login">تسجيل الدخول</div>
             <div class="auth-tab" id="signupTab" onclick="switchAuthTab('signup')" data-ar="حساب جديد" data-en="Sign Up">حساب جديد</div>
           </div>
           <div class="auth-form-wrapper">
-            <input type="text" id="auth_username" placeholder="اسم المستخدم" data-ar-ph="اسم المستخدم" data-en-ph="Username" required>
+            <!-- تم تبديل النوع إلى email للتوافق مع نظام مصادقة Supabase التلقائي -->
+            <input type="email" id="auth_username" placeholder="البريد الإلكتروني" data-ar-ph="البريد الإلكتروني" data-en-ph="Email Address" required>
             <input type="password" id="auth_password" placeholder="كلمة المرور" data-ar-ph="كلمة المرور" data-en-ph="Password" required>
             <button type="button" class="auth-btn" id="authSubmitBtn" onclick="handleAuthSubmit()" data-ar="دخول" data-en="Login">دخول</button>
             <div class="auth-msg" id="authMsgBox"></div>
@@ -471,6 +472,13 @@
 </div>
 
 <script>
+  // تهيئة اتصال Supabase
+  // استبدل الروابط والمفاتيح بالقيم الخاصة بمشروعك من لوحة تحكم Supabase (Settings -> API)
+  const SUPABASE_URL = "YOUR_SUPABASE_URL"; 
+  const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
+  
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
   let currentLang = 'ar';
   let authMode = 'login';
 
@@ -495,7 +503,6 @@
 
     document.getElementById('langToggle').textContent = lang === 'ar' ? 'EN' : 'AR';
     
-    // تحديث نصوص أزرار تسجيل الدخول بناءً على الوضع الحالي
     updateAuthButtonText();
   }
 
@@ -522,42 +529,49 @@
   }
 
   async function handleAuthSubmit() {
-    const username = document.getElementById('auth_username').value.trim();
+    const email = document.getElementById('auth_username').value.trim();
     const password = document.getElementById('auth_password').value.trim();
     const agree = document.getElementById('navTermsCheckbox').checked;
-    const msgBox = document.getElementById('authMsgBox');
 
-    if (!username || !password) {
+    if (!email || !password) {
       showAuthMsg(currentLang === 'ar' ? 'الرجاء تعبئة جميع حقول الحساب.' : 'Please fill in all account fields.', 'error');
       return;
     }
 
-    // شرط التحقق من الموافقة على الأحكام مدمج برمجياً لحماية إرسال الحساب الجديد
     if (authMode === 'signup' && !agree) {
       showAuthMsg(currentLang === 'ar' ? 'يجب عليك تحديد المربع العلوي للموافقة على الشروط والأحكام المعتمدة للموقع.' : 'You must check the box at the top to agree to the Terms and Conditions.', 'error');
       return;
     }
 
-    const endpoint = authMode === 'login' ? '/api/login' : '/api/signup';
-
     try {
-      const response = await fetch(endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password, agree })
-      });
-      const data = await response.json();
+      if (authMode === 'signup') {
+        // إنشاء حساب مستخدم جديد في Supabase Auth
+        const { data, error } = await supabase.auth.signUp({
+          email: email,
+          password: password,
+        });
 
-      if (response.ok) {
-        showAuthMsg(data.success, 'success');
-        if (authMode === 'signup') {
-          setTimeout(() => switchAuthTab('login'), 1500);
-        }
+        if (error) throw error;
+
+        // إشعار المستخدم بالنجاح وحاجته لتأكيد البريد الإلكتروني إن وجد
+        showAuthMsg(currentLang === 'ar' ? 'تم إنشاء الحساب بنجاح! يرجى التحقق من بريدك الإلكتروني.' : 'Account created successfully! Please check your email.', 'success');
+        setTimeout(() => switchAuthTab('login'), 2000);
+
       } else {
-        showAuthMsg(data.error, 'error');
+        // تسجيل الدخول باستخدام البيانات في Supabase Auth
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email: email,
+          password: password,
+        });
+
+        if (error) throw error;
+
+        showAuthMsg(currentLang === 'ar' ? 'تم تسجيل الدخول بنجاح!' : 'Logged in successfully!', 'success');
+        // هنا يمكنك توجيه المستخدم أو توفير الجلسة النشطة
+        console.log("User session data:", data);
       }
     } catch (err) {
-      showAuthMsg(currentLang === 'ar' ? 'فشل الاتصال بالخادم الرئيسي.' : 'Failed to connect to the main server.', 'error');
+      showAuthMsg(err.message || (currentLang === 'ar' ? 'حدث خطأ أثناء الاتصال بالخادم.' : 'An error occurred while connecting to the server.'), 'error');
     }
   }
 
