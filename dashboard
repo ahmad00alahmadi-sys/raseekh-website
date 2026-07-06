@@ -747,7 +747,7 @@
   // تسجيل الخروج — يرجّع المستخدم للصفحة الرئيسية
   document.getElementById('dashLogoutBtn').addEventListener('click', async () => {
     await supabase.auth.signOut();
-    window.location.href = 'index.html';
+    window.location.href = '/';
   });
 
   function startClock(){
@@ -1089,16 +1089,16 @@
       if (data?.session?.user) {
         showDashboard(data.session.user);
       } else {
-        window.location.href = 'index.html';
+        window.location.href = '/';
       }
     } catch(e) {
-      window.location.href = 'index.html';
+      window.location.href = '/';
     }
   })();
 
   // إذا سجّل المستخدم خروج من نافذة/تبويب ثاني، رجّعه للصفحة الرئيسية هنا كمان
   supabase.auth.onAuthStateChange((event) => {
-    if (event === 'SIGNED_OUT') window.location.href = 'index.html';
+    if (event === 'SIGNED_OUT') window.location.href = '/';
   });
 
 </script>
