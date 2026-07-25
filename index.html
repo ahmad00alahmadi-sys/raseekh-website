@@ -652,6 +652,13 @@ section{padding:100px 0;position:relative;z-index:1}
   padding:30px;position:relative;box-shadow:var(--shadow);animation:rise .35s ease;max-height:90vh;overflow-y:auto;
 }
 .modal-close{position:absolute;top:14px;inset-inline-start:14px;border:none;background:none;font-size:1.3rem;color:var(--muted);cursor:pointer}
+#guestQuoteModal .modal{max-width:460px}
+#guestQuoteModal .guest-quote-hint{color:var(--muted);font-size:.9rem;margin:0 0 14px;line-height:1.55}
+#guestQuoteModal .guest-quote-summary{
+  background:var(--mist);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:14px;font-size:.9rem;color:var(--ink);
+}
+#guestQuoteModal .msg{min-height:1.2em;margin-top:10px}
+
 .tabs{display:flex;border:1.5px solid var(--line);border-radius:var(--radius);overflow:hidden;margin-bottom:18px;background:var(--bg)}
 .tab{flex:1;border:none;background:transparent;color:var(--muted);padding:11px;cursor:pointer;font-weight:700}
 .tab.active{background:var(--navy);color:#F4F7FA}
@@ -956,6 +963,30 @@ body.pay-paused .pay-public-entry{display:none!important}
         <div class="msg" id="resetMsg" role="status" aria-live="polite"></div>
       </div>
     </div>
+  </div>
+</div>
+
+
+<div class="modal-overlay" id="guestQuoteModal" role="dialog" aria-modal="true" aria-labelledby="guestQuoteTitle" aria-hidden="true">
+  <div class="modal">
+    <button class="modal-close" id="guestQuoteCloseBtn" type="button" data-ar-aria="إغلاق" data-en-aria="Close" aria-label="إغلاق">×</button>
+    <h2 id="guestQuoteTitle" style="margin-bottom:6px;font-size:1.25rem" data-ar="أرسلوا طلب السعر" data-en="Send your quote request">أرسلوا طلب السعر</h2>
+    <p class="guest-quote-hint" data-ar="بدون حساب — اكتبوا بيانات التواصل ونرسل الطلب مباشرة." data-en="No account needed — enter contact details and we send the request right away.">بدون حساب — اكتبوا بيانات التواصل ونرسل الطلب مباشرة.</p>
+    <div class="guest-quote-summary" id="guestQuoteSummary"></div>
+    <form class="form" id="guestQuoteForm" autocomplete="on">
+      <label class="field"><span data-ar="الاسم الكامل" data-en="Full name">الاسم الكامل</span>
+        <input type="text" required id="guestQuoteName" autocomplete="name" data-ar-placeholder="الاسم الكامل" data-en-placeholder="Full name" placeholder="الاسم الكامل">
+      </label>
+      <label class="field"><span data-ar="البريد الإلكتروني" data-en="Email">البريد الإلكتروني</span>
+        <input type="email" required id="guestQuoteEmail" autocomplete="email" data-ar-placeholder="you@domain.com" data-en-placeholder="you@domain.com" placeholder="you@domain.com">
+      </label>
+      <label class="field"><span data-ar="رقم الجوال" data-en="Phone">رقم الجوال</span>
+        <input type="tel" required id="guestQuotePhone" inputmode="tel" maxlength="20" autocomplete="tel" data-ar-placeholder="05xxxxxxxx" data-en-placeholder="05xxxxxxxx" placeholder="05xxxxxxxx">
+      </label>
+      <button class="btn btn-primary" type="submit" id="guestQuoteSubmitBtn" data-ar="إرسال الطلب" data-en="Send request">إرسال الطلب</button>
+      <button class="btn btn-ghost" type="button" id="guestQuoteFullFormBtn" style="margin-top:8px" data-ar="فتح النموذج الكامل" data-en="Open full form">فتح النموذج الكامل</button>
+      <div class="msg" id="guestQuoteMsg" role="status" aria-live="polite"></div>
+    </form>
   </div>
 </div>
 
@@ -2223,6 +2254,79 @@ body.pay-paused .pay-public-entry{display:none!important}
     return true;
   }
 
+  function withTimeout(promise, ms, fallback){
+    let settled = false;
+    return new Promise((resolve) => {
+      const timer = setTimeout(() => {
+        if (settled) return;
+        settled = true;
+        resolve(fallback);
+      }, ms);
+      Promise.resolve(promise).then((value) => {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timer);
+        resolve(value);
+      }).catch(() => {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timer);
+        resolve(fallback);
+      });
+    });
+  }
+
+  let pendingGuestQuote = null;
+  function setModalOpenState(el, open){
+    if (!el) return;
+    if (open) {
+      el.classList.add('open');
+      el.setAttribute('aria-hidden', 'false');
+    } else {
+      el.classList.remove('open');
+      el.setAttribute('aria-hidden', 'true');
+    }
+  }
+  function closeGuestQuoteModal(){
+    pendingGuestQuote = null;
+    setModalOpenState(document.getElementById('guestQuoteModal'), false);
+  }
+  function openGuestQuoteModal(opts){
+    const type = (opts && opts.type) || 'programming';
+    const message = ((opts && opts.message) || '').trim();
+    const company = ((opts && opts.company) || '').trim();
+    const segment = (opts && opts.segment) || getContactSegment();
+    pendingGuestQuote = { type, message, company, segment };
+    const typeTitle = Catalog && Catalog.requestTypeLabel
+      ? Catalog.requestTypeLabel(type, currentLang)
+      : type;
+    const summary = document.getElementById('guestQuoteSummary');
+    if (summary) {
+      let text = (typeTitle || type) + (message ? ' — ' + message : '');
+      if (type === 'hardware' || type === 'electronics') {
+        text += currentLang === 'ar'
+          ? ' · متاح حالياً داخل الرياض فقط'
+          : ' · Currently available inside Riyadh only';
+      }
+      summary.textContent = text;
+    }
+    const draft = readContactDraft() || {};
+    const nameEl = document.getElementById('guestQuoteName');
+    const emailEl = document.getElementById('guestQuoteEmail');
+    const phoneEl = document.getElementById('guestQuotePhone');
+    if (nameEl) nameEl.value = (document.getElementById('contactName') && document.getElementById('contactName').value.trim()) || draft.name || '';
+    if (emailEl) emailEl.value = (document.getElementById('contactEmail') && document.getElementById('contactEmail').value.trim()) || draft.email || '';
+    if (phoneEl) phoneEl.value = (document.getElementById('contactPhone') && document.getElementById('contactPhone').value.trim()) || draft.phone || '';
+    const msgEl = document.getElementById('guestQuoteMsg');
+    if (msgEl) { msgEl.textContent = ''; msgEl.style.color = ''; }
+    setModalOpenState(document.getElementById('guestQuoteModal'), true);
+    try {
+      if (nameEl && !nameEl.value.trim()) nameEl.focus();
+      else if (emailEl && !emailEl.value.trim()) emailEl.focus();
+      else if (phoneEl) phoneEl.focus();
+    } catch (_) {}
+  }
+
   function requestFromCatalog(opts){
     const typeEl = document.getElementById('contactType');
     const msgEl = document.getElementById('contactMsg');
@@ -2440,38 +2544,52 @@ body.pay-paused .pay-public-entry{display:none!important}
       }
       return { ok: false, offline: true };
     }
+    const nameFromForm = (document.getElementById('contactName') && document.getElementById('contactName').value.trim()) || '';
     const companyFromForm = (document.getElementById('contactCompany') && document.getElementById('contactCompany').value.trim()) || '';
     const companyFromMeta = (loggedInUser && loggedInUser.user_metadata && loggedInUser.user_metadata.company) || '';
     const company = (opts.company || companyFromForm || companyFromMeta || '').trim();
     const segment = opts.segment || getContactSegment();
     const needsCompany = segment === 'company' || segment === 'institution' || type === 'business';
-    if (!loggedInUser || (needsCompany && !company) || !Catalog || !Catalog.addSharedRequest) {
+    const phoneFromMeta = (loggedInUser && loggedInUser.user_metadata && loggedInUser.user_metadata.phone) || '';
+    const phoneFromForm = (document.getElementById('contactPhone') && document.getElementById('contactPhone').value.trim()) || '';
+    const phone = phoneFromForm || phoneFromMeta;
+    const emailFromForm = (document.getElementById('contactEmail') && document.getElementById('contactEmail').value.trim()) || '';
+    const email = emailFromForm || (loggedInUser && loggedInUser.email) || '';
+    const fullName = nameFromForm
+      || (loggedInUser && loggedInUser.user_metadata && loggedInUser.user_metadata.full_name)
+      || '';
+    const guestReady = !!(fullName && isUsableEmail(email) && isUsablePhone(phone) && (!needsCompany || company));
+    // Guests send without account. Missing contact details → quick modal (never a dead “complete form” button).
+    if ((!loggedInUser && !guestReady) || (needsCompany && !company) || !Catalog || !Catalog.addSharedRequest) {
+      if (!loggedInUser && Catalog && Catalog.addSharedRequest && !(needsCompany && !company)) {
+        openGuestQuoteModal({ type, message, company, segment });
+        return { ok: false, guestModal: true };
+      }
+      // Business/institution needs company name — open full form with fields ready.
       requestFromCatalog({ type, message, company, segment });
+      const resultEl = document.getElementById('contactResult');
+      if (resultEl) {
+        resultEl.style.color = 'var(--muted)';
+        resultEl.textContent = t('أكملوا بيانات المنشأة ثم اضغطوا إرسال الطلب', 'Complete the organization details, then send the request');
+      }
       return { ok: false, redirected: true };
     }
     const typeTitle = Catalog.requestTypeLabel
       ? Catalog.requestTypeLabel(type, currentLang)
       : type;
-    const fullName = (loggedInUser.user_metadata && loggedInUser.user_metadata.full_name) || '';
-    const phoneFromMeta = (loggedInUser.user_metadata && loggedInUser.user_metadata.phone) || '';
-    const phoneFromForm = (document.getElementById('contactPhone') && document.getElementById('contactPhone').value.trim()) || '';
-    const phone = phoneFromForm || phoneFromMeta;
-    const emailFromForm = (document.getElementById('contactEmail') && document.getElementById('contactEmail').value.trim()) || '';
-    const email = emailFromForm || loggedInUser.email || '';
-    // Both email and phone are required for every quote request.
-    if (!email || !isUsableEmail(email) || !isUsablePhone(phone)) {
+    if (!email || !isUsableEmail(email) || !isUsablePhone(phone) || !fullName) {
+      if (!loggedInUser) {
+        openGuestQuoteModal({ type, message, company, segment });
+        return { ok: false, guestModal: true };
+      }
       requestFromCatalog({ type, message, company, segment });
       const resultEl = document.getElementById('contactResult');
       if (resultEl) {
         resultEl.style.color = 'var(--danger)';
-        if (!email || !isUsableEmail(email)) {
-          resultEl.textContent = t('أدخلوا بريداً إلكترونياً صالحاً (ليس وهمياً)', 'Enter a real, valid email address');
-        } else {
-          resultEl.textContent = t('أكملوا البريد ورقم الجوال ثم أرسلوا الطلب', 'Complete email and phone, then send the request');
-        }
+        if (!fullName) resultEl.textContent = t('أكملوا الاسم ثم أرسلوا الطلب', 'Complete your name, then send the request');
+        else if (!email || !isUsableEmail(email)) resultEl.textContent = t('أدخلوا بريداً إلكترونياً صالحاً (ليس وهمياً)', 'Enter a real, valid email address');
+        else resultEl.textContent = t('أكملوا البريد ورقم الجوال ثم أرسلوا الطلب', 'Complete email and phone, then send the request');
       }
-      if (!email || !isUsableEmail(email)) document.getElementById('contactEmail') && document.getElementById('contactEmail').focus();
-      else document.getElementById('contactPhone') && document.getElementById('contactPhone').focus();
       return { ok: false, redirected: true, needContact: true };
     }
     const resultEl = document.getElementById('contactResult');
@@ -2488,16 +2606,19 @@ body.pay-paused .pay-public-entry{display:none!important}
         email,
         company,
         segment,
-        userId: loggedInUser.id || '',
+        userId: (loggedInUser && loggedInUser.id) || '',
         title: typeTitle,
         message,
         type,
-        source: 'client',
+        source: loggedInUser ? 'client' : 'site',
         status: 'new'
       });
       let delivery = null;
-      if (saved && saved.deliveryPromise) delivery = await saved.deliveryPromise;
-      // "Sent" only when configured channels settled — cloud alone is not enough if email is configured.
+      if (saved && saved.deliveryPromise) {
+        delivery = await withTimeout(saved.deliveryPromise, 14000, {
+          cloud: false, email: false, webhook: false, pendingNotify: false, delivered: false, accepted: true, timedOut: true
+        });
+      }
       const delivered = !!(delivery && delivery.delivered);
       const pending = !!(delivery && delivery.pendingNotify);
       const savedOk = !!saved;
@@ -2505,28 +2626,43 @@ body.pay-paused .pay-public-entry{display:none!important}
       if (resultEl) {
         resultEl.style.color = ok ? 'var(--ok)' : (savedOk ? 'var(--muted)' : 'var(--danger)');
         resultEl.textContent = !savedOk
-          ? t('تعذّر الإرسال — أكملوا النموذج أدناه', 'Could not send — complete the form below')
+          ? t('تعذّر الإرسال — أعيدوا المحاولة', 'Could not send — please try again')
           : (delivered
             ? quoteSuccessMessage()
             : (pending
-              ? t('استلمنا الطلب محلياً — جاري تفعيل إشعار الإدارة', 'Request saved locally — admin notify is activating')
-              : t('حُفظ الطلب محلياً — تابعوه من حسابكم أو أعيدوا الإرسال', 'Request saved locally — track it in your account or resend')));
+              ? t('استلمنا الطلب — إشعار الإدارة قيد التفعيل. لا يلزم حساب.', 'Request received — admin notify is activating. No account needed.')
+              : t('حُفظ الطلب على هذا الجهاز — يمكن إعادة الإرسال لاحقاً. لا يلزم حساب.', 'Request saved on this device — you can resend later. No account needed.')));
       }
       if ((ok || savedOk) && successActions) {
         successActions.style.display = 'flex';
         successActions.style.gap = '8px';
         successActions.style.flexWrap = 'wrap';
         const mailto = ok ? clientConfirmMailtoHtml(email, type, message) : '';
-        successActions.innerHTML = `<a class="btn btn-primary" href="/dashboard/">${escapeHtml(t('متابعة الطلب من حسابي','Track request in my account'))}</a>${mailto}${ok ? quoteNextStepsNoteHtml() : ''}`;
+        if (loggedInUser) {
+          successActions.innerHTML = `<a class="btn btn-primary" href="/dashboard/">${escapeHtml(t('متابعة الطلب من حسابي','Track request in my account'))}</a>${mailto}${ok ? quoteNextStepsNoteHtml() : ''}`;
+        } else {
+          successActions.innerHTML = `
+            <button type="button" class="btn btn-ghost" id="contactCreateAccountBtn">${escapeHtml(t('إنشاء حساب اختياري للمتابعة','Optional: create an account to track'))}</button>
+            <a class="btn btn-ghost" href="/dashboard/">${escapeHtml(t('عندكم حساب؟ ادخلوا','Already have an account? Sign in'))}</a>
+            ${mailto}${ok ? quoteNextStepsNoteHtml() : ''}`;
+          const createBtn = document.getElementById('contactCreateAccountBtn');
+          if (createBtn) createBtn.addEventListener('click', () => { openAuth('dashboard'); showAuthPanel('register'); });
+        }
       }
-      // Keep draft on soft/local failure so users can resend.
       if (ok) {
         storeQuoteFingerprint(email, type, message);
+        clearContactDraft();
         const hq = document.getElementById('heroQuoteMsg');
         if (hq) hq.value = '';
+      } else {
+        saveContactDraft();
       }
-      return { ok, saved: savedOk, delivered, pending };
+      return { ok, saved: savedOk, delivered, pending, timedOut: !!(delivery && delivery.timedOut) };
     } catch (_) {
+      if (!loggedInUser) {
+        openGuestQuoteModal({ type, message, company, segment });
+        return { ok: false, guestModal: true, error: true };
+      }
       requestFromCatalog({ type, message, company });
       if (resultEl) {
         resultEl.style.color = 'var(--danger)';
@@ -2574,13 +2710,12 @@ body.pay-paused .pay-public-entry{display:none!important}
         btn.textContent = t('تم الإرسال', 'Sent');
         setTimeout(() => restoreQuoteBtn(btn), 2200);
       } else if (result && result.saved) {
-        btn.textContent = t('حُفظ في الحساب', 'Saved to account');
+        btn.textContent = t('حُفظ الطلب', 'Request saved');
         setTimeout(() => restoreQuoteBtn(btn), 2200);
+      } else if (result && result.guestModal) {
+        restoreQuoteBtn(btn);
       } else if (result && result.redirected) {
-        btn.disabled = false;
-        btn.removeAttribute('aria-busy');
-        btn.textContent = t('أكمل النموذج ↓', 'Continue below ↓');
-        setTimeout(() => restoreQuoteBtn(btn), 2200);
+        restoreQuoteBtn(btn);
       } else {
         restoreQuoteBtn(btn);
       }
@@ -2598,6 +2733,125 @@ body.pay-paused .pay-public-entry{display:none!important}
       requestFromCatalog({ type, message });
     });
   }
+
+  (function bindGuestQuoteModal(){
+    const modal = document.getElementById('guestQuoteModal');
+    const form = document.getElementById('guestQuoteForm');
+    if (!modal || !form) return;
+    const closeBtn = document.getElementById('guestQuoteCloseBtn');
+    const fullBtn = document.getElementById('guestQuoteFullFormBtn');
+    if (closeBtn) closeBtn.addEventListener('click', closeGuestQuoteModal);
+    modal.addEventListener('click', (e) => { if (e.target === modal) closeGuestQuoteModal(); });
+    if (fullBtn) {
+      fullBtn.addEventListener('click', () => {
+        const pending = pendingGuestQuote || {};
+        closeGuestQuoteModal();
+        requestFromCatalog({
+          type: pending.type || 'programming',
+          message: pending.message || '',
+          company: pending.company || '',
+          segment: pending.segment
+        });
+      });
+    }
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const msgEl = document.getElementById('guestQuoteMsg');
+      const submitBtn = document.getElementById('guestQuoteSubmitBtn');
+      if (!pendingGuestQuote) {
+        closeGuestQuoteModal();
+        return;
+      }
+      if (!navigator.onLine) {
+        if (msgEl) {
+          msgEl.style.color = 'var(--danger)';
+          msgEl.textContent = t('أنتم غير متصلين — أعيدوا الإرسال بعد عودة الشبكة', 'You are offline — send again when back online');
+        }
+        return;
+      }
+      const name = (document.getElementById('guestQuoteName') && document.getElementById('guestQuoteName').value.trim()) || '';
+      const email = (document.getElementById('guestQuoteEmail') && document.getElementById('guestQuoteEmail').value.trim()) || '';
+      const phone = (document.getElementById('guestQuotePhone') && document.getElementById('guestQuotePhone').value.trim()) || '';
+      if (!name) {
+        if (msgEl) { msgEl.style.color = 'var(--danger)'; msgEl.textContent = t('أدخلوا الاسم الكامل', 'Enter your full name'); }
+        document.getElementById('guestQuoteName') && document.getElementById('guestQuoteName').focus();
+        return;
+      }
+      if (!isUsableEmail(email)) {
+        if (msgEl) { msgEl.style.color = 'var(--danger)'; msgEl.textContent = t('أدخلوا بريداً إلكترونياً صالحاً (ليس وهمياً)', 'Enter a real, valid email address'); }
+        document.getElementById('guestQuoteEmail') && document.getElementById('guestQuoteEmail').focus();
+        return;
+      }
+      if (!isUsablePhone(phone)) {
+        if (msgEl) { msgEl.style.color = 'var(--danger)'; msgEl.textContent = t('رقم الجوال غير صالح — استخدموا صيغة مثل 05xxxxxxxx', 'Phone number looks invalid — use a format like 05xxxxxxxx'); }
+        document.getElementById('guestQuotePhone') && document.getElementById('guestQuotePhone').focus();
+        return;
+      }
+      const setVal = (id, v) => { const el = document.getElementById(id); if (el) el.value = v; };
+      setVal('contactName', name);
+      setVal('contactEmail', email);
+      setVal('contactPhone', phone);
+      setVal('contactType', pendingGuestQuote.type || 'programming');
+      setVal('contactMsg', pendingGuestQuote.message || '');
+      if (pendingGuestQuote.segment) setContactSegment(pendingGuestQuote.segment);
+      if (pendingGuestQuote.company) setVal('contactCompany', pendingGuestQuote.company);
+      syncPurchaseTermsChecks(true);
+      saveContactDraft();
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.setAttribute('aria-busy', 'true');
+        submitBtn.textContent = t('جاري الإرسال...', 'Sending...');
+      }
+      if (msgEl) {
+        msgEl.style.color = 'var(--muted)';
+        msgEl.textContent = t('جاري إرسال الطلب...', 'Sending request...');
+      }
+      try {
+        const result = await submitCatalogQuote({
+          type: pendingGuestQuote.type,
+          message: pendingGuestQuote.message,
+          company: pendingGuestQuote.company,
+          segment: pendingGuestQuote.segment
+        });
+        if (result && (result.ok || result.saved)) {
+          if (msgEl) {
+            msgEl.style.color = result.ok ? 'var(--ok)' : 'var(--muted)';
+            msgEl.textContent = result.ok
+              ? t('تم إرسال الطلب — نرد على بريدكم أو جوالكم.', 'Request sent — we will reply on your email or phone.')
+              : t('حُفظ الطلب — يمكنكم المتابعة لاحقاً بدون حساب.', 'Request saved — you can continue later without an account.');
+          }
+          setTimeout(() => closeGuestQuoteModal(), 900);
+          const heroBtn = document.getElementById('heroQuoteBtn');
+          if (heroBtn && result.ok) {
+            heroBtn.classList.add('sent');
+            heroBtn.textContent = t('تم الإرسال', 'Sent');
+            setTimeout(() => restoreQuoteBtn(heroBtn), 2200);
+          }
+        } else if (result && result.guestModal) {
+          if (msgEl) {
+            msgEl.style.color = 'var(--danger)';
+            msgEl.textContent = t('تحققوا من البيانات ثم أعيدوا الإرسال', 'Check the details then send again');
+          }
+        } else {
+          if (msgEl) {
+            msgEl.style.color = 'var(--danger)';
+            msgEl.textContent = t('تعذّر الإرسال الآن — حاولوا مرة أخرى', 'Could not send now — please try again');
+          }
+        }
+      } catch (_) {
+        if (msgEl) {
+          msgEl.style.color = 'var(--danger)';
+          msgEl.textContent = t('تعذّر الإرسال الآن — حاولوا مرة أخرى', 'Could not send now — please try again');
+        }
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.removeAttribute('aria-busy');
+          applyLang(currentLang);
+        }
+      }
+    });
+  })();
 
   document.addEventListener('click', async (e) => {
     const el = e.target.closest('[data-quote-type]');
@@ -3674,7 +3928,11 @@ body.pay-paused .pay-public-entry{display:none!important}
           source: loggedInUser ? 'client' : 'site',
           status: 'new'
         });
-        if (saved && saved.deliveryPromise) delivery = await saved.deliveryPromise;
+        if (saved && saved.deliveryPromise) {
+          delivery = await withTimeout(saved.deliveryPromise, 14000, {
+            cloud: false, email: false, webhook: false, pendingNotify: false, delivered: false, accepted: true, timedOut: true
+          });
+        }
       }
       // Success (clear form / Sent) only when configured notify channels settled.
       const delivered = !!(delivery && delivery.delivered);
@@ -4184,6 +4442,12 @@ body.pay-paused .pay-public-entry{display:none!important}
     if (termsOverlay && termsOverlay.classList.contains('open')) {
       e.preventDefault();
       closeTermsOverlay();
+      return;
+    }
+    const guestModal = document.getElementById('guestQuoteModal');
+    if (guestModal && guestModal.classList.contains('open')) {
+      e.preventDefault();
+      closeGuestQuoteModal();
       return;
     }
     if (authModal && authModal.classList.contains('open')) closeModal();
