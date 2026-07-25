@@ -570,7 +570,13 @@ body.is-client .home-bar{
     </div>
     <div class="top-actions" style="justify-content:flex-end;margin-bottom:8px">
       <div class="clock" id="dashClock">—</div>
-      <button class="lang-btn" id="dashLangBtn" type="button">EN</button>
+      <div class="nav-prefs" role="group" data-ar-aria="اللغة والمظهر" data-en-aria="Language and look" aria-label="اللغة والمظهر">
+        <button class="lang-btn" id="dashLangBtn" type="button">EN</button>
+        <div class="theme-switch" role="group" data-ar-aria="ناعم أو إيقاف" data-en-aria="Soft or Off" aria-label="ناعم أو إيقاف">
+          <button type="button" data-theme-set="soft" class="is-active" aria-pressed="true" data-ar-aria="المظهر الناعم" data-en-aria="Soft look" aria-label="المظهر الناعم"><span data-theme-label data-ar="ناعم" data-en="Soft">ناعم</span></button>
+          <button type="button" data-theme-set="off" aria-pressed="false" data-ar-aria="وضع الإيقاف" data-en-aria="Off mode" aria-label="وضع الإيقاف"><span data-theme-label data-ar="إيقاف" data-en="Off">إيقاف</span></button>
+        </div>
+      </div>
       <button class="btn btn-ghost client-only" id="viewTermsBtn" type="button" data-ar="الشروط" data-en="Terms">الشروط</button>
       <a class="btn btn-ghost" href="/" data-ar="الصفحة الرئيسية" data-en="Home">الصفحة الرئيسية</a>
       <button class="btn btn-ghost mobile-logout" id="logoutBtnMobile" type="button" data-ar="خروج" data-en="Log out">خروج</button>
