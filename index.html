@@ -173,49 +173,67 @@ nav{display:flex;align-items:center;justify-content:space-between;gap:16px;paddi
 .nav-toggle{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:6px}
 .nav-toggle span{width:22px;height:2px;background:var(--ink);display:block}
 
-.hero{min-height:calc(100vh - 70px);display:grid;align-items:end;position:relative;overflow:hidden}
+.hero{
+  min-height:calc(100vh - 70px);display:grid;align-items:center;position:relative;overflow:hidden;
+}
 .hero-visual{
   position:absolute;inset:0;z-index:0;
   background:
-    linear-gradient(115deg, rgba(16,35,58,.94) 0%, rgba(22,50,79,.72) 46%, rgba(42,111,122,.28) 100%),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1600 900' preserveAspectRatio='xMidYMid slice'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%2310233A'/%3E%3Cstop offset='55%25' stop-color='%2316324F'/%3E%3Cstop offset='100%25' stop-color='%232A6F7A'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='1600' height='900' fill='url(%23g)'/%3E%3Cg fill='none' stroke='%23E8A05A' stroke-opacity='.22' stroke-width='2'%3E%3Cpath d='M980 120 L1420 120 L1420 420 L1180 420 L1180 620 L1420 620'/%3E%3Cpath d='M1040 180 H1360 M1040 230 H1280 M1040 320 H1200 M1220 320 H1360'/%3E%3C/g%3E%3Ccircle cx='260' cy='680' r='220' fill='%23C45C26' opacity='.2'/%3E%3Ccircle cx='420' cy='720' r='120' fill='%23E8A05A' opacity='.12'/%3E%3C/svg%3E") center/cover no-repeat;
-  animation:heroDrift 16s ease-in-out infinite alternate;
+    linear-gradient(105deg, rgba(12,27,46,.96) 0%, rgba(16,35,58,.88) 38%, rgba(22,50,79,.55) 68%, rgba(42,111,122,.22) 100%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1600 1000' preserveAspectRatio='xMidYMid slice'%3E%3Cdefs%3E%3ClinearGradient id='sky' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%230C1B2E'/%3E%3Cstop offset='45%25' stop-color='%2316324F'/%3E%3Cstop offset='100%25' stop-color='%232A6F7A'/%3E%3C/linearGradient%3E%3ClinearGradient id='screen' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0%25' stop-color='%231E3A54'/%3E%3Cstop offset='100%25' stop-color='%2310233A'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='1600' height='1000' fill='url(%23sky)'/%3E%3Crect x='780' y='120' width='720' height='460' rx='18' fill='url(%23screen)' stroke='%23E8A05A' stroke-opacity='.35' stroke-width='3'/%3E%3Crect x='804' y='156' width='672' height='392' rx='8' fill='%230C1B2E'/%3E%3Cg fill='none' stroke='%232A6F7A' stroke-opacity='.55' stroke-width='3'%3E%3Cpath d='M840 220 H1180'/%3E%3Cpath d='M840 270 H1320'/%3E%3Cpath d='M840 320 H1100'/%3E%3Cpath d='M840 370 H1260'/%3E%3Cpath d='M840 420 H1020'/%3E%3C/g%3E%3Cg stroke='%23C45C26' stroke-opacity='.45' stroke-width='2' fill='none'%3E%3Cpath d='M860 480 H980 M1000 480 H1140'/%3E%3C/g%3E%3Crect x='980' y='620' width='320' height='18' rx='4' fill='%23C45C26' opacity='.35'/%3E%3Ccircle cx='220' cy='760' r='260' fill='%23C45C26' opacity='.16'/%3E%3Ccircle cx='380' cy='820' r='140' fill='%23E8A05A' opacity='.1'/%3E%3Cpath d='M120 180 C260 120 340 260 480 200' fill='none' stroke='%23E8A05A' stroke-opacity='.18' stroke-width='2'/%3E%3C/svg%3E") center/cover no-repeat;
+  transform-origin:60% 40%;
+  animation:heroDrift 18s ease-in-out infinite alternate;
+}
+.hero-visual::before{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(90deg, rgba(12,27,46,.55) 0%, transparent 58%);
+  animation:heroWash 10s ease-in-out infinite alternate;
 }
 .hero-visual::after{
-  content:"";position:absolute;inset:auto 0 0 0;height:90px;
+  content:"";position:absolute;inset:auto 0 0 0;height:110px;
   background:linear-gradient(180deg, transparent, var(--bg));
 }
-@keyframes heroDrift{from{transform:scale(1) translateY(0)}to{transform:scale(1.05) translateY(-10px)}}
-.hero-content{position:relative;z-index:1;padding:100px 0 88px;color:#F4F7FA;max-width:740px}
+@keyframes heroDrift{from{transform:scale(1) translate3d(0,0,0)}to{transform:scale(1.06) translate3d(-1.2%,-1%,0)}}
+@keyframes heroWash{from{opacity:.55}to{opacity:.9}}
+.hero-content{
+  position:relative;z-index:1;padding:110px 0 96px;color:#F4F7FA;max-width:720px;
+}
 .brand-mark{
-  font-size:clamp(3.8rem,10vw,6.6rem);font-weight:800;line-height:.92;margin-bottom:18px;
-  animation:rise .9s cubic-bezier(.2,.75,.2,1) both;
+  font-size:clamp(4.2rem,11vw,7.2rem);font-weight:800;line-height:.88;margin-bottom:20px;
+  letter-spacing:-.04em;text-shadow:0 18px 40px rgba(0,0,0,.28);
+  animation:rise .95s cubic-bezier(.2,.75,.2,1) both;
 }
 .brand-mark span{color:var(--sand)}
 .hero h1{
-  font-size:clamp(1.3rem,2.8vw,1.9rem);font-weight:600;line-height:1.4;margin-bottom:14px;max-width:28ch;
-  animation:rise .9s .12s cubic-bezier(.2,.75,.2,1) both;
+  font-size:clamp(1.35rem,3vw,2rem);font-weight:600;line-height:1.35;margin-bottom:12px;max-width:22ch;
+  animation:rise .95s .1s cubic-bezier(.2,.75,.2,1) both;
 }
-.hero p{
-  font-size:1.05rem;color:rgba(232,237,242,.9);max-width:46ch;margin-bottom:28px;
-  animation:rise .9s .22s cubic-bezier(.2,.75,.2,1) both;
+.hero > .wrap > p,
+.hero-content > p{
+  font-size:1.08rem;color:rgba(232,237,242,.9);max-width:38ch;margin-bottom:26px;
+  animation:rise .95s .2s cubic-bezier(.2,.75,.2,1) both;
 }
-.hero-ctas{display:flex;flex-wrap:wrap;gap:12px;animation:rise .9s .32s cubic-bezier(.2,.75,.2,1) both}
+.hero-cta-block{animation:rise .95s .3s cubic-bezier(.2,.75,.2,1) both}
 .hero .btn-primary{background:var(--copper);color:#fff}
 .hero .btn-primary:hover{background:#A84C1E}
-.hero .btn-ghost{border-color:rgba(244,247,250,.45);color:#F4F7FA;background:transparent}
+.hero .btn-ghost{border-color:rgba(244,247,250,.4);color:#F4F7FA;background:transparent}
 .hero-quote{
-  margin-top:22px;display:grid;grid-template-columns:minmax(140px,.9fr) 1.6fr auto;gap:10px;max-width:640px;
-  animation:rise .9s .4s cubic-bezier(.2,.75,.2,1) both;
+  display:grid;grid-template-columns:minmax(132px,.85fr) 1.55fr auto;gap:10px;max-width:640px;
 }
 .hero-quote select,.hero-quote input{
-  width:100%;padding:13px 14px;border:1.5px solid rgba(244,247,250,.28);border-radius:var(--radius);
-  background:rgba(16,35,58,.45);color:#F4F7FA;backdrop-filter:blur(8px);
+  width:100%;padding:14px 15px;border:1.5px solid rgba(244,247,250,.3);border-radius:var(--radius);
+  background:rgba(12,27,46,.55);color:#F4F7FA;backdrop-filter:blur(10px);
 }
 .hero-quote select option{color:var(--ink);background:#fff}
 .hero-quote input::placeholder{color:rgba(244,247,250,.55)}
-.hero-quote select:focus,.hero-quote input:focus{outline:2px solid rgba(232,160,90,.45);border-color:var(--sand)}
-.hero-quote .btn{white-space:nowrap}
+.hero-quote select:focus,.hero-quote input:focus{outline:2px solid rgba(232,160,90,.5);border-color:var(--sand)}
+.hero-quote .btn{white-space:nowrap;min-height:52px}
+.hero-note{
+  margin-top:14px;display:flex;flex-wrap:wrap;align-items:center;gap:14px;
+  color:rgba(232,237,242,.78);font-size:.92rem;
+}
+.hero-note a{color:#fff;font-weight:700;border-bottom:1.5px solid rgba(232,160,90,.7);padding-bottom:1px}
+.hero-note a:hover{color:var(--sand)}
 .btn.sent{background:var(--ok)!important;pointer-events:none}
 .msg.ok-pulse{animation:okPulse .55s ease}
 @keyframes okPulse{0%{opacity:.35;transform:translateY(4px)}100%{opacity:1;transform:none}}
@@ -376,37 +394,15 @@ body.lang-en .footer-brand{font-family:'Space Grotesk',sans-serif}
   box-shadow:0 14px 28px -22px rgba(16,35,58,.55);
 }
 
-.hero-stage{
-  position:absolute;inset:auto 4% 18% auto;z-index:1;width:min(420px,42vw);
-  display:flex;flex-direction:column;gap:10px;pointer-events:none;
-}
-.flow-step{
-  background:rgba(247,249,252,.12);border:1px solid rgba(232,160,90,.35);
-  backdrop-filter:blur(8px);color:#F4F7FA;padding:12px 14px;border-radius:var(--radius);
-  display:flex;align-items:center;gap:10px;opacity:0;transform:translateX(18px);
-  animation:flowIn 4.8s ease-in-out infinite;
-}
-.flow-step:nth-child(2){animation-delay:.8s}
-.flow-step:nth-child(3){animation-delay:1.6s}
-.flow-step:nth-child(4){animation-delay:2.4s}
-.flow-step b{
-  min-width:28px;height:28px;display:grid;place-items:center;border-radius:4px;
-  background:var(--copper);color:#fff;font-size:.78rem;
-}
-@keyframes flowIn{
-  0%,8%{opacity:0;transform:translateX(18px)}
-  18%,70%{opacity:1;transform:none}
-  85%,100%{opacity:0;transform:translateX(-10px)}
-}
-
 .stats-strip{
-  display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:-36px;position:relative;z-index:2;
+  display:grid;grid-template-columns:repeat(4,1fr);gap:14px;position:relative;z-index:2;
 }
 .stat-card{
   background:var(--panel);border:1.5px solid var(--line);border-radius:var(--radius);
-  padding:18px 16px;text-align:center;border-top:3px solid var(--copper);
+  padding:18px 16px;border-inline-start:3px solid var(--copper);
 }
-.stat-card strong{display:block;font-size:1.55rem;color:var(--navy);margin-bottom:4px}
+.stat-card strong{display:block;font-size:1.55rem;color:var(--navy);margin-bottom:4px;font-family:'Tajawal',sans-serif}
+body.lang-en .stat-card strong{font-family:'Space Grotesk',sans-serif}
 .stat-card span{color:var(--muted);font-size:.86rem}
 
 .pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
@@ -468,15 +464,18 @@ body.terms-locked{overflow:hidden}
   .services-grid,.services-grid.four,.products-grid,.suggest-grid,.pricing-grid,.stats-strip,.trust-row{grid-template-columns:1fr 1fr}
   .work-list,.two-col{grid-template-columns:1fr}
   .work-item{border-inline-end:none;border-bottom:1.5px solid var(--line)}
-  .hero{min-height:auto}.hero-content{padding:80px 0 64px}
-  .hero-stage{display:none}
+  .hero{min-height:auto;align-items:end}
+  .hero-content{padding:88px 0 72px;max-width:100%}
   .price-card.featured{transform:none}
   .hero-quote{grid-template-columns:1fr}
+  .hero-quote .btn{width:100%}
   .news-item{grid-template-columns:1fr;gap:6px}
 }
 @media (max-width:560px){
   .services-grid,.products-grid,.suggest-grid,.pricing-grid,.stats-strip,.trust-row{grid-template-columns:1fr}
   .wrap{padding:0 18px}
+  .brand-mark{font-size:clamp(3.6rem,18vw,5rem)}
+  .hero h1{max-width:100%}
 }
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
@@ -560,35 +559,32 @@ body.terms-locked{overflow:hidden}
 
 <section class="hero">
   <div class="hero-visual" aria-hidden="true"></div>
-  <div class="hero-stage" aria-hidden="true">
-    <div class="flow-step"><b>1</b><span data-ar="طلب العميل" data-en="Client request">طلب العميل</span></div>
-    <div class="flow-step"><b>2</b><span data-ar="عرض سعر واضح" data-en="Clear quote">عرض سعر واضح</span></div>
-    <div class="flow-step"><b>3</b><span data-ar="تنفيذ وبرمجة" data-en="Build & code">تنفيذ وبرمجة</span></div>
-    <div class="flow-step"><b>4</b><span data-ar="تسليم وتشغيل" data-en="Deliver & run">تسليم وتشغيل</span></div>
-  </div>
   <div class="wrap hero-content">
     <div class="brand-mark" data-ar-html='را<span>سخ</span>' data-en-html='Ra<span>seekh</span>'>را<span>سخ</span></div>
-    <h1 data-ar="خدمات إلكترونية وبرمجة وأنظمة… من الطلب للتشغيل" data-en="Digital services, coding, and systems — from request to launch">خدمات إلكترونية وبرمجة وأنظمة… من الطلب للتشغيل</h1>
-    <p data-ar="اطلب احتياجك الآن، ونرسل عرض سعر حقيقي بعد المراجعة." data-en="Request what you need — we send a real quote after review.">اطلب احتياجك الآن، ونرسل عرض سعر حقيقي بعد المراجعة.</p>
-    <form class="hero-quote" id="heroQuoteForm" autocomplete="off">
-      <select id="heroQuoteType" data-ar-aria="نوع الخدمة" data-en-aria="Service type" aria-label="نوع الخدمة">
-        <option value="maintenance" data-ar="صيانة مواقع" data-en="Maintenance">صيانة مواقع</option>
-        <option value="programming" data-ar="برمجة" data-en="Programming" selected>برمجة</option>
-        <option value="web-dev" data-ar="تطوير مواقع" data-en="Website development">تطوير مواقع</option>
-        <option value="systems" data-ar="أنظمة" data-en="Systems">أنظمة</option>
-        <option value="system" data-ar="نظام كامل" data-en="Full system">نظام كامل</option>
-      </select>
-      <input type="text" id="heroQuoteMsg" required maxlength="220" data-ar-placeholder="صف طلبكم في سطر واحد" data-en-placeholder="Describe your request in one line" placeholder="صف طلبكم في سطر واحد" data-ar-aria="وصف الطلب" data-en-aria="Request summary" aria-label="وصف الطلب">
-      <button class="btn btn-primary" type="submit" id="heroQuoteBtn" data-ar="اطلب عرض سعر" data-en="Request a quote">اطلب عرض سعر</button>
-    </form>
-    <div class="hero-ctas">
-      <a class="btn btn-ghost" href="#pricing" data-ar="قارن الباقات" data-en="Compare plans">قارن الباقات</a>
-      <a class="btn btn-ghost" href="#contact" data-ar="نموذج كامل" data-en="Full form">نموذج كامل</a>
+    <h1 data-ar="من الطلب… إلى نظام يعمل" data-en="From request… to a running system">من الطلب… إلى نظام يعمل</h1>
+    <p data-ar="برمجة، مواقع، وأنظمة حسب احتياجكم — بعرض سعر حقيقي بعد المراجعة." data-en="Programming, websites, and systems to your need — with a real quote after review.">برمجة، مواقع، وأنظمة حسب احتياجكم — بعرض سعر حقيقي بعد المراجعة.</p>
+    <div class="hero-cta-block">
+      <form class="hero-quote" id="heroQuoteForm" autocomplete="off">
+        <select id="heroQuoteType" data-ar-aria="نوع الخدمة" data-en-aria="Service type" aria-label="نوع الخدمة">
+          <option value="maintenance" data-ar="صيانة مواقع" data-en="Maintenance">صيانة مواقع</option>
+          <option value="programming" data-ar="برمجة" data-en="Programming" selected>برمجة</option>
+          <option value="web-dev" data-ar="تطوير مواقع" data-en="Website development">تطوير مواقع</option>
+          <option value="systems" data-ar="أنظمة" data-en="Systems">أنظمة</option>
+          <option value="system" data-ar="نظام كامل" data-en="Full system">نظام كامل</option>
+        </select>
+        <input type="text" id="heroQuoteMsg" required maxlength="220" data-ar-placeholder="صف طلبكم في سطر واحد" data-en-placeholder="Describe your request in one line" placeholder="صف طلبكم في سطر واحد" data-ar-aria="وصف الطلب" data-en-aria="Request summary" aria-label="وصف الطلب">
+        <button class="btn btn-primary" type="submit" id="heroQuoteBtn" data-ar="اطلب عرض سعر" data-en="Request a quote">اطلب عرض سعر</button>
+      </form>
+      <div class="hero-note">
+        <a href="#contact" data-ar="أو افتحوا النموذج الكامل" data-en="Or open the full form">أو افتحوا النموذج الكامل</a>
+        <span aria-hidden="true">·</span>
+        <a href="#pricing" data-ar="قارنوا الباقات" data-en="Compare plans">قارنوا الباقات</a>
+      </div>
     </div>
   </div>
 </section>
 
-<section>
+<section style="padding-top:48px;padding-bottom:48px">
   <div class="wrap">
     <div class="stats-strip reveal">
       <div class="stat-card"><strong>+40</strong><span data-ar="مشروع تقني" data-en="Tech projects">مشروع تقني</span></div>
