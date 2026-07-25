@@ -1668,7 +1668,15 @@ body.is-admin .client-only{display:none!important}
       loadStore();
       loadClientRequests();
       if (Catalog && Catalog.syncPublicCatalogFromCloud) {
-        Catalog.syncPublicCatalogFromCloud().catch(() => {});
+        Catalog.syncPublicCatalogFromCloud().then((cloud) => {
+          if (!cloud || !cloud.products) return;
+          loadProducts();
+          if (typeof renderClientCatalog === 'function') renderClientCatalog();
+          if (typeof renderClientSuggestionsPage === 'function') renderClientSuggestionsPage();
+          if (typeof renderOverview === 'function') renderOverview();
+          if (typeof fillCategoryFilter === 'function') fillCategoryFilter();
+          if (typeof renderPos === 'function') renderPos();
+        }).catch(() => {});
       }
       document.getElementById('storeName').value = store.name || '';
       document.getElementById('storePhone').value = store.phone || '';

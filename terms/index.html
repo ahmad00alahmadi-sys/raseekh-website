@@ -4,9 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>الشروط والأحكام — راسخ</title>
-<meta name="description" content="الشروط والأحكام لموقع راسخ: صيانة مواقع، برمجة، تطبيقات مخزون، وأنظمة ولوحات تحكم للعملاء.">
+<meta name="description" content="الشروط والأحكام لموقع راسخ: حلول للشركات، صيانة مواقع، برمجة، تطبيقات مخزون، وأنظمة ولوحات تحكم.">
 <meta name="theme-color" content="#10233A">
 <link rel="canonical" href="https://raseekh.com/terms/">
+<link rel="alternate" hreflang="ar" href="https://raseekh.com/terms/">
+<link rel="alternate" hreflang="en" href="https://raseekh.com/terms/?lang=en">
+<link rel="alternate" hreflang="x-default" href="https://raseekh.com/terms/">
 <link rel="manifest" href="/manifest.webmanifest">
 <link rel="icon" href="/icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/icon.svg">
@@ -87,6 +90,8 @@ body.lang-en h1,body.lang-en h2,body.lang-en h3{font-family:'Space Grotesk',sans
 <script>
 (function(){
   let currentLang = localStorage.getItem('raseekh_lang') || 'ar';
+  const q = new URLSearchParams(location.search).get('lang');
+  if (q === 'en' || q === 'ar') currentLang = q;
   const Terms = window.RaseekhTerms;
   if (Terms) Terms.renderInto(document.getElementById('termsRoot'));
 
@@ -106,6 +111,8 @@ body.lang-en h1,body.lang-en h2,body.lang-en h3{font-family:'Space Grotesk',sans
     });
     document.getElementById('langToggle').textContent = lang === 'ar' ? 'EN' : 'AR';
     document.title = lang === 'ar' ? 'الشروط والأحكام — راسخ' : 'Terms & Conditions — Raseekh';
+    const canonical = document.querySelector('link[rel="canonical"]');
+    if (canonical) canonical.setAttribute('href', lang === 'en' ? 'https://raseekh.com/terms/?lang=en' : 'https://raseekh.com/terms/');
   }
   document.getElementById('langToggle').addEventListener('click', () => applyLang(currentLang === 'ar' ? 'en' : 'ar'));
   applyLang(currentLang);

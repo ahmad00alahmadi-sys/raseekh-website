@@ -156,6 +156,7 @@ create table if not exists public.profiles (
   email text default '',
   updated_at timestamptz default now()
 );
+alter table public.profiles add column if not exists company text default '';
 alter table public.profiles enable row level security;
 drop policy if exists "raseekh_profiles_select_own" on public.profiles;
 drop policy if exists "raseekh_profiles_upsert_own" on public.profiles;

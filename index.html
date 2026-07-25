@@ -533,7 +533,7 @@ body.lang-en .footer-brand{font-family:'Space Grotesk',sans-serif}
   padding:18px;background:rgba(16,35,58,.72);backdrop-filter:blur(8px);
 }
 .terms-overlay.open{display:flex}
-body.terms-locked{overflow:hidden}
+body.terms-locked,body.auth-locked{overflow:hidden}
 .terms-sheet{
   width:min(820px,100%);max-height:min(88vh,900px);overflow:auto;background:var(--panel);
   border:1.5px solid var(--line);border-radius:10px;padding:22px 20px 18px;box-shadow:var(--shadow);
@@ -609,13 +609,14 @@ body.terms-locked{overflow:hidden}
 <div class="modal-overlay" id="authModal" role="dialog" aria-modal="true" aria-labelledby="authModalTitle" aria-hidden="true">
   <div class="modal">
     <button class="modal-close" id="modalCloseBtn" type="button" data-ar-aria="إغلاق" data-en-aria="Close" aria-label="إغلاق">×</button>
+    <h2 id="authModalTitle" class="visually-hidden" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)" data-ar="تسجيل الدخول" data-en="Sign in to your account">تسجيل الدخول</h2>
     <div id="authTabs">
       <div class="tabs" id="modalTabsBar">
         <button type="button" class="tab active" id="modalLoginTabBtn" data-ar="دخول" data-en="Login">دخول</button>
         <button type="button" class="tab" id="modalRegisterTabBtn" data-ar="حساب جديد" data-en="Sign up">حساب جديد</button>
       </div>
       <div class="panel-auth active" id="modalLoginPanel">
-        <h3 id="authModalTitle" data-ar="تسجيل الدخول" data-en="Sign in to your account">تسجيل الدخول</h3>
+        <h3 data-ar="تسجيل الدخول" data-en="Sign in to your account">تسجيل الدخول</h3>
         <form class="form" id="loginForm">
           <input type="email" id="loginEmail" required autocomplete="email" data-ar-placeholder="البريد الإلكتروني" data-en-placeholder="Email" placeholder="البريد الإلكتروني">
           <input type="password" id="loginPassword" required autocomplete="current-password" data-ar-placeholder="كلمة المرور" data-en-placeholder="Password" placeholder="كلمة المرور">
@@ -985,7 +986,7 @@ body.terms-locked{overflow:hidden}
           <form class="form" onsubmit="return false">
             <input type="text" id="payName" data-ar-placeholder="الاسم الكامل" data-en-placeholder="Full name" placeholder="الاسم الكامل">
             <div class="pay-amount">
-              <input type="number" id="payAmount" min="1" step="0.01" placeholder="0.00">
+              <input type="number" id="payAmount" min="1" max="100000" step="0.01" placeholder="0.00">
               <span>SAR</span>
             </div>
             <input type="text" id="payNote" data-ar-placeholder="ملاحظة (اختياري)" data-en-placeholder="Note (optional)" placeholder="ملاحظة (اختياري)">
@@ -1233,11 +1234,11 @@ body.terms-locked{overflow:hidden}
     const message = (opts.message || '').trim();
     if (!message) return { ok: false, empty: true };
     if (!navigator.onLine) {
+      requestFromCatalog({ type, message, company: (opts.company || '').trim() });
       const resultEl = document.getElementById('contactResult');
       if (resultEl) {
         resultEl.style.color = 'var(--danger)';
         resultEl.textContent = t('أنتم غير متصلين — أعيدوا الإرسال بعد عودة الشبكة', 'You are offline — send again when back online');
-        document.getElementById('contact').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       }
       return { ok: false, offline: true };
     }
@@ -1559,12 +1560,14 @@ body.terms-locked{overflow:hidden}
     lastFocusBeforeAuth = document.activeElement;
     authModal.classList.add('open');
     authModal.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('auth-locked');
     const focusEl = document.querySelector('#authModal .panel-auth.active input') || document.getElementById('modalCloseBtn');
     setTimeout(() => focusEl && focusEl.focus(), 20);
   }
   function closeModal(){
     authModal.classList.remove('open');
     authModal.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('auth-locked');
     ['loginMsg','registerMsg','forgotMsg','resetMsg'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = ''; });
     if (lastFocusBeforeAuth && typeof lastFocusBeforeAuth.focus === 'function') lastFocusBeforeAuth.focus();
   }
@@ -1641,10 +1644,21 @@ body.terms-locked{overflow:hidden}
     }
   }
 
+  function paymentReturnParams(){
+    const fromSearch = new URLSearchParams(location.search);
+    if (fromSearch.get('status') || fromSearch.get('id') || fromSearch.get('payment_id') || fromSearch.get('pay')) {
+      return fromSearch;
+    }
+    const hash = String(location.hash || '');
+    const q = hash.indexOf('?');
+    if (q >= 0) return new URLSearchParams(hash.slice(q + 1));
+    return fromSearch;
+  }
+
   async function finalizePendingMoyasarPayment(user){
     if (!user || !Catalog || !Catalog.addPaymentRecord) return false;
     if (!hasCloudPaySession(user)) return false;
-    const params = new URLSearchParams(location.search);
+    const params = paymentReturnParams();
     const status = params.get('status');
     const pendingPay = readPendingPay();
     const paymentId = params.get('id') || params.get('payment_id') || '';
@@ -1687,13 +1701,13 @@ body.terms-locked{overflow:hidden}
     else if (user && user.app_metadata && user.app_metadata.provider) authProvider = user.app_metadata.provider;
     setPayUnlocked(user);
     closeModal();
-    const params = new URLSearchParams(location.search);
+    const params = paymentReturnParams();
     const paidReturn = params.get('status') === 'paid';
     const failedReturn = params.get('status') === 'failed';
     if (failedReturn) {
       try { sessionStorage.removeItem('raseekh_pending_pay'); } catch (_) {}
     }
-    if (authIntent === 'pay' || location.hash === '#pay' || paidReturn || failedReturn) {
+    if (authIntent === 'pay' || location.hash === '#pay' || params.get('pay') === '1' || paidReturn || failedReturn) {
       authIntent = 'dashboard';
       if (paidReturn) finalizePendingMoyasarPayment(user);
       const pay = document.getElementById('pay');
@@ -1955,8 +1969,7 @@ body.terms-locked{overflow:hidden}
           message: payload.message,
           type: payload.type,
           source: loggedInUser ? 'client' : 'site',
-          status: 'new',
-          fingerprint: 'site:' + payload.at + ':' + payload.message + ':' + payload.phone + ':' + payload.email
+          status: 'new'
         });
         if (saved && saved.deliveryPromise) delivery = await saved.deliveryPromise;
       }
@@ -2081,6 +2094,7 @@ body.terms-locked{overflow:hidden}
     }
     if (!name) { msg.style.color = 'var(--danger)'; msg.textContent = t('الرجاء كتابة الاسم', 'Please enter your name'); return; }
     if (!amount || amount < 1) { msg.style.color = 'var(--danger)'; msg.textContent = t('أدخل مبلغاً صحيحاً', 'Enter a valid amount'); return; }
+    if (amount > 100000) { msg.style.color = 'var(--danger)'; msg.textContent = t('الحد الأقصى للمبلغ 100,000 ر.س', 'Maximum amount is 100,000 SAR'); return; }
     msg.style.color = 'var(--muted)';
     msg.textContent = t('جاري تحميل بوابة الدفع...', 'Loading payment gateway...');
     try { await loadMoyasar(); } catch (_) {
@@ -2132,7 +2146,7 @@ body.terms-locked{overflow:hidden}
       currency: 'SAR',
       description: (note ? note + ' — ' : '') + name,
       publishable_api_key: MOYASAR_PUBLISHABLE_KEY,
-      callback_url: window.location.origin + window.location.pathname + '?pay=1#pay',
+      callback_url: window.location.origin + window.location.pathname + '?pay=1',
       methods: ['creditcard', 'applepay'],
       on_completed: function(payment){
         if (payment && payment.status === 'paid') {
@@ -2147,9 +2161,15 @@ body.terms-locked{overflow:hidden}
   document.getElementById('payBackBtn').addEventListener('click', () => showPayStep(payDetailsStep));
   document.getElementById('payRetryBtn').addEventListener('click', () => showPayStep(payDetailsStep));
   (function checkPaymentReturn(){
-    const params = new URLSearchParams(window.location.search);
+    const params = paymentReturnParams();
     const status = params.get('status');
-    if (status !== 'paid' && status !== 'failed') return;
+    if (status !== 'paid' && status !== 'failed') {
+      if (params.get('pay') === '1') {
+        const pay = document.getElementById('pay');
+        if (pay) setTimeout(() => pay.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80);
+      }
+      return;
+    }
     const finish = async (user, provider) => {
       if (provider) authProvider = provider;
       if (user && status === 'paid' && !hasCloudPaySession(user) && Auth) {

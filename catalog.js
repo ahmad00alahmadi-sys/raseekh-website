@@ -874,6 +874,22 @@
     };
   }
 
+  function normalizeFingerprintPart(value) {
+    return String(value || '').trim().toLowerCase().replace(/\s+/g, ' ');
+  }
+
+  function requestFingerprint(row) {
+    const bucket = Math.floor(Date.now() / (5 * 60 * 1000));
+    return [
+      'req',
+      bucket,
+      normalizeFingerprintPart(row && row.type),
+      normalizeFingerprintPart((row && (row.userId || row.email || row.phone)) || ''),
+      normalizeFingerprintPart(row && row.company),
+      normalizeFingerprintPart(row && row.message)
+    ].join(':');
+  }
+
   function addSharedRequest(payload) {
     const list = readJson(CLIENT_REQUESTS_KEY, []);
     const row = Object.assign({
@@ -882,11 +898,13 @@
       status: 'new',
       source: 'site'
     }, payload || {});
-    if (!row.fingerprint) {
-      row.fingerprint = 'req:' + (row.at || '') + ':' + (row.message || '') + ':' + (row.phone || '') + ':' + (row.email || '');
+    if (!row.fingerprint) row.fingerprint = requestFingerprint(row);
+    const existing = list.find((x) => x.fingerprint && x.fingerprint === row.fingerprint);
+    if (existing) {
+      // Retry delivery for double-submit / refresh within the idempotency window.
+      existing.deliveryPromise = deliverSharedRequest(existing);
+      return existing;
     }
-    const dup = list.some((x) => x.fingerprint && x.fingerprint === row.fingerprint);
-    if (dup) return list.find((x) => x.fingerprint === row.fingerprint) || row;
     list.unshift(row);
     writeJson(CLIENT_REQUESTS_KEY, list.slice(0, 200));
     // Deliver outside this browser: cloud row + email + webhook (best-effort)

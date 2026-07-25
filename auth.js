@@ -10,6 +10,8 @@
 
   let supabaseClient = null;
   let cloudReady = null;
+  let cloudReadyCheckedAt = 0;
+  const CLOUD_PROBE_TTL_MS = 45000;
 
   try {
     if (global.supabase) {
@@ -115,7 +117,10 @@
 
   async function probeCloud(timeoutMs) {
     if (!supabaseClient) return false;
-    if (cloudReady !== null) return cloudReady;
+    const now = Date.now();
+    // Positive probes stay cached; negative results expire so a brief outage does not lock local-only mode.
+    if (cloudReady === true) return true;
+    if (cloudReady === false && (now - cloudReadyCheckedAt) < CLOUD_PROBE_TTL_MS) return false;
     const ctrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
     const timer = setTimeout(() => { try { ctrl && ctrl.abort(); } catch (_) {} }, timeoutMs || 2500);
     try {
@@ -129,8 +134,18 @@
       cloudReady = false;
     } finally {
       clearTimeout(timer);
+      cloudReadyCheckedAt = Date.now();
     }
     return cloudReady;
+  }
+
+  function invalidateCloudProbe() {
+    cloudReady = null;
+    cloudReadyCheckedAt = 0;
+  }
+
+  if (typeof global.addEventListener === 'function') {
+    global.addEventListener('online', () => { invalidateCloudProbe(); });
   }
 
   async function localSignUp({ email, password, full_name, phone }) {
@@ -286,11 +301,23 @@
   async function resetPasswordRequest(email) {
     const cloud = await probeCloud(2000);
     if (cloud && supabaseClient) {
-      const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
-        redirectTo: global.location.origin + '/#reset'
-      });
-      if (error && !isNetworkAuthError(error)) throw error;
-      if (!error) return { provider: 'supabase' };
+      try {
+        const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+          redirectTo: global.location.origin + '/#reset'
+        });
+        if (error) {
+          if (isNetworkAuthError(error)) {
+            invalidateCloudProbe();
+          } else {
+            throw error;
+          }
+        } else {
+          return { provider: 'supabase' };
+        }
+      } catch (err) {
+        if (!isNetworkAuthError(err)) throw err;
+        invalidateCloudProbe();
+      }
     }
     // Local fallback: stash email for reset panel
     const users = readUsers();
@@ -344,6 +371,7 @@
               id: current.user.id,
               full_name: meta.full_name || '',
               phone: meta.phone || '',
+              company: meta.company || '',
               email: current.user.email || ''
             });
           } catch (_) {}
@@ -398,6 +426,7 @@
     updateUser,
     friendlyError,
     probeCloud,
+    invalidateCloudProbe,
     isAdmin,
     isAdminEmail,
     withRole,
