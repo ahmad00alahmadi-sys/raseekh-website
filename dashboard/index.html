@@ -3502,23 +3502,24 @@ body.is-admin .client-only{display:none!important}
       if (refreshLeadsBtn.dataset.busy === '1') return;
       refreshLeadsBtn.dataset.busy = '1';
       showToast(t('جاري التحديث...', 'Refreshing...'));
-      let ok = true;
+      const online = !!navigator.onLine;
+      let cloudOk = online;
       try {
-        if (!navigator.onLine) {
-          ok = false;
+        if (online) {
+          try { await refreshClientRequestsFromCloud(); }
+          catch (_) { cloudOk = false; }
         } else {
-          await refreshClientRequestsFromCloud();
-          await renderAdminLeads();
-          updateLeadsBadge();
+          loadClientRequests();
         }
+        await renderAdminLeads();
+        updateLeadsBadge();
       } catch (_) {
-        ok = false;
-        try { await renderAdminLeads(); } catch (_) {}
+        cloudOk = false;
         updateLeadsBadge();
       } finally {
         refreshLeadsBtn.dataset.busy = '0';
       }
-      showToast(ok
+      showToast(cloudOk
         ? t('تم تحديث صندوق الطلبات', 'Request inbox updated')
         : t('تعذّر التحديث من السحابة — تُعرض البيانات المحلية', 'Cloud refresh failed — showing local data'));
     });
