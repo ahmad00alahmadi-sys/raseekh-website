@@ -2329,8 +2329,14 @@ body.is-admin .client-only{display:none!important}
     document.getElementById('requestConfirmTitle').textContent = draft.summary || draft.title || '';
     const phoneEl = document.getElementById('requestConfirmPhone');
     const metaPhone = currentUser && currentUser.user_metadata && currentUser.user_metadata.phone;
-    phoneEl.value = metaPhone || phoneEl.value || '';
+    phoneEl.value = metaPhone || '';
     document.getElementById('requestConfirmNote').value = '';
+    const submitBtn = document.querySelector('#requestConfirmForm button[type="submit"]');
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.removeAttribute('aria-busy');
+      applyLang(currentLang);
+    }
     setModalOpen(document.getElementById('requestConfirmModal'), true);
     phoneEl.focus();
   }
