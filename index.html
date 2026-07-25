@@ -715,6 +715,8 @@ body.terms-locked,body.auth-locked{overflow:hidden}
   body{padding-bottom:76px}
   .float-cta .float-quote{display:none!important}
   .float-cta{bottom:84px}
+  /* Sticky bar owns the quote CTA on mobile — hide section duplicates */
+  a.quote-cta-dup{display:none!important}
   .now-rail{padding-inline-start:24px}
   .now-item::before{inset-inline-start:-21px;width:10px;height:10px}
   .now-foot .btn{width:100%}
@@ -741,12 +743,21 @@ body.terms-locked,body.auth-locked{overflow:hidden}
 .trust-strip strong{display:block;color:var(--navy);font-size:1.05rem;margin-bottom:4px}
 .trust-strip span{color:var(--muted);font-size:.82rem;line-height:1.5}
 .mid-cta{
-  margin:0;padding:28px 0;background:linear-gradient(90deg,rgba(22,50,79,.96),rgba(29,74,88,.92));
-  border-block:1px solid rgba(255,255,255,.08)
+  margin:0;padding:32px 0;
+  background:#10233A;
+  background:linear-gradient(105deg,#0C1B2E 0%,#16324F 55%,#1A4554 100%);
+  border-block:1px solid rgba(255,255,255,.1);
+  color:#F4F7FA;
 }
 .mid-cta .wrap{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
 .mid-cta h3{color:#F4F7FA;font-size:1.2rem;margin:0 0 6px}
-.mid-cta p{color:rgba(244,247,250,.8);margin:0;font-size:.92rem}
+.mid-cta p{color:rgba(244,247,250,.88);margin:0;font-size:.92rem}
+.mid-cta .btn-primary{background:var(--copper);color:#fff;border:none}
+.mid-cta .btn-primary:hover{background:#A84C1E;color:#fff}
+.mid-cta .btn-ghost{
+  background:transparent;color:#F4F7FA;border:1.5px solid rgba(244,247,250,.45)
+}
+.mid-cta .btn-ghost:hover{background:rgba(244,247,250,.1);border-color:#F4F7FA;color:#fff}
 .plan-guide{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:22px}
 .plan-guide article{padding:18px 16px}
 @media (max-width:900px){
@@ -935,7 +946,7 @@ body.terms-locked,body.auth-locked{overflow:hidden}
       </a>
     </div>
     <div class="reveal" style="margin-top:22px">
-      <a class="btn btn-primary" href="#contact" data-ar="اطلب عرض سعر" data-en="Request a quote">اطلب عرض سعر</a>
+      <a class="btn btn-primary quote-cta-dup" href="#contact" data-ar="اطلب عرض سعر" data-en="Request a quote">اطلب عرض سعر</a>
       <a class="btn btn-ghost" href="/features/" data-ar="صفحات المزايا" data-en="Feature pages">صفحات المزايا</a>
     </div>
   </div>
@@ -951,19 +962,6 @@ body.terms-locked,body.auth-locked{overflow:hidden}
     <div class="products-grid reveal" id="clientProductsGrid">    </div>
   </div>
 </section>
-
-<div class="mid-cta">
-  <div class="wrap">
-    <div>
-      <h3 data-ar="جاهزون لعرض سعر واضح؟" data-en="Ready for a clear quote?">جاهزون لعرض سعر واضح؟</h3>
-      <p data-ar="صفوا احتياجكم — نرد على بريدكم أو جوالكم بعد مراجعة الطلب." data-en="Describe your need — we reply on your email or phone after reviewing the request.">صفوا احتياجكم — نرد على بريدكم أو جوالكم بعد مراجعة الطلب.</p>
-    </div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap">
-      <a class="btn btn-primary" href="#contact" data-ar="اطلب عرض سعر" data-en="Request a quote">اطلب عرض سعر</a>
-      <a class="btn btn-ghost" href="/features/inventory.html" style="border-color:rgba(255,255,255,.35);color:#fff" data-ar="تعرّف على المخزون" data-en="Explore inventory">تعرّف على المخزون</a>
-    </div>
-  </div>
-</div>
 
 <section id="suggestions">
   <div class="wrap">
@@ -1433,7 +1431,7 @@ body.terms-locked,body.auth-locked{overflow:hidden}
       </article>
     </div>
     <div class="reveal" style="margin-top:22px">
-      <a class="btn btn-primary" href="#contact" data-ar="اطلب عرض سعر" data-en="Request a quote">اطلب عرض سعر</a>
+      <a class="btn btn-primary quote-cta-dup" href="#contact" data-ar="اطلب عرض سعر" data-en="Request a quote">اطلب عرض سعر</a>
       <a class="btn btn-ghost" href="/industries/" data-ar="حلول القطاعات" data-en="Industry solutions">حلول القطاعات</a>
     </div>
   </div>
@@ -1520,30 +1518,16 @@ body.terms-locked,body.auth-locked{overflow:hidden}
   </div>
 </section>
 
-<section id="portal">
+<section class="band-mist" id="portal" style="padding:88px 0">
   <div class="wrap">
     <div class="section-head reveal">
       <div class="eyebrow" data-ar="لوحة العميل" data-en="Client portal">لوحة العميل</div>
-      <h2 data-ar="متابعة الطلبات من حسابكم موجودة الآن" data-en="Request tracking from your account is live">متابعة الطلبات من حسابكم موجودة الآن</h2>
-      <p data-ar="ارفعوا الطلب، تابعوا الحالة، وادفعوا العربون عند الحاجة — من لوحة واحدة." data-en="Raise a request, track status, and pay a deposit when needed — from one dashboard.">ارفعوا الطلب، تابعوا الحالة، وادفعوا العربون عند الحاجة — من لوحة واحدة.</p>
+      <h2 data-ar="متابعة الطلبات من حسابكم" data-en="Track requests from your account">متابعة الطلبات من حسابكم</h2>
+      <p data-ar="ارفعوا الطلب، تابعوا الحالة، وادفعوا العربون عند الحاجة — أو جرّبوا الوضع التجريبي قبل التسجيل الكامل." data-en="Raise a request, track status, and pay a deposit when needed — or try the sandbox before full signup.">ارفعوا الطلب، تابعوا الحالة، وادفعوا العربون عند الحاجة — أو جرّبوا الوضع التجريبي قبل التسجيل الكامل.</p>
     </div>
-    <div class="reveal">
+    <div class="reveal" style="display:flex;flex-wrap:wrap;gap:10px">
       <a class="btn btn-primary" href="/dashboard/" data-ar="فتح لوحة العميل" data-en="Open client dashboard">فتح لوحة العميل</a>
-      <a class="btn btn-ghost" href="#contact" data-ar="اطلبوا عرض سعر" data-en="Request a quote">اطلبوا عرض سعر</a>
-    </div>
-  </div>
-</section>
-
-<section class="band-mist" id="demo" style="padding:88px 0">
-  <div class="wrap">
-    <div class="section-head reveal">
-      <div class="eyebrow" data-ar="تجربة" data-en="Demo">تجربة</div>
-      <h2 data-ar="جرّبوا الوضع التجريبي في اللوحة" data-en="Try the sandbox in the dashboard">جرّبوا الوضع التجريبي في اللوحة</h2>
-      <p data-ar="وضع عميل للتصفح دون تعديل إداري — مناسب لفهم المسار قبل التسجيل الكامل." data-en="Client browse mode without admin edits — useful to understand the path before full signup.">وضع عميل للتصفح دون تعديل إداري — مناسب لفهم المسار قبل التسجيل الكامل.</p>
-    </div>
-    <div class="reveal">
-      <a class="btn btn-primary" href="/dashboard/?demo=1" data-ar="فتح التجربة" data-en="Open sandbox demo">فتح التجربة</a>
-      <a class="btn btn-ghost" href="/dashboard/" data-ar="دخول الحساب" data-en="Account login">دخول الحساب</a>
+      <a class="btn btn-ghost" href="/dashboard/?demo=1" data-ar="تجربة بدون تسجيل" data-en="Try without signup">تجربة بدون تسجيل</a>
     </div>
   </div>
 </section>
@@ -1611,20 +1595,21 @@ body.terms-locked,body.auth-locked{overflow:hidden}
     </div>
     <div class="reveal" style="margin-top:22px;text-align:center">
       <a class="btn btn-primary" href="/dashboard/?demo=1" data-ar="جرّبوا اللوحة الآن" data-en="Try the board now">جرّبوا اللوحة الآن</a>
-      <a class="btn btn-ghost" href="#contact" data-ar="اطلبوا جولة مباشرة" data-en="Request a live walkthrough">اطلبوا جولة مباشرة</a>
+      <a class="btn btn-ghost" href="#portal" data-ar="حساب العميل" data-en="Client account">حساب العميل</a>
     </div>
   </div>
 </section>
 
-<div class="mid-cta">
+<div class="mid-cta" role="region" aria-label="Next steps">
   <div class="wrap">
     <div>
       <h3 data-ar="مخزون أو نسخة مؤسسات — نبدأ بنطاق مكتوب" data-en="Inventory or Institution edition — we start with written scope">مخزون أو نسخة مؤسسات — نبدأ بنطاق مكتوب</h3>
-      <p data-ar="اطلبوا عرضاً، أو راجعوا المزايا ومركز المساعدة قبل الإرسال." data-en="Request a quote, or review features and the help center first.">اطلبوا عرضاً، أو راجعوا المزايا ومركز المساعدة قبل الإرسال.</p>
+      <p data-ar="راجعوا المزايا أو المساعدة، ثم أرسلوا الطلب من النموذج." data-en="Review features or help, then send the request from the form.">راجعوا المزايا أو المساعدة، ثم أرسلوا الطلب من النموذج.</p>
     </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
-      <a class="btn btn-ghost" href="/features/" style="border-color:rgba(255,255,255,.35);color:#fff" data-ar="صفحات المزايا" data-en="Feature pages">صفحات المزايا</a>
-      <a class="btn btn-ghost" href="/help/" style="border-color:rgba(255,255,255,.35);color:#fff" data-ar="المساعدة" data-en="Help">المساعدة</a>
+      <a class="btn btn-primary quote-cta-dup" href="#contact" data-ar="اطلب عرض سعر" data-en="Request a quote">اطلب عرض سعر</a>
+      <a class="btn btn-ghost" href="/features/" data-ar="صفحات المزايا" data-en="Feature pages">صفحات المزايا</a>
+      <a class="btn btn-ghost" href="/help/" data-ar="المساعدة" data-en="Help">المساعدة</a>
     </div>
   </div>
 </div>
@@ -1774,7 +1759,7 @@ body.terms-locked,body.auth-locked{overflow:hidden}
           <input type="text" required data-ar-placeholder="الاسم الكامل" data-en-placeholder="Full name" placeholder="الاسم الكامل" id="contactName" autocomplete="name">
         </label>
         <label class="field"><span data-ar="البريد الإلكتروني" data-en="Email">البريد الإلكتروني</span>
-          <input type="email" required data-ar-placeholder="name@example.com" data-en-placeholder="name@example.com" placeholder="name@example.com" id="contactEmail" autocomplete="email">
+          <input type="email" required data-ar-placeholder="you@domain.com" data-en-placeholder="you@domain.com" placeholder="you@domain.com" id="contactEmail" autocomplete="email">
         </label>
         <label class="field"><span data-ar="رقم الجوال" data-en="Phone">رقم الجوال</span>
           <input type="tel" required inputmode="tel" maxlength="20" data-ar-placeholder="05xxxxxxxx" data-en-placeholder="05xxxxxxxx" placeholder="05xxxxxxxx" id="contactPhone" autocomplete="tel">
