@@ -476,7 +476,7 @@ body.is-client .home-bar{
         <button type="button" class="lang-btn theme-icon-btn" data-theme-toggle aria-pressed="false" data-ar-aria="تبديل المظهر" data-en-aria="Switch look" aria-label="تبديل المظهر" title="تبديل المظهر"></button>
       </div>
     </div>
-    <p class="sub" data-ar="سجّل كعميل لمتابعة الطلبات والاقتراحات. التعديل مخصص لحساب الإدارة فقط." data-en="Sign in as a client to follow requests and suggestions. Editing is admin-only.">سجّل كعميل لمتابعة الطلبات والاقتراحات. التعديل مخصص لحساب الإدارة فقط.</p>
+    <p class="sub" data-ar="اطلبوا عرض سعر من الموقع بدون حساب. سجّلوا هنا فقط إذا تبي تتابعوا الطلبات من اللوحة." data-en="Request a quote on the site without an account. Sign in here only if you want to track requests in the dashboard.">اطلبوا عرض سعر من الموقع بدون حساب. سجّلوا هنا فقط إذا تبي تتابعوا الطلبات من اللوحة.</p>
     <div class="demo-banner" data-ar="التجربة الفورية = وضع عميل (بدون تعديل). الإدارة فقط بحساب خاص." data-en="Instant demo = client mode (no editing). Admin access is a private account only.">التجربة الفورية = وضع عميل (بدون تعديل). الإدارة فقط بحساب خاص.</div>
 
     <div class="tabs" id="authTabsBar">
@@ -543,6 +543,7 @@ body.is-client .home-bar{
     </div>
 
     <div class="login-actions">
+      <a class="btn btn-primary" href="/#contact" data-ar="اطلب عرض سعر بدون حساب" data-en="Request a quote without an account">اطلب عرض سعر بدون حساب</a>
       <button class="btn btn-brass" type="button" id="demoBtn" data-ar="تجربة فورية" data-en="Try demo">تجربة فورية</button>
       <a class="btn btn-ghost" href="/" data-ar="← الموقع الرئيسي" data-en="← Main site">← الموقع الرئيسي</a>
     </div>
@@ -1067,6 +1068,7 @@ body.is-client .home-bar{
       <label class="field"><span data-ar="ملاحظة إضافية (اختياري)" data-en="Extra note (optional)">ملاحظة إضافية (اختياري)</span>
         <textarea id="requestConfirmNote" data-ar-placeholder="كمية، مواصفات، أو موعد مطلوب" data-en-placeholder="Qty, specs, or needed date" placeholder="كمية، مواصفات، أو موعد مطلوب" style="min-height:80px"></textarea>
       </label>
+      <p class="hint" style="margin:0 0 10px;font-size:.82rem;color:var(--muted)" data-ar="المسودة تُحفظ على هذا الجهاز أثناء الكتابة — حتى لو أغلقتم الجوال." data-en="The draft is saved on this device while you type — even if you close the phone.">المسودة تُحفظ على هذا الجهاز أثناء الكتابة — حتى لو أغلقتم الجوال.</p>
       <label class="check" for="requestPurchaseTermsCheck">
         <input type="checkbox" id="requestPurchaseTermsCheck" required>
         <span class="check-text">
@@ -3161,6 +3163,32 @@ body.is-client .home-bar{
   let pendingClientRequest = null;
   let requestConfirmBusy = false;
   let requestConfirmSubmitToken = 0;
+  const REQUEST_CONFIRM_DRAFT_KEY = 'raseekh_request_confirm_draft_v1';
+
+  function requestConfirmDraftKey(draft){
+    const id = (draft && (draft.productId || draft.suggestionId || draft.id || draft.title)) || 'general';
+    return REQUEST_CONFIRM_DRAFT_KEY + ':' + String(id);
+  }
+  function saveRequestConfirmDraft(){
+    if (!pendingClientRequest) return;
+    try {
+      const payload = {
+        email: (document.getElementById('requestConfirmEmail') && document.getElementById('requestConfirmEmail').value) || '',
+        phone: (document.getElementById('requestConfirmPhone') && document.getElementById('requestConfirmPhone').value) || '',
+        company: (document.getElementById('requestConfirmCompany') && document.getElementById('requestConfirmCompany').value) || '',
+        note: (document.getElementById('requestConfirmNote') && document.getElementById('requestConfirmNote').value) || '',
+        savedAt: Date.now()
+      };
+      localStorage.setItem(requestConfirmDraftKey(pendingClientRequest), JSON.stringify(payload));
+    } catch (_) {}
+  }
+  function readRequestConfirmDraft(draft){
+    try { return JSON.parse(localStorage.getItem(requestConfirmDraftKey(draft)) || 'null'); }
+    catch (_) { return null; }
+  }
+  function clearRequestConfirmDraft(draft){
+    try { localStorage.removeItem(requestConfirmDraftKey(draft || pendingClientRequest || {})); } catch (_) {}
+  }
 
   function openRequestConfirm(draft){
     if (isDemo) {
@@ -3175,9 +3203,10 @@ body.is-client .home-bar{
     document.getElementById('requestConfirmTitle').textContent = draft.summary || draft.title || '';
     const emailEl = document.getElementById('requestConfirmEmail');
     const phoneEl = document.getElementById('requestConfirmPhone');
-    if (emailEl) emailEl.value = (currentUser && currentUser.email) || draft.email || '';
+    const savedDraft = readRequestConfirmDraft(draft) || {};
+    if (emailEl) emailEl.value = (currentUser && currentUser.email) || draft.email || savedDraft.email || '';
     const metaPhone = currentUser && currentUser.user_metadata && currentUser.user_metadata.phone;
-    phoneEl.value = metaPhone || draft.phone || '';
+    phoneEl.value = metaPhone || draft.phone || savedDraft.phone || '';
     const companyField = document.getElementById('requestConfirmCompanyField');
     const companyEl = document.getElementById('requestConfirmCompany');
     const needsCompany = draft && (draft.type === 'business' || draft.type === 'system');
@@ -3185,9 +3214,9 @@ body.is-client .home-bar{
     if (companyField) companyField.hidden = !needsCompany;
     if (companyEl) {
       companyEl.required = !!needsCompany;
-      companyEl.value = needsCompany ? (draft.company || metaCompany || '') : '';
+      companyEl.value = needsCompany ? (draft.company || metaCompany || savedDraft.company || '') : '';
     }
-    document.getElementById('requestConfirmNote').value = '';
+    document.getElementById('requestConfirmNote').value = savedDraft.note || '';
     const purchaseCheck = document.getElementById('requestPurchaseTermsCheck');
     if (purchaseCheck) {
       const remembered = !!(Terms && Terms.hasPurchaseAcceptedSession && Terms.hasPurchaseAcceptedSession());
@@ -3206,7 +3235,8 @@ body.is-client .home-bar{
     else phoneEl.focus();
   }
   function closeRequestConfirm(){
-    // Allow dismiss while delivery finishes in the background — avoid a stuck open modal.
+    // Keep typed draft when dismissing — phone lock / reopen should not wipe it.
+    saveRequestConfirmDraft();
     pendingClientRequest = null;
     setModalOpen(document.getElementById('requestConfirmModal'), false);
   }
@@ -3215,6 +3245,25 @@ body.is-client .home-bar{
   document.getElementById('requestConfirmModal').addEventListener('click', (e) => {
     if (e.target.id === 'requestConfirmModal') closeRequestConfirm();
   });
+  (function bindRequestConfirmDraftPersistence(){
+    const form = document.getElementById('requestConfirmForm');
+    if (!form) return;
+    let timer = null;
+    const schedule = () => {
+      if (timer) clearTimeout(timer);
+      timer = setTimeout(() => { timer = null; saveRequestConfirmDraft(); }, 350);
+    };
+    const flush = () => {
+      if (timer) { clearTimeout(timer); timer = null; }
+      saveRequestConfirmDraft();
+    };
+    form.addEventListener('input', schedule);
+    form.addEventListener('change', schedule);
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'hidden') flush();
+    });
+    window.addEventListener('pagehide', flush);
+  })();
   document.getElementById('requestConfirmForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     if (isDemo) {
@@ -3315,6 +3364,7 @@ body.is-client .home-bar{
       if (!saved) {
         return;
       }
+      clearRequestConfirmDraft(draft);
       pendingClientRequest = null;
       setModalOpen(document.getElementById('requestConfirmModal'), false);
       showToast(t('جاري إرسال الطلب...', 'Sending request...'));

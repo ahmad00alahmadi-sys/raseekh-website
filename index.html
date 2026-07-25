@@ -1239,7 +1239,7 @@ body.pay-paused .pay-public-entry{display:none!important}
     <div class="section-head reveal">
       <div class="eyebrow" data-ar="الآن في راسخ" data-en="Now on Raseekh">الآن في راسخ</div>
       <h2 data-ar="ما يعمل لكم من أول يوم" data-en="What works for you from day one">ما يعمل لكم من أول يوم</h2>
-      <p data-ar="مسار واحد: اطلبوا عرض سعر وتابعوا الحالة من حساب العميل." data-en="One path: request a quote and track status from the client account.">مسار واحد: اطلبوا عرض سعر وتابعوا الحالة من حساب العميل.</p>
+      <p data-ar="مسار واحد: اطلبوا عرض سعر من النموذج (بدون حساب). المتابعة من حساب العميل اختيارية." data-en="One path: request a quote from the form (no account needed). Tracking from a client account is optional.">مسار واحد: اطلبوا عرض سعر من النموذج (بدون حساب). المتابعة من حساب العميل اختيارية.</p>
     </div>
     <div class="now-rail reveal stagger">
       <article class="now-item">
@@ -1894,8 +1894,9 @@ body.pay-paused .pay-public-entry{display:none!important}
         <label class="field"><span data-ar="تفاصيل الطلب" data-en="Request details">تفاصيل الطلب</span>
           <textarea required data-ar-placeholder="صف طلبكم باختصار" data-en-placeholder="Briefly describe your request" placeholder="صف طلبكم باختصار" id="contactMsg"></textarea>
         </label>
+        <p class="hint-inline" id="contactDraftHint" style="margin:0 0 10px" data-ar="مسودتكم تُحفظ على هذا الجهاز تلقائياً — حتى لو أغلقتم الجوال أو المتصفح." data-en="Your draft is saved on this device automatically — even if you close the phone or browser.">مسودتكم تُحفظ على هذا الجهاز تلقائياً — حتى لو أغلقتم الجوال أو المتصفح.</p>
         <p class="hint-inline" id="contactTrustLine" style="margin:0 0 10px">
-          <span data-ar="لا نبيع بياناتكم · نستخدمها للرد على طلبكم فقط · راجعوا " data-en="We do not sell your data · used only to reply to your request · see ">لا نبيع بياناتكم · نستخدمها للرد على طلبكم فقط · راجعوا </span>
+          <span data-ar="لا حساب مطلوب لإرسال الطلب · لا نبيع بياناتكم · نستخدمها للرد فقط · راجعوا " data-en="No account needed to send · we do not sell your data · used only to reply · see ">لا حساب مطلوب لإرسال الطلب · لا نبيع بياناتكم · نستخدمها للرد فقط · راجعوا </span>
           <a href="/privacy/" data-ar="سياسة الخصوصية" data-en="Privacy Policy">سياسة الخصوصية</a>
           <span aria-hidden="true"> · </span>
           <a href="/terms/" id="openShortTermsLink" data-ar="ملخص الشروط" data-en="Terms summary">ملخص الشروط</a>
@@ -2347,12 +2348,38 @@ body.pay-paused .pay-public-entry{display:none!important}
     } catch (_) {}
   }
   const CONTACT_DRAFT_KEY = 'raseekh_contact_draft_v1';
+  const HERO_DRAFT_KEY = 'raseekh_hero_quote_draft_v1';
+  function readStorageJson(key){
+    try {
+      const local = localStorage.getItem(key);
+      if (local) return JSON.parse(local);
+    } catch (_) {}
+    // Migrate older session-only drafts so phone/browser close no longer wipes them.
+    try {
+      const session = sessionStorage.getItem(key);
+      if (session) {
+        localStorage.setItem(key, session);
+        sessionStorage.removeItem(key);
+        return JSON.parse(session);
+      }
+    } catch (_) {}
+    return null;
+  }
+  function writeStorageJson(key, value){
+    try { localStorage.setItem(key, JSON.stringify(value)); } catch (_) {}
+    try { sessionStorage.removeItem(key); } catch (_) {}
+  }
+  function removeStorageKey(key){
+    try { localStorage.removeItem(key); } catch (_) {}
+    try { sessionStorage.removeItem(key); } catch (_) {}
+  }
   function readContactDraft(){
-    try { return JSON.parse(sessionStorage.getItem(CONTACT_DRAFT_KEY) || 'null'); }
-    catch (_) { return null; }
+    const draft = readStorageJson(CONTACT_DRAFT_KEY);
+    return draft && typeof draft === 'object' ? draft : null;
   }
   function clearContactDraft(){
-    try { sessionStorage.removeItem(CONTACT_DRAFT_KEY); } catch (_) {}
+    removeStorageKey(CONTACT_DRAFT_KEY);
+    removeStorageKey(HERO_DRAFT_KEY);
   }
   function saveContactDraft(){
     try {
@@ -2364,9 +2391,22 @@ body.pay-paused .pay-public-entry{display:none!important}
         segment: getContactSegment(),
         type: (document.getElementById('contactType') && document.getElementById('contactType').value) || '',
         msg: (document.getElementById('contactMsg') && document.getElementById('contactMsg').value) || '',
-        other: (document.getElementById('contactOtherNote') && document.getElementById('contactOtherNote').value) || ''
+        other: (document.getElementById('contactOtherNote') && document.getElementById('contactOtherNote').value) || '',
+        savedAt: Date.now()
       };
-      sessionStorage.setItem(CONTACT_DRAFT_KEY, JSON.stringify(draft));
+      writeStorageJson(CONTACT_DRAFT_KEY, draft);
+    } catch (_) {}
+  }
+  function saveHeroDraft(){
+    try {
+      const typeEl = document.getElementById('heroQuoteType');
+      const msgEl = document.getElementById('heroQuoteMsg');
+      if (!typeEl && !msgEl) return;
+      writeStorageJson(HERO_DRAFT_KEY, {
+        type: (typeEl && typeEl.value) || '',
+        msg: (msgEl && msgEl.value) || '',
+        savedAt: Date.now()
+      });
     } catch (_) {}
   }
   function restoreContactDraft(){
@@ -2385,6 +2425,42 @@ body.pay-paused .pay-public-entry{display:none!important}
     setVal('contactOtherNote', draft.other);
     if (draft.segment) setContactSegment(draft.segment);
     syncCompanyFieldForSegment(getContactSegment());
+  }
+  function restoreHeroDraft(){
+    const draft = readStorageJson(HERO_DRAFT_KEY);
+    if (!draft || typeof draft !== 'object') return;
+    const typeEl = document.getElementById('heroQuoteType');
+    const msgEl = document.getElementById('heroQuoteMsg');
+    if (typeEl && draft.type) typeEl.value = String(draft.type);
+    if (msgEl && draft.msg != null && String(draft.msg).length) msgEl.value = String(draft.msg);
+  }
+  function openEasyRegisterFromQuote(){
+    const name = (document.getElementById('contactName') && document.getElementById('contactName').value.trim()) || '';
+    const email = (document.getElementById('contactEmail') && document.getElementById('contactEmail').value.trim()) || '';
+    const phone = (document.getElementById('contactPhone') && document.getElementById('contactPhone').value.trim()) || '';
+    openAuth('dashboard');
+    showAuthPanel('register');
+    const nameEl = document.getElementById('registerName');
+    const emailEl = document.getElementById('registerEmail');
+    const phoneEl = document.getElementById('registerPhone');
+    if (nameEl && name) nameEl.value = name;
+    if (emailEl && email) emailEl.value = email;
+    if (phoneEl && phone) phoneEl.value = phone;
+    try { (emailEl && !emailEl.value ? emailEl : (nameEl || emailEl || phoneEl)).focus(); } catch (_) {}
+  }
+  function bindGuestAccountBtn(id){
+    const btn = document.getElementById(id);
+    if (btn) btn.addEventListener('click', openEasyRegisterFromQuote);
+  }
+  function guestQuoteSuccessActionsHtml(){
+    return `
+      <button type="button" class="btn btn-ghost" id="contactCreateAccountBtn">${escapeHtml(t('إنشاء حساب اختياري للمتابعة','Optional: create an account to track'))}</button>
+      <a class="btn btn-ghost" href="/dashboard/">${escapeHtml(t('عندكم حساب؟ ادخلوا','Already have an account? Sign in'))}</a>`;
+  }
+  function guestQuoteRetryActionsHtml(){
+    return `
+      <button type="button" class="btn btn-primary" id="contactRetryQuoteBtn">${escapeHtml(t('إعادة إرسال الطلب','Resend request'))}</button>
+      <button type="button" class="btn btn-ghost" id="contactCreateAccountBtn">${escapeHtml(t('إنشاء حساب بسهولة (اختياري)','Create an account easily (optional)'))}</button>`;
   }
   function maintenanceBlocksSubmit(resultEl){
     if (!MAINTENANCE_MODE) return false;
@@ -2433,37 +2509,45 @@ body.pay-paused .pay-public-entry{display:none!important}
       }
       return { ok: false, offline: true };
     }
+    const nameFromForm = (document.getElementById('contactName') && document.getElementById('contactName').value.trim()) || '';
     const companyFromForm = (document.getElementById('contactCompany') && document.getElementById('contactCompany').value.trim()) || '';
     const companyFromMeta = (loggedInUser && loggedInUser.user_metadata && loggedInUser.user_metadata.company) || '';
     const company = (opts.company || companyFromForm || companyFromMeta || '').trim();
     const segment = opts.segment || getContactSegment();
     const needsCompany = segment === 'company' || segment === 'institution' || type === 'business';
-    if (!loggedInUser || (needsCompany && !company) || !Catalog || !Catalog.addSharedRequest) {
+    const phoneFromMeta = (loggedInUser && loggedInUser.user_metadata && loggedInUser.user_metadata.phone) || '';
+    const phoneFromForm = (document.getElementById('contactPhone') && document.getElementById('contactPhone').value.trim()) || '';
+    const phone = phoneFromForm || phoneFromMeta;
+    const emailFromForm = (document.getElementById('contactEmail') && document.getElementById('contactEmail').value.trim()) || '';
+    const email = emailFromForm || (loggedInUser && loggedInUser.email) || '';
+    const fullName = nameFromForm
+      || (loggedInUser && loggedInUser.user_metadata && loggedInUser.user_metadata.full_name)
+      || '';
+    const guestReady = !!(fullName && isUsableEmail(email) && isUsablePhone(phone) && (!needsCompany || company));
+    // Guests can send quotes with name/email/phone — no account required.
+    if ((!loggedInUser && !guestReady) || (needsCompany && !company) || !Catalog || !Catalog.addSharedRequest) {
       requestFromCatalog({ type, message, company, segment });
       return { ok: false, redirected: true };
     }
     const typeTitle = Catalog.requestTypeLabel
       ? Catalog.requestTypeLabel(type, currentLang)
       : type;
-    const fullName = (loggedInUser.user_metadata && loggedInUser.user_metadata.full_name) || '';
-    const phoneFromMeta = (loggedInUser.user_metadata && loggedInUser.user_metadata.phone) || '';
-    const phoneFromForm = (document.getElementById('contactPhone') && document.getElementById('contactPhone').value.trim()) || '';
-    const phone = phoneFromForm || phoneFromMeta;
-    const emailFromForm = (document.getElementById('contactEmail') && document.getElementById('contactEmail').value.trim()) || '';
-    const email = emailFromForm || loggedInUser.email || '';
     // Both email and phone are required for every quote request.
-    if (!email || !isUsableEmail(email) || !isUsablePhone(phone)) {
+    if (!email || !isUsableEmail(email) || !isUsablePhone(phone) || !fullName) {
       requestFromCatalog({ type, message, company, segment });
       const resultEl = document.getElementById('contactResult');
       if (resultEl) {
         resultEl.style.color = 'var(--danger)';
-        if (!email || !isUsableEmail(email)) {
+        if (!fullName) {
+          resultEl.textContent = t('أكملوا الاسم ثم أرسلوا الطلب', 'Complete your name, then send the request');
+        } else if (!email || !isUsableEmail(email)) {
           resultEl.textContent = t('أدخلوا بريداً إلكترونياً صالحاً (ليس وهمياً)', 'Enter a real, valid email address');
         } else {
           resultEl.textContent = t('أكملوا البريد ورقم الجوال ثم أرسلوا الطلب', 'Complete email and phone, then send the request');
         }
       }
-      if (!email || !isUsableEmail(email)) document.getElementById('contactEmail') && document.getElementById('contactEmail').focus();
+      if (!fullName) document.getElementById('contactName') && document.getElementById('contactName').focus();
+      else if (!email || !isUsableEmail(email)) document.getElementById('contactEmail') && document.getElementById('contactEmail').focus();
       else document.getElementById('contactPhone') && document.getElementById('contactPhone').focus();
       return { ok: false, redirected: true, needContact: true };
     }
@@ -2481,11 +2565,11 @@ body.pay-paused .pay-public-entry{display:none!important}
         email,
         company,
         segment,
-        userId: loggedInUser.id || '',
+        userId: (loggedInUser && loggedInUser.id) || '',
         title: typeTitle,
         message,
         type,
-        source: 'client',
+        source: loggedInUser ? 'client' : 'site',
         status: 'new'
       });
       let delivery = null;
@@ -2498,25 +2582,35 @@ body.pay-paused .pay-public-entry{display:none!important}
       if (resultEl) {
         resultEl.style.color = ok ? 'var(--ok)' : (savedOk ? 'var(--muted)' : 'var(--danger)');
         resultEl.textContent = !savedOk
-          ? t('تعذّر الإرسال — أكملوا النموذج أدناه', 'Could not send — complete the form below')
+          ? t('تعذّر الإرسال — أكملوا النموذج أدناه أو أعيدوا المحاولة', 'Could not send — complete the form below or retry')
           : (delivered
             ? quoteSuccessMessage()
             : (pending
-              ? t('استلمنا الطلب محلياً — جاري تفعيل إشعار الإدارة', 'Request saved locally — admin notify is activating')
-              : t('حُفظ الطلب محلياً — تابعوه من حسابكم أو أعيدوا الإرسال', 'Request saved locally — track it in your account or resend')));
+              ? t('استلمنا الطلب — إشعار الإدارة قيد التفعيل. لا يلزم حساب.', 'Request received — admin notify is activating. No account needed.')
+              : (loggedInUser
+                ? t('حُفظ الطلب محلياً — تابعوه من حسابكم أو أعيدوا الإرسال', 'Request saved locally — track it in your account or resend')
+                : t('حُفظ الطلب على هذا الجهاز — أعيدوا الإرسال عند عودة الشبكة. لا يلزم حساب.', 'Request saved on this device — resend when back online. No account needed.'))));
       }
       if ((ok || savedOk) && successActions) {
         successActions.style.display = 'flex';
         successActions.style.gap = '8px';
         successActions.style.flexWrap = 'wrap';
         const mailto = ok ? clientConfirmMailtoHtml(email, type, message) : '';
-        successActions.innerHTML = `<a class="btn btn-primary" href="/dashboard/">${escapeHtml(t('متابعة الطلب من حسابي','Track request in my account'))}</a>${mailto}${ok ? quoteNextStepsNoteHtml() : ''}`;
+        if (loggedInUser) {
+          successActions.innerHTML = `<a class="btn btn-primary" href="/dashboard/">${escapeHtml(t('متابعة الطلب من حسابي','Track request in my account'))}</a>${mailto}${ok ? quoteNextStepsNoteHtml() : ''}`;
+        } else {
+          successActions.innerHTML = `${guestQuoteSuccessActionsHtml()}${mailto}${ok ? quoteNextStepsNoteHtml() : ''}`;
+          bindGuestAccountBtn('contactCreateAccountBtn');
+        }
       }
       // Keep draft on soft/local failure so users can resend.
       if (ok) {
         storeQuoteFingerprint(email, type, message);
+        clearContactDraft();
         const hq = document.getElementById('heroQuoteMsg');
         if (hq) hq.value = '';
+      } else {
+        saveContactDraft();
       }
       return { ok, saved: savedOk, delivered, pending };
     } catch (_) {
@@ -3681,14 +3775,14 @@ body.pay-paused .pay-public-entry{display:none!important}
       if (ok) result.classList.add('ok-pulse');
       const successActions = document.getElementById('contactSuccessActions');
       result.textContent = !saved
-        ? t('تعذّر إيصال الطلب الآن. حاولوا مرة أخرى أو تواصلوا لاحقاً.', 'Could not deliver the request now. Please try again later.')
+        ? t('تعذّر إيصال الطلب الآن. المسودة محفوظة — أعيدوا الإرسال أو أنشئوا حساباً اختيارياً.', 'Could not deliver the request now. Draft is saved — resend, or optionally create an account.')
         : (ok
           ? quoteSuccessMessage()
           : (softPending
-            ? t('استلمنا طلبكم — إشعار الإدارة قيد التفعيل. يمكنكم المتابعة من الحساب.', 'We received your request — admin notify is activating. You can track it from your account.')
+            ? t('استلمنا طلبكم — إشعار الإدارة قيد التفعيل. لا يلزم حساب للمتابعة عبر بريدكم.', 'We received your request — admin notify is activating. No account needed; we reply on your email.')
             : (accountLocal
               ? t('حُفظ الطلب في حسابكم محلياً — تعذّر الإيصال للإدارة الآن. تابعوه من حسابي أو أعيدوا الإرسال.', 'Request saved locally in your account — could not reach admin now. Track it in My account or resend.')
-              : t('تعذّر إيصال الطلب الآن. أبقوا النموذج وحاولوا مرة أخرى أو أنشئوا حساباً.', 'Could not deliver the request now. Keep the form and retry, or create an account.'))));
+              : t('تعذّر الإيصال الآن. مسودتكم محفوظة على الجهاز — أعيدوا الإرسال. الحساب اختياري.', 'Could not deliver now. Your draft is saved on this device — please resend. Account is optional.'))));
       if (successActions) {
         if (ok || softPending || accountLocal) {
           successActions.style.display = 'flex';
@@ -3699,22 +3793,27 @@ body.pay-paused .pay-public-entry{display:none!important}
           if (loggedInUser) {
             successActions.innerHTML = `<a class="btn btn-primary" href="/dashboard/">${escapeHtml(t('متابعة الطلب من حسابي','Track request in my account'))}</a>${mailto}${nextSteps}`;
           } else {
-            successActions.innerHTML = `
-              <button type="button" class="btn btn-primary" id="contactCreateAccountBtn">${escapeHtml(t('إنشاء حساب للمتابعة','Create an account to track'))}</button>
-              <a class="btn btn-ghost" href="/dashboard/">${escapeHtml(t('حساب العميل','Client account'))}</a>
-              ${mailto}${nextSteps}`;
-            const createBtn = document.getElementById('contactCreateAccountBtn');
-            if (createBtn) createBtn.addEventListener('click', () => { openAuth('dashboard'); showAuthPanel('register'); });
+            successActions.innerHTML = `${guestQuoteSuccessActionsHtml()}${mailto}${nextSteps}`;
+            bindGuestAccountBtn('contactCreateAccountBtn');
           }
         } else {
           successActions.style.display = 'flex';
           successActions.style.gap = '8px';
           successActions.style.flexWrap = 'wrap';
-          successActions.innerHTML = loggedInUser
-            ? `<a class="btn btn-primary" href="/dashboard/">${escapeHtml(t('فتح حسابي','Open my account'))}</a>`
-            : `<button type="button" class="btn btn-primary" id="contactCreateAccountBtn">${escapeHtml(t('إنشاء حساب ثم أرسلوا مجدداً','Create an account, then retry'))}</button>`;
-          const createBtn = document.getElementById('contactCreateAccountBtn');
-          if (createBtn) createBtn.addEventListener('click', () => { openAuth('dashboard'); showAuthPanel('register'); });
+          if (loggedInUser) {
+            successActions.innerHTML = `<a class="btn btn-primary" href="/dashboard/">${escapeHtml(t('فتح حسابي','Open my account'))}</a>
+              <button type="button" class="btn btn-ghost" id="contactRetryQuoteBtn">${escapeHtml(t('إعادة إرسال الطلب','Resend request'))}</button>`;
+          } else {
+            successActions.innerHTML = guestQuoteRetryActionsHtml();
+            bindGuestAccountBtn('contactCreateAccountBtn');
+          }
+          const retryBtn = document.getElementById('contactRetryQuoteBtn');
+          if (retryBtn) {
+            retryBtn.addEventListener('click', () => {
+              const form = document.getElementById('contactForm');
+              if (form) form.requestSubmit();
+            });
+          }
         }
       }
       if (ok) {
@@ -3755,15 +3854,37 @@ body.pay-paused .pay-public-entry{display:none!important}
 
   (function contactDraftPersistence(){
     const form = document.getElementById('contactForm');
-    if (!form) return;
+    const heroForm = document.getElementById('heroQuoteForm');
+    if (!form && !heroForm) return;
     restoreContactDraft();
+    restoreHeroDraft();
     let timer = null;
     const schedule = () => {
       if (timer) clearTimeout(timer);
-      timer = setTimeout(() => { timer = null; saveContactDraft(); }, 400);
+      timer = setTimeout(() => {
+        timer = null;
+        saveContactDraft();
+        saveHeroDraft();
+      }, 400);
     };
-    form.addEventListener('input', schedule);
-    form.addEventListener('change', schedule);
+    const flush = () => {
+      if (timer) { clearTimeout(timer); timer = null; }
+      saveContactDraft();
+      saveHeroDraft();
+    };
+    if (form) {
+      form.addEventListener('input', schedule);
+      form.addEventListener('change', schedule);
+    }
+    if (heroForm) {
+      heroForm.addEventListener('input', schedule);
+      heroForm.addEventListener('change', schedule);
+    }
+    // Phone lock / browser kill: flush immediately so the draft survives.
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'hidden') flush();
+    });
+    window.addEventListener('pagehide', flush);
   })();
   const payDetailsStep = document.getElementById('payDetailsStep');
   const paymentFormStep = document.getElementById('paymentFormStep');
