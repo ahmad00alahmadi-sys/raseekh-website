@@ -727,7 +727,7 @@ body.is-client .home-bar{
         </div>
         <a class="btn btn-ghost" href="/" data-ar="← الرئيسية" data-en="← Home">← الرئيسية</a>
       </div>
-      <div class="client-note" data-ar="اختاروا خدمة ظاهرة ثم اضغطوا «إضافة إلى طلباتي». بعد التأكيد يظهر الطلب مباشرة في طلباتي." data-en="Pick a visible service, then tap “Add to My requests”. After confirm it appears in My requests.">اختاروا خدمة ظاهرة ثم اضغطوا «إضافة إلى طلباتي». بعد التأكيد يظهر الطلب مباشرة في طلباتي.</div>
+      <div class="client-note" data-ar="اختاروا خدمة ظاهرة ثم «إضافة إلى طلباتي». إن ظهر منتج بشارة «خاص بكم» فهو مخصص لحسابكم فقط." data-en="Pick a visible service then “Add to My requests”. A “Private for you” badge means it is only for your account.">اختاروا خدمة ظاهرة ثم «إضافة إلى طلباتي». إن ظهر منتج بشارة «خاص بكم» فهو مخصص لحسابكم فقط.</div>
       <div class="panel">
         <input type="search" id="clientCatalogSearch" style="margin-bottom:14px;padding:12px 14px;width:100%;border:1px solid var(--line);border-radius:10px" data-ar-placeholder="ابحث..." data-en-placeholder="Search..." placeholder="ابحث...">
         <div class="browse-grid" id="clientCatalogGrid"></div>
@@ -877,7 +877,7 @@ body.is-client .home-bar{
         </div>
         <button class="btn btn-primary" id="addProductBtn" data-ar="+ خدمة جديدة" data-en="+ New service">+ خدمة جديدة</button>
       </div>
-      <div class="client-note" data-ar="المالك وحده يضيف ويعدّل الخدمات. العملاء يطلبون عرض سعر فقط. الأجهزة المادية: للرياض فقط ومخفية عن العميل عمداً (لا تظهر في الكتالوج العام)." data-en="Only the owner adds/edits services. Clients request quotes only. Physical devices: Riyadh-only and intentionally hidden from clients (not shown in the public catalog).">المالك وحده يضيف ويعدّل الخدمات. العملاء يطلبون عرض سعر فقط. الأجهزة المادية: للرياض فقط ومخفية عن العميل عمداً (لا تظهر في الكتالوج العام).</div>
+      <div class="client-note" data-ar="المالك وحده يضيف ويعدّل الخدمات. للطلب الخاص: فعّلوا الظهور واكتبوا بريد العميل فقط، ويمكن إخفاؤه تلقائياً بعد أول طلب. الأجهزة المادية للرياض تبقى مخفية عن الكتالوج العام." data-en="Only the owner adds/edits services. For a private offer: enable visibility and enter that client’s email only; optional auto-hide after their first request. Riyadh hardware stays hidden from the public catalog.">المالك وحده يضيف ويعدّل الخدمات. للطلب الخاص: فعّلوا الظهور واكتبوا بريد العميل فقط، ويمكن إخفاؤه تلقائياً بعد أول طلب. الأجهزة المادية للرياض تبقى مخفية عن الكتالوج العام.</div>
       <div class="panel">
         <div class="toolbar">
           <h3 data-ar="كتالوج الخدمات" data-en="Service catalog">كتالوج الخدمات</h3>
@@ -1011,7 +1011,15 @@ body.is-client .home-bar{
       </label>
       <label class="check" style="align-items:center;gap:8px;margin:0">
         <input type="checkbox" id="pClientVisible" checked>
-        <span data-ar="ظاهر للعميل في الموقع والحساب" data-en="Visible to clients on site & account">ظاهر للعميل في الموقع والحساب</span>
+        <span data-ar="ظاهر للعميل" data-en="Visible to clients">ظاهر للعميل</span>
+      </label>
+      <label class="field" id="pAssignedEmailField">
+        <span data-ar="خاص بعميل واحد (بريد العميل) — اتركه فارغاً للجميع" data-en="Private to one client (client email) — leave empty for everyone">خاص بعميل واحد (بريد العميل) — اتركه فارغاً للجميع</span>
+        <input type="email" id="pAssignedEmail" data-ar-placeholder="client@example.com" data-en-placeholder="client@example.com" placeholder="client@example.com" autocomplete="off">
+      </label>
+      <label class="check" style="align-items:center;gap:8px;margin:0" id="pRemoveAfterOrderWrap">
+        <input type="checkbox" id="pRemoveAfterOrder">
+        <span data-ar="إخفاء تلقائي بعد أول طلب من هذا العميل" data-en="Auto-hide after this client’s first request">إخفاء تلقائي بعد أول طلب من هذا العميل</span>
       </label>
       <input type="text" id="pRegion" data-ar-placeholder="التغطية (online / riyadh)" data-en-placeholder="Coverage (online / riyadh)" placeholder="التغطية (online / riyadh)">
       <input type="number" id="pPrice" min="0" step="0.01" data-ar-placeholder="السعر الثابت (إن وجد)" data-en-placeholder="Fixed price (if any)" placeholder="السعر الثابت (إن وجد)">
@@ -1310,7 +1318,7 @@ body.is-client .home-bar{
       }
       return;
     }
-    products = Catalog.getClientProducts();
+    products = Catalog.getClientProducts(currentUser && currentUser.email);
   }
   function saveProducts(opts){
     if (!requireAdmin('saveProducts')) return null;
@@ -2669,7 +2677,7 @@ body.is-client .home-bar{
     }
     grid.innerHTML = list.map(p => `
       <article class="browse-card">
-        <div style="color:var(--copper);font-size:.75rem;font-weight:700">${escapeHtml(categoryLabel(p))}</div>
+        <div style="color:var(--copper);font-size:.75rem;font-weight:700">${escapeHtml(categoryLabel(p))}${p.assignedEmail || p.privateOnly ? ' · ' + escapeHtml(t('خاص بكم','Private for you')) : ''}</div>
         <h4>${escapeHtml(productLabel(p))}</h4>
         <p>${escapeHtml((currentLang === 'en' && p.desc_en) ? p.desc_en : (p.desc || t('متاح للطلب','Available to order')))}</p>
         <div class="price">${escapeHtml(priceLabel(p))}</div>
@@ -3325,6 +3333,15 @@ body.is-client .home-bar{
       } else {
         showToast(t('حُفظ في طلباتي محلياً — يمكن إعادة الإرسال لاحقاً', 'Saved in My requests locally — you can resend later'));
       }
+      if (draft && draft.productId && Catalog && Catalog.hideProductAfterClientOrder) {
+        try {
+          const hidden = Catalog.hideProductAfterClientOrder(draft.productId, email);
+          if (hidden && hidden.ok) {
+            loadProducts();
+            showToast(t('تم إخفاء المنتج الخاص بعد الإضافة', 'Private product hidden after add'));
+          }
+        } catch (_) {}
+      }
       renderAll();
       switchPage('requests');
     } catch (_) {
@@ -3513,9 +3530,15 @@ body.is-client .home-bar{
       return;
     }
     const visibilityLabel = (p) => {
-      if (p.client === false) return t('مخفي عن العميل · الرياض فقط', 'Hidden from clients · Riyadh only');
-      if (p.kind === 'service') return t('ظاهر للعميل · خدمة', 'Visible · service');
-      return p.stock <= 5 ? t('ظاهر · مخزون منخفض', 'Visible · low stock') : t('ظاهر · متوفر', 'Visible · in stock');
+      if (p.client === false) return t('مخفي عن العملاء', 'Hidden from clients');
+      const assigned = String(p.assignedEmail || '').trim();
+      if (assigned) {
+        return (p.removeAfterOrder
+          ? t('خاص · يُخفى بعد الطلب · ', 'Private · hide after order · ')
+          : t('خاص بعميل · ', 'Private to client · ')) + assigned;
+      }
+      if (p.kind === 'service') return t('ظاهر للجميع · خدمة', 'Visible to all · service');
+      return p.stock <= 5 ? t('ظاهر للجميع · مخزون منخفض', 'Visible to all · low stock') : t('ظاهر للجميع · متوفر', 'Visible to all · in stock');
     };
     const stockLabel = (p) => {
       if (p.kind === 'service' || p.priceMode === 'quote') return t('غير منطبق', 'N/A');
@@ -3632,6 +3655,8 @@ body.is-client .home-bar{
       const quote = Catalog && Catalog.isQuote ? Catalog.isQuote(p) : !(Number(p.price) > 0);
       document.getElementById('pQuote').checked = quote;
       document.getElementById('pClientVisible').checked = p.client !== false;
+      document.getElementById('pAssignedEmail').value = p.assignedEmail || '';
+      document.getElementById('pRemoveAfterOrder').checked = !!p.removeAfterOrder;
       document.getElementById('pRegion').value = p.region || (p.kind === 'service' ? 'online' : 'riyadh');
       document.getElementById('pPrice').value = quote ? '' : p.price;
       document.getElementById('pPrice').disabled = quote;
@@ -3642,14 +3667,32 @@ body.is-client .home-bar{
       document.getElementById('pKind').value = 'service';
       document.getElementById('pQuote').checked = true;
       document.getElementById('pClientVisible').checked = true;
+      document.getElementById('pAssignedEmail').value = '';
+      document.getElementById('pRemoveAfterOrder').checked = false;
       document.getElementById('pRegion').value = 'online';
       document.getElementById('pPrice').disabled = true;
     }
+    syncPrivateProductFields();
     setModalOpen(modal, true);
     setTimeout(() => {
       try { document.getElementById('pName').focus(); } catch (_) {}
     }, 30);
   }
+  function syncPrivateProductFields(){
+    const visible = document.getElementById('pClientVisible');
+    const emailField = document.getElementById('pAssignedEmailField');
+    const removeWrap = document.getElementById('pRemoveAfterOrderWrap');
+    const on = !!(visible && visible.checked);
+    if (emailField) emailField.style.opacity = on ? '1' : '.55';
+    if (removeWrap) removeWrap.style.opacity = on ? '1' : '.55';
+    const emailEl = document.getElementById('pAssignedEmail');
+    const removeEl = document.getElementById('pRemoveAfterOrder');
+    if (emailEl) emailEl.disabled = !on;
+    if (removeEl) removeEl.disabled = !on;
+  }
+  const pClientVisibleEl = document.getElementById('pClientVisible');
+  if (pClientVisibleEl) pClientVisibleEl.addEventListener('change', syncPrivateProductFields);
+
   document.getElementById('pQuote').addEventListener('change', () => {
     const quote = document.getElementById('pQuote').checked;
     document.getElementById('pPrice').disabled = quote;
@@ -3685,8 +3728,19 @@ body.is-client .home-bar{
       stock: parseInt(document.getElementById('pStock').value, 10) || 0,
       kind: kind,
       client: document.getElementById('pClientVisible').checked,
+      assignedEmail: (document.getElementById('pAssignedEmail').value || '').trim().toLowerCase(),
+      removeAfterOrder: !!document.getElementById('pRemoveAfterOrder').checked,
       region: (document.getElementById('pRegion').value || '').trim() || (kind === 'service' ? 'online' : 'riyadh')
     };
+    if (!payload.client) {
+      payload.assignedEmail = '';
+      payload.removeAfterOrder = false;
+    }
+    if (payload.assignedEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(payload.assignedEmail)) {
+      showToast(t('بريد العميل الخاص غير صالح', 'Private client email is invalid'));
+      document.getElementById('pAssignedEmail').focus();
+      return;
+    }
     form.dataset.submitting = '1';
     if (submitBtn) {
       submitBtn.disabled = true;
