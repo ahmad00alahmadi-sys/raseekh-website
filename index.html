@@ -410,9 +410,9 @@ body.lang-en .footer-brand{font-family:'Outfit',sans-serif}
 <section id="products">
   <div class="wrap">
     <div class="section-head reveal">
-      <div class="eyebrow" data-ar="كتالوج العميل" data-en="Client catalog">كتالوج العميل</div>
-      <h2 data-ar="نفس المنتجات والخدمات الظاهرة لديكم" data-en="The same products and services you manage">نفس المنتجات والخدمات الظاهرة لديكم</h2>
-      <p data-ar="الكتالوج أدناه هو ما يراه العميل: أجهزة، صيانة، وخدمات برمجة بأسعار واضحة." data-en="The catalog below is what clients see: devices, maintenance, and programming services with clear prices.">الكتالوج أدناه هو ما يراه العميل: أجهزة، صيانة، وخدمات برمجة بأسعار واضحة.</p>
+      <div class="eyebrow" data-ar="المنتجات والخدمات" data-en="Products & services">المنتجات والخدمات</div>
+      <h2 data-ar="اختر منتجاً أو خدمة واطلبها مباشرة" data-en="Choose a product or service and request it">اختر منتجاً أو خدمة واطلبها مباشرة</h2>
+      <p data-ar="أجهزة، صيانة مواقع، وخدمات برمجة بأسعار واضحة — جاهزة للطلب." data-en="Devices, website maintenance, and programming services with clear prices — ready to request.">أجهزة، صيانة مواقع، وخدمات برمجة بأسعار واضحة — جاهزة للطلب.</p>
     </div>
     <div class="products-grid reveal" id="clientProductsGrid"></div>
   </div>
@@ -755,7 +755,13 @@ body.lang-en .footer-brand{font-family:'Outfit',sans-serif}
       locked.style.display = 'none';
       box.style.display = 'block';
       document.getElementById('accountBtn').textContent = t('حسابي', 'My account');
-      if (user.user_metadata?.full_name) document.getElementById('payName').value = user.user_metadata.full_name;
+      const fullName = user.user_metadata && user.user_metadata.full_name;
+      const phone = user.user_metadata && user.user_metadata.phone;
+      if (fullName) {
+        document.getElementById('payName').value = fullName;
+        if (!document.getElementById('contactName').value) document.getElementById('contactName').value = fullName;
+      }
+      if (phone && !document.getElementById('contactPhone').value) document.getElementById('contactPhone').value = phone;
     } else {
       locked.style.display = 'flex';
       box.style.display = 'none';
@@ -838,16 +844,40 @@ body.lang-en .footer-brand{font-family:'Outfit',sans-serif}
       company: document.getElementById('contactCompany').value.trim(),
       type: document.getElementById('contactType').value,
       message: document.getElementById('contactMsg').value.trim(),
-      at: new Date().toISOString()
+      at: new Date().toISOString(),
+      email: loggedInUser && loggedInUser.email ? loggedInUser.email : '',
+      userId: loggedInUser && loggedInUser.id ? loggedInUser.id : ''
     };
     try {
       const prev = JSON.parse(localStorage.getItem('raseekh_contact_leads') || '[]');
       prev.unshift(payload);
       localStorage.setItem('raseekh_contact_leads', JSON.stringify(prev.slice(0, 50)));
     } catch (_) {}
+    if (Catalog && Catalog.addSharedRequest) {
+      Catalog.addSharedRequest({
+        name: payload.name,
+        phone: payload.phone,
+        company: payload.company,
+        email: payload.email,
+        userId: payload.userId,
+        title: payload.type,
+        message: payload.message,
+        type: payload.type,
+        source: loggedInUser ? 'client' : 'site',
+        status: 'new'
+      });
+    }
     result.style.color = 'var(--ok)';
-    result.textContent = t('تم إرسال طلبكم بنجاح', 'Your request was sent successfully');
+    result.textContent = loggedInUser
+      ? t('تم إرسال طلبكم — تابعوه من حساب العميل', 'Request sent — track it in your client account')
+      : t('تم إرسال طلبكم بنجاح', 'Your request was sent successfully');
     e.target.reset();
+    if (loggedInUser) {
+      const fullName = loggedInUser.user_metadata && loggedInUser.user_metadata.full_name;
+      const phone = loggedInUser.user_metadata && loggedInUser.user_metadata.phone;
+      if (fullName) document.getElementById('contactName').value = fullName;
+      if (phone) document.getElementById('contactPhone').value = phone;
+    }
   });
 
   const payDetailsStep = document.getElementById('payDetailsStep');

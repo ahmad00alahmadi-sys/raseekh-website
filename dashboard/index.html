@@ -577,7 +577,14 @@ body.is-admin .client-only{display:none!important}
     <form class="form" id="productForm">
       <input type="text" id="pName" required data-ar-placeholder="اسم المنتج" data-en-placeholder="Product name" placeholder="اسم المنتج">
       <input type="text" id="pNameEn" data-ar-placeholder="الاسم بالإنجليزية (اختياري)" data-en-placeholder="English name (optional)" placeholder="الاسم بالإنجليزية (اختياري)">
-      <input type="text" id="pCategory" data-ar-placeholder="القسم (مثال: أجهزة / برمجة / خدمات)" data-en-placeholder="Category (e.g. Devices / Programming / Services)" placeholder="القسم (مثال: أجهزة / برمجة / خدمات)">
+      <input type="text" id="pCategory" data-ar-placeholder="القسم بالعربية" data-en-placeholder="Category in Arabic" placeholder="القسم بالعربية">
+      <input type="text" id="pCategoryEn" data-ar-placeholder="القسم بالإنجليزية" data-en-placeholder="Category in English" placeholder="القسم بالإنجليزية">
+      <textarea id="pDesc" data-ar-placeholder="الوصف للعميل" data-en-placeholder="Client-facing description" placeholder="الوصف للعميل" style="min-height:70px"></textarea>
+      <textarea id="pDescEn" data-ar-placeholder="الوصف بالإنجليزية" data-en-placeholder="Description in English" placeholder="الوصف بالإنجليزية" style="min-height:70px"></textarea>
+      <select id="pKind">
+        <option value="product" data-ar="منتج" data-en="Product">منتج</option>
+        <option value="service" data-ar="خدمة" data-en="Service">خدمة</option>
+      </select>
       <input type="number" id="pPrice" min="0" step="0.01" required data-ar-placeholder="السعر" data-en-placeholder="Price" placeholder="السعر">
       <input type="number" id="pStock" min="0" step="1" required data-ar-placeholder="المخزون" data-en-placeholder="Stock" placeholder="المخزون">
       <button class="btn btn-primary" type="submit" data-ar="حفظ المنتج" data-en="Save product">حفظ المنتج</button>
@@ -637,7 +644,7 @@ body.is-admin .client-only{display:none!important}
   const Catalog = window.RaseekhCatalog;
   const ADMIN_SALES_KEY = 'raseekh_admin_sales_v1';
   const ADMIN_STORE_KEY = 'raseekh_admin_store_v1';
-  const CLIENT_REQUESTS_KEY = 'raseekh_all_client_requests_v1';
+  const CLIENT_REQUESTS_KEY = (Catalog && Catalog.CLIENT_REQUESTS_KEY) || 'raseekh_all_client_requests_v1';
 
   function t(ar, en){ return currentLang === 'ar' ? ar : en; }
   function uid(){ return 'id-' + Date.now() + '-' + Math.random().toString(36).slice(2,7); }
@@ -685,17 +692,31 @@ body.is-admin .client-only{display:none!important}
   }
 
   function loadProducts(){
-    if (Catalog) {
+    if (!Catalog) { products = []; return; }
+    if (isAdminUser) {
       products = Catalog.loadAdminProducts();
       return;
     }
-    products = [];
+    products = Catalog.getClientProducts();
   }
   function saveProducts(){
     if (!requireAdmin('saveProducts')) return;
     if (Catalog) Catalog.saveAdminProducts(products);
   }
+  function migrateLegacyKey(prefix, targetKey){
+    try {
+      const existing = localStorage.getItem(targetKey);
+      if (existing) return;
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (!key || key.indexOf(prefix) !== 0) continue;
+        const val = localStorage.getItem(key);
+        if (val) { localStorage.setItem(targetKey, val); return; }
+      }
+    } catch (_) {}
+  }
   function loadSales(){
+    migrateLegacyKey('raseekh_sales_', ADMIN_SALES_KEY);
     try { sales = JSON.parse(localStorage.getItem(ADMIN_SALES_KEY) || '[]'); }
     catch (_) { sales = []; }
   }
@@ -704,6 +725,7 @@ body.is-admin .client-only{display:none!important}
     localStorage.setItem(ADMIN_SALES_KEY, JSON.stringify(sales));
   }
   function loadStore(){
+    migrateLegacyKey('raseekh_store_', ADMIN_STORE_KEY);
     try { store = Object.assign({ name: 'راسخ', phone: '' }, JSON.parse(localStorage.getItem(ADMIN_STORE_KEY) || '{}')); }
     catch (_) { store = { name: 'راسخ', phone: '' }; }
   }
@@ -712,26 +734,47 @@ body.is-admin .client-only{display:none!important}
     localStorage.setItem(ADMIN_STORE_KEY, JSON.stringify(store));
   }
   function loadClientRequests(){
+    if (Catalog && Catalog.getSharedRequests) {
+      clientRequests = Catalog.getSharedRequests();
+      return;
+    }
     try { clientRequests = JSON.parse(localStorage.getItem(CLIENT_REQUESTS_KEY) || '[]'); }
     catch (_) { clientRequests = []; }
   }
   function saveClientRequests(){
+    if (Catalog && Catalog.saveSharedRequests) {
+      Catalog.saveSharedRequests(clientRequests);
+      return;
+    }
     localStorage.setItem(CLIENT_REQUESTS_KEY, JSON.stringify(clientRequests.slice(0, 200)));
   }
   function myRequests(){
-    const email = String(currentUser?.email || '').toLowerCase();
-    const id = currentUser?.id || '';
-    return clientRequests.filter(r => r.userId === id || (email && r.email === email));
+    const email = String(currentUser && currentUser.email ? currentUser.email : '').toLowerCase();
+    const id = currentUser && currentUser.id ? currentUser.id : '';
+    return clientRequests.filter(r => r.userId === id || (email && String(r.email || '').toLowerCase() === email));
+  }
+  function statusLabel(status){
+    if (status === 'in_progress') return t('قيد المعالجة', 'In progress');
+    if (status === 'done') return t('مكتمل', 'Done');
+    if (status === 'closed') return t('مغلق', 'Closed');
+    return t('جديد', 'New');
   }
   function addClientRequest(payload){
     const row = Object.assign({
       id: uid(),
       at: new Date().toISOString(),
-      userId: currentUser?.id || '',
-      email: currentUser?.email || '',
-      name: currentUser?.user_metadata?.full_name || '',
-      status: 'new'
+      userId: currentUser && currentUser.id ? currentUser.id : '',
+      email: currentUser && currentUser.email ? currentUser.email : '',
+      name: (currentUser && currentUser.user_metadata && currentUser.user_metadata.full_name) || '',
+      phone: (currentUser && currentUser.user_metadata && currentUser.user_metadata.phone) || '',
+      status: 'new',
+      source: 'client'
     }, payload);
+    if (Catalog && Catalog.addSharedRequest) {
+      const saved = Catalog.addSharedRequest(row);
+      loadClientRequests();
+      return saved;
+    }
     clientRequests.unshift(row);
     saveClientRequests();
     return row;
@@ -1029,7 +1072,7 @@ body.is-admin .client-only{display:none!important}
               <div>${escapeHtml(r.title || r.message || t('طلب','Request'))}</div>
               <div style="color:var(--muted);font-size:.78rem">${new Date(r.at).toLocaleString(currentLang === 'ar' ? 'ar-SA' : 'en-US')}</div>
             </div>
-            <strong>${escapeHtml(r.status === 'new' ? t('جديد','New') : r.status)}</strong>
+            <strong>${escapeHtml(statusLabel(r.status))}</strong>
           </div>
         `).join('');
       }
@@ -1107,7 +1150,7 @@ body.is-admin .client-only{display:none!important}
           <div style="color:var(--muted);font-size:.86rem;white-space:pre-wrap">${escapeHtml(r.message || '')}</div>
           <div style="color:var(--muted);font-size:.78rem;margin-top:4px">${new Date(r.at).toLocaleString(currentLang === 'ar' ? 'ar-SA' : 'en-US')}</div>
         </div>
-        <strong>${escapeHtml(r.status === 'new' ? t('جديد','New') : r.status)}</strong>
+        <strong>${escapeHtml(statusLabel(r.status))}</strong>
       </div>
     `).join('');
   }
@@ -1115,34 +1158,83 @@ body.is-admin .client-only{display:none!important}
   function renderAdminLeads(){
     const box = document.getElementById('adminLeadsList');
     if (!box) return;
+    loadClientRequests();
     let siteLeads = [];
     try { siteLeads = JSON.parse(localStorage.getItem('raseekh_contact_leads') || '[]'); } catch (_) {}
-    const fromClients = clientRequests.map(r => ({
-      at: r.at,
-      name: r.name || r.email || '—',
-      source: t('حساب عميل','Client account'),
-      message: (r.title ? r.title + ' — ' : '') + (r.message || '')
-    }));
-    const fromSite = siteLeads.map(r => ({
-      at: r.at,
-      name: r.name || '—',
-      source: t('نموذج الموقع','Website form'),
-      message: (r.type ? '[' + r.type + '] ' : '') + (r.message || '')
-    }));
-    const all = fromClients.concat(fromSite).sort((a, b) => new Date(b.at) - new Date(a.at));
-    if (!all.length) {
+
+    // Import legacy site leads into shared requests once (for status tracking)
+    siteLeads.forEach((r) => {
+      if (!r || r._imported) return;
+      const fingerprint = 'site:' + (r.at || '') + ':' + (r.message || '') + ':' + (r.phone || '');
+      if (clientRequests.some(x => x.fingerprint === fingerprint)) return;
+      clientRequests.unshift({
+        id: uid(),
+        at: r.at || new Date().toISOString(),
+        name: r.name || '',
+        phone: r.phone || '',
+        company: r.company || '',
+        email: r.email || '',
+        title: r.type || t('طلب موقع', 'Website request'),
+        message: r.message || '',
+        type: r.type || 'site',
+        source: 'site',
+        status: 'new',
+        fingerprint: fingerprint
+      });
+      r._imported = true;
+    });
+    try { localStorage.setItem('raseekh_contact_leads', JSON.stringify(siteLeads)); } catch (_) {}
+    saveClientRequests();
+    loadClientRequests();
+
+    if (!clientRequests.length) {
       box.innerHTML = `<div class="empty">${t('لا توجد طلبات واردة بعد','No incoming requests yet')}</div>`;
       return;
     }
-    box.innerHTML = all.slice(0, 80).map(r => `
-      <div class="sale-row">
-        <div>
-          <div><strong>${escapeHtml(r.name)}</strong> · <span style="color:var(--muted)">${escapeHtml(r.source)}</span></div>
-          <div style="color:var(--muted);font-size:.86rem;white-space:pre-wrap">${escapeHtml(r.message)}</div>
+    box.innerHTML = clientRequests.slice(0, 80).map(r => `
+      <div class="sale-row" style="align-items:flex-start">
+        <div style="flex:1">
+          <div><strong>${escapeHtml(r.name || r.email || '—')}</strong> · <span style="color:var(--muted)">${escapeHtml(r.source === 'site' ? t('نموذج الموقع','Website form') : t('حساب عميل','Client account'))}</span></div>
+          <div style="color:var(--muted);font-size:.86rem;margin-top:2px">
+            ${escapeHtml([r.phone, r.email, r.company].filter(Boolean).join(' · ') || t('بدون بيانات تواصل إضافية','No extra contact details'))}
+          </div>
+          <div style="font-size:.92rem;margin-top:6px"><strong>${escapeHtml(r.title || t('طلب','Request'))}</strong></div>
+          <div style="color:var(--muted);font-size:.86rem;white-space:pre-wrap">${escapeHtml(r.message || '')}</div>
           <div style="color:var(--muted);font-size:.78rem;margin-top:4px">${new Date(r.at).toLocaleString(currentLang === 'ar' ? 'ar-SA' : 'en-US')}</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px;min-width:140px">
+          <select data-status-for="${escapeHtml(r.id)}" style="padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:#fff">
+            <option value="new" ${r.status === 'new' ? 'selected' : ''}>${escapeHtml(t('جديد','New'))}</option>
+            <option value="in_progress" ${r.status === 'in_progress' ? 'selected' : ''}>${escapeHtml(t('قيد المعالجة','In progress'))}</option>
+            <option value="done" ${r.status === 'done' ? 'selected' : ''}>${escapeHtml(t('مكتمل','Done'))}</option>
+            <option value="closed" ${r.status === 'closed' ? 'selected' : ''}>${escapeHtml(t('مغلق','Closed'))}</option>
+          </select>
         </div>
       </div>
     `).join('');
+  }
+
+  const adminLeadsList = document.getElementById('adminLeadsList');
+  if (adminLeadsList) {
+    adminLeadsList.addEventListener('change', (e) => {
+      const sel = e.target.closest('[data-status-for]');
+      if (!sel || !requireAdmin('updateRequestStatus')) return;
+      const id = sel.getAttribute('data-status-for');
+      const status = sel.value;
+      if (Catalog && Catalog.updateSharedRequestStatus) {
+        Catalog.updateSharedRequestStatus(id, status);
+      } else {
+        const idx = clientRequests.findIndex(r => r.id === id);
+        if (idx > -1) {
+          clientRequests[idx].status = status;
+          saveClientRequests();
+        }
+      }
+      loadClientRequests();
+      showToast(t('تم تحديث حالة الطلب', 'Request status updated'));
+      renderAdminLeads();
+      renderOverview();
+    });
   }
 
   function requestProductAsClient(productId){
@@ -1274,11 +1366,16 @@ body.is-admin .client-only{display:none!important}
       document.getElementById('pName').value = p.name;
       document.getElementById('pNameEn').value = p.name_en || '';
       document.getElementById('pCategory').value = p.category || '';
+      document.getElementById('pCategoryEn').value = p.category_en || '';
+      document.getElementById('pDesc').value = p.desc || '';
+      document.getElementById('pDescEn').value = p.desc_en || '';
+      document.getElementById('pKind').value = p.kind === 'service' ? 'service' : 'product';
       document.getElementById('pPrice').value = p.price;
       document.getElementById('pStock').value = p.stock;
     } else {
       title.textContent = t('منتج جديد','New product');
       document.getElementById('productForm').reset();
+      document.getElementById('pKind').value = 'product';
     }
     modal.classList.add('open');
   }
@@ -1293,15 +1390,18 @@ body.is-admin .client-only{display:none!important}
     e.preventDefault();
     if (!requireAdmin('saveProductForm')) return;
     const cat = document.getElementById('pCategory').value.trim() || t('عام','General');
-    const serviceLike = /برمجة|خدمات|programming|service/i.test(cat);
+    const catEn = document.getElementById('pCategoryEn').value.trim() || cat;
+    const kind = document.getElementById('pKind').value === 'service' ? 'service' : 'product';
     const payload = {
       name: document.getElementById('pName').value.trim(),
       name_en: document.getElementById('pNameEn').value.trim(),
       category: cat,
-      category_en: cat,
+      category_en: catEn,
+      desc: document.getElementById('pDesc').value.trim(),
+      desc_en: document.getElementById('pDescEn').value.trim(),
       price: parseFloat(document.getElementById('pPrice').value) || 0,
       stock: parseInt(document.getElementById('pStock').value, 10) || 0,
-      kind: serviceLike ? 'service' : 'product',
+      kind: kind,
       client: true
     };
     if (editingProductId) {

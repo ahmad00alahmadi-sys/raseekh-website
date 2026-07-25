@@ -4,7 +4,10 @@
   const SUGGESTIONS_KEY = 'raseekh_client_suggestions_v1';
   const ADMIN_PRODUCTS_KEY = 'raseekh_admin_products_v1';
   const VERSION_KEY = 'raseekh_catalog_version';
-  const CATALOG_VERSION = 3;
+  const SUGGESTIONS_VERSION_KEY = 'raseekh_suggestions_version';
+  const CATALOG_VERSION = 4;
+  const SUGGESTIONS_VERSION = 2;
+  const CLIENT_REQUESTS_KEY = 'raseekh_all_client_requests_v1';
 
   const DEFAULT_PRODUCTS = [
     {
@@ -185,8 +188,27 @@
     return mergeProducts(products);
   }
 
+  function ensureSuggestionsVersion() {
+    const current = parseInt(localStorage.getItem(SUGGESTIONS_VERSION_KEY) || '0', 10) || 0;
+    if (current < SUGGESTIONS_VERSION) {
+      writeJson(SUGGESTIONS_KEY, cloneList(DEFAULT_SUGGESTIONS));
+      localStorage.setItem(SUGGESTIONS_VERSION_KEY, String(SUGGESTIONS_VERSION));
+    }
+  }
+
+  function pruneSuggestions(products) {
+    ensureSuggestionsVersion();
+    const ids = new Set((products || []).map((p) => p && p.id).filter(Boolean));
+    const suggestions = getClientSuggestions().map((s) => Object.assign({}, s, {
+      productIds: (s.productIds || []).filter((id) => ids.has(id))
+    }));
+    writeJson(SUGGESTIONS_KEY, suggestions);
+    return suggestions;
+  }
+
   function publishClientCatalog(products, suggestions) {
-    const clientProducts = (products || [])
+    const list = products || [];
+    const clientProducts = list
       .filter((p) => p && p.client !== false)
       .map((p) => ({
         id: p.id,
@@ -201,8 +223,11 @@
         kind: p.kind || 'product',
         client: true
       }));
+    const finalSuggestions = suggestions && suggestions.length
+      ? suggestions
+      : pruneSuggestions(list);
     writeJson(PUBLIC_KEY, clientProducts);
-    writeJson(SUGGESTIONS_KEY, suggestions && suggestions.length ? suggestions : cloneList(DEFAULT_SUGGESTIONS));
+    writeJson(SUGGESTIONS_KEY, finalSuggestions);
     return clientProducts;
   }
 
@@ -215,24 +240,70 @@
   }
 
   function getClientSuggestions() {
+    ensureSuggestionsVersion();
     const stored = readJson(SUGGESTIONS_KEY, null);
     if (stored && stored.length) return stored;
     return cloneList(DEFAULT_SUGGESTIONS);
   }
 
+  function migrateLegacyAdminProducts() {
+    const existing = readJson(ADMIN_PRODUCTS_KEY, null);
+    if (existing && existing.length) return existing;
+    try {
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (!key || key.indexOf('raseekh_products_') !== 0) continue;
+        const parsed = JSON.parse(localStorage.getItem(key) || '[]');
+        if (Array.isArray(parsed) && parsed.length) return parsed;
+      }
+    } catch (_) {}
+    return null;
+  }
+
   function loadAdminProducts() {
-    const stored = readJson(ADMIN_PRODUCTS_KEY, null);
+    const migrated = migrateLegacyAdminProducts();
+    const stored = migrated || readJson(ADMIN_PRODUCTS_KEY, null);
     const ensured = ensureCatalogVersion(stored && stored.length ? stored : cloneList(DEFAULT_PRODUCTS));
     writeJson(ADMIN_PRODUCTS_KEY, ensured);
-    publishClientCatalog(ensured, getClientSuggestions());
+    publishClientCatalog(ensured, pruneSuggestions(ensured));
     return ensured;
   }
 
   function saveAdminProducts(products) {
     const list = Array.isArray(products) ? products : [];
     writeJson(ADMIN_PRODUCTS_KEY, list);
-    publishClientCatalog(list, getClientSuggestions());
+    publishClientCatalog(list, pruneSuggestions(list));
     return list;
+  }
+
+  function addSharedRequest(payload) {
+    const list = readJson(CLIENT_REQUESTS_KEY, []);
+    const row = Object.assign({
+      id: 'req-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 7),
+      at: new Date().toISOString(),
+      status: 'new',
+      source: 'site'
+    }, payload || {});
+    list.unshift(row);
+    writeJson(CLIENT_REQUESTS_KEY, list.slice(0, 200));
+    return row;
+  }
+
+  function getSharedRequests() {
+    return readJson(CLIENT_REQUESTS_KEY, []);
+  }
+
+  function saveSharedRequests(list) {
+    writeJson(CLIENT_REQUESTS_KEY, (list || []).slice(0, 200));
+  }
+
+  function updateSharedRequestStatus(id, status) {
+    const list = getSharedRequests();
+    const idx = list.findIndex((r) => r.id === id);
+    if (idx < 0) return null;
+    list[idx] = Object.assign({}, list[idx], { status: status || list[idx].status, updatedAt: new Date().toISOString() });
+    saveSharedRequests(list);
+    return list[idx];
   }
 
   function money(n, lang) {
@@ -261,6 +332,7 @@
 
   global.RaseekhCatalog = {
     CATALOG_VERSION,
+    CLIENT_REQUESTS_KEY,
     DEFAULT_PRODUCTS: cloneList(DEFAULT_PRODUCTS),
     DEFAULT_SUGGESTIONS: cloneList(DEFAULT_SUGGESTIONS),
     ensureCatalogVersion,
@@ -270,6 +342,11 @@
     getClientSuggestions,
     loadAdminProducts,
     saveAdminProducts,
+    pruneSuggestions,
+    addSharedRequest,
+    getSharedRequests,
+    saveSharedRequests,
+    updateSharedRequestStatus,
     money,
     label,
     suggestionTotal,
