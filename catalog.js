@@ -847,6 +847,28 @@
     return fetch(url, opts).finally(() => clearTimeout(timer));
   }
 
+  function withTimeout(promise, ms, fallback) {
+    let settled = false;
+    return new Promise((resolve) => {
+      const timer = setTimeout(() => {
+        if (settled) return;
+        settled = true;
+        resolve(fallback);
+      }, ms || 12000);
+      Promise.resolve(promise).then((value) => {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timer);
+        resolve(value);
+      }).catch(() => {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timer);
+        resolve(fallback);
+      });
+    });
+  }
+
   function notifyRequestWebhook(row) {
     try {
       const url = resolveWebhookUrl();
@@ -1568,7 +1590,7 @@
         statusOnly: true
       };
     }
-    await syncPublicNotifyFromCloud().catch(() => {});
+    await withTimeout(syncPublicNotifyFromCloud().catch(() => {}), 8000, null);
     const email = await notifyAdminEmail(row);
     const webhook = await notifyRequestWebhook(row);
     // Assume cloud will succeed so the first INSERT embeds final delivery marks (anon cannot UPDATE later).
@@ -1582,7 +1604,7 @@
       row.deliveryStatus = settledHope.pendingNotify ? 'pending_notify' : 'local';
     }
     row.updatedAt = new Date().toISOString();
-    const cloud = await pushRequestToCloud(row);
+    const cloud = await withTimeout(pushRequestToCloud(row), 8000, false);
     const settled = settleDeliveryChannels(cloud, email, webhook);
     try {
       const list = getSharedRequests();
