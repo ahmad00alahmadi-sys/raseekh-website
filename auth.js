@@ -5,11 +5,16 @@
   const USERS_KEY = 'raseekh_local_users_v1';
   const SESSION_KEY = 'raseekh_local_session_v1';
   const SALT = 'raseekh-auth-v1';
-  /* Only these accounts can edit catalog / sales desk. Everyone else is a client. */
-  const ADMIN_EMAILS = ['ahmad00alahmadi@gmail.com'];
+  /* Single owner account — only this email can edit catalog / sales / see visitor stats. */
+  const OWNER_EMAIL = 'ahmad00alahmadi@gmail.com';
+  const ADMIN_EMAILS = [OWNER_EMAIL];
 
   let supabaseClient = null;
   let cloudReady = null;
+  let cloudReadyCheckedAt = 0;
+  const CLOUD_PROBE_TTL_MS = 45000;
+  // Negative probes must be short — a brief Auth blip must not force local accounts for 45s.
+  const CLOUD_PROBE_NEGATIVE_TTL_MS = 4000;
 
   try {
     if (global.supabase) {
@@ -44,6 +49,11 @@
     return isAdminEmail(user.email);
   }
 
+  /** Alias: there is exactly one owner; same allowlist as admin. */
+  function isOwner(user) {
+    return isAdmin(user);
+  }
+
   function withRole(user) {
     if (!user) return null;
     const role = isAdmin(user) ? 'admin' : 'client';
@@ -59,6 +69,7 @@
       user_metadata: {
         full_name: row.full_name || '',
         phone: row.phone || '',
+        company: row.company || '',
         display_name: row.full_name || ''
       },
       app_metadata: { provider: 'local' }
@@ -114,7 +125,10 @@
 
   async function probeCloud(timeoutMs) {
     if (!supabaseClient) return false;
-    if (cloudReady !== null) return cloudReady;
+    const now = Date.now();
+    // Cache both positive and negative probes briefly so a later outage can fall back to local.
+    if (cloudReady === true && (now - cloudReadyCheckedAt) < CLOUD_PROBE_TTL_MS) return true;
+    if (cloudReady === false && (now - cloudReadyCheckedAt) < CLOUD_PROBE_NEGATIVE_TTL_MS) return false;
     const ctrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
     const timer = setTimeout(() => { try { ctrl && ctrl.abort(); } catch (_) {} }, timeoutMs || 2500);
     try {
@@ -128,13 +142,25 @@
       cloudReady = false;
     } finally {
       clearTimeout(timer);
+      cloudReadyCheckedAt = Date.now();
     }
     return cloudReady;
   }
 
+  function invalidateCloudProbe() {
+    cloudReady = null;
+    cloudReadyCheckedAt = 0;
+  }
+
+  if (typeof global.addEventListener === 'function') {
+    global.addEventListener('online', () => { invalidateCloudProbe(); });
+  }
+
+  const MIN_PASSWORD_LEN = 8;
+
   async function localSignUp({ email, password, full_name, phone }) {
     const normalized = String(email || '').trim().toLowerCase();
-    if (!normalized || !password || password.length < 6) {
+    if (!normalized || !password || password.length < MIN_PASSWORD_LEN) {
       throw new Error('INVALID_INPUT');
     }
     const users = readUsers();
@@ -177,11 +203,13 @@
     return true;
   }
 
-  async function localUpdateProfile(userId, { full_name, password }) {
+  async function localUpdateProfile(userId, { full_name, phone, company, password }) {
     const users = readUsers();
     const idx = users.findIndex(u => u.id === userId);
     if (idx < 0) throw new Error('NOT_FOUND');
     if (full_name != null) users[idx].full_name = String(full_name).trim();
+    if (phone != null) users[idx].phone = String(phone).trim();
+    if (company != null) users[idx].company = String(company).trim();
     if (password) users[idx].password_hash = await hashPassword(password);
     writeUsers(users);
     setLocalSession(users[idx]);
@@ -189,6 +217,9 @@
   }
 
   async function signUp({ email, password, full_name, phone }) {
+    if (!password || String(password).length < MIN_PASSWORD_LEN) {
+      throw new Error('INVALID_INPUT');
+    }
     const cloud = await probeCloud(2000);
     if (cloud && supabaseClient) {
       try {
@@ -211,6 +242,8 @@
             });
           } catch (_) {}
         }
+        cloudReady = true;
+        cloudReadyCheckedAt = Date.now();
         // Email confirmation enabled: account created in cloud but no JWT yet.
         // Do NOT invent a local session — cloud sync/RLS would silently fail.
         if (!data.session) {
@@ -237,17 +270,17 @@
       try {
         const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
         if (error) {
+          // Only fall back to local when the cloud is unreachable — never on wrong password.
           if (isNetworkAuthError(error)) return localSignIn({ email, password });
-          // Fall back to local account if cloud rejects but local has the user
-          try { return await localSignIn({ email, password }); }
-          catch (_) { throw error; }
+          throw error;
         }
+        cloudReady = true;
+        cloudReadyCheckedAt = Date.now();
         clearLocalSession();
         return { user: withRole(data.user), session: data.session, provider: 'supabase' };
       } catch (err) {
         if (isNetworkAuthError(err)) return localSignIn({ email, password });
-        try { return await localSignIn({ email, password }); }
-        catch (_) { throw err; }
+        throw err;
       }
     }
     return localSignIn({ email, password });
@@ -263,14 +296,13 @@
   async function getSession() {
     if (supabaseClient) {
       try {
-        const cloud = await probeCloud(1500);
-        if (cloud) {
-          const { data } = await supabaseClient.auth.getSession();
-          if (data?.session?.user) {
-            clearLocalSession();
-            const user = withRole(data.session.user);
-            return { user: user, session: data.session, provider: 'supabase' };
-          }
+        // Always read the persisted JWT when the client exists — do not gate on probeCloud
+        // (a stale negative probe would hide a valid cloud session from pay finalize).
+        const { data } = await supabaseClient.auth.getSession();
+        if (data?.session?.user) {
+          clearLocalSession();
+          const user = withRole(data.session.user);
+          return { user: user, session: data.session, provider: 'supabase' };
         }
       } catch (_) {}
     }
@@ -285,55 +317,106 @@
   async function resetPasswordRequest(email) {
     const cloud = await probeCloud(2000);
     if (cloud && supabaseClient) {
-      const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
-        redirectTo: global.location.origin + '/#reset'
-      });
-      if (error && !isNetworkAuthError(error)) throw error;
-      if (!error) return { provider: 'supabase' };
+      try {
+        const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+          redirectTo: global.location.origin + '/#reset'
+        });
+        if (error) {
+          if (isNetworkAuthError(error)) {
+            invalidateCloudProbe();
+            throw new Error('NETWORK');
+          }
+          throw error;
+        }
+        return { provider: 'supabase' };
+      } catch (err) {
+        if (String(err && err.message) === 'NETWORK' || isNetworkAuthError(err)) {
+          invalidateCloudProbe();
+          throw new Error('NETWORK');
+        }
+        throw err;
+      }
     }
-    // Local fallback: stash email for reset panel
-    const users = readUsers();
-    const exists = users.some(u => u.email === String(email || '').trim().toLowerCase());
-    if (!exists) throw new Error('NOT_FOUND');
-    sessionStorage.setItem('raseekh_reset_email', String(email || '').trim().toLowerCase());
-    return { provider: 'local' };
+    // Never allow email-only local password reset (knowing an address must not reset anything).
+    throw new Error('NETWORK');
   }
 
   async function completePasswordReset(newPassword) {
-    if (supabaseClient) {
-      try {
-        const { data } = await supabaseClient.auth.getSession();
-        if (data?.session) {
-          const { error } = await supabaseClient.auth.updateUser({ password: newPassword });
-          if (!error) return { provider: 'supabase' };
-        }
-      } catch (_) {}
+    if (!newPassword || String(newPassword).length < MIN_PASSWORD_LEN) {
+      throw new Error('INVALID_INPUT');
     }
-    const email = sessionStorage.getItem('raseekh_reset_email') || getLocalSession()?.user?.email;
-    if (!email) throw new Error('NOT_FOUND');
-    await localUpdatePassword(email, newPassword);
-    sessionStorage.removeItem('raseekh_reset_email');
-    return { provider: 'local' };
+    const recovery = (() => {
+      try { return sessionStorage.getItem('raseekh_password_recovery') === '1'; } catch (_) { return false; }
+    })();
+
+    if (!supabaseClient) throw new Error('NETWORK');
+    let session = null;
+    try {
+      const { data } = await supabaseClient.auth.getSession();
+      session = data && data.session ? data.session : null;
+    } catch (_) {}
+    if (!session) throw new Error('RECOVERY_REQUIRED');
+    // Only change a cloud password from an email recovery session — not any logged-in JWT on #reset.
+    if (!recovery) throw new Error('RECOVERY_REQUIRED');
+    try {
+      const { error } = await supabaseClient.auth.updateUser({ password: newPassword });
+      if (error) {
+        if (isNetworkAuthError(error)) throw new Error('NETWORK');
+        throw error;
+      }
+      try {
+        sessionStorage.removeItem('raseekh_password_recovery');
+        sessionStorage.removeItem('raseekh_reset_email');
+      } catch (_) {}
+      return { provider: 'supabase' };
+    } catch (err) {
+      if (String(err && err.message) === 'NETWORK' || isNetworkAuthError(err)) throw new Error('NETWORK');
+      throw err;
+    }
   }
 
-  async function updateUser({ full_name, password }) {
+  async function updateUser({ full_name, phone, company, password }) {
     const current = await getSession();
     if (!current.user) throw new Error('NOT_FOUND');
+    const isLocal = current.provider === 'local' || String(current.user.id || '').startsWith('local-');
     if (current.provider === 'supabase' && supabaseClient) {
       try {
         const updates = {};
         if (password) updates.password = password;
-        if (full_name) updates.data = { full_name, display_name: full_name };
-        if (Object.keys(updates).length) {
-          const { error } = await supabaseClient.auth.updateUser(updates);
-          if (error && !isNetworkAuthError(error)) throw error;
-          if (!error) return withRole(current.user);
+        const meta = Object.assign({}, current.user.user_metadata || {});
+        if (full_name != null) {
+          meta.full_name = String(full_name).trim();
+          meta.display_name = meta.full_name;
         }
+        if (phone != null) meta.phone = String(phone).trim();
+        if (company != null) meta.company = String(company).trim();
+        if (full_name != null || phone != null || company != null) updates.data = meta;
+        if (Object.keys(updates).length) {
+          const { data, error } = await supabaseClient.auth.updateUser(updates);
+          if (error) {
+            if (isNetworkAuthError(error)) throw new Error('NETWORK');
+            throw error;
+          }
+          try {
+            await supabaseClient.from('profiles').upsert({
+              id: current.user.id,
+              full_name: meta.full_name || '',
+              phone: meta.phone || '',
+              company: meta.company || '',
+              email: current.user.email || ''
+            });
+          } catch (_) {}
+          return withRole(data && data.user ? data.user : Object.assign({}, current.user, { user_metadata: meta }));
+        }
+        return withRole(current.user);
       } catch (err) {
-        if (!isNetworkAuthError(err)) throw err;
+        if (isNetworkAuthError(err) || String(err && err.message) === 'NETWORK') throw new Error('NETWORK');
+        throw err;
       }
     }
-    return localUpdateProfile(current.user.id, { full_name, password });
+    // Never invent a local profile row for a cloud UUID.
+    if (!isLocal) throw new Error('NETWORK');
+    return localUpdateProfile(current.user.id, { full_name, phone, company, password });
   }
 
   function friendlyError(err, lang) {
@@ -346,10 +429,18 @@
       return ar ? 'البريد أو كلمة المرور غير صحيحة' : 'Incorrect email or password';
     }
     if (code === 'INVALID_INPUT') {
-      return ar ? 'تأكد من البريد وكلمة المرور (6 أحرف على الأقل)' : 'Check email and password (min 6 chars)';
+      return ar ? 'تأكد من البريد وكلمة المرور (8 أحرف على الأقل)' : 'Check email and password (min 8 chars)';
     }
     if (code === 'NOT_FOUND') {
       return ar ? 'الحساب غير موجود' : 'Account not found';
+    }
+    if (code === 'RECOVERY_REQUIRED') {
+      return ar
+        ? 'افتحوا رابط إعادة التعيين من البريد أولاً، ثم عيّنوا كلمة المرور'
+        : 'Open the reset link from your email first, then set a new password';
+    }
+    if (code === 'NETWORK') {
+      return ar ? 'تعذّر الاتصال بالخادم — حاولوا مرة أخرى' : 'Could not reach the server — try again';
     }
     if (code === 'EMAIL_CONFIRM_REQUIRED' || /email.*confirm|confirm.*email|email not confirmed/i.test(code)) {
       return ar ? 'تحققوا من البريد لتفعيل الحساب ثم سجّلوا الدخول' : 'Check your email to activate the account, then sign in';
@@ -371,7 +462,9 @@
     updateUser,
     friendlyError,
     probeCloud,
+    invalidateCloudProbe,
     isAdmin,
+    isOwner,
     isAdminEmail,
     withRole,
     get supabase() { return supabaseClient; }

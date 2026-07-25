@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>الشروط والأحكام — راسخ</title>
-<meta name="description" content="الشروط والأحكام لموقع راسخ: حلول للشركات، صيانة مواقع، برمجة، تطبيقات مخزون، وأنظمة ولوحات تحكم.">
+<title>سياسة الخصوصية — راسخ</title>
+<meta name="description" content="سياسة الخصوصية لموقع راسخ: حلول للشركات، صيانة مواقع، برمجة، تطبيقات مخزون، وأنظمة ولوحات تحكم.">
 <meta name="theme-color" content="#10233A">
-<link rel="canonical" href="https://raseekh.com/terms/">
-<link rel="alternate" hreflang="ar" href="https://raseekh.com/terms/">
-<link rel="alternate" hreflang="en" href="https://raseekh.com/terms/?lang=en">
-<link rel="alternate" hreflang="x-default" href="https://raseekh.com/terms/">
+<link rel="canonical" href="https://raseekh.com/privacy/">
+<link rel="alternate" hreflang="ar" href="https://raseekh.com/privacy/">
+<link rel="alternate" hreflang="en" href="https://raseekh.com/privacy/?lang=en">
+<link rel="alternate" hreflang="x-default" href="https://raseekh.com/privacy/">
 <link rel="manifest" href="/manifest.webmanifest">
 <link rel="icon" href="/icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/icon-192.png">
@@ -81,13 +81,13 @@ body.lang-en h1,body.lang-en h2,body.lang-en h3{font-family:'Space Grotesk',sans
       <a class="logo" href="/" data-ar-html='را<em>سخ</em>' data-en-html='Ra<em>seekh</em>'>را<em>سخ</em></a>
       <div class="actions">
         <button class="lang-btn" id="langToggle" type="button">EN</button>
-        <a class="btn btn-ghost" href="/privacy/" data-ar="الخصوصية" data-en="Privacy">الخصوصية</a>
+        <a class="btn btn-ghost" href="/terms/" data-ar="الشروط" data-en="Terms">الشروط</a>
         <a class="btn btn-ghost" href="/security/" data-ar="الأمان" data-en="Security">الأمان</a>
         <a class="btn btn-ghost" href="/" data-ar="الرئيسية" data-en="Home">الرئيسية</a>
         <a class="btn btn-primary" href="/dashboard/" data-ar="حسابي" data-en="My account">حسابي</a>
       </div>
     </div>
-    <div class="panel" id="termsRoot"></div>
+    <div class="panel" id="privacyRoot"></div>
   </div>
 <script>
 (function(){
@@ -95,7 +95,7 @@ body.lang-en h1,body.lang-en h2,body.lang-en h3{font-family:'Space Grotesk',sans
   const q = new URLSearchParams(location.search).get('lang');
   if (q === 'en' || q === 'ar') currentLang = q;
   const Terms = window.RaseekhTerms;
-  if (Terms) Terms.renderInto(document.getElementById('termsRoot'));
+  if (Terms) Terms.renderPrivacyInto(document.getElementById('privacyRoot'));
 
   function applyLang(lang){
     currentLang = lang;
@@ -112,9 +112,9 @@ body.lang-en h1,body.lang-en h2,body.lang-en h3{font-family:'Space Grotesk',sans
       if (v !== null) el.innerHTML = v;
     });
     document.getElementById('langToggle').textContent = lang === 'ar' ? 'EN' : 'AR';
-    document.title = lang === 'ar' ? 'الشروط والأحكام — راسخ' : 'Terms & Conditions — Raseekh';
+    document.title = lang === 'ar' ? 'سياسة الخصوصية — راسخ' : 'Privacy Policy — Raseekh';
     const canonical = document.querySelector('link[rel="canonical"]');
-    if (canonical) canonical.setAttribute('href', lang === 'en' ? 'https://raseekh.com/terms/?lang=en' : 'https://raseekh.com/terms/');
+    if (canonical) canonical.setAttribute('href', lang === 'en' ? 'https://raseekh.com/privacy/?lang=en' : 'https://raseekh.com/privacy/');
   }
   document.getElementById('langToggle').addEventListener('click', () => applyLang(currentLang === 'ar' ? 'en' : 'ar'));
   applyLang(currentLang);

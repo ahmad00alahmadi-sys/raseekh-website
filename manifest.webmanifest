@@ -1,7 +1,7 @@
 {
   "name": "راسخ / Raseekh",
   "short_name": "راسخ",
-  "description": "Electronics, website maintenance, programming, and client systems — منتجات إلكترونية وخدمات تقنية.",
+  "description": "Website maintenance, programming, inventory apps, and client systems — صيانة مواقع وبرمجة وتطبيقات مخزون وأنظمة تشغيل.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
@@ -10,6 +10,24 @@
   "lang": "ar",
   "dir": "rtl",
   "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
     {
       "src": "/icon.svg",
       "sizes": "any",

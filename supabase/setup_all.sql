@@ -21,6 +21,8 @@ create table if not exists public.client_requests (
 );
 create index if not exists client_requests_created_at_idx on public.client_requests (created_at desc);
 create index if not exists client_requests_status_idx on public.client_requests (status);
+create unique index if not exists client_requests_fingerprint_uidx on public.client_requests (fingerprint)
+  where coalesce(fingerprint, '') <> '';
 alter table public.client_requests enable row level security;
 drop policy if exists "raseekh_requests_insert" on public.client_requests;
 drop policy if exists "raseekh_requests_select" on public.client_requests;
@@ -28,7 +30,17 @@ drop policy if exists "raseekh_requests_select_own" on public.client_requests;
 drop policy if exists "raseekh_requests_select_admin" on public.client_requests;
 drop policy if exists "raseekh_requests_update" on public.client_requests;
 drop policy if exists "raseekh_requests_update_admin" on public.client_requests;
-create policy "raseekh_requests_insert" on public.client_requests for insert to anon, authenticated with check (true);
+create policy "raseekh_requests_insert" on public.client_requests for insert to anon, authenticated with check (
+  char_length(coalesce(name, '')) <= 200
+  and char_length(coalesce(email, '')) <= 320
+  and char_length(coalesce(phone, '')) <= 40
+  and char_length(coalesce(company, '')) <= 200
+  and char_length(coalesce(title, '')) <= 200
+  and char_length(coalesce(message, '')) <= 8000
+  and char_length(coalesce(type, '')) <= 80
+  and char_length(coalesce(source, '')) <= 80
+  and char_length(coalesce(fingerprint, '')) <= 200
+);
 create policy "raseekh_requests_select_own" on public.client_requests for select to authenticated using (
   lower(coalesce(email, '')) = lower(coalesce(auth.jwt() ->> 'email', ''))
   or coalesce(user_id, '') = coalesce(auth.uid()::text, '')
@@ -55,13 +67,28 @@ drop policy if exists "raseekh_settings_auth_write" on public.site_settings;
 drop policy if exists "raseekh_settings_auth_update" on public.site_settings;
 drop policy if exists "raseekh_settings_admin_write" on public.site_settings;
 drop policy if exists "raseekh_settings_admin_update" on public.site_settings;
-create policy "raseekh_settings_public_read" on public.site_settings for select to anon, authenticated using (key = 'public_notify');
+drop policy if exists "raseekh_settings_admin_read_notify" on public.site_settings;
+-- Safe public keys only — never expose notifyEmail / webhookUrl to anon.
+create policy "raseekh_settings_public_read" on public.site_settings for select to anon, authenticated using (
+  key in ('public_catalog', 'public_testimonials', 'public_contact')
+);
+create policy "raseekh_settings_admin_read_notify" on public.site_settings for select to authenticated using (
+  key = 'public_notify'
+  and lower(coalesce(auth.jwt() ->> 'email', '')) = 'ahmad00alahmadi@gmail.com'
+);
 create policy "raseekh_settings_admin_write" on public.site_settings for insert to authenticated with check (
-  key = 'public_notify' and lower(coalesce(auth.jwt() ->> 'email', '')) = 'ahmad00alahmadi@gmail.com'
+  key in ('public_notify', 'public_catalog', 'public_testimonials', 'public_contact')
+  and lower(coalesce(auth.jwt() ->> 'email', '')) = 'ahmad00alahmadi@gmail.com'
 );
 create policy "raseekh_settings_admin_update" on public.site_settings for update to authenticated
-  using (key = 'public_notify' and lower(coalesce(auth.jwt() ->> 'email', '')) = 'ahmad00alahmadi@gmail.com')
-  with check (key = 'public_notify' and lower(coalesce(auth.jwt() ->> 'email', '')) = 'ahmad00alahmadi@gmail.com');
+  using (
+    key in ('public_notify', 'public_catalog', 'public_testimonials', 'public_contact')
+    and lower(coalesce(auth.jwt() ->> 'email', '')) = 'ahmad00alahmadi@gmail.com'
+  )
+  with check (
+    key in ('public_notify', 'public_catalog', 'public_testimonials', 'public_contact')
+    and lower(coalesce(auth.jwt() ->> 'email', '')) = 'ahmad00alahmadi@gmail.com'
+  );
 grant select on table public.site_settings to anon, authenticated;
 grant insert, update on table public.site_settings to authenticated;
 
@@ -108,6 +135,49 @@ create policy "raseekh_activity_select_admin" on public.user_activity for select
 );
 grant select, insert, update on table public.user_activity to authenticated;
 
+-- ===== site_visits (anonymous visitor counter for owner dashboard) =====
+create table if not exists public.site_visits (
+  id text primary key default 'global',
+  total bigint not null default 0,
+  today_count bigint not null default 0,
+  today_key text not null default '',
+  updated_at timestamptz default now()
+);
+insert into public.site_visits (id, total, today_count, today_key)
+values ('global', 0, 0, to_char((now() at time zone 'Asia/Riyadh'), 'YYYY-MM-DD'))
+on conflict (id) do nothing;
+alter table public.site_visits enable row level security;
+drop policy if exists "raseekh_visits_select_admin" on public.site_visits;
+create policy "raseekh_visits_select_admin" on public.site_visits for select to authenticated using (
+  lower(coalesce(auth.jwt() ->> 'email', '')) = 'ahmad00alahmadi@gmail.com'
+);
+grant select on table public.site_visits to authenticated;
+revoke all on table public.site_visits from anon;
+
+create or replace function public.raseekh_bump_visit()
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  d text := to_char((now() at time zone 'Asia/Riyadh'), 'YYYY-MM-DD');
+begin
+  insert into public.site_visits (id, total, today_count, today_key, updated_at)
+  values ('global', 1, 1, d, now())
+  on conflict (id) do update set
+    total = public.site_visits.total + 1,
+    today_count = case
+      when public.site_visits.today_key = d then public.site_visits.today_count + 1
+      else 1
+    end,
+    today_key = d,
+    updated_at = now();
+end;
+$$;
+revoke all on function public.raseekh_bump_visit() from public;
+grant execute on function public.raseekh_bump_visit() to anon, authenticated;
+
 -- ===== terms_acceptance =====
 create table if not exists public.terms_acceptance (
   user_key text primary key,
@@ -138,3 +208,75 @@ create policy "raseekh_terms_update_own" on public.terms_acceptance for update t
     or coalesce(user_id, '') = coalesce(auth.uid()::text, '')
   );
 grant select, insert, update on table public.terms_acceptance to authenticated;
+
+-- ===== profiles =====
+create table if not exists public.profiles (
+  id uuid primary key references auth.users (id) on delete cascade,
+  full_name text default '',
+  phone text default '',
+  email text default '',
+  updated_at timestamptz default now()
+);
+alter table public.profiles add column if not exists company text default '';
+alter table public.profiles enable row level security;
+drop policy if exists "raseekh_profiles_select_own" on public.profiles;
+drop policy if exists "raseekh_profiles_upsert_own" on public.profiles;
+drop policy if exists "raseekh_profiles_update_own" on public.profiles;
+drop policy if exists "raseekh_profiles_select_admin" on public.profiles;
+create policy "raseekh_profiles_select_own" on public.profiles for select to authenticated using (
+  id = auth.uid()
+);
+create policy "raseekh_profiles_upsert_own" on public.profiles for insert to authenticated with check (
+  id = auth.uid()
+);
+create policy "raseekh_profiles_update_own" on public.profiles for update to authenticated
+  using (id = auth.uid())
+  with check (id = auth.uid());
+create policy "raseekh_profiles_select_admin" on public.profiles for select to authenticated using (
+  lower(coalesce(auth.jwt() ->> 'email', '')) = 'ahmad00alahmadi@gmail.com'
+);
+grant select, insert, update on table public.profiles to authenticated;
+
+-- ===== payments =====
+create table if not exists public.payments (
+  id text primary key,
+  created_at timestamptz not null default now(),
+  method text default 'card',
+  total numeric default 0,
+  items integer default 1,
+  note text default '',
+  name text default '',
+  email text default '',
+  user_id text default '',
+  source text default 'site',
+  payment_id text default '',
+  fingerprint text default '',
+  payload jsonb default '{}'::jsonb
+);
+create index if not exists payments_created_at_idx on public.payments (created_at desc);
+create unique index if not exists payments_payment_id_uidx on public.payments (payment_id)
+  where coalesce(payment_id, '') <> '';
+create unique index if not exists payments_fingerprint_uidx on public.payments (fingerprint)
+  where coalesce(fingerprint, '') <> '';
+alter table public.payments enable row level security;
+drop policy if exists "raseekh_payments_insert" on public.payments;
+drop policy if exists "raseekh_payments_select_own" on public.payments;
+drop policy if exists "raseekh_payments_select_admin" on public.payments;
+-- Pay page requires sign-in — never allow anonymous forged payment rows.
+create policy "raseekh_payments_insert" on public.payments for insert to authenticated with check (
+  coalesce(user_id, '') = coalesce(auth.uid()::text, '')
+  or lower(coalesce(email, '')) = lower(coalesce(auth.jwt() ->> 'email', ''))
+);
+drop policy if exists "raseekh_payments_insert_admin" on public.payments;
+create policy "raseekh_payments_insert_admin" on public.payments for insert to authenticated with check (
+  lower(coalesce(auth.jwt() ->> 'email', '')) = 'ahmad00alahmadi@gmail.com'
+);
+create policy "raseekh_payments_select_own" on public.payments for select to authenticated using (
+  lower(coalesce(email, '')) = lower(coalesce(auth.jwt() ->> 'email', ''))
+  or coalesce(user_id, '') = coalesce(auth.uid()::text, '')
+);
+create policy "raseekh_payments_select_admin" on public.payments for select to authenticated using (
+  lower(coalesce(auth.jwt() ->> 'email', '')) = 'ahmad00alahmadi@gmail.com'
+);
+revoke all on table public.payments from anon;
+grant select, insert on table public.payments to authenticated;

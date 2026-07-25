@@ -1,7 +1,126 @@
-/* Login + active-presence tracking for Raseekh admin stats. */
+/* Login + visitor + active-presence tracking for the single Raseekh owner account. */
 (function (global) {
   const STORE_KEY = 'raseekh_user_activity_v1';
+  const VISITS_KEY = 'raseekh_site_visits_v1';
+  const VISIT_SESSION_KEY = 'raseekh_visit_session_v1';
   const ACTIVE_MS = 15 * 60 * 1000; // 15 minutes
+
+  function todayKey() {
+    try {
+      // Align day bucket with Riyadh calendar for the owner dashboard.
+      return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Riyadh', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());
+    } catch (_) {
+      const d = new Date();
+      return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+    }
+  }
+
+  function readVisits() {
+    try {
+      const raw = localStorage.getItem(VISITS_KEY);
+      const parsed = raw ? JSON.parse(raw) : null;
+      const day = todayKey();
+      if (!parsed || typeof parsed !== 'object') {
+        return { total: 0, today: 0, todayKey: day, updatedAt: '' };
+      }
+      const key = String(parsed.todayKey || '');
+      return {
+        total: Math.max(0, Number(parsed.total) || 0),
+        today: key === day ? Math.max(0, Number(parsed.today) || 0) : 0,
+        todayKey: day,
+        updatedAt: parsed.updatedAt || ''
+      };
+    } catch (_) {
+      return { total: 0, today: 0, todayKey: todayKey(), updatedAt: '' };
+    }
+  }
+
+  function writeVisits(row) {
+    try {
+      localStorage.setItem(VISITS_KEY, JSON.stringify(row || { total: 0, today: 0, todayKey: todayKey(), updatedAt: '' }));
+    } catch (_) {}
+  }
+
+  function mergeVisitRows(a, b) {
+    const day = todayKey();
+    const aToday = (a && a.todayKey === day) ? (Number(a.today) || 0) : 0;
+    const bToday = (b && b.todayKey === day) ? (Number(b.today) || 0) : 0;
+    return {
+      total: Math.max(Number(a && a.total) || 0, Number(b && b.total) || 0),
+      today: Math.max(aToday, bToday),
+      todayKey: day,
+      updatedAt: newerIso((a && a.updatedAt) || '', (b && b.updatedAt) || '') || new Date().toISOString()
+    };
+  }
+
+  async function bumpVisitCloud() {
+    try {
+      const sb = global.RaseekhAuth && global.RaseekhAuth.supabase;
+      if (!sb) return false;
+      const { error } = await sb.rpc('raseekh_bump_visit');
+      return !error;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  async function pullVisitsFromCloud(opts) {
+    try {
+      const sb = global.RaseekhAuth && global.RaseekhAuth.supabase;
+      if (!sb) return readVisits();
+      const { data, error } = await sb.from('site_visits').select('total,today_count,today_key,updated_at').eq('id', 'global').maybeSingle();
+      if (error || !data) return readVisits();
+      const day = todayKey();
+      const cloudKey = String(data.today_key || day);
+      const cloud = {
+        total: Number(data.total) || 0,
+        today: cloudKey === day ? (Number(data.today_count) || 0) : 0,
+        todayKey: day,
+        updatedAt: data.updated_at || ''
+      };
+      // After a successful cloud bump, trust cloud. Otherwise keep the higher of local/cloud.
+      const next = (opts && opts.preferCloud) ? cloud : mergeVisitRows(readVisits(), cloud);
+      writeVisits(next);
+      return next;
+    } catch (_) {
+      return readVisits();
+    }
+  }
+
+  /**
+   * Count one anonymous site visitor per browser tab-session.
+   * Safe to call on every public page load.
+   */
+  async function recordVisit() {
+    try {
+      if (typeof sessionStorage !== 'undefined' && sessionStorage.getItem(VISIT_SESSION_KEY) === '1') {
+        return { counted: false, visits: readVisits() };
+      }
+      if (typeof sessionStorage !== 'undefined') sessionStorage.setItem(VISIT_SESSION_KEY, '1');
+    } catch (_) {}
+
+    const cloudOk = await bumpVisitCloud().catch(() => false);
+    if (cloudOk) {
+      await pullVisitsFromCloud({ preferCloud: true }).catch(() => {});
+      return { counted: true, visits: readVisits(), cloud: true };
+    }
+
+    // Offline / RPC missing: keep a local count for the owner on this browser.
+    const day = todayKey();
+    const prev = readVisits();
+    const next = {
+      total: (Number(prev.total) || 0) + 1,
+      today: (prev.todayKey === day ? (Number(prev.today) || 0) : 0) + 1,
+      todayKey: day,
+      updatedAt: new Date().toISOString()
+    };
+    writeVisits(next);
+    return { counted: true, visits: next, cloud: false };
+  }
+
+  function getVisitStats() {
+    return readVisits();
+  }
 
   function readStore() {
     try {
@@ -66,13 +185,37 @@
     }
     store.users[key] = next;
     writeStore(store);
-    pushCloud(next);
+    pushCloud(next).then((ok) => {
+      const latest = readStore();
+      if (!latest.users[key]) return;
+      if (ok) delete latest.users[key].syncPending;
+      else latest.users[key].syncPending = true;
+      writeStore(latest);
+    }).catch(() => {
+      const latest = readStore();
+      if (!latest.users[key]) return;
+      latest.users[key].syncPending = true;
+      writeStore(latest);
+    });
     // Notify on login intent even when count is debounced (homepage → dashboard).
     if (opts && opts.login) notifyLoginAlert(next);
     return next;
   }
 
-  async function notifyLoginAlert(row) {
+  const inFlightLoginAlerts = new Map();
+  const LOGIN_NOTIFY_KEY = 'raseekh_login_notified_v1';
+
+  function isLoginNotifyThrottled(email) {
+    try {
+      const map = JSON.parse(localStorage.getItem(LOGIN_NOTIFY_KEY) || '{}') || {};
+      const last = map[email] ? new Date(map[email]).getTime() : 0;
+      return !!(last && (Date.now() - last) < 6 * 60 * 60 * 1000);
+    } catch (_) {
+      return false;
+    }
+  }
+
+  async function notifyLoginAlert(row, opts) {
     try {
       if (!row || row.role === 'admin') return;
       const Auth = global.RaseekhAuth;
@@ -82,46 +225,65 @@
       const email = String(row.email || '').toLowerCase();
       if (!email) return;
 
-      if (Catalog.syncPublicNotifyFromCloud) {
-        try { await Catalog.syncPublicNotifyFromCloud(); } catch (_) {}
+      const existing = inFlightLoginAlerts.get(email);
+      if (existing) {
+        await existing;
+        // First run succeeded (or soft-throttled) — stop. On hard fail, retry once.
+        if (isLoginNotifyThrottled(email) || (opts && opts._retried)) return;
+        return notifyLoginAlert(row, { _retried: true });
       }
 
-      const store = (() => {
-        try { return JSON.parse(localStorage.getItem('raseekh_admin_store_v1') || '{}'); }
-        catch (_) { return {}; }
-      })();
-      const publicCfg = (() => {
-        try { return JSON.parse(localStorage.getItem('raseekh_public_notify_v1') || '{}'); }
-        catch (_) { return {}; }
-      })();
-      // Prefer published public/cloud flag; don't let a stale admin-local false suppress alerts.
-      const published = !!(publicCfg.notifyEmail || publicCfg.webhookUrl);
-      const loginAlertsOn = published
-        ? publicCfg.notifyOnLogin !== false
-        : store.notifyOnLogin !== false;
-      if (!loginAlertsOn) return;
-      if (!Catalog.resolveNotifyEmail || !Catalog.resolveNotifyEmail()) return;
+      const run = (async () => {
+        if (Catalog.syncPublicNotifyFromCloud) {
+          try { await Catalog.syncPublicNotifyFromCloud(); } catch (_) {}
+        }
 
-      const mapKey = 'raseekh_login_notified_v1';
-      let map = {};
-      try { map = JSON.parse(localStorage.getItem(mapKey) || '{}') || {}; } catch (_) { map = {}; }
-      const last = map[email] ? new Date(map[email]).getTime() : 0;
-      if (last && (Date.now() - last) < 6 * 60 * 60 * 1000) return;
+        const store = (() => {
+          try { return JSON.parse(localStorage.getItem('raseekh_admin_store_v1') || '{}'); }
+          catch (_) { return {}; }
+        })();
+        const publicCfg = (() => {
+          try { return JSON.parse(localStorage.getItem('raseekh_public_notify_v1') || '{}'); }
+          catch (_) { return {}; }
+        })();
+        // Prefer published public/cloud flag; don't let a stale admin-local false suppress alerts.
+        const published = !!(publicCfg.notifyEmail || publicCfg.webhookUrl);
+        const loginAlertsOn = published
+          ? publicCfg.notifyOnLogin !== false
+          : store.notifyOnLogin !== false;
+        if (!loginAlertsOn) return;
+        if (!Catalog.resolveNotifyEmail || !Catalog.resolveNotifyEmail()) return;
 
-      const result = await Catalog.notifyAdminEmail({
-        title: 'تسجيل دخول عميل',
-        type: 'login',
-        name: row.name || email,
-        email: email,
-        phone: '',
-        company: '',
-        message: 'دخل العميل إلى حساب راسخ. عدد مرات الدخول: ' + (Number(row.loginCount) || 1),
-        source: 'login',
-        id: 'login-' + email
-      });
-      if (result && result.ok) {
-        map[email] = new Date().toISOString();
-        localStorage.setItem(mapKey, JSON.stringify(map));
+        let map = {};
+        try { map = JSON.parse(localStorage.getItem(LOGIN_NOTIFY_KEY) || '{}') || {}; } catch (_) { map = {}; }
+        const last = map[email] ? new Date(map[email]).getTime() : 0;
+        if (last && (Date.now() - last) < 6 * 60 * 60 * 1000) return;
+
+        const result = await Catalog.notifyAdminEmail({
+          title: 'تسجيل دخول عميل',
+          type: 'login',
+          name: row.name || email,
+          email: email,
+          phone: '',
+          company: '',
+          message: 'دخل العميل إلى حساب راسخ. عدد مرات الدخول: ' + (Number(row.loginCount) || 1),
+          source: 'login',
+          id: 'login-' + email
+        });
+        if (result && result.ok) {
+          map[email] = new Date().toISOString();
+          try { localStorage.setItem(LOGIN_NOTIFY_KEY, JSON.stringify(map)); } catch (_) {}
+        } else if (result && result.pendingConfirm) {
+          // Soft throttle while FormSubmit activation is pending — avoid spam, allow sooner retry than 6h.
+          map[email] = new Date(Date.now() - (6 * 60 * 60 * 1000) + (15 * 60 * 1000)).toISOString();
+          try { localStorage.setItem(LOGIN_NOTIFY_KEY, JSON.stringify(map)); } catch (_) {}
+        }
+        // Hard failures: do not stamp — next login / coalesce waiter can retry notify.
+      })();
+
+      inFlightLoginAlerts.set(email, run);
+      try { await run; } finally {
+        if (inFlightLoginAlerts.get(email) === run) inFlightLoginAlerts.delete(email);
       }
     } catch (_) {}
   }
@@ -158,11 +320,14 @@
       return t >= startMs;
     });
     const totalLogins = users.reduce((sum, u) => sum + (Number(u.loginCount) || 0), 0);
+    const visits = readVisits();
     return {
       registered: users.length,
       activeNow: active.length,
       loginsToday: loginsToday.length,
       totalLogins: totalLogins,
+      visitorsTotal: visits.total,
+      visitorsToday: visits.today,
       users: users.sort((a, b) => new Date(b.lastSeenAt || 0) - new Date(a.lastSeenAt || 0))
     };
   }
@@ -185,8 +350,8 @@
   async function pushCloud(row) {
     try {
       const sb = global.RaseekhAuth && global.RaseekhAuth.supabase;
-      if (!sb || !row) return;
-      await sb.from('user_activity').upsert({
+      if (!sb || !row) return false;
+      const { error } = await sb.from('user_activity').upsert({
         user_key: String(row.email || row.id || '').toLowerCase(),
         user_id: row.id || '',
         email: row.email || '',
@@ -198,7 +363,10 @@
         login_count: Number(row.loginCount) || 0,
         updated_at: new Date().toISOString()
       }, { onConflict: 'user_key' });
-    } catch (_) {}
+      return !error;
+    } catch (_) {
+      return false;
+    }
   }
 
   function mergeUserRow(prev, incoming) {
@@ -218,6 +386,18 @@
     try {
       const sb = global.RaseekhAuth && global.RaseekhAuth.supabase;
       if (!sb) return getStats();
+      // Retry any local rows that never reached the cloud.
+      const localStore = readStore();
+      const pending = Object.keys(localStore.users || {})
+        .map((k) => localStore.users[k])
+        .filter((u) => u && u.syncPending);
+      for (const row of pending) {
+        const ok = await pushCloud(row);
+        const key = String((row && (row.email || row.id)) || '').toLowerCase();
+        if (ok && key && localStore.users[key]) delete localStore.users[key].syncPending;
+      }
+      if (pending.length) writeStore(localStore);
+
       const { data, error } = await sb.from('user_activity').select('*').limit(500);
       if (error || !Array.isArray(data)) return getStats();
       const store = readStore();
@@ -226,7 +406,8 @@
         const key = String(email || row.user_key || row.user_id || '').toLowerCase();
         if (!key) return;
         const prev = store.users[key] || {};
-        store.users[key] = mergeUserRow(prev, {
+        const cloudCount = Number(row.login_count) || 0;
+        const merged = mergeUserRow(prev, {
           id: row.user_id || '',
           email: email || key,
           name: row.name || '',
@@ -234,13 +415,32 @@
           firstLoginAt: row.first_login_at || '',
           lastLoginAt: row.last_login_at || '',
           lastSeenAt: row.last_seen_at || '',
-          loginCount: Number(row.login_count) || 0
+          loginCount: cloudCount
         });
+        store.users[key] = merged;
+        // Local-max wins in merge — push that back instead of dropping syncPending.
+        const localAhead =
+          (Number(merged.loginCount) || 0) > cloudCount ||
+          (!!merged.lastLoginAt && merged.lastLoginAt !== (row.last_login_at || '')) ||
+          (!!merged.lastSeenAt && merged.lastSeenAt !== (row.last_seen_at || '')) ||
+          !!prev.syncPending;
+        if (localAhead) store.users[key].syncPending = true;
+        else delete store.users[key].syncPending;
         // Remove id-keyed duplicates after email merge.
         const idKey = String(row.user_id || '').toLowerCase();
         if (idKey && idKey !== key && store.users[idKey]) delete store.users[idKey];
       });
       writeStore(store);
+      const pushAgain = Object.keys(store.users || {})
+        .map((k) => store.users[k])
+        .filter((u) => u && u.syncPending);
+      for (const row of pushAgain) {
+        const ok = await pushCloud(row);
+        const key = String((row && (row.email || row.id)) || '').toLowerCase();
+        if (ok && key && store.users[key]) delete store.users[key].syncPending;
+      }
+      if (pushAgain.length) writeStore(store);
+      await pullVisitsFromCloud().catch(() => {});
       return getStats();
     } catch (_) {
       return getStats();
@@ -263,9 +463,18 @@
     ACTIVE_MS,
     recordLogin,
     heartbeat,
+    recordVisit,
+    getVisitStats,
     getStats,
     syncFromCloud,
     listUsers,
-    probeCloud
+    probeCloud,
+    pullVisitsFromCloud
   };
+
+  if (typeof global.addEventListener === 'function') {
+    global.addEventListener('online', () => {
+      syncFromCloud().catch(() => {});
+    });
+  }
 })(typeof window !== 'undefined' ? window : globalThis);

@@ -1,4 +1,15 @@
 User-agent: *
 Allow: /
+Allow: /blog/
+Allow: /industries/
+Allow: /features/
+Allow: /help/
+Allow: /security/
+Allow: /updates/
+Allow: /privacy/
+Allow: /terms/
+# Marketing pages are crawlable; only the signed-in dashboard is blocked.
+Disallow: /dashboard/
+Disallow: /dashboard
 
 Sitemap: https://raseekh.com/sitemap.xml

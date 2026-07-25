@@ -1,6 +1,16 @@
-/* Lightweight offline shell for Raseekh marketing site */
-const CACHE = 'raseekh-shell-v11';
-const ASSETS = ['/', '/index.html', '/catalog.js', '/auth.js', '/terms.js', '/activity.js', '/terms/', '/terms/index.html', '/dashboard/', '/dashboard/index.html', '/manifest.webmanifest', '/icon.svg'];
+/* Lightweight offline shell for Raseekh marketing site (dashboard excluded). */
+const CACHE = 'raseekh-shell-v70';
+const ASSETS = [
+  '/', '/index.html', '/catalog.js', '/auth.js', '/terms.js', '/activity.js', '/shared-page.css', '/shared-page.js',
+  '/terms/', '/terms/index.html', '/privacy/', '/privacy/index.html',
+  '/blog/', '/blog/index.html', '/blog/inventory-system.html', '/blog/custom-vs-ready.html', '/blog/ops-system-checklist.html',
+  '/blog/hosting-pdpl.html', '/blog/quote-process.html', '/blog/ops-habits.html', '/blog/digital-ops-help.html', '/blog/tools-review.html',
+  '/industries/', '/industries/index.html', '/industries/retail.html', '/industries/clinic.html', '/industries/restaurant.html', '/industries/contracting.html',
+  '/industries/pharmacy.html', '/industries/warehouse.html', '/industries/supermarket.html', '/industries/accounting.html', '/industries/companies.html',
+  '/features/', '/features/index.html', '/features/inventory.html', '/features/sales.html', '/features/reports.html', '/features/customers.html', '/features/roles.html',
+  '/help/', '/help/index.html', '/security/', '/security/index.html', '/updates/', '/updates/index.html', '/404.html',
+  '/manifest.webmanifest', '/icon.svg', '/icon-192.png', '/icon-512.png', '/icon-512-maskable.png'
+];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(ASSETS)).then(() => self.skipWaiting()));
@@ -17,7 +27,25 @@ function isNavigate(req) {
 }
 
 function isShellScript(url) {
-  return /\/(catalog|auth|terms|activity)\.js$/.test(url.pathname);
+  return /\/(catalog|auth|terms|activity|shared-page)\.js$/.test(url.pathname) || /\/shared-page\.css$/.test(url.pathname);
+}
+
+function isDashboard(url) {
+  return (url.pathname || '').indexOf('/dashboard') === 0;
+}
+
+function offlineShellFor(url) {
+  const path = (url && url.pathname) || '/';
+  if (path.indexOf('/dashboard') === 0) return null;
+  if (path.indexOf('/terms') === 0) return '/terms/index.html';
+  if (path.indexOf('/privacy') === 0) return '/privacy/index.html';
+  if (path.indexOf('/blog') === 0) return '/blog/index.html';
+  if (path.indexOf('/industries') === 0) return '/industries/index.html';
+  if (path.indexOf('/features') === 0) return '/features/index.html';
+  if (path.indexOf('/help') === 0) return '/help/index.html';
+  if (path.indexOf('/security') === 0) return '/security/index.html';
+  if (path.indexOf('/updates') === 0) return '/updates/index.html';
+  return '/index.html';
 }
 
 self.addEventListener('fetch', (event) => {
@@ -26,6 +54,12 @@ self.addEventListener('fetch', (event) => {
   const url = new URL(req.url);
   if (url.origin !== self.location.origin) return;
 
+  // Never cache dashboard (auth/session UI must stay fresh).
+  if (isDashboard(url)) {
+    event.respondWith(fetch(req).catch(() => new Response('Dashboard unavailable offline', { status: 503, statusText: 'Service Unavailable' })));
+    return;
+  }
+
   // HTML + core JS: network-first so deploys are not stuck on stale cache
   if (isNavigate(req) || isShellScript(url)) {
     event.respondWith(
@@ -33,7 +67,7 @@ self.addEventListener('fetch', (event) => {
         const copy = res.clone();
         if (res.ok) caches.open(CACHE).then((cache) => cache.put(req, copy)).catch(() => {});
         return res;
-      }).catch(() => caches.match(req).then((cached) => cached || caches.match('/index.html')))
+      }).catch(() => caches.match(req).then((cached) => cached || caches.match(offlineShellFor(url)) || caches.match('/404.html')))
     );
     return;
   }
