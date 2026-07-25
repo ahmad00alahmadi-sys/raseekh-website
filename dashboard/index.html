@@ -709,7 +709,7 @@ body.is-admin .client-only{display:none!important}
         <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
           <button class="btn btn-ghost" type="button" id="refreshLeadsBtn" data-ar="↻ تحديث من السحابة" data-en="↻ Refresh from cloud">↻ تحديث من السحابة</button>
           <button class="btn btn-ghost" type="button" id="exportLeadsBtn" data-ar="تصدير CSV" data-en="Export CSV">تصدير CSV</button>
-          <a class="btn btn-ghost" href="#page-settings" id="gotoNotifySettings" data-ar="إعدادات وصول الطلبات" data-en="Request delivery settings">إعدادات وصول الطلبات</a>
+          <a class="btn btn-ghost" href="#page-settings" data-goto="settings" id="gotoNotifySettings" data-ar="إعدادات وصول الطلبات" data-en="Request delivery settings">إعدادات وصول الطلبات</a>
         </div>
         <div class="delivery-status" id="leadsDeliveryHint">
           <div class="row"><span data-ar="وصول الطلبات الآن" data-en="Delivery right now">وصول الطلبات الآن</span><span class="delivery-pill off" id="leadsDeliveryPill">—</span></div>
@@ -830,7 +830,8 @@ body.is-admin .client-only{display:none!important}
         <form class="form" id="settingsForm" style="max-width:480px">
           <input type="email" id="settingsEmail" disabled>
           <input type="text" id="settingsName" data-ar-placeholder="اسم العرض" data-en-placeholder="Display name" placeholder="اسم العرض">
-          <input type="tel" id="settingsPhone" data-ar-placeholder="رقم الجوال" data-en-placeholder="Phone" placeholder="رقم الجوال" autocomplete="tel">
+          <input type="tel" id="settingsPhone" inputmode="tel" maxlength="20" data-ar-placeholder="رقم الجوال" data-en-placeholder="Phone" placeholder="رقم الجوال" autocomplete="tel">
+          <input type="text" id="settingsCompany" data-ar-placeholder="اسم الشركة (اختياري)" data-en-placeholder="Company name (optional)" placeholder="اسم الشركة (اختياري)" autocomplete="organization">
           <input type="password" id="settingsPassword" data-ar-placeholder="كلمة مرور جديدة (اختياري)" data-en-placeholder="New password (optional)" placeholder="كلمة مرور جديدة (اختياري)">
           <button class="btn btn-primary" type="submit" style="width:fit-content" data-ar="حفظ التغييرات" data-en="Save changes">حفظ التغييرات</button>
         </form>
@@ -937,7 +938,11 @@ body.is-admin .client-only{display:none!important}
     <p id="requestConfirmTitle" style="color:var(--muted);font-size:.92rem;margin-bottom:14px"></p>
     <form class="form" id="requestConfirmForm">
       <label class="field"><span data-ar="رقم الجوال للتواصل" data-en="Phone for reply">رقم الجوال للتواصل</span>
-        <input type="tel" id="requestConfirmPhone" data-ar-placeholder="05xxxxxxxx" data-en-placeholder="05xxxxxxxx" placeholder="05xxxxxxxx" autocomplete="tel">
+        <input type="tel" id="requestConfirmPhone" inputmode="tel" maxlength="20" data-ar-placeholder="05xxxxxxxx" data-en-placeholder="05xxxxxxxx" placeholder="05xxxxxxxx" autocomplete="tel">
+      </label>
+      <label class="field" id="requestConfirmCompanyField" hidden>
+        <span id="requestConfirmCompanyLabel" data-ar="اسم الشركة" data-en="Company name">اسم الشركة</span>
+        <input type="text" id="requestConfirmCompany" data-ar-placeholder="اسم الشركة" data-en-placeholder="Company name" placeholder="اسم الشركة" autocomplete="organization">
       </label>
       <label class="field"><span data-ar="ملاحظة إضافية (اختياري)" data-en="Extra note (optional)">ملاحظة إضافية (اختياري)</span>
         <textarea id="requestConfirmNote" data-ar-placeholder="كمية، مواصفات، أو موعد مطلوب" data-en-placeholder="Qty, specs, or needed date" placeholder="كمية، مواصفات، أو موعد مطلوب" style="min-height:80px"></textarea>
@@ -1016,9 +1021,22 @@ body.is-admin .client-only{display:none!important}
   function categoryKey(p){
     return String((p && (p.category_en || p.category)) || 'general').trim().toLowerCase();
   }
+  function normalizeSearchText(value){
+    return String(value || '')
+      .toLowerCase()
+      .replace(/[\u064B-\u065F\u0670\u0640]/g, '')
+      .replace(/[أإآٱ]/g, 'ا')
+      .replace(/ة/g, 'ه')
+      .replace(/ى/g, 'ي')
+      .trim();
+  }
   function productSearchBlob(p){
     if (!p) return '';
-    return [p.name, p.name_en, p.category, p.category_en, p.desc, p.desc_en].filter(Boolean).join(' ').toLowerCase();
+    return normalizeSearchText([p.name, p.name_en, p.category, p.category_en, p.desc, p.desc_en].filter(Boolean).join(' '));
+  }
+  function isUsablePhone(value){
+    const digits = String(value || '').replace(/\D/g, '');
+    return digits.length >= 9 && digits.length <= 15;
   }
   function escapeHtml(str){
     const d = document.createElement('div');
@@ -1632,6 +1650,11 @@ body.is-admin .client-only{display:none!important}
         phoneEl.value = isDemo ? '' : ((user?.user_metadata && user.user_metadata.phone) || '');
         phoneEl.disabled = isDemo;
       }
+      const companyEl = document.getElementById('settingsCompany');
+      if (companyEl) {
+        companyEl.value = isDemo ? '' : ((user?.user_metadata && user.user_metadata.company) || '');
+        companyEl.disabled = isDemo;
+      }
       document.getElementById('settingsPassword').disabled = isDemo;
       document.getElementById('dashUserStatus').textContent = isDemo ? t('وضع تجريبي','Demo mode') : t('متصل','Online');
 
@@ -1760,7 +1783,12 @@ body.is-admin .client-only{display:none!important}
   document.addEventListener('click', (e) => {
     const el = e.target.closest('[data-goto]');
     if (!el || el.classList.contains('nav-item')) return;
+    if (el.tagName === 'A') e.preventDefault();
     switchPage(el.dataset.goto);
+    if (el.dataset.goto === 'settings') {
+      const notify = document.getElementById('storeNotifyEmail');
+      if (notify && isAdminUser) setTimeout(() => notify.focus(), 50);
+    }
   });
 
   function startClock(){
@@ -2048,7 +2076,7 @@ body.is-admin .client-only{display:none!important}
     const grid = document.getElementById('clientCatalogGrid');
     if (!grid) return;
     const searchEl = document.getElementById('clientCatalogSearch');
-    const q = (searchEl?.value || '').trim().toLowerCase();
+    const q = normalizeSearchText(searchEl?.value || '');
     const list = products.filter(p => !q || productSearchBlob(p).includes(q));
     if (!list.length) {
       if (q) {
@@ -2330,6 +2358,15 @@ body.is-admin .client-only{display:none!important}
     const phoneEl = document.getElementById('requestConfirmPhone');
     const metaPhone = currentUser && currentUser.user_metadata && currentUser.user_metadata.phone;
     phoneEl.value = metaPhone || '';
+    const companyField = document.getElementById('requestConfirmCompanyField');
+    const companyEl = document.getElementById('requestConfirmCompany');
+    const needsCompany = draft && (draft.type === 'business' || draft.type === 'system');
+    const metaCompany = currentUser && currentUser.user_metadata && currentUser.user_metadata.company;
+    if (companyField) companyField.hidden = !needsCompany;
+    if (companyEl) {
+      companyEl.required = !!needsCompany;
+      companyEl.value = needsCompany ? (draft.company || metaCompany || '') : '';
+    }
     document.getElementById('requestConfirmNote').value = '';
     const submitBtn = document.querySelector('#requestConfirmForm button[type="submit"]');
     if (submitBtn) {
@@ -2338,7 +2375,8 @@ body.is-admin .client-only{display:none!important}
       applyLang(currentLang);
     }
     setModalOpen(document.getElementById('requestConfirmModal'), true);
-    phoneEl.focus();
+    if (needsCompany && companyEl && !companyEl.value.trim()) companyEl.focus();
+    else phoneEl.focus();
   }
   function closeRequestConfirm(){
     pendingClientRequest = null;
@@ -2360,8 +2398,21 @@ body.is-admin .client-only{display:none!important}
     if (submitBtn && submitBtn.disabled) return;
     const phone = document.getElementById('requestConfirmPhone').value.trim();
     const note = document.getElementById('requestConfirmNote').value.trim();
+    const companyEl = document.getElementById('requestConfirmCompany');
+    const company = companyEl ? companyEl.value.trim() : '';
+    const needsCompany = pendingClientRequest.type === 'business' || pendingClientRequest.type === 'system';
     if (!phone && !(currentUser && currentUser.email)) {
       showToast(t('أدخل رقم جوال للتواصل', 'Enter a phone number for reply'));
+      return;
+    }
+    if (phone && !isUsablePhone(phone)) {
+      showToast(t('رقم الجوال غير صالح — استخدموا صيغة مثل 05xxxxxxxx', 'Phone number looks invalid — use a format like 05xxxxxxxx'));
+      document.getElementById('requestConfirmPhone').focus();
+      return;
+    }
+    if (needsCompany && !company) {
+      showToast(t('اكتبوا اسم الشركة لطلبات الشركات', 'Enter the company name for business requests'));
+      if (companyEl) companyEl.focus();
       return;
     }
     if (submitBtn) {
@@ -2370,21 +2421,34 @@ body.is-admin .client-only{display:none!important}
       submitBtn.textContent = t('جاري الإرسال...', 'Sending...');
     }
     const prevPhone = (currentUser && currentUser.user_metadata && currentUser.user_metadata.phone) || '';
-    if (phone && phone !== prevPhone && Auth && Auth.updateUser && !isDemo) {
+    const prevCompany = (currentUser && currentUser.user_metadata && currentUser.user_metadata.company) || '';
+    if (((phone && phone !== prevPhone) || (company && company !== prevCompany)) && Auth && Auth.updateUser && !isDemo) {
       try {
-        const updated = await Auth.updateUser({ phone });
+        const updated = await Auth.updateUser({
+          phone: phone || undefined,
+          company: company || undefined
+        });
         if (updated) currentUser = updated;
-        else if (currentUser && currentUser.user_metadata) currentUser.user_metadata.phone = phone;
+        else if (currentUser && currentUser.user_metadata) {
+          if (phone) currentUser.user_metadata.phone = phone;
+          if (company) currentUser.user_metadata.company = company;
+        }
         const settingsPhone = document.getElementById('settingsPhone');
-        if (settingsPhone) settingsPhone.value = phone;
+        if (settingsPhone && phone) settingsPhone.value = phone;
+        const settingsCompany = document.getElementById('settingsCompany');
+        if (settingsCompany && company) settingsCompany.value = company;
       } catch (_) {
-        if (currentUser && currentUser.user_metadata) currentUser.user_metadata.phone = phone;
+        if (currentUser && currentUser.user_metadata) {
+          if (phone) currentUser.user_metadata.phone = phone;
+          if (company) currentUser.user_metadata.company = company;
+        }
       }
     }
     const baseMsg = pendingClientRequest.message || '';
     const message = note ? (baseMsg + '\n' + t('ملاحظة: ', 'Note: ') + note) : baseMsg;
     const saved = addClientRequest(Object.assign({}, pendingClientRequest, {
       phone: phone || pendingClientRequest.phone || '',
+      company: company || pendingClientRequest.company || '',
       message
     }));
     closeRequestConfirm();
@@ -2444,8 +2508,16 @@ body.is-admin .client-only{display:none!important}
     const priceText = Catalog.suggestionPriceLabel
       ? Catalog.suggestionPriceLabel(s, products, currentLang === 'en' ? 'en' : 'ar')
       : t('عرض سعر بعد المراجعة', 'Custom quote after review');
+    let reqType = 'suggestion';
+    const firstId = s.productIds && s.productIds[0];
+    if (firstId) {
+      const firstProduct = products.find(x => x.id === firstId);
+      if (firstProduct && Catalog.requestTypeForProduct) {
+        reqType = Catalog.requestTypeForProduct(firstProduct);
+      }
+    }
     openRequestConfirm({
-      type: 'suggestion',
+      type: reqType,
       title: titleText,
       summary: titleText + ' — ' + priceText,
       message: t('طلب عرض سعر للاقتراح: ', 'Quote request for suggestion: ') + titleText + '\n' + items.join(currentLang === 'ar' ? '، ' : ', ') + '\n' + priceText,
@@ -2481,7 +2553,7 @@ body.is-admin .client-only{display:none!important}
   });
 
   function renderProducts(){
-    const q = (document.getElementById('productSearch').value || '').trim().toLowerCase();
+    const q = normalizeSearchText(document.getElementById('productSearch').value || '');
     const list = products.filter(p => !q || productSearchBlob(p).includes(q));
     const body = document.getElementById('productsBody');
     if (!list.length) {
@@ -2618,7 +2690,7 @@ body.is-admin .client-only{display:none!important}
 
   function renderPos(){
     fillCategoryFilter();
-    const q = (document.getElementById('posSearch').value || '').trim().toLowerCase();
+    const q = normalizeSearchText(document.getElementById('posSearch').value || '');
     const cat = document.getElementById('posCategory').value;
     const catalog = document.getElementById('posCatalog');
     const layout = document.getElementById('posFixedLayout');
@@ -2877,14 +2949,21 @@ body.is-admin .client-only{display:none!important}
     if (!Auth) return;
     const name = document.getElementById('settingsName').value.trim();
     const phone = (document.getElementById('settingsPhone')?.value || '').trim();
+    const company = (document.getElementById('settingsCompany')?.value || '').trim();
     const pass = document.getElementById('settingsPassword').value;
+    if (phone && !isUsablePhone(phone)) {
+      msg.style.color = 'var(--danger)';
+      msg.textContent = t('رقم الجوال غير صالح — استخدموا صيغة مثل 05xxxxxxxx', 'Phone number looks invalid — use a format like 05xxxxxxxx');
+      return;
+    }
     try {
-      const user = await Auth.updateUser({ full_name: name, phone, password: pass || undefined });
+      const user = await Auth.updateUser({ full_name: name, phone, company, password: pass || undefined });
       currentUser = user || currentUser;
       if (currentUser && currentUser.user_metadata) {
         currentUser.user_metadata.full_name = name;
         currentUser.user_metadata.display_name = name;
         currentUser.user_metadata.phone = phone;
+        currentUser.user_metadata.company = company;
       }
       document.getElementById('dashUserLabel').textContent = name || currentUser.email;
       document.getElementById('settingsPassword').value = '';
@@ -3099,12 +3178,13 @@ body.is-admin .client-only{display:none!important}
     syncOnline();
     if (reloadBtn) reloadBtn.addEventListener('click', () => location.reload());
     if ('serviceWorker' in navigator) {
+      const hadController = !!navigator.serviceWorker.controller;
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('/sw.js').catch(() => {});
       });
       let refreshing = false;
       navigator.serviceWorker.addEventListener('controllerchange', () => {
-        if (refreshing) return;
+        if (!hadController || refreshing) return;
         refreshing = true;
         if (updateBanner) {
           updateBanner.hidden = false;

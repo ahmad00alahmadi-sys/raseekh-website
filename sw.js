@@ -1,5 +1,5 @@
 /* Lightweight offline shell for Raseekh marketing site */
-const CACHE = 'raseekh-shell-v28';
+const CACHE = 'raseekh-shell-v29';
 const ASSETS = ['/', '/index.html', '/catalog.js', '/auth.js', '/terms.js', '/activity.js', '/terms/', '/terms/index.html', '/dashboard/', '/dashboard/index.html', '/manifest.webmanifest', '/icon.svg'];
 
 self.addEventListener('install', (event) => {
@@ -20,6 +20,13 @@ function isShellScript(url) {
   return /\/(catalog|auth|terms|activity)\.js$/.test(url.pathname);
 }
 
+function offlineShellFor(url) {
+  const path = (url && url.pathname) || '/';
+  if (path.indexOf('/dashboard') === 0) return '/dashboard/index.html';
+  if (path.indexOf('/terms') === 0) return '/terms/index.html';
+  return '/index.html';
+}
+
 self.addEventListener('fetch', (event) => {
   const req = event.request;
   if (req.method !== 'GET') return;
@@ -33,7 +40,7 @@ self.addEventListener('fetch', (event) => {
         const copy = res.clone();
         if (res.ok) caches.open(CACHE).then((cache) => cache.put(req, copy)).catch(() => {});
         return res;
-      }).catch(() => caches.match(req).then((cached) => cached || caches.match('/index.html')))
+      }).catch(() => caches.match(req).then((cached) => cached || caches.match(offlineShellFor(url))))
     );
     return;
   }

@@ -59,6 +59,7 @@
       user_metadata: {
         full_name: row.full_name || '',
         phone: row.phone || '',
+        company: row.company || '',
         display_name: row.full_name || ''
       },
       app_metadata: { provider: 'local' }
@@ -177,12 +178,13 @@
     return true;
   }
 
-  async function localUpdateProfile(userId, { full_name, phone, password }) {
+  async function localUpdateProfile(userId, { full_name, phone, company, password }) {
     const users = readUsers();
     const idx = users.findIndex(u => u.id === userId);
     if (idx < 0) throw new Error('NOT_FOUND');
     if (full_name != null) users[idx].full_name = String(full_name).trim();
     if (phone != null) users[idx].phone = String(phone).trim();
+    if (company != null) users[idx].company = String(company).trim();
     if (password) users[idx].password_hash = await hashPassword(password);
     writeUsers(users);
     setLocalSession(users[idx]);
@@ -315,7 +317,7 @@
     return { provider: 'local' };
   }
 
-  async function updateUser({ full_name, phone, password }) {
+  async function updateUser({ full_name, phone, company, password }) {
     const current = await getSession();
     if (!current.user) throw new Error('NOT_FOUND');
     const isLocal = current.provider === 'local' || String(current.user.id || '').startsWith('local-');
@@ -329,7 +331,8 @@
           meta.display_name = meta.full_name;
         }
         if (phone != null) meta.phone = String(phone).trim();
-        if (full_name != null || phone != null) updates.data = meta;
+        if (company != null) meta.company = String(company).trim();
+        if (full_name != null || phone != null || company != null) updates.data = meta;
         if (Object.keys(updates).length) {
           const { data, error } = await supabaseClient.auth.updateUser(updates);
           if (error) {
@@ -354,7 +357,7 @@
     }
     // Never invent a local profile row for a cloud UUID.
     if (!isLocal) throw new Error('NETWORK');
-    return localUpdateProfile(current.user.id, { full_name, phone, password });
+    return localUpdateProfile(current.user.id, { full_name, phone, company, password });
   }
 
   function friendlyError(err, lang) {

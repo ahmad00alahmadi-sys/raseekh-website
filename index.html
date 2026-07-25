@@ -688,7 +688,7 @@ body.terms-locked{overflow:hidden}
         <button class="btn btn-primary" type="submit" id="heroQuoteBtn" data-ar="اطلب عرض سعر" data-en="Request a quote">اطلب عرض سعر</button>
       </form>
       <div class="hero-note">
-        <a href="#contact" data-ar="أو افتحوا النموذج الكامل" data-en="Or open the full form">أو افتحوا النموذج الكامل</a>
+        <a href="#contact" id="heroOpenFullForm" data-ar="أو افتحوا النموذج الكامل" data-en="Or open the full form">أو افتحوا النموذج الكامل</a>
         <span aria-hidden="true">·</span>
         <a href="#pricing" data-ar="قارنوا الباقات" data-en="Compare plans">قارنوا الباقات</a>
       </div>
@@ -709,8 +709,8 @@ body.terms-locked{overflow:hidden}
   <div class="wrap">
     <div class="section-head reveal">
       <div class="eyebrow" data-ar="خدماتنا" data-en="Services">خدماتنا</div>
-      <h2 data-ar="ثلاث خدمات أساسية" data-en="Three core services">ثلاث خدمات أساسية</h2>
-      <p data-ar="صيانة، برمجة، وأنظمة كاملة — بوضوح وبدون تعقيد." data-en="Maintenance, coding, and full systems — clear and simple.">صيانة، برمجة، وأنظمة كاملة — بوضوح وبدون تعقيد.</p>
+      <h2 data-ar="خدمات رقمية واضحة" data-en="Clear digital services">خدمات رقمية واضحة</h2>
+      <p data-ar="صيانة، برمجة، مخزون، وحلول للشركات — بوضوح وبدون تعقيد." data-en="Maintenance, coding, inventory, and company solutions — clear and simple.">صيانة، برمجة، مخزون، وحلول للشركات — بوضوح وبدون تعقيد.</p>
     </div>
     <div class="services-grid reveal stagger">
       <article class="service-block">
@@ -763,7 +763,7 @@ body.terms-locked{overflow:hidden}
       </article>
     </div>
     <div class="reveal" style="margin-top:28px">
-      <a class="btn btn-primary" href="#contact" data-ar="اطلب عرض سعر برمجة" data-en="Request a coding quote">اطلب عرض سعر برمجة</a>
+      <a class="btn btn-primary" href="#contact" data-quote-type="programming" data-quote-msg-ar="أرغب بعرض سعر لخدمات البرمجة / تعديل كود." data-quote-msg-en="I want a quote for programming / code changes." data-ar="اطلب عرض سعر برمجة" data-en="Request a coding quote">اطلب عرض سعر برمجة</a>
     </div>
   </div>
 </section>
@@ -1025,7 +1025,7 @@ body.terms-locked{overflow:hidden}
           <input type="email" data-ar-placeholder="name@example.com" data-en-placeholder="name@example.com" placeholder="name@example.com" id="contactEmail" autocomplete="email">
         </label>
         <label class="field"><span data-ar="رقم الجوال" data-en="Phone">رقم الجوال</span>
-          <input type="tel" data-ar-placeholder="05xxxxxxxx" data-en-placeholder="05xxxxxxxx" placeholder="05xxxxxxxx" id="contactPhone" autocomplete="tel">
+          <input type="tel" inputmode="tel" maxlength="20" data-ar-placeholder="05xxxxxxxx" data-en-placeholder="05xxxxxxxx" placeholder="05xxxxxxxx" id="contactPhone" autocomplete="tel">
         </label>
         <p class="hint-inline" data-ar="يلزم بريد أو جوال واحد على الأقل للتواصل." data-en="Provide at least an email or phone so we can reply.">يلزم بريد أو جوال واحد على الأقل للتواصل.</p>
         <label class="field" id="contactCompanyField">
@@ -1205,6 +1205,11 @@ body.terms-locked{overflow:hidden}
     company.placeholder = t('اسم الشركة', 'Company name');
   }
 
+  function isUsablePhone(value){
+    const digits = String(value || '').replace(/\D/g, '');
+    return digits.length >= 9 && digits.length <= 15;
+  }
+
   function requestFromCatalog(opts){
     const typeEl = document.getElementById('contactType');
     const msgEl = document.getElementById('contactMsg');
@@ -1212,6 +1217,7 @@ body.terms-locked{overflow:hidden}
     const companyEl = document.getElementById('contactCompany');
     if (opts.type && typeEl) typeEl.value = opts.type;
     if (msgEl) msgEl.value = opts.message || '';
+    if (opts.company && companyEl && !companyEl.value.trim()) companyEl.value = opts.company;
     syncCompanyFieldForType((typeEl && typeEl.value) || opts.type || '');
     document.getElementById('contact').scrollIntoView({ behavior: 'smooth', block: 'start' });
     const focusEl = (nameEl && !nameEl.value.trim())
@@ -1235,12 +1241,12 @@ body.terms-locked{overflow:hidden}
       }
       return { ok: false, offline: true };
     }
-    if (!loggedInUser) {
-      requestFromCatalog({ type, message });
-      return { ok: false, redirected: true };
-    }
-    if (!Catalog || !Catalog.addSharedRequest) {
-      requestFromCatalog({ type, message });
+    const companyFromForm = (document.getElementById('contactCompany') && document.getElementById('contactCompany').value.trim()) || '';
+    const companyFromMeta = (loggedInUser && loggedInUser.user_metadata && loggedInUser.user_metadata.company) || '';
+    const company = (opts.company || companyFromForm || companyFromMeta || '').trim();
+    const needsCompany = type === 'business' || type === 'system';
+    if (!loggedInUser || (needsCompany && !company) || !Catalog || !Catalog.addSharedRequest) {
+      requestFromCatalog({ type, message, company });
       return { ok: false, redirected: true };
     }
     const typeTitle = Catalog.requestTypeLabel
@@ -1261,6 +1267,7 @@ body.terms-locked{overflow:hidden}
         name: fullName,
         phone,
         email,
+        company,
         userId: loggedInUser.id || '',
         title: typeTitle,
         message,
@@ -1293,7 +1300,7 @@ body.terms-locked{overflow:hidden}
       if (hq) hq.value = '';
       return { ok, delivered, pending };
     } catch (_) {
-      requestFromCatalog({ type, message });
+      requestFromCatalog({ type, message, company });
       if (resultEl) {
         resultEl.style.color = 'var(--danger)';
         resultEl.textContent = t('تعذّر الإرسال — أكملوا النموذج أدناه', 'Could not send — complete the form below');
@@ -1333,6 +1340,16 @@ body.terms-locked{overflow:hidden}
       restoreQuoteBtn(btn);
     }
   });
+
+  const heroOpenFullForm = document.getElementById('heroOpenFullForm');
+  if (heroOpenFullForm) {
+    heroOpenFullForm.addEventListener('click', (e) => {
+      e.preventDefault();
+      const type = document.getElementById('heroQuoteType').value;
+      const message = document.getElementById('heroQuoteMsg').value.trim();
+      requestFromCatalog({ type, message });
+    });
+  }
 
   document.querySelectorAll('[data-quote-type]').forEach((el) => {
     el.addEventListener('click', async (e) => {
@@ -1890,6 +1907,12 @@ body.terms-locked{overflow:hidden}
       (emailVal ? document.getElementById('contactPhone') : document.getElementById('contactEmail')).focus();
       return;
     }
+    if (phoneVal && !isUsablePhone(phoneVal)) {
+      result.style.color = 'var(--danger)';
+      result.textContent = t('رقم الجوال غير صالح — استخدموا صيغة مثل 05xxxxxxxx', 'Phone number looks invalid — use a format like 05xxxxxxxx');
+      document.getElementById('contactPhone').focus();
+      return;
+    }
     if ((typeVal === 'business' || typeVal === 'system') && !companyVal) {
       result.style.color = 'var(--danger)';
       result.textContent = t('اكتبوا اسم الشركة لطلبات الشركات', 'Enter the company name for business requests');
@@ -2247,12 +2270,13 @@ body.terms-locked{overflow:hidden}
     syncOnline();
     if (reloadBtn) reloadBtn.addEventListener('click', () => location.reload());
     if ('serviceWorker' in navigator) {
+      const hadController = !!navigator.serviceWorker.controller;
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('/sw.js').catch(() => {});
       });
       let refreshing = false;
       navigator.serviceWorker.addEventListener('controllerchange', () => {
-        if (refreshing) return;
+        if (!hadController || refreshing) return;
         refreshing = true;
         if (updateBanner) {
           updateBanner.hidden = false;
