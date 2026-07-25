@@ -192,38 +192,7 @@
     }
   ];
 
-  const DEFAULT_TESTIMONIALS = [
-    {
-      id: 'tv1',
-      name_ar: 'فهد العتيبي',
-      name_en: 'Fahad Al-Otaibi',
-      role_ar: 'مدير تشغيل · تجزئة · الرياض',
-      role_en: 'Ops manager · Retail · Riyadh',
-      quote_ar: 'قبل راسخ كان نقص الصنف يفاجئنا وقت الذروة. الآن التنبيه يجي قبل ما الرف يفضى، والفريق ما عاد يعتمد على واتساب.',
-      quote_en: 'Before Raseekh, stockouts surprised us at peak hours. Now alerts arrive before the shelf empties, and the team no longer relies on WhatsApp.',
-      stars: 5
-    },
-    {
-      id: 'tv2',
-      name_ar: 'نورة الشمري',
-      name_en: 'Noura Al-Shammari',
-      role_ar: 'منسّقة عيادة · القصيم',
-      role_en: 'Clinic coordinator · Qassim',
-      quote_ar: 'همّنا كان المواعيد وصلاحيات الاستقبال. النظام رتّب اليوم بدون تعقيد، وكل واحد يشوف اللي يخصّه فقط.',
-      quote_en: 'Our priority was appointments and reception roles. The system ordered the day without clutter, and each person only sees what they need.',
-      stars: 5
-    },
-    {
-      id: 'tv3',
-      name_ar: 'سلمان الحربي',
-      name_en: 'Salman Al-Harbi',
-      role_ar: 'مدير مشاريع · مقاولات · جدة',
-      role_en: 'Project manager · Contracting · Jeddah',
-      quote_ar: 'كنت أتابع المشاريع من رسائل متفرقة. لوحة العميل خلّت حالة الطلب والمواد واضحة للمشرفين في الموقع.',
-      quote_en: 'I tracked projects through scattered messages. The client board made request and materials status clear for site supervisors.',
-      stars: 5
-    }
-  ];
+  const DEFAULT_TESTIMONIALS = [];
 
   function cloneList(list) {
     return list.map((item) => Object.assign({}, item, {

@@ -1,15 +1,10 @@
-/* Shared AR/EN toggle for lightweight company pages. */
+/* Shared AR/EN toggle + legal foot for lightweight company pages. */
 (function () {
   let currentLang = localStorage.getItem('raseekh_lang') || 'ar';
   const q = new URLSearchParams(location.search).get('lang');
   if (q === 'en' || q === 'ar') currentLang = q;
 
-  function applyLang(lang) {
-    currentLang = lang;
-    localStorage.setItem('raseekh_lang', lang);
-    document.documentElement.lang = lang;
-    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
-    document.body.classList.toggle('lang-en', lang === 'en');
+  function applyTextAttrs(lang) {
     document.querySelectorAll('[data-ar]').forEach((el) => {
       const v = lang === 'ar' ? el.getAttribute('data-ar') : el.getAttribute('data-en');
       if (v !== null) el.textContent = v;
@@ -18,6 +13,42 @@
       const v = lang === 'ar' ? el.getAttribute('data-ar-html') : el.getAttribute('data-en-html');
       if (v !== null) el.innerHTML = v;
     });
+    document.querySelectorAll('[data-ar-placeholder]').forEach((el) => {
+      const v = lang === 'ar' ? el.getAttribute('data-ar-placeholder') : el.getAttribute('data-en-placeholder');
+      if (v !== null) el.setAttribute('placeholder', v);
+    });
+    document.querySelectorAll('[data-ar-aria]').forEach((el) => {
+      const v = lang === 'ar' ? el.getAttribute('data-ar-aria') : el.getAttribute('data-en-aria');
+      if (v !== null) el.setAttribute('aria-label', v);
+    });
+  }
+
+  function ensureLegalFoot() {
+    if (document.getElementById('raseekhLegalFoot')) return;
+    const wrap = document.querySelector('.wrap');
+    if (!wrap) return;
+    const foot = document.createElement('nav');
+    foot.id = 'raseekhLegalFoot';
+    foot.className = 'page-legal-foot';
+    foot.setAttribute('aria-label', 'Legal');
+    foot.innerHTML = [
+      '<a href="/privacy/" data-ar="الخصوصية" data-en="Privacy">الخصوصية</a>',
+      '<a href="/terms/" data-ar="الشروط" data-en="Terms">الشروط</a>',
+      '<a href="/security/" data-ar="الأمان" data-en="Security">الأمان</a>',
+      '<a href="/help/" data-ar="المساعدة" data-en="Help">المساعدة</a>',
+      '<a href="/" data-ar="الرئيسية" data-en="Home">الرئيسية</a>'
+    ].join('<span aria-hidden="true">·</span>');
+    wrap.appendChild(foot);
+  }
+
+  function applyLang(lang) {
+    currentLang = lang;
+    localStorage.setItem('raseekh_lang', lang);
+    document.documentElement.lang = lang;
+    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+    document.body.classList.toggle('lang-en', lang === 'en');
+    ensureLegalFoot();
+    applyTextAttrs(lang);
     const btn = document.getElementById('langToggle');
     if (btn) btn.textContent = lang === 'ar' ? 'EN' : 'AR';
     const titleEl = document.querySelector('title');
@@ -30,9 +61,8 @@
     if (canonical) {
       const base = canonical.getAttribute('data-base') || canonical.getAttribute('href').split('?')[0];
       canonical.setAttribute('data-base', base);
-      canonical.setAttribute('href', lang === 'en' ? base + (base.includes('?') ? '&' : '?') + 'lang=en' : base);
-      if (lang === 'en' && !base.includes('?')) canonical.setAttribute('href', base + '?lang=en');
-      if (lang === 'ar') canonical.setAttribute('href', base);
+      if (lang === 'en') canonical.setAttribute('href', base + (base.includes('?') ? '&' : '?') + 'lang=en');
+      else canonical.setAttribute('href', base);
     }
   }
 

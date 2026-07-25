@@ -1367,7 +1367,7 @@ body.is-client .home-bar{
     let emailText = t('غير مضبوط', 'Not set');
     if (status.hasEmail) {
       emailText = notifyPublished
-        ? (status.notifyEmail + ' · ' + t('منشور للزوار', 'published'))
+        ? (status.notifyEmail + ' · ' + t('محفوظ للمالك', 'owner-only'))
         : (status.notifyEmail + ' · ' + t('محلي فقط — شغّل setup_all.sql', 'local only — run setup_all.sql'));
     }
     setPill('deliveryEmailPill', !!(status.hasEmail && notifyPublished), emailText, emailText);
@@ -1390,7 +1390,7 @@ body.is-client .home-bar{
       leadsPill.textContent = ready
         ? (notifyPublished && cloudOk
           ? t('بريد + سحابة', 'Email + cloud')
-          : (notifyPublished ? t('بريد منشور', 'Email published') : t('سحابة فقط', 'Cloud only')))
+          : (notifyPublished ? t('بريد مفعّل', 'Email active') : t('سحابة فقط', 'Cloud only')))
         : t('اضبط البريد من الإعدادات', 'Set email in Settings');
     }
     updateAdminSetupBanner({ status, cloudOk, settingsOk, activityOk, termsOk, notifyPublished });
