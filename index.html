@@ -140,7 +140,7 @@
           "name": "أين تُستضاف البيانات؟",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "STC Cloud أو AWS أو خوادم العميل حسب الاتفاق، مع مراعاة متطلبات التشغيل ونظام حماية البيانات الشخصية PDPL."
+            "text": "بيئة الاستضافة تُحدد حسب طلب العميل: خوادمه، أو سحابة متفق عليها، أو ترخيص مستضاف — مع مراعاة متطلبات التشغيل وPDPL بالقدر المنطبق."
           }
         },
         {
@@ -1374,8 +1374,7 @@ body.terms-locked,body.auth-locked{overflow:hidden}
             <span data-ar="الاستضافة" data-en="Hosting">الاستضافة</span>
             <select id="estimateHosting">
               <option value="client" data-ar="خوادم العميل" data-en="Client servers">خوادم العميل</option>
-              <option value="stc" data-ar="STC Cloud" data-en="STC Cloud">STC Cloud</option>
-              <option value="aws" data-ar="AWS" data-en="AWS">AWS</option>
+              <option value="cloud" data-ar="سحابة حسب طلب العميل" data-en="Cloud per client request">سحابة حسب طلب العميل</option>
               <option value="hosted" data-ar="ترخيص مستضاف" data-en="Hosted license">ترخيص مستضاف</option>
             </select>
           </label>
@@ -1409,7 +1408,7 @@ body.terms-locked,body.auth-locked{overflow:hidden}
       <span class="service-block" style="padding:10px 16px;margin:0" data-ar="Supabase (مصادقة وبيانات)" data-en="Supabase (auth & data)">Supabase (مصادقة وبيانات)</span>
       <span class="service-block" style="padding:10px 16px;margin:0" data-ar="لوحات تحكم تشغيلية" data-en="Ops dashboards">لوحات تحكم تشغيلية</span>
       <span class="service-block" style="padding:10px 16px;margin:0" data-ar="Moyasar · SMS · ZATCA path" data-en="Moyasar · SMS · ZATCA path">Moyasar · SMS · ZATCA path</span>
-      <span class="service-block" style="padding:10px 16px;margin:0" data-ar="STC Cloud / AWS / on-prem" data-en="STC Cloud / AWS / on-prem">STC Cloud / AWS / on-prem</span>
+      <span class="service-block" style="padding:10px 16px;margin:0" data-ar="استضافة حسب طلب العميل" data-en="Hosting per client request">استضافة حسب طلب العميل</span>
     </div>
   </div>
 </section>
@@ -1549,21 +1548,21 @@ body.terms-locked,body.auth-locked{overflow:hidden}
   <div class="wrap">
     <div class="section-head reveal">
       <div class="eyebrow" data-ar="الاستضافة" data-en="Hosting">الاستضافة</div>
-      <h2 data-ar="STC Cloud أو AWS أو خوادمكم" data-en="STC Cloud, AWS, or your servers">STC Cloud أو AWS أو خوادمكم</h2>
-      <p data-ar="نختار بيئة النشر مع مراعاة متطلبات التشغيل ونظام حماية البيانات الشخصية (PDPL)." data-en="We choose the deploy environment with ops needs and PDPL in mind.">نختار بيئة النشر مع مراعاة متطلبات التشغيل ونظام حماية البيانات الشخصية (PDPL).</p>
+      <h2 data-ar="الاستضافة حسب طلب العميل" data-en="Hosting per client request">الاستضافة حسب طلب العميل</h2>
+      <p data-ar="لا نفترض مزوّداً محدداً — بيئة النشر تُكتب في العرض حسب احتياجكم ومتطلبات التشغيل والخصوصية (PDPL بالقدر المنطبق)." data-en="We do not assume a specific provider — the deploy environment is written in the quote per your need, ops requirements, and privacy (PDPL to the extent applicable).">لا نفترض مزوّداً محدداً — بيئة النشر تُكتب في العرض حسب احتياجكم ومتطلبات التشغيل والخصوصية (PDPL بالقدر المنطبق).</p>
     </div>
     <div class="services-grid reveal stagger">
       <article class="service-block">
-        <h3 data-ar="STC Cloud" data-en="STC Cloud">STC Cloud</h3>
-        <p data-ar="خيار سحابي محلي مناسب لأحمال تشغيلية داخل المملكة عند الاتفاق." data-en="A local cloud option suited to in-Kingdom workloads when agreed.">خيار سحابي محلي مناسب لأحمال تشغيلية داخل المملكة عند الاتفاق.</p>
-      </article>
-      <article class="service-block">
-        <h3 data-ar="AWS" data-en="AWS">AWS</h3>
-        <p data-ar="مرونة توسّع ومناطق متاحة — حسب تصميم المشروع واتفاق الاستضافة." data-en="Scale flexibility and available regions — per project design and hosting agreement.">مرونة توسّع ومناطق متاحة — حسب تصميم المشروع واتفاق الاستضافة.</p>
-      </article>
-      <article class="service-block">
-        <h3 data-ar="خوادم العميل" data-en="Client servers">خوادم العميل</h3>
+        <h3 data-ar="خوادمكم" data-en="Your servers">خوادمكم</h3>
         <p data-ar="نشر على بنيتكم مع تسليم وتشغيل وفق نطاق الصلاحيات المتفق عليه." data-en="Deploy on your infra with handover scoped to agreed access.">نشر على بنيتكم مع تسليم وتشغيل وفق نطاق الصلاحيات المتفق عليه.</p>
+      </article>
+      <article class="service-block">
+        <h3 data-ar="سحابة حسب طلبكم" data-en="Cloud as you request">سحابة حسب طلبكم</h3>
+        <p data-ar="مزوّد سحابي توافقون عليه في العرض — عام أو محلي — حسب متطلبات التشغيل والبيانات." data-en="A cloud provider you approve in the quote — general or local — per ops and data needs.">مزوّد سحابي توافقون عليه في العرض — عام أو محلي — حسب متطلبات التشغيل والبيانات.</p>
+      </article>
+      <article class="service-block">
+        <h3 data-ar="ترخيص مستضاف" data-en="Hosted license">ترخيص مستضاف</h3>
+        <p data-ar="تشغيل على بيئة نديرها عند الاتفاق — الاستخدام بترخيص، والتفاصيل في العرض." data-en="Runs on an environment we manage when agreed — licensed use; details in the quote.">تشغيل على بيئة نديرها عند الاتفاق — الاستخدام بترخيص، والتفاصيل في العرض.</p>
       </article>
     </div>
     <div class="reveal" style="display:flex;flex-wrap:wrap;gap:10px;margin-top:28px" aria-label="Hosting trust">
@@ -1777,7 +1776,7 @@ body.terms-locked,body.auth-locked{overflow:hidden}
       </details>
       <details class="faq-item" id="faq-hosting">
         <summary data-ar="أين تُستضاف الحلول؟" data-en="Where are solutions hosted?">أين تُستضاف الحلول؟</summary>
-        <p data-ar="STC Cloud، أو AWS، أو خوادمكم — حسب الاتفاق. نراعي متطلبات التشغيل ونظام حماية البيانات الشخصية (PDPL) عند اختيار البيئة." data-en="STC Cloud, AWS, or your servers — as agreed. We consider ops needs and PDPL when choosing the environment.">STC Cloud، أو AWS، أو خوادمكم — حسب الاتفاق. نراعي متطلبات التشغيل ونظام حماية البيانات الشخصية (PDPL) عند اختيار البيئة.</p>
+        <p data-ar="حسب طلبكم واتفاق العرض: خوادمكم، أو سحابة متفق عليها، أو ترخيص مستضاف. نراعي متطلبات التشغيل وPDPL بالقدر المنطبق عند اختيار البيئة." data-en="Per your request and quote: your servers, an agreed cloud, or a hosted license. We consider ops needs and PDPL to the extent applicable when choosing the environment.">حسب طلبكم واتفاق العرض: خوادمكم، أو سحابة متفق عليها، أو ترخيص مستضاف. نراعي متطلبات التشغيل وPDPL بالقدر المنطبق عند اختيار البيئة.</p>
       </details>
       <details class="faq-item" id="faq-nda">
         <summary data-ar="هل توقّعون اتفاقية سرية (NDA)؟" data-en="Do you sign an NDA?">هل توقّعون اتفاقية سرية (NDA)؟</summary>
@@ -3626,7 +3625,7 @@ body.terms-locked,body.auth-locked{overflow:hidden}
       system: { small: [10000, 18000], medium: [18000, 35000], large: [35000, 60000] },
       institution: { small: [18000, 30000], medium: [30000, 55000], large: [55000, 90000] }
     };
-    const hostAdd = { client: 0, stc: 1500, aws: 2000, hosted: 2500 };
+    const hostAdd = { client: 0, cloud: 1500, hosted: 2500 };
     const fmt = (n) => n.toLocaleString(currentLang === 'ar' ? 'ar-SA' : 'en-US');
     btn.addEventListener('click', () => {
       const type = document.getElementById('estimateType')?.value || 'web';
