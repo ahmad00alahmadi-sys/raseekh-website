@@ -913,6 +913,7 @@ body.is-admin .client-only{display:none!important}
 
   let currentLang = localStorage.getItem('raseekh_lang') || 'ar';
   let currentUser = null;
+  let authProvider = null;
   let isDemo = false;
   let isAdminUser = false;
   let products = [];
@@ -964,6 +965,10 @@ body.is-admin .client-only{display:none!important}
     if (Auth && typeof Auth.isAdmin === 'function') return Auth.isAdmin(user);
     const email = String(user?.email || '').trim().toLowerCase();
     return email === 'ahmad00alahmadi@gmail.com';
+  }
+  function isAdminEmailFast(email){
+    if (Auth && typeof Auth.isAdminEmail === 'function') return Auth.isAdminEmail(email);
+    return String(email || '').trim().toLowerCase() === 'ahmad00alahmadi@gmail.com';
   }
   function applyRoleUI(){
     document.body.classList.toggle('is-admin', isAdminUser);
@@ -1400,15 +1405,21 @@ body.is-admin .client-only{display:none!important}
     updateActivityBadge(stats.activeNow);
 
     const hint = document.getElementById('activityCloudHint');
-    if (hint && Activity.probeCloud) {
+    if (hint) {
       try {
-        const probe = await Activity.probeCloud();
-        if (probe && probe.ok) {
-          hint.style.color = 'var(--ok)';
-          hint.textContent = t('✓ مزامنة السحابة جاهزة — الدخول يظهر من أي جهاز', '✓ Cloud sync ready — logins appear across devices');
-        } else {
+        const localSession = authProvider === 'local' || (currentUser && currentUser.app_metadata && currentUser.app_metadata.provider === 'local');
+        if (localSession) {
           hint.style.color = 'var(--danger)';
-          hint.textContent = t('⚠ السحابة غير جاهزة — شغّل setup_all.sql ثم ادخل بحساب الإدارة', '⚠ Cloud not ready — run setup_all.sql then sign in as admin');
+          hint.textContent = t('⚠ جلسة محلية — اخرجوا ثم ادخلوا بحساب الإدارة السحابي للمزامنة', '⚠ Local session — sign out and sign in with the cloud admin account to sync');
+        } else if (Activity.probeCloud) {
+          const probe = await Activity.probeCloud();
+          if (probe && probe.ok) {
+            hint.style.color = 'var(--ok)';
+            hint.textContent = t('✓ مزامنة السحابة جاهزة — الدخول يظهر من أي جهاز', '✓ Cloud sync ready — logins appear across devices');
+          } else {
+            hint.style.color = 'var(--danger)';
+            hint.textContent = t('⚠ السحابة غير جاهزة — شغّل setup_all.sql ثم ادخل بحساب الإدارة', '⚠ Cloud not ready — run setup_all.sql then sign in as admin');
+          }
         }
       } catch (_) {
         hint.style.color = 'var(--danger)';
@@ -1460,6 +1471,7 @@ body.is-admin .client-only{display:none!important}
       currentUser = user;
       isDemo = !!demo;
       isAdminUser = detectAdmin(user, isDemo);
+      authProvider = demo ? 'demo' : (user && user.app_metadata && user.app_metadata.provider) || authProvider || null;
       setDemoFlag(isDemo);
 
       document.getElementById('loginView').classList.add('hidden');
@@ -1504,13 +1516,18 @@ body.is-admin .client-only{display:none!important}
         try {
           if (Catalog.syncPublicNotifyFromCloud) cloudCfg = await Catalog.syncPublicNotifyFromCloud();
         } catch (_) {}
-        if (cloudCfg) {
-          if (!store.notifyEmail && cloudCfg.notifyEmail) store.notifyEmail = cloudCfg.notifyEmail;
-          if (!store.webhookUrl && cloudCfg.webhookUrl) store.webhookUrl = cloudCfg.webhookUrl;
-          if (store.notifyOnLogin == null && cloudCfg.notifyOnLogin != null) store.notifyOnLogin = cloudCfg.notifyOnLogin !== false;
-          if (notifyEl && store.notifyEmail) notifyEl.value = store.notifyEmail;
-          if (webhookEl && store.webhookUrl) webhookEl.value = store.webhookUrl;
+        if (cloudCfg && (cloudCfg.notifyEmail || cloudCfg.webhookUrl)) {
+          // Cloud is source of truth when a published config exists.
+          store.notifyEmail = cloudCfg.notifyEmail || store.notifyEmail || '';
+          store.webhookUrl = cloudCfg.webhookUrl || store.webhookUrl || '';
+          store.notifyOnLogin = cloudCfg.notifyOnLogin !== false;
+          if (notifyEl) notifyEl.value = store.notifyEmail || '';
+          if (webhookEl) webhookEl.value = store.webhookUrl || '';
           if (notifyLoginEl) notifyLoginEl.checked = store.notifyOnLogin !== false;
+          saveStore();
+        } else if (!store.notifyEmail && user && user.email) {
+          store.notifyEmail = String(user.email).toLowerCase();
+          if (notifyEl) notifyEl.value = store.notifyEmail;
           saveStore();
         }
         // Publish only when we have something useful — never wipe cloud with blanks.
@@ -1605,8 +1622,13 @@ body.is-admin .client-only{display:none!important}
     const password = document.getElementById('dashLoginPassword').value;
     try {
       const result = await Auth.signIn({ email, password });
+      authProvider = result.provider || (result.user && result.user.app_metadata && result.user.app_metadata.provider) || null;
       msg.style.color = 'var(--ok)';
       msg.textContent = t('تم الدخول بنجاح', 'Signed in');
+      if (authProvider === 'local' && isAdminEmailFast(email)) {
+        msg.style.color = 'var(--danger)';
+        msg.textContent = t('دخلتم بجلسة محلية — تحققوا من اتصال Supabase ثم ادخلوا مرة أخرى', 'Signed in locally — check Supabase then sign in again');
+      }
       showDashboard(result.user, false);
     } catch (err) {
       msg.style.color = 'var(--danger)';
@@ -2140,8 +2162,10 @@ body.is-admin .client-only{display:none!important}
     };
     if (saved && saved.deliveryPromise) {
       saved.deliveryPromise.then(finish).catch(() => finish(null));
+    } else if (saved && Catalog && Catalog.deliverSharedRequest) {
+      Catalog.deliverSharedRequest(saved).then(finish).catch(() => finish(null));
     } else {
-      finish({ delivered: true });
+      finish({ delivered: false });
     }
   });
 

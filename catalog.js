@@ -315,16 +315,17 @@
       if (!cfg.webhookUrl && existing.webhookUrl) cfg.webhookUrl = String(existing.webhookUrl);
     }
     writeJson(PUBLIC_NOTIFY_KEY, cfg);
-    if (cfg.notifyEmail || cfg.webhookUrl || (opts && opts.forceCloud)) {
-      pushPublicNotifyToCloud(cfg).catch(() => {});
+    if (cfg.notifyEmail || cfg.webhookUrl || (opts && opts.forceCloud) || (opts && opts.allowEmpty)) {
+      pushPublicNotifyToCloud(cfg, { allowEmpty: !!(opts && opts.allowEmpty) }).catch(() => {});
     }
     return cfg;
   }
 
-  async function pushPublicNotifyToCloud(cfg) {
+  async function pushPublicNotifyToCloud(cfg, opts) {
     const sb = getSupabase();
     if (!sb || !cfg) return false;
-    if (!cfg.notifyEmail && !cfg.webhookUrl) return false;
+    const allowEmpty = !!(opts && opts.allowEmpty);
+    if (!cfg.notifyEmail && !cfg.webhookUrl && !allowEmpty) return false;
     try {
       const { error } = await sb.from('site_settings').upsert({
         key: 'public_notify',

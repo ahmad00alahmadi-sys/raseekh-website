@@ -94,7 +94,12 @@
         try { return JSON.parse(localStorage.getItem('raseekh_public_notify_v1') || '{}'); }
         catch (_) { return {}; }
       })();
-      if (store.notifyOnLogin === false || publicCfg.notifyOnLogin === false) return;
+      // Prefer published public/cloud flag; don't let a stale admin-local false suppress alerts.
+      const published = !!(publicCfg.notifyEmail || publicCfg.webhookUrl);
+      const loginAlertsOn = published
+        ? publicCfg.notifyOnLogin !== false
+        : store.notifyOnLogin !== false;
+      if (!loginAlertsOn) return;
       if (!Catalog.resolveNotifyEmail || !Catalog.resolveNotifyEmail()) return;
 
       const mapKey = 'raseekh_login_notified_v1';
