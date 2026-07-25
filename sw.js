@@ -1,5 +1,5 @@
 /* Lightweight offline shell for Raseekh marketing site */
-const CACHE = 'raseekh-shell-v3';
+const CACHE = 'raseekh-shell-v4';
 const ASSETS = ['/', '/index.html', '/catalog.js', '/auth.js', '/terms.js', '/activity.js', '/terms/', '/terms/index.html', '/dashboard/', '/dashboard/index.html', '/manifest.webmanifest', '/icon.svg'];
 
 self.addEventListener('install', (event) => {
@@ -17,7 +17,7 @@ function isNavigate(req) {
 }
 
 function isShellScript(url) {
-  return /\/(catalog|auth)\.js$/.test(url.pathname);
+  return /\/(catalog|auth|terms|activity)\.js$/.test(url.pathname);
 }
 
 self.addEventListener('fetch', (event) => {
