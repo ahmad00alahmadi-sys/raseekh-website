@@ -979,6 +979,10 @@ body.pay-paused .pay-public-entry{display:none!important}
       <label class="field"><span data-ar="الاسم الكامل" data-en="Full name">الاسم الكامل</span>
         <input type="text" required id="guestQuoteName" autocomplete="name" data-ar-placeholder="الاسم الكامل" data-en-placeholder="Full name" placeholder="الاسم الكامل">
       </label>
+      <label class="field" id="guestQuoteCompanyField" hidden>
+        <span id="guestQuoteCompanyLabel" data-ar="اسم المؤسسة / المنشأة" data-en="Institution / organization name">اسم المؤسسة / المنشأة</span>
+        <input type="text" id="guestQuoteCompany" autocomplete="organization" data-ar-placeholder="اسم المؤسسة أو المنشأة" data-en-placeholder="Institution or organization name" placeholder="اسم المؤسسة أو المنشأة">
+      </label>
       <label class="field"><span data-ar="البريد الإلكتروني" data-en="Email">البريد الإلكتروني</span>
         <input type="email" required id="guestQuoteEmail" autocomplete="email" data-ar-placeholder="you@domain.com" data-en-placeholder="you@domain.com" placeholder="you@domain.com">
       </label>
@@ -2258,8 +2262,12 @@ body.pay-paused .pay-public-entry{display:none!important}
   function openGuestQuoteModal(opts){
     const type = (opts && opts.type) || 'programming';
     const message = ((opts && opts.message) || '').trim();
-    const company = ((opts && opts.company) || '').trim();
-    const segment = (opts && opts.segment) || getContactSegment();
+    let company = ((opts && opts.company) || '').trim();
+    let segment = (opts && opts.segment) || getContactSegment();
+    if (type === 'business' || type === 'institution') {
+      if (segment === 'individual' || segment === 'other') segment = 'institution';
+    }
+    const needsOrg = segment === 'company' || segment === 'institution' || type === 'business' || type === 'institution';
     pendingGuestQuote = { type, message, company, segment };
     const typeTitle = Catalog && Catalog.requestTypeLabel
       ? Catalog.requestTypeLabel(type, currentLang)
@@ -2278,14 +2286,47 @@ body.pay-paused .pay-public-entry{display:none!important}
     const nameEl = document.getElementById('guestQuoteName');
     const emailEl = document.getElementById('guestQuoteEmail');
     const phoneEl = document.getElementById('guestQuotePhone');
+    const companyEl = document.getElementById('guestQuoteCompany');
+    const companyField = document.getElementById('guestQuoteCompanyField');
+    const companyLabel = document.getElementById('guestQuoteCompanyLabel');
     if (nameEl) nameEl.value = (document.getElementById('contactName') && document.getElementById('contactName').value.trim()) || draft.name || '';
     if (emailEl) emailEl.value = (document.getElementById('contactEmail') && document.getElementById('contactEmail').value.trim()) || draft.email || '';
     if (phoneEl) phoneEl.value = (document.getElementById('contactPhone') && document.getElementById('contactPhone').value.trim()) || draft.phone || '';
+    if (companyField) companyField.hidden = !needsOrg;
+    if (companyEl) {
+      companyEl.required = !!needsOrg;
+      companyEl.value = company
+        || (document.getElementById('contactCompany') && document.getElementById('contactCompany').value.trim())
+        || draft.company
+        || '';
+      if (needsOrg) {
+        if (segment === 'company') {
+          if (companyLabel) {
+            companyLabel.setAttribute('data-ar', 'اسم الشركة');
+            companyLabel.setAttribute('data-en', 'Company name');
+            companyLabel.textContent = t('اسم الشركة', 'Company name');
+          }
+          companyEl.setAttribute('data-ar-placeholder', 'اسم الشركة');
+          companyEl.setAttribute('data-en-placeholder', 'Company name');
+          companyEl.placeholder = t('اسم الشركة', 'Company name');
+        } else {
+          if (companyLabel) {
+            companyLabel.setAttribute('data-ar', 'اسم المؤسسة / المنشأة');
+            companyLabel.setAttribute('data-en', 'Institution / organization name');
+            companyLabel.textContent = t('اسم المؤسسة / المنشأة', 'Institution / organization name');
+          }
+          companyEl.setAttribute('data-ar-placeholder', 'اسم المؤسسة أو المنشأة');
+          companyEl.setAttribute('data-en-placeholder', 'Institution or organization name');
+          companyEl.placeholder = t('اسم المؤسسة أو المنشأة', 'Institution or organization name');
+        }
+      }
+    }
     const msgEl = document.getElementById('guestQuoteMsg');
     if (msgEl) { msgEl.textContent = ''; msgEl.style.color = ''; }
     setModalOpenState(document.getElementById('guestQuoteModal'), true);
     try {
       if (nameEl && !nameEl.value.trim()) nameEl.focus();
+      else if (needsOrg && companyEl && !companyEl.value.trim()) companyEl.focus();
       else if (emailEl && !emailEl.value.trim()) emailEl.focus();
       else if (phoneEl) phoneEl.focus();
     } catch (_) {}
@@ -2527,18 +2568,20 @@ body.pay-paused .pay-public-entry{display:none!important}
       || (loggedInUser && loggedInUser.user_metadata && loggedInUser.user_metadata.full_name)
       || '';
     const guestReady = !!(fullName && isUsableEmail(email) && isUsablePhone(phone) && (!needsCompany || company));
-    // Guests send without account. Missing contact details → quick modal (never a dead “complete form” button).
+    // Guests send without account. Missing contact details → quick modal (never bury the form).
     if ((!loggedInUser && !guestReady) || (needsCompany && !company) || !Catalog || !Catalog.addSharedRequest) {
-      if (!loggedInUser && Catalog && Catalog.addSharedRequest && !(needsCompany && !company)) {
-        openGuestQuoteModal({ type, message, company, segment });
+      if (!loggedInUser && Catalog && Catalog.addSharedRequest) {
+        const segForModal = (type === 'business' || type === 'institution')
+          ? ((segment === 'company') ? 'company' : 'institution')
+          : segment;
+        openGuestQuoteModal({ type, message, company, segment: segForModal });
         return { ok: false, guestModal: true };
       }
-      // Business/institution needs company name — open full form with fields ready.
       requestFromCatalog({ type, message, company, segment });
       const resultEl = document.getElementById('contactResult');
       if (resultEl) {
         resultEl.style.color = 'var(--muted)';
-        resultEl.textContent = t('أكملوا بيانات المنشأة ثم اضغطوا إرسال الطلب', 'Complete the organization details, then send the request');
+        resultEl.textContent = t('أكملوا بيانات التواصل ثم اضغطوا إرسال الطلب', 'Complete your contact details, then send the request');
       }
       return { ok: false, redirected: true };
     }
@@ -2740,9 +2783,22 @@ body.pay-paused .pay-public-entry{display:none!important}
       const name = (document.getElementById('guestQuoteName') && document.getElementById('guestQuoteName').value.trim()) || '';
       const email = (document.getElementById('guestQuoteEmail') && document.getElementById('guestQuoteEmail').value.trim()) || '';
       const phone = (document.getElementById('guestQuotePhone') && document.getElementById('guestQuotePhone').value.trim()) || '';
+      const company = (document.getElementById('guestQuoteCompany') && document.getElementById('guestQuoteCompany').value.trim()) || '';
+      const needsOrg = pendingGuestQuote.type === 'business'
+        || pendingGuestQuote.type === 'institution'
+        || pendingGuestQuote.segment === 'company'
+        || pendingGuestQuote.segment === 'institution';
       if (!name) {
         if (msgEl) { msgEl.style.color = 'var(--danger)'; msgEl.textContent = t('أدخلوا الاسم الكامل', 'Enter your full name'); }
         document.getElementById('guestQuoteName') && document.getElementById('guestQuoteName').focus();
+        return;
+      }
+      if (needsOrg && !company) {
+        if (msgEl) {
+          msgEl.style.color = 'var(--danger)';
+          msgEl.textContent = t('أدخلوا اسم المؤسسة أو المنشأة', 'Enter the institution or organization name');
+        }
+        document.getElementById('guestQuoteCompany') && document.getElementById('guestQuoteCompany').focus();
         return;
       }
       if (!isUsableEmail(email)) {
@@ -2761,7 +2817,15 @@ body.pay-paused .pay-public-entry{display:none!important}
       setVal('contactPhone', phone);
       setVal('contactType', pendingGuestQuote.type || 'programming');
       setVal('contactMsg', pendingGuestQuote.message || '');
-      if (pendingGuestQuote.segment) setContactSegment(pendingGuestQuote.segment);
+      if (needsOrg) {
+        const seg = pendingGuestQuote.segment === 'company' ? 'company' : 'institution';
+        setContactSegment(seg);
+        pendingGuestQuote.segment = seg;
+        pendingGuestQuote.company = company;
+        setVal('contactCompany', company);
+      } else if (pendingGuestQuote.segment) {
+        setContactSegment(pendingGuestQuote.segment);
+      }
       if (pendingGuestQuote.company) setVal('contactCompany', pendingGuestQuote.company);
       syncPurchaseTermsChecks(true);
       saveContactDraft();
@@ -2778,7 +2842,7 @@ body.pay-paused .pay-public-entry{display:none!important}
         const result = await submitCatalogQuote({
           type: pendingGuestQuote.type,
           message: pendingGuestQuote.message,
-          company: pendingGuestQuote.company,
+          company: pendingGuestQuote.company || company,
           segment: pendingGuestQuote.segment
         });
         if (result && (result.ok || result.saved)) {
