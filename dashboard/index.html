@@ -2397,7 +2397,7 @@ body.is-admin .client-only{display:none!important}
     if (id) {
       const p = products.find(x => x.id === id);
       if (!p) return;
-      title.textContent = t('تعديل منتج','Edit product');
+      title.textContent = t('تعديل خدمة','Edit service');
       document.getElementById('pName').value = p.name;
       document.getElementById('pNameEn').value = p.name_en || '';
       document.getElementById('pCategory').value = p.category || '';
@@ -2413,7 +2413,7 @@ body.is-admin .client-only{display:none!important}
       document.getElementById('pPrice').disabled = quote;
       document.getElementById('pStock').value = p.stock;
     } else {
-      title.textContent = t('منتج جديد','New product');
+      title.textContent = t('خدمة جديدة','New service');
       document.getElementById('productForm').reset();
       document.getElementById('pKind').value = 'service';
       document.getElementById('pQuote').checked = true;
@@ -2520,7 +2520,7 @@ body.is-admin .client-only{display:none!important}
   function renderCart(){
     const holder = document.getElementById('cartLines');
     if (!cart.length) {
-      holder.innerHTML = `<div class="empty" style="color:#9BB8AC">${t('السلة فارغة','Cart is empty')}</div>`;
+      holder.innerHTML = `<div class="empty" style="color:#9BB8AC">${t('لا توجد بنود بعد','No items yet')}</div>`;
       document.getElementById('cartTotal').textContent = money(0);
       return;
     }
