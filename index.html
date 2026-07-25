@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>راسخ — صيانة وبرمجة وأنظمة تشغيل</title>
-<meta name="description" content="راسخ في السعودية: صيانة مواقع، خدمات برمجة، وتطوير أنظمة ولوحات تحكم — من الطلب حتى التشغيل.">
+<title>راسخ — صيانة وبرمجة وتطبيقات مخزون</title>
+<meta name="description" content="راسخ في السعودية: صيانة مواقع، خدمات برمجة، تطبيقات مخزون، وتطوير أنظمة ولوحات تحكم — من الطلب حتى التشغيل.">
 <meta name="keywords" content="راسخ, خدمات برمجة, تطوير مواقع, صيانة مواقع, تطبيق مخزون, أنظمة ولوحات تحكم, برمجة سعودية, Raseekh, inventory app, website development Saudi, custom systems">
-<meta property="og:title" content="راسخ — خدمات رقمية وأنظمة">
-<meta property="og:description" content="صيانة مواقع، برمجة، وأنظمة كاملة — بواجهة عربية وإنجليزية ومتابعة من حساب العميل.">
+<meta property="og:title" content="راسخ — خدمات رقمية وأنظمة ومخزون">
+<meta property="og:description" content="صيانة مواقع، برمجة، تطبيقات مخزون، وأنظمة كاملة — بواجهة عربية وإنجليزية ومتابعة من حساب العميل.">
 <meta name="theme-color" content="#10233A">
 <meta name="robots" content="index,follow">
 <link rel="canonical" href="https://raseekh.com/">
@@ -17,6 +17,8 @@
 <meta property="og:locale:alternate" content="en_US">
 <meta property="og:image" content="https://raseekh.com/icon.svg">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="راسخ — خدمات رقمية وأنظمة ومخزون">
+<meta name="twitter:description" content="صيانة مواقع، برمجة، تطبيقات مخزون، وأنظمة كاملة — بواجهة عربية وإنجليزية ومتابعة من حساب العميل.">
 <link rel="alternate" hreflang="ar" href="https://raseekh.com/">
 <link rel="alternate" hreflang="en" href="https://raseekh.com/?lang=en">
 <link rel="alternate" hreflang="x-default" href="https://raseekh.com/">
@@ -34,7 +36,7 @@
       "name": "راسخ",
       "alternateName": "Raseekh",
       "url": "https://raseekh.com/",
-      "description": "صيانة مواقع، خدمات برمجة، وتطوير أنظمة ولوحات تحكم للعملاء.",
+      "description": "صيانة مواقع، خدمات برمجة، تطبيقات مخزون، وتطوير أنظمة ولوحات تحكم للعملاء.",
       "areaServed": "SA",
       "knowsLanguage": ["ar", "en"]
     },
@@ -83,6 +85,14 @@
           "acceptedAnswer": {
             "@type": "Answer",
             "text": "العميل يطلب ويتابع. المدير فقط يعدّل الكتالوج والخدمات والطلبات."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "هل تطورون تطبيق مخزون؟",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "نعم — تطبيقات مخزون ومنتجات وكميات وحركات حسب نشاطكم، مع لوحات وتقارير عند الحاجة."
           }
         },
         {
@@ -1116,17 +1126,22 @@ body.terms-locked{overflow:hidden}
       if (v !== null) el.setAttribute('aria-label', v);
     });
     document.getElementById('langToggle').textContent = lang === 'ar' ? 'EN' : 'AR';
-    const title = lang === 'ar' ? 'راسخ — صيانة وبرمجة وأنظمة تشغيل' : 'Raseekh — Maintenance, coding & systems';
+    const title = lang === 'ar' ? 'راسخ — صيانة وبرمجة وتطبيقات مخزون' : 'Raseekh — Maintenance, coding & inventory apps';
     const desc = lang === 'ar'
-      ? 'راسخ في السعودية: صيانة مواقع، خدمات برمجة، وتطوير أنظمة ولوحات تحكم — من الطلب حتى التشغيل.'
-      : 'Raseekh in Saudi Arabia: website maintenance, programming, and custom systems — from request to launch.';
+      ? 'راسخ في السعودية: صيانة مواقع، خدمات برمجة، تطبيقات مخزون، وتطوير أنظمة ولوحات تحكم — من الطلب حتى التشغيل.'
+      : 'Raseekh in Saudi Arabia: website maintenance, programming, inventory apps, and custom systems — from request to launch.';
     document.title = title;
     const metaDesc = document.querySelector('meta[name="description"]');
     if (metaDesc) metaDesc.setAttribute('content', desc);
+    const ogTitleText = lang === 'ar' ? 'راسخ — خدمات رقمية وأنظمة ومخزون' : 'Raseekh — Digital services, systems & inventory';
     const ogTitle = document.querySelector('meta[property="og:title"]');
-    if (ogTitle) ogTitle.setAttribute('content', lang === 'ar' ? 'راسخ — خدمات رقمية وأنظمة' : 'Raseekh — Digital services & systems');
+    if (ogTitle) ogTitle.setAttribute('content', ogTitleText);
     const ogDesc = document.querySelector('meta[property="og:description"]');
     if (ogDesc) ogDesc.setAttribute('content', desc);
+    const twTitle = document.querySelector('meta[name="twitter:title"]');
+    if (twTitle) twTitle.setAttribute('content', ogTitleText);
+    const twDesc = document.querySelector('meta[name="twitter:description"]');
+    if (twDesc) twDesc.setAttribute('content', desc);
     const ogLocale = document.querySelector('meta[property="og:locale"]');
     if (ogLocale) ogLocale.setAttribute('content', lang === 'ar' ? 'ar_SA' : 'en_US');
     try {
@@ -1163,6 +1178,15 @@ body.terms-locked{overflow:hidden}
     const type = opts.type || 'programming';
     const message = (opts.message || '').trim();
     if (!message) return;
+    if (!navigator.onLine) {
+      const resultEl = document.getElementById('contactResult');
+      if (resultEl) {
+        resultEl.style.color = 'var(--danger)';
+        resultEl.textContent = t('أنتم غير متصلين — أعيدوا الإرسال بعد عودة الشبكة', 'You are offline — send again when back online');
+        document.getElementById('contact').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+      return;
+    }
     if (!loggedInUser) {
       requestFromCatalog({ type, message });
       return;

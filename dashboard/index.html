@@ -59,6 +59,9 @@ a{color:inherit;text-decoration:none}
   border-top:4px solid var(--copper);
 }
 @keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+.site-banner.update{background:var(--harbor)}
+.site-banner.update.show{display:block}
 .login-card .logo{font-size:1.85rem;font-weight:800;margin-bottom:6px}
 .login-card .logo em{font-style:normal;color:var(--copper)}
 .login-card .sub{color:var(--muted);margin-bottom:22px;font-size:.95rem}
@@ -393,6 +396,10 @@ body.is-admin .client-only{display:none!important}
 </head>
 <body>
 <div class="site-banner" id="offlineBanner" role="status" style="display:none;position:sticky;top:0;z-index:90;padding:10px 16px;text-align:center;font-size:.88rem;font-weight:700;background:var(--navy);color:#F4F7FA;border-bottom:2px solid var(--copper)" data-ar="لا يوجد اتصال — أُرسل الطلبات عند عودة الشبكة" data-en="You are offline — send requests when back online">لا يوجد اتصال — أُرسل الطلبات عند عودة الشبكة</div>
+<div class="site-banner update" id="updateBanner" role="status" hidden style="position:sticky;top:0;z-index:90;padding:10px 16px;text-align:center;font-size:.88rem;font-weight:700;color:#F4F7FA;border-bottom:2px solid var(--copper)">
+  <span data-ar="يتوفر تحديث للموقع" data-en="A site update is available">يتوفر تحديث للموقع</span>
+  <button type="button" class="btn btn-primary" id="reloadUpdateBtn" style="margin-inline-start:10px;padding:6px 12px;font-size:.8rem" data-ar="إعادة التحميل" data-en="Reload">إعادة التحميل</button>
+</div>
 
 <div id="loginView">
   <div class="login-card">
@@ -419,7 +426,7 @@ body.is-admin .client-only{display:none!important}
         <button class="btn btn-primary" type="submit" data-ar="دخول إلى النظام" data-en="Enter system">دخول إلى النظام</button>
       </form>
       <button type="button" class="linkish" id="forgotLink" data-ar="نسيت كلمة المرور؟" data-en="Forgot password?">نسيت كلمة المرور؟</button>
-      <div class="msg" id="dashLoginMsg"></div>
+      <div class="msg" id="dashLoginMsg" role="status" aria-live="polite"></div>
     </div>
 
     <div class="auth-panel" id="registerPanel">
@@ -446,7 +453,7 @@ body.is-admin .client-only{display:none!important}
         </label>
         <button class="btn btn-primary" type="submit" data-ar="إنشاء حساب" data-en="Create account">إنشاء حساب</button>
       </form>
-      <div class="msg" id="dashRegisterMsg"></div>
+      <div class="msg" id="dashRegisterMsg" role="status" aria-live="polite"></div>
     </div>
 
     <div class="auth-panel" id="forgotPanel">
@@ -455,7 +462,7 @@ body.is-admin .client-only{display:none!important}
         <button class="btn btn-primary" type="submit" data-ar="إرسال رابط التعيين" data-en="Send reset link">إرسال رابط التعيين</button>
       </form>
       <button type="button" class="linkish" id="backLoginLink" data-ar="رجوع لتسجيل الدخول" data-en="Back to login">رجوع لتسجيل الدخول</button>
-      <div class="msg" id="dashForgotMsg"></div>
+      <div class="msg" id="dashForgotMsg" role="status" aria-live="polite"></div>
     </div>
 
     <div class="login-actions">
@@ -536,7 +543,7 @@ body.is-admin .client-only{display:none!important}
       </div>
 
       <div class="stats admin-only">
-        <div class="stat"><div class="label" data-ar="المنتجات" data-en="Products">المنتجات</div><div class="value" id="statProducts">0</div><div class="hint" data-ar="في الكتالوج" data-en="in catalog">في الكتالوج</div></div>
+        <div class="stat"><div class="label" data-ar="الخدمات" data-en="Services">الخدمات</div><div class="value" id="statProducts">0</div><div class="hint" data-ar="في الكتالوج" data-en="in catalog">في الكتالوج</div></div>
         <div class="stat"><div class="label" data-ar="مدفوعات اليوم" data-en="Today payments">مدفوعات اليوم</div><div class="value" id="statToday">0</div><div class="hint">SAR</div></div>
         <div class="stat"><div class="label" data-ar="عمليات اليوم" data-en="Today entries">عمليات اليوم</div><div class="value" id="statReceipts">0</div><div class="hint" data-ar="اليوم" data-en="today">اليوم</div></div>
         <div class="stat clickable" id="statNewRequestsCard" role="button" tabindex="0">
@@ -767,7 +774,7 @@ body.is-admin .client-only{display:none!important}
       <div class="client-note" data-ar="إدارة فقط. الأجهزة المادية حالياً للرياض ومخفية عن العميل. أظهر للعميل الخدمات الإلكترونية فقط." data-en="Admin only. Physical devices are Riyadh-only and hidden from clients for now. Show clients digital services only.">إدارة فقط. الأجهزة المادية حالياً للرياض ومخفية عن العميل. أظهر للعميل الخدمات الإلكترونية فقط.</div>
       <div class="panel">
         <div class="toolbar">
-          <h3 data-ar="كتالوج المنتجات" data-en="Product catalog">كتالوج المنتجات</h3>
+          <h3 data-ar="كتالوج الخدمات" data-en="Service catalog">كتالوج الخدمات</h3>
           <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
             <a class="btn btn-ghost" href="/#products" style="padding:10px 12px" data-ar="معاينة العميل" data-en="Client preview">معاينة العميل</a>
             <input type="search" id="productSearch" style="padding:10px 12px;border:1px solid var(--line);border-radius:10px;min-width:200px" data-ar-placeholder="بحث..." data-en-placeholder="Search..." placeholder="بحث...">
@@ -868,9 +875,9 @@ body.is-admin .client-only{display:none!important}
   </main>
 </div>
 
-<div class="modal-overlay" id="productModal">
+<div class="modal-overlay" id="productModal" role="dialog" aria-modal="true" aria-labelledby="productModalTitle" aria-hidden="true">
   <div class="modal">
-    <button class="modal-close no-print" id="productModalClose" type="button">×</button>
+    <button class="modal-close no-print" id="productModalClose" type="button" data-ar-aria="إغلاق" data-en-aria="Close" aria-label="إغلاق">×</button>
     <h2 id="productModalTitle" style="margin-bottom:14px" data-ar="خدمة جديدة" data-en="New service">خدمة جديدة</h2>
     <form class="form" id="productForm">
       <input type="text" id="pName" required data-ar-placeholder="اسم الخدمة" data-en-placeholder="Service name" placeholder="اسم الخدمة">
@@ -899,9 +906,9 @@ body.is-admin .client-only{display:none!important}
   </div>
 </div>
 
-<div class="modal-overlay" id="receiptModal">
+<div class="modal-overlay" id="receiptModal" role="dialog" aria-modal="true" aria-labelledby="receiptStore" aria-hidden="true">
   <div class="modal" id="receiptPrintArea">
-    <button class="modal-close no-print" id="receiptClose" type="button">×</button>
+    <button class="modal-close no-print" id="receiptClose" type="button" data-ar-aria="إغلاق" data-en-aria="Close" aria-label="إغلاق">×</button>
     <div class="receipt">
       <div class="receipt-head">
         <h2 id="receiptStore">راسخ</h2>
@@ -917,10 +924,10 @@ body.is-admin .client-only{display:none!important}
   </div>
 </div>
 
-<div class="modal-overlay" id="requestConfirmModal">
+<div class="modal-overlay" id="requestConfirmModal" role="dialog" aria-modal="true" aria-labelledby="requestConfirmHeading" aria-hidden="true">
   <div class="modal">
     <button class="modal-close" id="requestConfirmClose" type="button" data-ar-aria="إغلاق" data-en-aria="Close" aria-label="إغلاق">×</button>
-    <h2 style="margin-bottom:8px" data-ar="تأكيد طلب عرض السعر" data-en="Confirm quote request">تأكيد طلب عرض السعر</h2>
+    <h2 id="requestConfirmHeading" style="margin-bottom:8px" data-ar="تأكيد طلب عرض السعر" data-en="Confirm quote request">تأكيد طلب عرض السعر</h2>
     <p id="requestConfirmTitle" style="color:var(--muted);font-size:.92rem;margin-bottom:14px"></p>
     <form class="form" id="requestConfirmForm">
       <label class="field"><span data-ar="رقم الجوال للتواصل" data-en="Phone for reply">رقم الجوال للتواصل</span>
@@ -950,7 +957,7 @@ body.is-admin .client-only{display:none!important}
   </div>
 </div>
 
-<div class="toast" id="toast"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
 (function(){
@@ -1000,17 +1007,42 @@ body.is-admin .client-only{display:none!important}
     if (!p) return '';
     return currentLang === 'en' && p.category_en ? p.category_en : (p.category || t('عام','General'));
   }
+  function categoryKey(p){
+    return String((p && (p.category_en || p.category)) || 'general').trim().toLowerCase();
+  }
+  function productSearchBlob(p){
+    if (!p) return '';
+    return [p.name, p.name_en, p.category, p.category_en, p.desc, p.desc_en].filter(Boolean).join(' ').toLowerCase();
+  }
   function escapeHtml(str){
     const d = document.createElement('div');
     d.textContent = str == null ? '' : String(str);
     return d.innerHTML;
+  }
+  function trapModalTab(overlay, e){
+    if (e.key !== 'Tab' || !overlay || !overlay.classList.contains('open')) return;
+    const focusables = Array.from(overlay.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'))
+      .filter((el) => !el.disabled && el.offsetParent !== null);
+    if (!focusables.length) return;
+    const first = focusables[0];
+    const last = focusables[focusables.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  }
+  function setModalOpen(overlay, open){
+    if (!overlay) return;
+    overlay.classList.toggle('open', !!open);
+    overlay.setAttribute('aria-hidden', open ? 'false' : 'true');
   }
   function showToast(msg){
     const el = document.getElementById('toast');
     el.textContent = msg;
     el.classList.add('show');
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => el.classList.remove('show'), 2800);
+    toastTimer = setTimeout(() => {
+      el.classList.remove('show');
+      el.textContent = '';
+    }, 2800);
   }
   function requireAdmin(action){
     if (isAdminUser) return true;
@@ -1901,10 +1933,18 @@ body.is-admin .client-only{display:none!important}
   function fillCategoryFilter(){
     const select = document.getElementById('posCategory');
     const current = select.value || 'all';
-    const cats = [...new Set(products.map(p => categoryLabel(p)).filter(Boolean))];
+    const seen = new Set();
+    const cats = [];
+    products.forEach((p) => {
+      const key = categoryKey(p);
+      if (!key || seen.has(key)) return;
+      seen.add(key);
+      cats.push({ key, label: categoryLabel(p) });
+    });
     select.innerHTML = `<option value="all">${t('كل الأقسام','All categories')}</option>` +
-      cats.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
+      cats.map(c => `<option value="${escapeHtml(c.key)}">${escapeHtml(c.label)}</option>`).join('');
     if ([...select.options].some(o => o.value === current)) select.value = current;
+    else select.value = 'all';
   }
 
   function renderOverview(){
@@ -1998,10 +2038,7 @@ body.is-admin .client-only{display:none!important}
     const grid = document.getElementById('clientCatalogGrid');
     if (!grid) return;
     const q = (document.getElementById('clientCatalogSearch')?.value || '').trim().toLowerCase();
-    const list = products.filter(p => {
-      const blob = (p.name + ' ' + (p.name_en || '') + ' ' + (p.category || '')).toLowerCase();
-      return !q || blob.includes(q);
-    });
+    const list = products.filter(p => !q || productSearchBlob(p).includes(q));
     if (!list.length) {
       grid.innerHTML = `<div class="empty" style="grid-column:1/-1"><strong>${t('لا توجد خدمات ظاهرة','No services shown')}</strong><p>${t('اطلبوا عرض سعر مباشرة، بما في ذلك تطبيق مخزون.','Request a quote directly — including an inventory app.')}</p></div>`;
       return;
@@ -2277,12 +2314,12 @@ body.is-admin .client-only{display:none!important}
     const metaPhone = currentUser && currentUser.user_metadata && currentUser.user_metadata.phone;
     phoneEl.value = metaPhone || phoneEl.value || '';
     document.getElementById('requestConfirmNote').value = '';
-    document.getElementById('requestConfirmModal').classList.add('open');
+    setModalOpen(document.getElementById('requestConfirmModal'), true);
     phoneEl.focus();
   }
   function closeRequestConfirm(){
     pendingClientRequest = null;
-    document.getElementById('requestConfirmModal').classList.remove('open');
+    setModalOpen(document.getElementById('requestConfirmModal'), false);
   }
   document.getElementById('requestConfirmClose').addEventListener('click', closeRequestConfirm);
   document.getElementById('requestConfirmCancel').addEventListener('click', closeRequestConfirm);
@@ -2398,13 +2435,10 @@ body.is-admin .client-only{display:none!important}
 
   function renderProducts(){
     const q = (document.getElementById('productSearch').value || '').trim().toLowerCase();
-    const list = products.filter(p => {
-      const blob = (p.name + ' ' + (p.name_en || '') + ' ' + (p.category || '')).toLowerCase();
-      return !q || blob.includes(q);
-    });
+    const list = products.filter(p => !q || productSearchBlob(p).includes(q));
     const body = document.getElementById('productsBody');
     if (!list.length) {
-      body.innerHTML = `<tr><td colspan="6" class="empty">${t('لا توجد منتجات','No products')}</td></tr>`;
+      body.innerHTML = `<tr><td colspan="6" class="empty">${t('لا توجد خدمات','No services')}</td></tr>`;
       return;
     }
     body.innerHTML = list.map(p => `
@@ -2443,7 +2477,7 @@ body.is-admin .client-only{display:none!important}
       if (p) { p.stock += 10; saveProducts(); renderAll(); showToast(t('تم تزويد المخزون','Stock restocked')); }
     }
     if (del) {
-      if (!confirm(t('حذف هذا المنتج؟','Delete this product?'))) return;
+      if (!confirm(t('حذف هذه الخدمة؟','Delete this service?'))) return;
       products = products.filter(p => p.id !== del.dataset.del);
       saveProducts();
       renderAll();
@@ -2483,7 +2517,10 @@ body.is-admin .client-only{display:none!important}
       document.getElementById('pRegion').value = 'online';
       document.getElementById('pPrice').disabled = true;
     }
-    modal.classList.add('open');
+    setModalOpen(modal, true);
+    setTimeout(() => {
+      try { document.getElementById('pName').focus(); } catch (_) {}
+    }, 30);
   }
   document.getElementById('pQuote').addEventListener('change', () => {
     const quote = document.getElementById('pQuote').checked;
@@ -2494,8 +2531,8 @@ body.is-admin .client-only{display:none!important}
     if (!requireAdmin('addProduct')) return;
     openProductModal(null);
   });
-  document.getElementById('productModalClose').addEventListener('click', () => document.getElementById('productModal').classList.remove('open'));
-  document.getElementById('productModal').addEventListener('click', (e) => { if (e.target.id === 'productModal') e.currentTarget.classList.remove('open'); });
+  document.getElementById('productModalClose').addEventListener('click', () => setModalOpen(document.getElementById('productModal'), false));
+  document.getElementById('productModal').addEventListener('click', (e) => { if (e.target.id === 'productModal') setModalOpen(e.currentTarget, false); });
 
   document.getElementById('productForm').addEventListener('submit', (e) => {
     e.preventDefault();
@@ -2526,10 +2563,10 @@ body.is-admin .client-only{display:none!important}
       products.unshift({ id: uid(), ...payload });
     }
     saveProducts();
-    document.getElementById('productModal').classList.remove('open');
+    setModalOpen(document.getElementById('productModal'), false);
     fillCategoryFilter();
     renderAll();
-    showToast(t('تم حفظ المنتج','Product saved'));
+    showToast(t('تم حفظ الخدمة','Service saved'));
   });
 
   function renderPos(){
@@ -2540,9 +2577,8 @@ body.is-admin .client-only{display:none!important}
     const layout = document.getElementById('posFixedLayout');
     const fixedSellable = products.filter(p => p.priceMode === 'fixed' && Number(p.price) > 0 && p.stock > 0);
     const list = fixedSellable.filter(p => {
-      const blob = (p.name + ' ' + (p.name_en || '')).toLowerCase();
-      const catOk = cat === 'all' || categoryLabel(p) === cat;
-      return catOk && (!q || blob.includes(q));
+      const catOk = cat === 'all' || categoryKey(p) === cat;
+      return catOk && (!q || productSearchBlob(p).includes(q));
     });
     // Quote-first catalog: keep manual deposit primary; only show fixed-price grid when useful.
     if (layout) layout.style.display = (fixedSellable.length || cart.length) ? '' : 'none';
@@ -2638,14 +2674,17 @@ body.is-admin .client-only{display:none!important}
       </div>
     `).join('');
     document.getElementById('receiptTotal').textContent = money(sale.total);
-    document.getElementById('receiptModal').classList.add('open');
+    setModalOpen(document.getElementById('receiptModal'), true);
   }
-  document.getElementById('receiptClose').addEventListener('click', () => document.getElementById('receiptModal').classList.remove('open'));
-  document.getElementById('receiptDoneBtn').addEventListener('click', () => document.getElementById('receiptModal').classList.remove('open'));
+  document.getElementById('receiptClose').addEventListener('click', () => setModalOpen(document.getElementById('receiptModal'), false));
+  document.getElementById('receiptDoneBtn').addEventListener('click', () => setModalOpen(document.getElementById('receiptModal'), false));
   document.getElementById('printReceiptBtn').addEventListener('click', () => window.print());
   document.getElementById('receiptModal').addEventListener('click', (e) => {
-    if (e.target.id === 'receiptModal') e.currentTarget.classList.remove('open');
+    if (e.target.id === 'receiptModal') setModalOpen(e.currentTarget, false);
   });
+  document.getElementById('receiptModal').addEventListener('keydown', (e) => trapModalTab(document.getElementById('receiptModal'), e));
+  document.getElementById('requestConfirmModal').addEventListener('keydown', (e) => trapModalTab(document.getElementById('requestConfirmModal'), e));
+  document.getElementById('productModal').addEventListener('keydown', (e) => trapModalTab(document.getElementById('productModal'), e));
 
   function checkout(method){
     if (!requireAdmin('checkout')) return;
@@ -2951,8 +2990,8 @@ body.is-admin .client-only{display:none!important}
       if (termsGateMode === 'view') closeTermsGate();
       return;
     }
-    document.getElementById('productModal').classList.remove('open');
-    document.getElementById('receiptModal').classList.remove('open');
+    setModalOpen(document.getElementById('productModal'), false);
+    setModalOpen(document.getElementById('receiptModal'), false);
     closeRequestConfirm();
   });
 
@@ -3000,6 +3039,8 @@ body.is-admin .client-only{display:none!important}
 
   (function siteConnectivity(){
     const offline = document.getElementById('offlineBanner');
+    const updateBanner = document.getElementById('updateBanner');
+    const reloadBtn = document.getElementById('reloadUpdateBtn');
     const syncOnline = () => {
       if (!offline) return;
       offline.style.display = navigator.onLine ? 'none' : 'block';
@@ -3007,13 +3048,22 @@ body.is-admin .client-only{display:none!important}
     window.addEventListener('online', syncOnline);
     window.addEventListener('offline', syncOnline);
     syncOnline();
+    if (reloadBtn) reloadBtn.addEventListener('click', () => location.reload());
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').catch(() => {});
+      });
+      let refreshing = false;
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (refreshing) return;
+        refreshing = true;
+        if (updateBanner) {
+          updateBanner.hidden = false;
+          updateBanner.classList.add('show');
+        }
+      });
+    }
   })();
-
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/sw.js').catch(() => {});
-    });
-  }
 })();
 </script>
 </body>
