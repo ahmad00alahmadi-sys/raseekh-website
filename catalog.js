@@ -355,8 +355,17 @@
     return ensured;
   }
 
-  function hydrateAdminFromCloud(products, suggestions) {
+  const ADMIN_CATALOG_SAVED_AT_KEY = 'raseekh_admin_catalog_saved_at';
+
+  function hydrateAdminFromCloud(products, suggestions, opts) {
     if (!Array.isArray(products) || !products.length) return null;
+    try {
+      const cloudUpdated = opts && opts.updatedAt ? new Date(opts.updatedAt).getTime() : 0;
+      const localSavedRaw = localStorage.getItem(ADMIN_CATALOG_SAVED_AT_KEY) || '';
+      const localSaved = localSavedRaw ? new Date(localSavedRaw).getTime() : 0;
+      // Do not overwrite newer local admin edits (POS/restock) with a slower cloud hydrate.
+      if (localSaved && cloudUpdated && localSaved > cloudUpdated) return null;
+    } catch (_) {}
     const ensured = ensureCatalogVersion(products);
     writeJson(ADMIN_PRODUCTS_KEY, ensured);
     if (Array.isArray(suggestions) && suggestions.length) {
@@ -369,6 +378,7 @@
   function saveAdminProducts(products, opts) {
     const list = Array.isArray(products) ? products : [];
     writeJson(ADMIN_PRODUCTS_KEY, list);
+    try { localStorage.setItem(ADMIN_CATALOG_SAVED_AT_KEY, new Date().toISOString()); } catch (_) {}
     const wantCloud = !(opts && opts.cloud === false);
     if (wantCloud && opts && opts.awaitCloud) {
       return publishClientCatalog(list, pruneSuggestions(list), { cloud: true, awaitCloud: true });
@@ -1071,15 +1081,21 @@
   }
 
   async function runDeliverSharedRequest(row) {
-    // Status sync retries: cloud already notified — update row only, do not re-email.
-    if (row && row.deliveryStatus === 'delivered' && row.syncPending) {
+    // Status sync / cloud-hydrated rows: update cloud only — do not re-email/webhook.
+    // local | pending_notify still need a full delivery attempt.
+    const needsFullDeliver = !!(row && (row.deliveryStatus === 'local' || row.deliveryStatus === 'pending_notify'));
+    if (row && row.syncPending && !needsFullDeliver) {
       const cloud = await pushRequestToCloud(row, { allowUpdate: true });
       try {
         const list = getSharedRequests();
         const idx = list.findIndex((r) => r && row && r.id === row.id);
         if (idx >= 0) {
-          if (cloud) delete list[idx].syncPending;
-          else list[idx].syncPending = true;
+          if (cloud) {
+            delete list[idx].syncPending;
+            list[idx].deliveryStatus = list[idx].deliveryStatus || 'delivered';
+          } else {
+            list[idx].syncPending = true;
+          }
           saveSharedRequests(list);
         }
       } catch (_) {}
@@ -1157,10 +1173,15 @@
     const idx = list.findIndex((r) => r.id === id);
     if (idx < 0) return { ok: false, row: null };
     const prev = Object.assign({}, list[idx]);
+    const prevDelivery = list[idx].deliveryStatus;
     list[idx] = Object.assign({}, list[idx], {
       status: status || list[idx].status,
       updatedAt: new Date().toISOString(),
-      syncPending: true
+      syncPending: true,
+      // Keep failed local delivery marks; otherwise treat as already-known for status-only sync.
+      deliveryStatus: (prevDelivery === 'local' || prevDelivery === 'pending_notify')
+        ? prevDelivery
+        : (prevDelivery || 'delivered')
     });
     saveSharedRequests(list);
     try {

@@ -84,8 +84,19 @@
   }
 
   const inFlightLoginAlerts = new Map();
+  const LOGIN_NOTIFY_KEY = 'raseekh_login_notified_v1';
 
-  async function notifyLoginAlert(row) {
+  function isLoginNotifyThrottled(email) {
+    try {
+      const map = JSON.parse(localStorage.getItem(LOGIN_NOTIFY_KEY) || '{}') || {};
+      const last = map[email] ? new Date(map[email]).getTime() : 0;
+      return !!(last && (Date.now() - last) < 6 * 60 * 60 * 1000);
+    } catch (_) {
+      return false;
+    }
+  }
+
+  async function notifyLoginAlert(row, opts) {
     try {
       if (!row || row.role === 'admin') return;
       const Auth = global.RaseekhAuth;
@@ -95,9 +106,12 @@
       const email = String(row.email || '').toLowerCase();
       if (!email) return;
 
-      if (inFlightLoginAlerts.has(email)) {
-        await inFlightLoginAlerts.get(email);
-        return;
+      const existing = inFlightLoginAlerts.get(email);
+      if (existing) {
+        await existing;
+        // First run succeeded (or soft-throttled) — stop. On hard fail, retry once.
+        if (isLoginNotifyThrottled(email) || (opts && opts._retried)) return;
+        return notifyLoginAlert(row, { _retried: true });
       }
 
       const run = (async () => {
@@ -121,9 +135,8 @@
         if (!loginAlertsOn) return;
         if (!Catalog.resolveNotifyEmail || !Catalog.resolveNotifyEmail()) return;
 
-        const mapKey = 'raseekh_login_notified_v1';
         let map = {};
-        try { map = JSON.parse(localStorage.getItem(mapKey) || '{}') || {}; } catch (_) { map = {}; }
+        try { map = JSON.parse(localStorage.getItem(LOGIN_NOTIFY_KEY) || '{}') || {}; } catch (_) { map = {}; }
         const last = map[email] ? new Date(map[email]).getTime() : 0;
         if (last && (Date.now() - last) < 6 * 60 * 60 * 1000) return;
 
@@ -140,17 +153,19 @@
         });
         if (result && result.ok) {
           map[email] = new Date().toISOString();
-          try { localStorage.setItem(mapKey, JSON.stringify(map)); } catch (_) {}
+          try { localStorage.setItem(LOGIN_NOTIFY_KEY, JSON.stringify(map)); } catch (_) {}
         } else if (result && result.pendingConfirm) {
           // Soft throttle while FormSubmit activation is pending — avoid spam, allow sooner retry than 6h.
           map[email] = new Date(Date.now() - (6 * 60 * 60 * 1000) + (15 * 60 * 1000)).toISOString();
-          try { localStorage.setItem(mapKey, JSON.stringify(map)); } catch (_) {}
+          try { localStorage.setItem(LOGIN_NOTIFY_KEY, JSON.stringify(map)); } catch (_) {}
         }
-        // Hard failures: do not stamp — next login can retry notify.
+        // Hard failures: do not stamp — next login / coalesce waiter can retry notify.
       })();
 
       inFlightLoginAlerts.set(email, run);
-      try { await run; } finally { inFlightLoginAlerts.delete(email); }
+      try { await run; } finally {
+        if (inFlightLoginAlerts.get(email) === run) inFlightLoginAlerts.delete(email);
+      }
     } catch (_) {}
   }
 

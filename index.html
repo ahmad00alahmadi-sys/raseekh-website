@@ -1821,6 +1821,44 @@ body.terms-locked,body.auth-locked{overflow:hidden}
     const paymentId = params.get('id') || params.get('payment_id') || '';
     // Only finalize a real Moyasar return — never invent a paid row from abandoned checkout.
     if (status !== 'paid') return false;
+    if (!paymentId) return false;
+
+    const findExisting = () => {
+      try {
+        return Catalog.getPaymentRecords
+          ? Catalog.getPaymentRecords().find((p) => p && p.paymentId === paymentId)
+          : null;
+      } catch (_) {
+        return null;
+      }
+    };
+
+    // Already recorded (or racing second finalize after pending was cleared) — show success, never fake-fail.
+    let existing = findExisting();
+    if (wasProcessedPay(paymentId) || existing) {
+      if (!existing && wasProcessedPay(paymentId)) {
+        clearProcessedPay(paymentId);
+      } else if (existing) {
+        setPaySuccessCopy({ recording: true });
+        showPayStep(payStatusSuccess);
+        let delivery = { delivered: false, cloud: false, duplicate: true };
+        try {
+          if (existing.deliveryStatus === 'delivered') {
+            delivery = { delivered: true, cloud: true, duplicate: true };
+          } else if (Catalog.deliverPaymentRecord) {
+            delivery = await Catalog.deliverPaymentRecord(existing);
+          }
+        } catch (_) {}
+        setPaySuccessCopy(delivery);
+        try {
+          const url = new URL(location.href);
+          ['status', 'id', 'payment_id', 'amount', 'message', 'pay'].forEach((k) => url.searchParams.delete(k));
+          history.replaceState(null, '', url.pathname + url.search + '#pay');
+        } catch (_) {}
+        return true;
+      }
+    }
+
     if (!pendingPay || !(Number(pendingPay.amount) > 0)) {
       try { sessionStorage.removeItem('raseekh_pending_pay'); } catch (_) {}
       showPayStep(payStatusFailed);
@@ -1834,32 +1872,6 @@ body.terms-locked,body.auth-locked{overflow:hidden}
         }
       }
       return false;
-    }
-    if (!paymentId) return false;
-    if (wasProcessedPay(paymentId)) {
-      let existing = null;
-      try {
-        existing = Catalog.getPaymentRecords
-          ? Catalog.getPaymentRecords().find((p) => p && p.paymentId === paymentId)
-          : null;
-      } catch (_) {}
-      if (!existing) {
-        // Stale processed mark (cleared storage / other device) — allow re-record.
-        clearProcessedPay(paymentId);
-      } else {
-        setPaySuccessCopy({ recording: true });
-        showPayStep(payStatusSuccess);
-        let delivery = { delivered: false, cloud: false, duplicate: true };
-        try {
-          if (existing.deliveryStatus === 'delivered') {
-            delivery = { delivered: true, cloud: true, duplicate: true };
-          } else if (Catalog.deliverPaymentRecord) {
-            delivery = await Catalog.deliverPaymentRecord(existing);
-          }
-        } catch (_) {}
-        setPaySuccessCopy(delivery);
-        return true;
-      }
     }
     const total = Number(pendingPay.amount);
     if (!(total > 0) || total > 100000) return false;
@@ -2128,16 +2140,16 @@ body.terms-locked,body.auth-locked{overflow:hidden}
         if (event === 'SIGNED_IN' && session?.user && location.hash !== '#reset') {
           authProvider = 'supabase';
           setPayUnlocked(session.user, 'supabase');
-          // Paid return may have opened auth after a probe miss — finalize once cloud session is live.
+          // Paid return only — do not hijack normal login for abandoned pending checkout.
           const params = paymentReturnParams();
-          if (params.get('status') === 'paid' || readPendingPay()) {
+          if (params.get('status') === 'paid') {
             try { closeModal(); } catch (_) {}
             finalizePendingMoyasarPayment(session.user).then((ok) => {
-              if (!ok && params.get('status') === 'paid') showPayStep(payStatusFailed);
+              if (!ok) showPayStep(payStatusFailed);
               const pay = document.getElementById('pay');
               if (pay) scrollToEl(pay, { block: 'start' });
             }).catch(() => {
-              if (params.get('status') === 'paid') showPayStep(payStatusFailed);
+              showPayStep(payStatusFailed);
             });
           }
         }

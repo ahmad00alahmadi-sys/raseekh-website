@@ -1594,11 +1594,14 @@ body.is-admin .client-only{display:none!important}
   }
 
   async function renderAudienceStats(){
-    if (!isAdminUser || !Activity) return;
+    if (!isAdminUser || !Activity) return { cloudOk: false };
     let stats = Activity.getStats();
+    let cloudOk = !!navigator.onLine;
     try {
       if (Activity.syncFromCloud) stats = await Activity.syncFromCloud();
-    } catch (_) {}
+    } catch (_) {
+      cloudOk = false;
+    }
     lastActivityStats = stats || lastActivityStats;
     const set = (id, val) => {
       const el = document.getElementById(id);
@@ -1619,6 +1622,7 @@ body.is-admin .client-only{display:none!important}
       try {
         const localSession = authProvider === 'local' || (currentUser && currentUser.app_metadata && currentUser.app_metadata.provider === 'local');
         if (localSession) {
+          cloudOk = false;
           hint.style.color = 'var(--danger)';
           hint.textContent = t('⚠ جلسة محلية — اخرجوا ثم ادخلوا بحساب الإدارة السحابي للمزامنة', '⚠ Local session — sign out and sign in with the cloud admin account to sync');
         } else if (Activity.probeCloud) {
@@ -1627,11 +1631,13 @@ body.is-admin .client-only{display:none!important}
             hint.style.color = 'var(--ok)';
             hint.textContent = t('✓ مزامنة السحابة جاهزة — الدخول يظهر من أي جهاز', '✓ Cloud sync ready — logins appear across devices');
           } else {
+            cloudOk = false;
             hint.style.color = 'var(--danger)';
             hint.textContent = t('⚠ السحابة غير جاهزة — شغّل setup_all.sql ثم ادخل بحساب الإدارة', '⚠ Cloud not ready — run setup_all.sql then sign in as admin');
           }
         }
       } catch (_) {
+        cloudOk = false;
         hint.style.color = 'var(--danger)';
         hint.textContent = t('⚠ تعذّر فحص مزامنة الدخول', '⚠ Could not check login sync');
       }
@@ -1647,6 +1653,7 @@ body.is-admin .client-only{display:none!important}
         : `<div class="empty">${t('لا يوجد نشاط دخول بعد — عندما يسجّل عميل دخوله يظهر هنا','No login activity yet — client sign-ins will appear here')}</div>`;
     }
     renderActivityPage(stats);
+    return { cloudOk: !!cloudOk && !!navigator.onLine };
   }
 
   function renderActivityPage(stats){
@@ -1736,7 +1743,8 @@ body.is-admin .client-only{display:none!important}
         Catalog.syncPublicCatalogFromCloud().then((cloud) => {
           if (!cloud || !cloud.products) return;
           if (isAdminUser && Catalog.hydrateAdminFromCloud) {
-            Catalog.hydrateAdminFromCloud(cloud.products, cloud.suggestions);
+            const hydrated = Catalog.hydrateAdminFromCloud(cloud.products, cloud.suggestions, { updatedAt: cloud.updatedAt });
+            if (!hydrated) return;
           }
           loadProducts();
           if (typeof renderClientCatalog === 'function') renderClientCatalog();
@@ -2438,8 +2446,22 @@ body.is-admin .client-only{display:none!important}
   }
   const refreshActivityBtn = document.getElementById('refreshActivityBtn');
   if (refreshActivityBtn) {
-    refreshActivityBtn.addEventListener('click', () => {
-      renderAudienceStats().then(() => showToast(t('تم تحديث النشاط', 'Activity refreshed')));
+    refreshActivityBtn.addEventListener('click', async () => {
+      if (refreshActivityBtn.dataset.busy === '1') return;
+      refreshActivityBtn.dataset.busy = '1';
+      showToast(t('جاري التحديث...', 'Refreshing...'));
+      let cloudOk = false;
+      try {
+        const info = await renderAudienceStats();
+        cloudOk = !!(info && info.cloudOk);
+      } catch (_) {
+        cloudOk = false;
+      } finally {
+        refreshActivityBtn.dataset.busy = '0';
+      }
+      showToast(cloudOk
+        ? t('تم تحديث النشاط', 'Activity refreshed')
+        : t('تعذّر التحديث من السحابة — تُعرض البيانات المحلية', 'Cloud refresh failed — showing local data'));
     });
   }
   const exportActivityBtn = document.getElementById('exportActivityBtn');
@@ -3506,10 +3528,13 @@ body.is-admin .client-only{display:none!important}
   if (recheckSetupBtn) {
     recheckSetupBtn.addEventListener('click', async () => {
       const info = await renderDeliveryStatus();
-      const ready = !!(info && info.cloudOk && info.settingsOk && info.activityOk && info.notifyPublished);
+      const localSession = authProvider === 'local' || (currentUser && currentUser.app_metadata && currentUser.app_metadata.provider === 'local');
+      const ready = !!(info && info.cloudOk && info.settingsOk && info.activityOk && info.notifyPublished && !localSession);
       showToast(ready
         ? t('الإعداد مكتمل', 'Setup complete')
-        : t('ما زال هناك إعداد ناقص — راجعوا الخطوات', 'Setup still incomplete — check the steps'));
+        : (localSession
+          ? t('جلسة محلية — ادخلوا بحساب الإدارة السحابي', 'Local session — sign in with the cloud admin account')
+          : t('ما زال هناك إعداد ناقص — راجعوا الخطوات', 'Setup still incomplete — check the steps')));
     });
   }
 
