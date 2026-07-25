@@ -1006,6 +1006,8 @@ body.is-admin .client-only{display:none!important}
     document.getElementById('pageTitle').textContent = isAdminUser
       ? t('لوحة الإدارة — راسخ', 'Admin dashboard — Raseekh')
       : t('حساب العميل — راسخ', 'Client area — Raseekh');
+    const banner = document.getElementById('adminSetupBanner');
+    if (banner && !isAdminUser) banner.classList.remove('show', 'ok');
   }
 
   function loadProducts(){
@@ -1838,6 +1840,7 @@ body.is-admin .client-only{display:none!important}
       if (dup) dup.textContent = newCount;
       updateLeadsBadge();
       renderAudienceStats();
+      renderDeliveryStatus();
       const holder = document.getElementById('recentSales');
       const recent = sales.slice(0, 5);
       if (!recent.length) {
@@ -2701,6 +2704,16 @@ body.is-admin .client-only{display:none!important}
   const refreshDeliveryStatusBtn = document.getElementById('refreshDeliveryStatusBtn');
   if (refreshDeliveryStatusBtn) {
     refreshDeliveryStatusBtn.addEventListener('click', () => renderDeliveryStatus());
+  }
+  const recheckSetupBtn = document.getElementById('recheckSetupBtn');
+  if (recheckSetupBtn) {
+    recheckSetupBtn.addEventListener('click', async () => {
+      const info = await renderDeliveryStatus();
+      const ready = !!(info && info.cloudOk && info.settingsOk && info.activityOk && info.notifyPublished);
+      showToast(ready
+        ? t('الإعداد مكتمل', 'Setup complete')
+        : t('ما زال هناك إعداد ناقص — راجعوا الخطوات', 'Setup still incomplete — check the steps'));
+    });
   }
 
   const refreshLeadsBtn = document.getElementById('refreshLeadsBtn');
