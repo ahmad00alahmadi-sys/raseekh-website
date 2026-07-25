@@ -592,7 +592,8 @@
 
   function requestTypeLabel(type, lang) {
     const map = {
-      electronics: { ar: 'منتجات إلكترونية', en: 'Electronics' },
+      electronics: { ar: 'أجهزة (الرياض فقط)', en: 'Hardware (Riyadh only)' },
+      hardware: { ar: 'أجهزة (الرياض فقط)', en: 'Hardware (Riyadh only)' },
       maintenance: { ar: 'صيانة مواقع', en: 'Website maintenance' },
       'web-dev': { ar: 'تطوير مواقع', en: 'Website development' },
       programming: { ar: 'خدمات البرمجة', en: 'Programming' },
@@ -605,6 +606,38 @@
     };
     const row = map[type] || { ar: type || 'طلب', en: type || 'Request' };
     return lang === 'en' ? row.en : row.ar;
+  }
+
+  const PRODUCT_REQUEST_TYPES = {
+    p1: 'hardware', p2: 'hardware', p3: 'hardware', p4: 'hardware',
+    p5: 'maintenance', p6: 'web-dev', p7: 'programming',
+    p8: 'systems', p9: 'api', p10: 'system'
+  };
+
+  function requestTypeForProduct(product) {
+    if (!product) return 'programming';
+    if (product.id && PRODUCT_REQUEST_TYPES[product.id]) return PRODUCT_REQUEST_TYPES[product.id];
+    const cat = ((product.category_en || product.category || '') + ' ' + (product.name_en || product.name || '')).toLowerCase();
+    if (product.kind === 'product' || product.region === 'riyadh') return 'hardware';
+    if (cat.includes('maintenance') || cat.includes('صيانة')) return 'maintenance';
+    if (cat.includes('website development') || cat.includes('تطوير مواقع') || cat.includes('web-dev')) return 'web-dev';
+    if (cat.includes('api') || cat.includes('ربط')) return 'api';
+    if (cat.includes('dashboard') || cat.includes('systems') || cat.includes('أنظمة') || cat.includes('لوحات')) return 'systems';
+    if (cat.includes('system') || cat.includes('نظام')) return 'system';
+    if (cat.includes('programming') || cat.includes('برمجة') || cat.includes('code')) return 'programming';
+    return 'programming';
+  }
+
+  function requestTypeOptions() {
+    return [
+      { value: 'maintenance', ar: 'صيانة مواقع', en: 'Website maintenance' },
+      { value: 'web-dev', ar: 'تطوير مواقع', en: 'Website development' },
+      { value: 'programming', ar: 'خدمات البرمجة / تعديل كود', en: 'Programming / code changes' },
+      { value: 'systems', ar: 'برمجة أنظمة ولوحات', en: 'Systems & dashboards' },
+      { value: 'api', ar: 'ربط API وأنظمة', en: 'API & integrations' },
+      { value: 'system', ar: 'نظام كامل', en: 'Complete system' },
+      { value: 'hardware', ar: 'أجهزة (الرياض فقط)', en: 'Hardware (Riyadh only)' }
+    ];
   }
 
   function addSharedRequest(payload) {
@@ -724,6 +757,8 @@
     probeCloudRequests,
     probePublicNotifyCloud,
     requestTypeLabel,
+    requestTypeForProduct,
+    requestTypeOptions,
     pushRequestToCloud,
     syncSharedRequestsFromCloud,
     getSharedRequests,

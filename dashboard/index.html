@@ -461,7 +461,7 @@ body.is-admin .client-only{display:none!important}
       <button class="nav-item client-only" data-page="catalog"><span class="ico">▤</span><span data-ar="الكتالوج" data-en="Catalog">الكتالوج</span></button>
       <button class="nav-item client-only" data-page="suggestions"><span class="ico">✦</span><span data-ar="الاقتراحات" data-en="Suggestions">الاقتراحات</span></button>
       <button class="nav-item client-only" data-page="requests"><span class="ico">✉</span><span data-ar="طلباتي" data-en="My requests">طلباتي</span></button>
-      <button class="nav-item admin-only" data-page="pos"><span class="ico">▣</span><span data-ar="طلبات البيع" data-en="Sales desk">طلبات البيع</span></button>
+      <button class="nav-item admin-only" data-page="pos"><span class="ico">▣</span><span data-ar="تسجيل دفعة" data-en="Record payment">تسجيل دفعة</span></button>
       <button class="nav-item admin-only" data-page="products"><span class="ico">▤</span><span data-ar="إدارة المنتجات" data-en="Manage products">إدارة المنتجات</span></button>
       <button class="nav-item admin-only" data-page="sales"><span class="ico">฿</span><span data-ar="سجل الطلبات" data-en="Orders">سجل الطلبات</span></button>
       <button class="nav-item admin-only" data-page="leads"><span class="ico">✉</span><span data-ar="طلبات العملاء" data-en="Client requests">طلبات العملاء</span><span class="nav-badge" id="leadsNavBadge">0</span></button>
@@ -503,7 +503,7 @@ body.is-admin .client-only{display:none!important}
           <h1 id="overviewTitle" data-ar="أهلاً بعودتك" data-en="Welcome back">أهلاً بعودتك</h1>
           <div class="crumb"><span data-ar="راسخ" data-en="Raseekh">راسخ</span> <span>/</span> <span data-ar="نظرة عامة" data-en="Overview">نظرة عامة</span></div>
         </div>
-        <button class="btn btn-primary admin-only" data-goto="pos" data-ar="فتح طلبات البيع" data-en="Open sales desk">فتح طلبات البيع</button>
+        <button class="btn btn-primary admin-only" data-goto="leads" data-ar="فتح الطلبات" data-en="Open requests">فتح الطلبات</button>
         <button class="btn btn-primary client-only" data-goto="catalog" data-ar="تصفح الكتالوج" data-en="Browse catalog">تصفح الكتالوج</button>
       </div>
 
@@ -523,8 +523,8 @@ body.is-admin .client-only{display:none!important}
 
       <div class="stats admin-only">
         <div class="stat"><div class="label" data-ar="المنتجات" data-en="Products">المنتجات</div><div class="value" id="statProducts">0</div><div class="hint" data-ar="في الكتالوج" data-en="in catalog">في الكتالوج</div></div>
-        <div class="stat"><div class="label" data-ar="مبيعات اليوم" data-en="Today sales">مبيعات اليوم</div><div class="value" id="statToday">0</div><div class="hint">SAR</div></div>
-        <div class="stat"><div class="label" data-ar="عدد الفواتير" data-en="Receipts">عدد الفواتير</div><div class="value" id="statReceipts">0</div><div class="hint" data-ar="اليوم" data-en="today">اليوم</div></div>
+        <div class="stat"><div class="label" data-ar="مدفوعات اليوم" data-en="Today payments">مدفوعات اليوم</div><div class="value" id="statToday">0</div><div class="hint">SAR</div></div>
+        <div class="stat"><div class="label" data-ar="عمليات اليوم" data-en="Today entries">عمليات اليوم</div><div class="value" id="statReceipts">0</div><div class="hint" data-ar="اليوم" data-en="today">اليوم</div></div>
         <div class="stat clickable" id="statNewRequestsCard" role="button" tabindex="0">
           <div class="label" data-ar="طلبات جديدة" data-en="New requests">طلبات جديدة</div>
           <div class="value" id="statNewRequests">0</div>
@@ -559,15 +559,15 @@ body.is-admin .client-only{display:none!important}
 
       <div class="grid-2 admin-only">
         <div class="panel">
-          <h3 data-ar="آخر المبيعات" data-en="Recent sales">آخر المبيعات</h3>
+          <h3 data-ar="آخر المدفوعات" data-en="Recent payments">آخر المدفوعات</h3>
           <div id="recentSales"></div>
         </div>
         <div class="panel">
           <h3 data-ar="اختصارات الإدارة" data-en="Admin shortcuts">اختصارات الإدارة</h3>
           <div style="display:flex;flex-direction:column;gap:10px">
-            <button class="btn btn-primary" data-goto="pos" data-ar="طلب بيع جديد" data-en="New sales order">طلب بيع جديد</button>
-            <button class="btn btn-ghost" data-goto="products" data-ar="إدارة المنتجات" data-en="Manage products">إدارة المنتجات</button>
-            <button class="btn btn-ghost" data-goto="leads" data-ar="طلبات العملاء" data-en="Client requests">طلبات العملاء</button>
+            <button class="btn btn-primary" data-goto="leads" data-ar="طلبات العملاء" data-en="Client requests">طلبات العملاء</button>
+            <button class="btn btn-ghost" data-goto="pos" data-ar="تسجيل دفعة / عربون" data-en="Record deposit / payment">تسجيل دفعة / عربون</button>
+            <button class="btn btn-ghost" data-goto="products" data-ar="إدارة الخدمات" data-en="Manage services">إدارة الخدمات</button>
             <a class="btn btn-ghost" href="/#products" data-ar="معاينة واجهة العميل" data-en="Preview client view">معاينة واجهة العميل</a>
           </div>
         </div>
@@ -701,23 +701,24 @@ body.is-admin .client-only{display:none!important}
     <div class="page admin-only" id="page-pos">
       <div class="topbar">
         <div>
-          <h1 data-ar="طلبات البيع" data-en="Sales desk">طلبات البيع</h1>
-          <div class="crumb"><span data-ar="راسخ" data-en="Raseekh">راسخ</span> <span>/</span> <span data-ar="طلبات البيع" data-en="Sales desk">طلبات البيع</span></div>
+          <h1 data-ar="تسجيل دفعة / عربون" data-en="Record deposit / payment">تسجيل دفعة / عربون</h1>
+          <div class="crumb"><span data-ar="راسخ" data-en="Raseekh">راسخ</span> <span>/</span> <span data-ar="مدفوعات" data-en="Payments">مدفوعات</span></div>
         </div>
         <div style="display:flex;gap:8px;flex-wrap:wrap">
           <select id="posCategory" style="padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--panel)">
             <option value="all" data-ar="كل الأقسام" data-en="All categories">كل الأقسام</option>
           </select>
-          <button class="btn btn-ghost" id="clearCartBtn" data-ar="تفريغ السلة" data-en="Clear cart">تفريغ السلة</button>
+          <button class="btn btn-ghost" id="clearCartBtn" data-ar="تفريغ القائمة" data-en="Clear list">تفريغ القائمة</button>
         </div>
       </div>
+      <div class="client-note admin-only" data-ar="للخدمات بسعر ثابت فقط. معظم خدمات راسخ «حسب الطلب» — سجّل العربون من صفحة الدفع في الموقع أو حدّد سعراً ثابتاً من إدارة الخدمات." data-en="For fixed-price items only. Most Raseekh services are quote-based — record deposits via the site pay page, or set a fixed price in service management.">للخدمات بسعر ثابت فقط. معظم خدمات راسخ «حسب الطلب» — سجّل العربون من صفحة الدفع في الموقع أو حدّد سعراً ثابتاً من إدارة الخدمات.</div>
       <div class="pos-layout">
         <div>
-          <input type="search" id="posSearch" style="margin-bottom:12px;padding:12px 14px;width:100%;border:1px solid var(--line);border-radius:10px" data-ar-placeholder="ابحث عن منتج..." data-en-placeholder="Search products..." placeholder="ابحث عن منتج...">
+          <input type="search" id="posSearch" style="margin-bottom:12px;padding:12px 14px;width:100%;border:1px solid var(--line);border-radius:10px" data-ar-placeholder="ابحث عن خدمة بسعر ثابت..." data-en-placeholder="Search fixed-price services..." placeholder="ابحث عن خدمة بسعر ثابت...">
           <div class="pos-catalog" id="posCatalog"></div>
         </div>
         <aside class="cart">
-          <h3 data-ar="السلة" data-en="Cart">السلة</h3>
+          <h3 data-ar="البنود" data-en="Items">البنود</h3>
           <div class="cart-lines" id="cartLines"></div>
           <div class="cart-total"><span data-ar="الإجمالي" data-en="Total">الإجمالي</span><span id="cartTotal">0.00 SAR</span></div>
           <div class="cart-actions">
@@ -789,19 +790,20 @@ body.is-admin .client-only{display:none!important}
         <form class="form" id="settingsForm" style="max-width:480px">
           <input type="email" id="settingsEmail" disabled>
           <input type="text" id="settingsName" data-ar-placeholder="اسم العرض" data-en-placeholder="Display name" placeholder="اسم العرض">
+          <input type="tel" id="settingsPhone" data-ar-placeholder="رقم الجوال" data-en-placeholder="Phone" placeholder="رقم الجوال" autocomplete="tel">
           <input type="password" id="settingsPassword" data-ar-placeholder="كلمة مرور جديدة (اختياري)" data-en-placeholder="New password (optional)" placeholder="كلمة مرور جديدة (اختياري)">
           <button class="btn btn-primary" type="submit" style="width:fit-content" data-ar="حفظ التغييرات" data-en="Save changes">حفظ التغييرات</button>
         </form>
         <div class="msg" id="settingsMsg"></div>
       </div>
       <div class="panel admin-only" id="storeSettingsPanel">
-        <h3 data-ar="بيانات المتجر (إدارة)" data-en="Store details (admin)">بيانات المتجر (إدارة)</h3>
+        <h3 data-ar="بيانات الشركة والإشعارات" data-en="Company & notifications">بيانات الشركة والإشعارات</h3>
         <form class="form" id="storeForm" style="max-width:480px">
-          <label class="field"><span data-ar="اسم المتجر" data-en="Store name">اسم المتجر</span>
-            <input type="text" id="storeName" data-ar-placeholder="اسم المتجر" data-en-placeholder="Store name" placeholder="اسم المتجر">
+          <label class="field"><span data-ar="اسم الشركة" data-en="Company name">اسم الشركة</span>
+            <input type="text" id="storeName" data-ar-placeholder="اسم الشركة" data-en-placeholder="Company name" placeholder="اسم الشركة">
           </label>
-          <label class="field"><span data-ar="هاتف المتجر" data-en="Store phone">هاتف المتجر</span>
-            <input type="text" id="storePhone" data-ar-placeholder="هاتف المتجر" data-en-placeholder="Store phone" placeholder="هاتف المتجر">
+          <label class="field"><span data-ar="هاتف التواصل" data-en="Contact phone">هاتف التواصل</span>
+            <input type="text" id="storePhone" data-ar-placeholder="هاتف التواصل" data-en-placeholder="Contact phone" placeholder="هاتف التواصل">
           </label>
           <label class="field"><span data-ar="بريد وصول الطلبات" data-en="Request notify email">بريد وصول الطلبات</span>
             <input type="email" id="storeNotifyEmail" data-ar-placeholder="you@example.com" data-en-placeholder="you@example.com" placeholder="you@example.com" autocomplete="email">
@@ -825,7 +827,7 @@ body.is-admin .client-only{display:none!important}
             <div class="row"><span data-ar="Webhook" data-en="Webhook">Webhook</span><span class="delivery-pill off" id="deliveryWebhookPill">—</span></div>
           </div>
           <div style="display:flex;gap:8px;flex-wrap:wrap">
-            <button class="btn btn-primary" type="submit" style="width:fit-content" data-ar="حفظ بيانات المتجر" data-en="Save store details">حفظ بيانات المتجر</button>
+            <button class="btn btn-primary" type="submit" style="width:fit-content" data-ar="حفظ بيانات الشركة" data-en="Save company details">حفظ بيانات الشركة</button>
             <button class="btn btn-brass" type="button" id="testNotifyEmailBtn" style="width:fit-content" data-ar="إرسال طلب تجريبي للبريد" data-en="Send test email request">إرسال طلب تجريبي للبريد</button>
           </div>
         </form>
@@ -1068,7 +1070,7 @@ body.is-admin .client-only{display:none!important}
     badge.classList.toggle('show', isAdminUser && n > 0);
   }
   function requestTitle(r){
-    if (r.title && !/^(electronics|maintenance|web-dev|programming|systems|api|system|site|product|suggestion)$/i.test(String(r.title))) {
+    if (r.title && !/^(electronics|hardware|maintenance|web-dev|programming|systems|api|system|site|product|suggestion)$/i.test(String(r.title))) {
       return r.title;
     }
     const type = r.type || r.title || 'site';
@@ -1540,6 +1542,11 @@ body.is-admin .client-only{display:none!important}
       document.getElementById('dashAvatar').textContent = (name || email || '?').trim().charAt(0).toUpperCase();
       document.getElementById('settingsEmail').value = email;
       document.getElementById('settingsName').value = isDemo ? t('زائر تجريبي','Demo guest') : (name || '');
+      const phoneEl = document.getElementById('settingsPhone');
+      if (phoneEl) {
+        phoneEl.value = isDemo ? '' : ((user?.user_metadata && user.user_metadata.phone) || '');
+        phoneEl.disabled = isDemo;
+      }
       document.getElementById('settingsPassword').disabled = isDemo;
       document.getElementById('dashUserStatus').textContent = isDemo ? t('وضع تجريبي','Demo mode') : t('متصل','Online');
 
@@ -1860,7 +1867,7 @@ body.is-admin .client-only{display:none!important}
       const holder = document.getElementById('recentSales');
       const recent = sales.slice(0, 5);
       if (!recent.length) {
-        holder.innerHTML = `<div class="empty"><strong>${t('لا توجد مبيعات بعد','No sales yet')}</strong><p>${t('ابدأ طلب بيع من مكتب المبيعات.' ,'Start a sales order from the sales desk.')}</p><div class="empty-actions"><button class="btn btn-primary" data-goto="pos">${t('فتح طلبات البيع','Open sales desk')}</button></div></div>`;
+        holder.innerHTML = `<div class="empty"><strong>${t('لا توجد مدفوعات مسجّلة بعد','No recorded payments yet')}</strong><p>${t('سجّلوا عربونًا من الموقع أو دفعة لخدمة بسعر ثابت.' ,'Record a site deposit or a fixed-price service payment.')}</p><div class="empty-actions"><button class="btn btn-primary" data-goto="leads">${t('فتح الطلبات','Open requests')}</button><a class="btn btn-ghost" href="/#pay">${t('صفحة السداد','Pay page')}</a></div></div>`;
       } else {
         holder.innerHTML = recent.map(s => `
           <div class="sale-row">
@@ -2248,8 +2255,9 @@ body.is-admin .client-only{display:none!important}
     const p = products.find(x => x.id === productId);
     if (!p) return;
     const title = productLabel(p);
+    const reqType = (Catalog && Catalog.requestTypeForProduct) ? Catalog.requestTypeForProduct(p) : 'programming';
     openRequestConfirm({
-      type: 'product',
+      type: reqType,
       title,
       summary: title + ' — ' + priceLabel(p),
       message: t('طلب عرض سعر لـ: ', 'Quote request for: ') + title + ' — ' + priceLabel(p),
@@ -2453,7 +2461,7 @@ body.is-admin .client-only{display:none!important}
       return sellable && catOk && (!q || blob.includes(q));
     });
     if (!list.length) {
-      catalog.innerHTML = `<div class="empty" style="grid-column:1/-1">${t('لا توجد منتجات بسعر ثابت للبيع المباشر — حدّد سعراً من إدارة المنتجات','No fixed-price items for direct sale — set a price in product management')}</div>`;
+      catalog.innerHTML = `<div class="empty" style="grid-column:1/-1"><strong>${t('لا توجد خدمات بسعر ثابت','No fixed-price services')}</strong><p>${t('معظم البنود حسب الطلب. حدّدوا سعراً ثابتاً من إدارة الخدمات، أو سجّلوا العربون من صفحة السداد في الموقع.','Most items are quote-based. Set a fixed price in service management, or record a deposit on the site pay page.')}</p><div class="empty-actions"><button class="btn btn-primary" data-goto="products">${t('إدارة الخدمات','Manage services')}</button><a class="btn btn-ghost" href="/#pay">${t('صفحة السداد','Pay page')}</a></div></div>`;
     } else {
       catalog.innerHTML = list.map(p => `
         <button type="button" class="pos-item" data-add="${p.id}">
@@ -2639,10 +2647,15 @@ body.is-admin .client-only{display:none!important}
     }
     if (!Auth) return;
     const name = document.getElementById('settingsName').value.trim();
+    const phone = (document.getElementById('settingsPhone')?.value || '').trim();
     const pass = document.getElementById('settingsPassword').value;
     try {
-      const user = await Auth.updateUser({ full_name: name, password: pass || undefined });
+      const user = await Auth.updateUser({ full_name: name, phone, password: pass || undefined });
       currentUser = user || currentUser;
+      if (currentUser && currentUser.user_metadata) {
+        currentUser.user_metadata.full_name = name;
+        currentUser.user_metadata.phone = phone;
+      }
       document.getElementById('dashUserLabel').textContent = name || currentUser.email;
       document.getElementById('settingsPassword').value = '';
       msg.style.color = 'var(--ok)';

@@ -177,11 +177,12 @@
     return true;
   }
 
-  async function localUpdateProfile(userId, { full_name, password }) {
+  async function localUpdateProfile(userId, { full_name, phone, password }) {
     const users = readUsers();
     const idx = users.findIndex(u => u.id === userId);
     if (idx < 0) throw new Error('NOT_FOUND');
     if (full_name != null) users[idx].full_name = String(full_name).trim();
+    if (phone != null) users[idx].phone = String(phone).trim();
     if (password) users[idx].password_hash = await hashPassword(password);
     writeUsers(users);
     setLocalSession(users[idx]);
@@ -316,24 +317,40 @@
     return { provider: 'local' };
   }
 
-  async function updateUser({ full_name, password }) {
+  async function updateUser({ full_name, phone, password }) {
     const current = await getSession();
     if (!current.user) throw new Error('NOT_FOUND');
     if (current.provider === 'supabase' && supabaseClient) {
       try {
         const updates = {};
         if (password) updates.password = password;
-        if (full_name) updates.data = { full_name, display_name: full_name };
+        const meta = Object.assign({}, current.user.user_metadata || {});
+        if (full_name != null) {
+          meta.full_name = String(full_name).trim();
+          meta.display_name = meta.full_name;
+        }
+        if (phone != null) meta.phone = String(phone).trim();
+        if (full_name != null || phone != null) updates.data = meta;
         if (Object.keys(updates).length) {
-          const { error } = await supabaseClient.auth.updateUser(updates);
+          const { data, error } = await supabaseClient.auth.updateUser(updates);
           if (error && !isNetworkAuthError(error)) throw error;
-          if (!error) return withRole(current.user);
+          if (!error) {
+            try {
+              await supabaseClient.from('profiles').upsert({
+                id: current.user.id,
+                full_name: meta.full_name || '',
+                phone: meta.phone || '',
+                email: current.user.email || ''
+              });
+            } catch (_) {}
+            return withRole(data && data.user ? data.user : Object.assign({}, current.user, { user_metadata: meta }));
+          }
         }
       } catch (err) {
         if (!isNetworkAuthError(err)) throw err;
       }
     }
-    return localUpdateProfile(current.user.id, { full_name, password });
+    return localUpdateProfile(current.user.id, { full_name, phone, password });
   }
 
   function friendlyError(err, lang) {
