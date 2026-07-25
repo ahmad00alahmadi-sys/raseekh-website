@@ -138,3 +138,61 @@ create policy "raseekh_terms_update_own" on public.terms_acceptance for update t
     or coalesce(user_id, '') = coalesce(auth.uid()::text, '')
   );
 grant select, insert, update on table public.terms_acceptance to authenticated;
+
+-- ===== profiles =====
+create table if not exists public.profiles (
+  id uuid primary key references auth.users (id) on delete cascade,
+  full_name text default '',
+  phone text default '',
+  email text default '',
+  updated_at timestamptz default now()
+);
+alter table public.profiles enable row level security;
+drop policy if exists "raseekh_profiles_select_own" on public.profiles;
+drop policy if exists "raseekh_profiles_upsert_own" on public.profiles;
+drop policy if exists "raseekh_profiles_update_own" on public.profiles;
+drop policy if exists "raseekh_profiles_select_admin" on public.profiles;
+create policy "raseekh_profiles_select_own" on public.profiles for select to authenticated using (
+  id = auth.uid()
+);
+create policy "raseekh_profiles_upsert_own" on public.profiles for insert to authenticated with check (
+  id = auth.uid()
+);
+create policy "raseekh_profiles_update_own" on public.profiles for update to authenticated
+  using (id = auth.uid())
+  with check (id = auth.uid());
+create policy "raseekh_profiles_select_admin" on public.profiles for select to authenticated using (
+  lower(coalesce(auth.jwt() ->> 'email', '')) = 'ahmad00alahmadi@gmail.com'
+);
+grant select, insert, update on table public.profiles to authenticated;
+
+-- ===== payments =====
+create table if not exists public.payments (
+  id text primary key,
+  created_at timestamptz not null default now(),
+  method text default 'card',
+  total numeric default 0,
+  items integer default 1,
+  note text default '',
+  name text default '',
+  email text default '',
+  user_id text default '',
+  source text default 'site',
+  payment_id text default '',
+  fingerprint text default '',
+  payload jsonb default '{}'::jsonb
+);
+create index if not exists payments_created_at_idx on public.payments (created_at desc);
+alter table public.payments enable row level security;
+drop policy if exists "raseekh_payments_insert" on public.payments;
+drop policy if exists "raseekh_payments_select_own" on public.payments;
+drop policy if exists "raseekh_payments_select_admin" on public.payments;
+create policy "raseekh_payments_insert" on public.payments for insert to anon, authenticated with check (true);
+create policy "raseekh_payments_select_own" on public.payments for select to authenticated using (
+  lower(coalesce(email, '')) = lower(coalesce(auth.jwt() ->> 'email', ''))
+  or coalesce(user_id, '') = coalesce(auth.uid()::text, '')
+);
+create policy "raseekh_payments_select_admin" on public.payments for select to authenticated using (
+  lower(coalesce(auth.jwt() ->> 'email', '')) = 'ahmad00alahmadi@gmail.com'
+);
+grant select, insert on table public.payments to anon, authenticated;

@@ -1633,6 +1633,11 @@ body.is-admin .client-only{display:none!important}
           renderOverview();
           if (document.getElementById('page-leads')?.classList.contains('active')) renderAdminLeads();
         });
+      } else if (!isDemo) {
+        refreshClientRequestsFromCloud().then(() => {
+          renderOverview();
+          if (document.getElementById('page-requests')?.classList.contains('active')) renderClientRequestsPage();
+        });
       }
     } finally {
       dashBooting = false;

@@ -1118,18 +1118,22 @@ body.terms-locked{overflow:hidden}
       requestFromCatalog({ type, message });
       return;
     }
-    const typeTitle = Catalog && Catalog.requestTypeLabel
+    if (!Catalog || !Catalog.addSharedRequest) {
+      requestFromCatalog({ type, message });
+      return;
+    }
+    const typeTitle = Catalog.requestTypeLabel
       ? Catalog.requestTypeLabel(type, currentLang)
       : type;
     const fullName = (loggedInUser.user_metadata && loggedInUser.user_metadata.full_name) || '';
     const phone = (loggedInUser.user_metadata && loggedInUser.user_metadata.phone) || '';
     const email = loggedInUser.email || '';
-    requestFromCatalog({ type, message });
     const resultEl = document.getElementById('contactResult');
     const successActions = document.getElementById('contactSuccessActions');
     if (resultEl) {
       resultEl.style.color = 'var(--muted)';
       resultEl.textContent = t('جاري إرسال الطلب...', 'Sending request...');
+      document.getElementById('contact').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
     try {
       const saved = Catalog.addSharedRequest({
@@ -1145,12 +1149,18 @@ body.terms-locked{overflow:hidden}
       });
       let delivery = null;
       if (saved && saved.deliveryPromise) delivery = await saved.deliveryPromise;
-      const ok = !!(delivery && delivery.delivered) || !!saved;
+      const delivered = !!(delivery && (delivery.delivered || delivery.cloud));
+      const pending = !!(delivery && delivery.pendingNotify);
+      const ok = !!saved;
       if (resultEl) {
         resultEl.style.color = ok ? 'var(--ok)' : 'var(--danger)';
-        resultEl.textContent = ok
-          ? t('✓ تم إرسال طلب عرض السعر', '✓ Quote request sent')
-          : t('تعذّر الإرسال — أكملوا النموذج أدناه', 'Could not send — complete the form below');
+        resultEl.textContent = !ok
+          ? t('تعذّر الإرسال — أكملوا النموذج أدناه', 'Could not send — complete the form below')
+          : (delivered
+            ? t('✓ تم إرسال طلب عرض السعر', '✓ Quote request sent')
+            : (pending
+              ? t('✓ استلمنا طلبكم — جاري تفعيل إشعار الإدارة', '✓ Request received — admin notify is activating')
+              : t('✓ تم حفظ الطلب — تابعوه من حسابكم', '✓ Request saved — track it in your account')));
       }
       if (ok && successActions) {
         successActions.style.display = 'flex';
@@ -1158,7 +1168,10 @@ body.terms-locked{overflow:hidden}
         successActions.style.flexWrap = 'wrap';
         successActions.innerHTML = `<a class="btn btn-primary" href="/dashboard/">${escapeHtml(t('متابعة الطلب من حسابي','Track request in my account'))}</a>`;
       }
+      const hq = document.getElementById('heroQuoteMsg');
+      if (hq) hq.value = '';
     } catch (_) {
+      requestFromCatalog({ type, message });
       if (resultEl) {
         resultEl.style.color = 'var(--danger)';
         resultEl.textContent = t('تعذّر الإرسال — أكملوا النموذج أدناه', 'Could not send — complete the form below');
@@ -1166,17 +1179,19 @@ body.terms-locked{overflow:hidden}
     }
   }
 
-  document.getElementById('heroQuoteForm').addEventListener('submit', (e) => {
+  document.getElementById('heroQuoteForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const type = document.getElementById('heroQuoteType').value;
     const message = document.getElementById('heroQuoteMsg').value.trim();
     if (!message) return;
-    requestFromCatalog({ type, message });
     const btn = document.getElementById('heroQuoteBtn');
     const prevAr = btn.getAttribute('data-ar') || 'اطلب عرض سعر';
     const prevEn = btn.getAttribute('data-en') || 'Request a quote';
+    await submitCatalogQuote({ type, message });
     btn.classList.remove('sent');
-    btn.textContent = t('أكمل النموذج ↓', 'Continue below ↓');
+    btn.textContent = loggedInUser
+      ? t('تم الإرسال', 'Sent')
+      : t('أكمل النموذج ↓', 'Continue below ↓');
     setTimeout(() => {
       btn.setAttribute('data-ar', prevAr);
       btn.setAttribute('data-en', prevEn);
@@ -1191,7 +1206,7 @@ body.terms-locked{overflow:hidden}
       const message = currentLang === 'ar'
         ? (el.getAttribute('data-quote-msg-ar') || '')
         : (el.getAttribute('data-quote-msg-en') || '');
-      requestFromCatalog({ type, message });
+      submitCatalogQuote({ type, message });
     });
   });
 
@@ -1590,17 +1605,23 @@ body.terms-locked{overflow:hidden}
         if (saved && saved.deliveryPromise) delivery = await saved.deliveryPromise;
       }
     } catch (_) {}
-    const ok = !!(delivery && delivery.delivered);
+    const delivered = !!(delivery && (delivery.delivered || delivery.cloud));
+    const pending = !!(delivery && delivery.pendingNotify);
+    const ok = !!saved;
     result.style.color = ok ? 'var(--ok)' : 'var(--danger)';
     result.classList.remove('ok-pulse');
     void result.offsetWidth;
     if (ok) result.classList.add('ok-pulse');
     const successActions = document.getElementById('contactSuccessActions');
-    result.textContent = ok
-      ? (loggedInUser
-        ? t('✓ تم إرسال طلبكم إلى راسخ', '✓ Request sent to Raseekh')
-        : t('✓ تم إرسال طلبكم إلى راسخ — سنراجع ونرد', '✓ Request sent to Raseekh — we will review and reply'))
-      : t('تعذّر إيصال الطلب الآن. حاولوا مرة أخرى أو تواصلوا لاحقاً.', 'Could not deliver the request now. Please try again later.');
+    result.textContent = !ok
+      ? t('تعذّر إيصال الطلب الآن. حاولوا مرة أخرى أو تواصلوا لاحقاً.', 'Could not deliver the request now. Please try again later.')
+      : (delivered
+        ? (loggedInUser
+          ? t('✓ تم إرسال طلبكم إلى راسخ', '✓ Request sent to Raseekh')
+          : t('✓ تم إرسال طلبكم إلى راسخ — سنراجع ونرد', '✓ Request sent to Raseekh — we will review and reply'))
+        : (pending
+          ? t('✓ استلمنا طلبكم — فعلوا إشعار البريد من الإدارة إن لزم', '✓ Request received — admin may still need to activate email notify')
+          : t('✓ تم حفظ الطلب — سنراجعه قريباً', '✓ Request saved — we will review it soon')));
     if (successActions) {
       if (ok && loggedInUser) {
         successActions.style.display = 'flex';
@@ -1700,6 +1721,16 @@ body.terms-locked{overflow:hidden}
     document.getElementById('paySummaryAmount').textContent = amount.toFixed(2) + ' SAR';
     document.getElementById('mysr-form').innerHTML = '';
     const note = document.getElementById('payNote').value.trim();
+    try {
+      sessionStorage.setItem('raseekh_pending_pay', JSON.stringify({
+        amount,
+        name,
+        note,
+        email: (loggedInUser && loggedInUser.email) || '',
+        userId: (loggedInUser && loggedInUser.id) || '',
+        at: Date.now()
+      }));
+    } catch (_) {}
     function recordMoyasarPayment(payment){
       if (!Catalog || !Catalog.addPaymentRecord || !payment || payment.status !== 'paid') return;
       const payAmount = typeof payment.amount === 'number' ? payment.amount / 100 : amount;
@@ -1714,6 +1745,7 @@ body.terms-locked{overflow:hidden}
         source: 'moyasar',
         paymentId: payment.id || ''
       });
+      try { sessionStorage.removeItem('raseekh_pending_pay'); } catch (_) {}
     }
     Moyasar.init({
       element: '#mysr-form',
@@ -1739,6 +1771,8 @@ body.terms-locked{overflow:hidden}
     const params = new URLSearchParams(window.location.search);
     const status = params.get('status');
     if (status !== 'paid' && status !== 'failed') return;
+    let pendingPay = null;
+    try { pendingPay = JSON.parse(sessionStorage.getItem('raseekh_pending_pay') || 'null'); } catch (_) {}
     const finish = (user) => {
       if (!user) {
         openAuth('pay');
@@ -1748,21 +1782,23 @@ body.terms-locked{overflow:hidden}
       setPayUnlocked(user);
       if (status === 'paid' && Catalog && Catalog.addPaymentRecord) {
         const amountParam = parseFloat(params.get('amount') || '');
-        const total = Number.isFinite(amountParam) ? (amountParam > 1000 ? amountParam / 100 : amountParam) : 0;
+        let total = Number.isFinite(amountParam) ? (amountParam > 1000 ? amountParam / 100 : amountParam) : 0;
+        if (!(total > 0) && pendingPay && Number(pendingPay.amount) > 0) total = Number(pendingPay.amount);
         const paymentId = params.get('id') || params.get('payment_id') || '';
         if (total > 0 || paymentId) {
           Catalog.addPaymentRecord({
             method: 'card',
             total,
             items: 1,
-            note: t('عربون عبر Moyasar', 'Moyasar deposit'),
-            name: (user.user_metadata && user.user_metadata.full_name) || '',
-            email: user.email || '',
-            userId: user.id || '',
+            note: (pendingPay && pendingPay.note) || t('عربون عبر Moyasar', 'Moyasar deposit'),
+            name: (pendingPay && pendingPay.name) || (user.user_metadata && user.user_metadata.full_name) || '',
+            email: user.email || (pendingPay && pendingPay.email) || '',
+            userId: user.id || (pendingPay && pendingPay.userId) || '',
             source: 'moyasar-return',
             paymentId
           });
         }
+        try { sessionStorage.removeItem('raseekh_pending_pay'); } catch (_) {}
       }
       showPayStep(status === 'paid' ? payStatusSuccess : payStatusFailed);
       document.getElementById('pay').scrollIntoView({ behavior: 'smooth', block: 'start' });

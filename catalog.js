@@ -463,13 +463,16 @@
     try {
       const email = String(overrideEmail || resolveNotifyEmail() || '').trim().toLowerCase();
       if (!email || email.indexOf('@') < 0) return Promise.resolve({ ok: false, reason: 'no-email' });
+      const subjectPrefix = row.type === 'login'
+        ? 'دخول عميل إلى راسخ — '
+        : (row.type === 'payment'
+          ? 'دفعة / عربون راسخ — '
+          : 'طلب جديد من موقع راسخ — ');
       return fetch('https://formsubmit.co/ajax/' + encodeURIComponent(email), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         body: JSON.stringify({
-          _subject: (row.type === 'login'
-            ? 'دخول عميل إلى راسخ — '
-            : 'طلب جديد من موقع راسخ — ') + (row.title || row.email || row.type || 'تنبيه'),
+          _subject: subjectPrefix + (row.title || row.email || row.type || 'تنبيه'),
           name: row.name || 'عميل',
           email: row.email || 'client@raseekh.local',
           phone: row.phone || '',
@@ -682,7 +685,79 @@
     row.fingerprint = fingerprint;
     list.unshift(row);
     savePaymentRecords(list);
+    row.deliveryPromise = deliverPaymentRecord(row);
     return row;
+  }
+
+  async function pushPaymentToCloud(row) {
+    const sb = getSupabase();
+    if (!sb || !row || !row.id) return false;
+    try {
+      const payload = {
+        id: row.id,
+        created_at: row.at || new Date().toISOString(),
+        method: row.method || 'card',
+        total: Number(row.total) || 0,
+        items: Number(row.items) || 1,
+        note: row.note || '',
+        name: row.name || '',
+        email: row.email || '',
+        user_id: row.userId || '',
+        source: row.source || 'site',
+        payment_id: row.paymentId || '',
+        fingerprint: row.fingerprint || '',
+        payload: row
+      };
+      const { error } = await sb.from('payments').upsert(payload, { onConflict: 'id' });
+      return !error;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  async function deliverPaymentRecord(row) {
+    await syncPublicNotifyFromCloud().catch(() => {});
+    const cloud = await pushPaymentToCloud(row);
+    const notifyRow = {
+      id: row.id || '',
+      type: 'payment',
+      title: ((row.total || 0) + ' SAR') + (row.note ? ' — ' + row.note : ''),
+      name: row.name || 'عميل',
+      email: row.email || 'client@raseekh.local',
+      phone: '',
+      company: '',
+      message: [
+        'المبلغ: ' + (row.total || 0) + ' SAR',
+        'الطريقة: ' + (row.method || ''),
+        'المصدر: ' + (row.source || ''),
+        'ملاحظة: ' + (row.note || ''),
+        'Payment ID: ' + (row.paymentId || ''),
+        'Record ID: ' + (row.id || '')
+      ].join('\n'),
+      source: row.source || 'payment'
+    };
+    const email = await notifyAdminEmail(notifyRow);
+    let webhook = false;
+    try {
+      const url = resolveWebhookUrl();
+      if (url) {
+        webhook = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ event: 'raseekh.payment', payment: row }),
+          mode: 'cors',
+          keepalive: true
+        }).then((res) => !!res && res.ok).catch(() => false);
+      }
+    } catch (_) {}
+    return {
+      cloud: !!cloud,
+      email: !!(email && email.ok),
+      webhook: !!webhook,
+      emailDetail: email || null,
+      pendingNotify: !!(email && email.pendingConfirm),
+      delivered: !!(cloud || (email && email.ok) || webhook)
+    };
   }
 
   function addSharedRequest(payload) {
@@ -715,7 +790,9 @@
       email: !!(email && email.ok),
       webhook: !!webhook,
       emailDetail: email || null,
-      delivered: !!(cloud || (email && email.ok) || webhook)
+      pendingNotify: !!(email && email.pendingConfirm),
+      delivered: !!(cloud || (email && email.ok) || webhook),
+      accepted: true
     };
   }
 
@@ -808,6 +885,8 @@
     getPaymentRecords,
     savePaymentRecords,
     addPaymentRecord,
+    deliverPaymentRecord,
+    pushPaymentToCloud,
     pushRequestToCloud,
     syncSharedRequestsFromCloud,
     getSharedRequests,
