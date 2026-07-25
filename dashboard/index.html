@@ -108,12 +108,27 @@ a{color:inherit;text-decoration:none}
   padding:16px;background:rgba(16,35,58,.78);backdrop-filter:blur(8px);
 }
 .terms-gate.open{display:flex}
+body.terms-locked{overflow:hidden}
 .terms-gate-sheet{
   width:min(840px,100%);max-height:min(90vh,920px);overflow:auto;background:var(--panel);
   border:1.5px solid var(--line);border-radius:10px;padding:22px 18px 16px;box-shadow:var(--shadow);
   border-top:4px solid var(--copper);
 }
 .terms-gate-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;position:sticky;bottom:0;background:linear-gradient(180deg,transparent,var(--panel) 30%);padding-top:16px}
+.check{display:flex;align-items:flex-start;gap:10px;font-size:.9rem;color:var(--muted);margin:4px 0 10px}
+.check input{margin-top:4px;accent-color:var(--copper)}
+.check a{color:var(--harbor);font-weight:700}
+.activity-list{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+.activity-row{
+  display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;
+  padding:10px 12px;border:1.5px solid var(--line);border-radius:8px;background:rgba(247,249,252,.7);
+}
+.activity-row .meta{color:var(--muted);font-size:.8rem}
+.activity-pill{
+  display:inline-flex;align-items:center;padding:4px 8px;border-radius:999px;font-size:.72rem;font-weight:700;
+  background:rgba(42,111,122,.14);color:var(--harbor);
+}
+.activity-pill.off{background:var(--mist);color:var(--muted)}
 .terms-doc .eyebrow{color:var(--copper);font-weight:700;font-size:.8rem;margin-bottom:8px}
 .terms-doc-head h2{font-size:clamp(1.4rem,2.8vw,1.9rem);color:var(--navy);margin-bottom:8px}
 .terms-doc-head p{color:var(--muted);margin-bottom:8px}
@@ -394,6 +409,10 @@ body.is-admin .client-only{display:none!important}
         <label class="field"><span data-ar="كلمة المرور (6+)" data-en="Password (6+)">كلمة المرور (6+)</span>
           <input type="password" id="dashRegisterPassword" minlength="6" required data-ar-placeholder="كلمة المرور (6+)" data-en-placeholder="Password (6+)" placeholder="كلمة المرور (6+)" autocomplete="new-password">
         </label>
+        <label class="check">
+          <input type="checkbox" id="dashRegisterTermsCheck" required>
+          <span><span data-ar="أوافق على" data-en="I agree to the">أوافق على</span> <a href="/terms/" id="dashRegisterTermsLink" target="_blank" rel="noopener" data-ar="الشروط والأحكام" data-en="Terms">الشروط والأحكام</a></span>
+        </label>
         <button class="btn btn-primary" type="submit" data-ar="إنشاء حساب" data-en="Create account">إنشاء حساب</button>
       </form>
       <div class="msg" id="dashRegisterMsg"></div>
@@ -485,6 +504,11 @@ body.is-admin .client-only{display:none!important}
         <div class="stat"><div class="label" data-ar="نشط الآن" data-en="Active now">نشط الآن</div><div class="value" id="statActiveUsers">0</div><div class="hint" data-ar="آخر 15 دقيقة" data-en="last 15 minutes">آخر 15 دقيقة</div></div>
         <div class="stat"><div class="label" data-ar="دخول اليوم" data-en="Logins today">دخول اليوم</div><div class="value" id="statLoginsToday">0</div><div class="hint" data-ar="حسابات نشطة اليوم" data-en="accounts active today">حسابات نشطة اليوم</div></div>
         <div class="stat"><div class="label" data-ar="إجمالي الدخول" data-en="Total logins">إجمالي الدخول</div><div class="value" id="statTotalLogins">0</div><div class="hint" data-ar="كل الجلسات" data-en="all sessions">كل الجلسات</div></div>
+      </div>
+      <div class="panel admin-only" style="margin-top:14px">
+        <h3 data-ar="آخر النشاط" data-en="Recent activity">آخر النشاط</h3>
+        <p style="color:var(--muted);font-size:.9rem;margin:4px 0 0" data-ar="من سجّل دخول ومن نشط خلال آخر 15 دقيقة." data-en="Who signed in and who is active in the last 15 minutes.">من سجّل دخول ومن نشط خلال آخر 15 دقيقة.</p>
+        <div class="activity-list" id="audienceActivityList"></div>
       </div>
       <div class="stats client-only">
         <div class="stat"><div class="label" data-ar="خدمات متاحة" data-en="Available services">خدمات متاحة</div><div class="value" id="statClientProducts">0</div><div class="hint" data-ar="للطلب" data-en="to request">للطلب</div></div>
@@ -1143,20 +1167,38 @@ body.is-admin .client-only{display:none!important}
       gate.classList.add('open');
       gate.setAttribute('aria-hidden', 'false');
     }
+    document.body.classList.toggle('terms-locked', termsGateMode === 'accept');
   }
   function closeTermsGate(){
     const gate = document.getElementById('termsGate');
     if (!gate) return;
+    // Do not dismiss required acceptance by accident.
+    if (termsGateMode === 'accept' && currentUser && !isAdminUser && !isDemo && Terms && !Terms.hasAccepted(currentUser)) {
+      return;
+    }
     gate.classList.remove('open');
     gate.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('terms-locked');
   }
   function ensureClientTerms(){
     if (isAdminUser || isDemo || !currentUser || !Terms) {
-      closeTermsGate();
+      termsGateMode = 'view';
+      const gate = document.getElementById('termsGate');
+      if (gate) {
+        gate.classList.remove('open');
+        gate.setAttribute('aria-hidden', 'true');
+      }
+      document.body.classList.remove('terms-locked');
       return true;
     }
     if (Terms.hasAccepted(currentUser)) {
-      closeTermsGate();
+      termsGateMode = 'view';
+      const gate = document.getElementById('termsGate');
+      if (gate) {
+        gate.classList.remove('open');
+        gate.setAttribute('aria-hidden', 'true');
+      }
+      document.body.classList.remove('terms-locked');
       return true;
     }
     openTermsGate('accept');
@@ -1186,6 +1228,35 @@ body.is-admin .client-only{display:none!important}
     set('statActiveUsers', stats.activeNow);
     set('statLoginsToday', stats.loginsToday);
     set('statTotalLogins', stats.totalLogins);
+
+    const list = document.getElementById('audienceActivityList');
+    if (!list) return;
+    const rows = (stats.users || []).slice(0, 12);
+    if (!rows.length) {
+      list.innerHTML = `<div class="empty">${t('لا يوجد نشاط دخول بعد','No login activity yet')}</div>`;
+      return;
+    }
+    const now = Date.now();
+    const loc = currentLang === 'ar' ? 'ar-SA' : 'en-US';
+    list.innerHTML = rows.map((u) => {
+      const active = Activity && typeof Activity.ACTIVE_MS === 'number'
+        ? (now - new Date(u.lastSeenAt || 0).getTime()) <= Activity.ACTIVE_MS
+        : false;
+      const label = u.name || u.email || '—';
+      const seen = u.lastSeenAt ? new Date(u.lastSeenAt).toLocaleString(loc) : '—';
+      const logins = Number(u.loginCount) || 0;
+      const role = u.role === 'admin' ? t('إدارة','Admin') : t('عميل','Client');
+      return `
+        <div class="activity-row">
+          <div>
+            <div style="font-weight:700">${label}</div>
+            <div class="meta">${u.email || ''} · ${role} · ${t('دخول','logins')}: ${logins}</div>
+            <div class="meta">${t('آخر ظهور','Last seen')}: ${seen}</div>
+          </div>
+          <span class="activity-pill${active ? '' : ' off'}">${active ? t('نشط الآن','Active now') : t('غير نشط','Idle')}</span>
+        </div>
+      `;
+    }).join('');
   }
 
   function showDashboard(user, demo){
@@ -1324,6 +1395,12 @@ body.is-admin .client-only{display:none!important}
       msg.textContent = t('تعذّر تحميل نظام الحسابات', 'Auth system failed to load');
       return;
     }
+    const termsCheck = document.getElementById('dashRegisterTermsCheck');
+    if (termsCheck && !termsCheck.checked) {
+      msg.style.color = 'var(--danger)';
+      msg.textContent = t('يجب الموافقة على الشروط والأحكام', 'You must accept the Terms & Conditions');
+      return;
+    }
     const name = document.getElementById('dashRegisterName').value.trim();
     const email = document.getElementById('dashRegisterEmail').value.trim();
     const phone = document.getElementById('dashRegisterPhone').value.trim();
@@ -1375,12 +1452,28 @@ body.is-admin .client-only{display:none!important}
     acceptTermsBtn.addEventListener('click', () => {
       if (!currentUser || !Terms) return;
       Terms.acceptTerms(currentUser);
-      closeTermsGate();
+      termsGateMode = 'view';
+      const gate = document.getElementById('termsGate');
+      if (gate) {
+        gate.classList.remove('open');
+        gate.setAttribute('aria-hidden', 'true');
+      }
+      document.body.classList.remove('terms-locked');
       showToast(t('تم قبول الشروط', 'Terms accepted'));
     });
   }
   const termsGateCloseBtn = document.getElementById('termsGateCloseBtn');
-  if (termsGateCloseBtn) termsGateCloseBtn.addEventListener('click', closeTermsGate);
+  if (termsGateCloseBtn) termsGateCloseBtn.addEventListener('click', () => {
+    if (termsGateMode === 'accept') return;
+    closeTermsGate();
+  });
+  const termsGateEl = document.getElementById('termsGate');
+  if (termsGateEl) {
+    termsGateEl.addEventListener('click', (e) => {
+      if (e.target !== termsGateEl) return;
+      if (termsGateMode === 'view') closeTermsGate();
+    });
+  }
   const viewTermsBtn = document.getElementById('viewTermsBtn');
   if (viewTermsBtn) {
     viewTermsBtn.addEventListener('click', () => openTermsGate('view'));
@@ -2304,6 +2397,11 @@ body.is-admin .client-only{display:none!important}
 
   document.addEventListener('keydown', (e) => {
     if (e.key !== 'Escape') return;
+    const gate = document.getElementById('termsGate');
+    if (gate && gate.classList.contains('open')) {
+      if (termsGateMode === 'view') closeTermsGate();
+      return;
+    }
     document.getElementById('productModal').classList.remove('open');
     document.getElementById('receiptModal').classList.remove('open');
     closeRequestConfirm();
