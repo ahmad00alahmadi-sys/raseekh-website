@@ -425,7 +425,10 @@
         priceMode: isQuote(p) ? 'quote' : 'fixed',
         stock: Number(p.stock) || 0,
         kind: p.kind || 'product',
-        client: true
+        client: true,
+        assignedEmail: String(p.assignedEmail || '').trim().toLowerCase(),
+        removeAfterOrder: !!p.removeAfterOrder,
+        privateOnly: !!String(p.assignedEmail || '').trim()
       }));
     const finalSuggestions = suggestions && suggestions.length
       ? suggestions
@@ -441,23 +444,69 @@
     return clientProducts;
   }
 
-  function getClientProducts() {
+  const ADMIN_CATALOG_SAVED_AT_KEY = 'raseekh_admin_catalog_saved_at';
+
+  function normalizeClientEmail(email) {
+    return String(email || '').trim().toLowerCase();
+  }
+
+  function productVisibleToClient(p, clientEmail) {
+    if (!p || p.client === false) return false;
+    const assigned = normalizeClientEmail(p.assignedEmail);
+    if (!assigned) return true; // public to all clients
+    const me = normalizeClientEmail(clientEmail);
+    return !!(me && assigned === me);
+  }
+
+  function getClientProducts(clientEmail) {
     const current = parseInt(localStorage.getItem(VERSION_KEY) || '0', 10) || 0;
+    let list;
     if (current < CATALOG_VERSION) {
       // Public seed bump: refresh local public catalog without inventing admin storage on visitor browsers.
       const adminStored = readJson(ADMIN_PRODUCTS_KEY, null);
       const ensured = ensureCatalogVersion(adminStored && adminStored.length ? adminStored : cloneList(DEFAULT_PRODUCTS));
       if (adminStored && adminStored.length) writeJson(ADMIN_PRODUCTS_KEY, ensured);
       ensureSuggestionsVersion();
-      const refreshed = ensured.filter((p) => p && p.client !== false);
       publishClientCatalog(ensured, getClientSuggestions(), { cloud: false });
-      return refreshed;
+      list = ensured.filter((p) => p && p.client !== false);
+    } else {
+      const stored = readJson(PUBLIC_KEY, null);
+      if (stored && stored.length) list = stored.filter((p) => p && p.client !== false);
+      else {
+        const admin = readJson(ADMIN_PRODUCTS_KEY, null);
+        if (admin && admin.length) list = admin.filter((p) => p && p.client !== false);
+        else list = cloneList(DEFAULT_PRODUCTS).filter((p) => p && p.client !== false);
+      }
     }
-    const stored = readJson(PUBLIC_KEY, null);
-    if (stored && stored.length) return stored.filter((p) => p && p.client !== false);
+    const email = normalizeClientEmail(clientEmail);
+    // Visitors / no email: only public (unassigned) products.
+    return (list || []).filter((p) => productVisibleToClient(p, email));
+  }
+
+  function hideProductAfterClientOrder(productId, clientEmail) {
+    const id = String(productId || '').trim();
+    if (!id) return { ok: false, reason: 'no-id' };
     const admin = readJson(ADMIN_PRODUCTS_KEY, null);
-    if (admin && admin.length) return admin.filter((p) => p && p.client !== false);
-    return cloneList(DEFAULT_PRODUCTS).filter((p) => p && p.client !== false);
+    if (!admin || !admin.length) return { ok: false, reason: 'no-admin' };
+    const idx = admin.findIndex((p) => p && p.id === id);
+    if (idx < 0) return { ok: false, reason: 'missing' };
+    const row = admin[idx];
+    if (!row.removeAfterOrder) return { ok: false, reason: 'not-flagged' };
+    const assigned = normalizeClientEmail(row.assignedEmail);
+    const me = normalizeClientEmail(clientEmail);
+    // Only hide when this order belongs to the assigned client (or product was public one-shot).
+    if (assigned && me && assigned !== me) return { ok: false, reason: 'wrong-client' };
+    admin[idx] = Object.assign({}, row, {
+      client: false,
+      assignedEmail: '',
+      removeAfterOrder: false,
+      hiddenAt: new Date().toISOString(),
+      hiddenReason: 'after_order'
+    });
+    writeJson(ADMIN_PRODUCTS_KEY, admin);
+    try { localStorage.setItem(ADMIN_CATALOG_SAVED_AT_KEY, new Date().toISOString()); } catch (_) {}
+    publishClientCatalog(admin, pruneSuggestions(admin), { cloud: true });
+    return { ok: true, product: admin[idx] };
   }
 
   function getClientSuggestions() {
@@ -489,8 +538,6 @@
     publishClientCatalog(ensured, pruneSuggestions(ensured), { cloud: false });
     return ensured;
   }
-
-  const ADMIN_CATALOG_SAVED_AT_KEY = 'raseekh_admin_catalog_saved_at';
 
   function hydrateAdminFromCloud(products, suggestions, opts) {
     if (!Array.isArray(products) || !products.length) return null;
@@ -1760,6 +1807,8 @@
     mergeProducts,
     publishClientCatalog,
     getClientProducts,
+    productVisibleToClient,
+    hideProductAfterClientOrder,
     getClientSuggestions,
     loadAdminProducts,
     hydrateAdminFromCloud,
