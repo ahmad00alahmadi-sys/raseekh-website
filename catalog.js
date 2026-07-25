@@ -212,7 +212,7 @@
     return suggestions;
   }
 
-  function publishClientCatalog(products, suggestions) {
+  function publishClientCatalog(products, suggestions, opts) {
     const list = products || [];
     const clientProducts = list
       .filter((p) => p && p.client !== false)
@@ -235,7 +235,10 @@
       : pruneSuggestions(list);
     writeJson(PUBLIC_KEY, clientProducts);
     writeJson(SUGGESTIONS_KEY, finalSuggestions);
-    publishClientCatalogToCloud(clientProducts, finalSuggestions).catch(() => {});
+    // Default: push to cloud only on explicit saves — never clobber cloud from a stale admin boot.
+    if (opts && opts.cloud) {
+      publishClientCatalogToCloud(clientProducts, finalSuggestions).catch(() => {});
+    }
     return clientProducts;
   }
 
@@ -244,7 +247,7 @@
     if (current < CATALOG_VERSION) {
       const refreshed = loadAdminProducts().filter((p) => p && p.client !== false);
       ensureSuggestionsVersion();
-      publishClientCatalog(refreshed, getClientSuggestions());
+      publishClientCatalog(refreshed, getClientSuggestions(), { cloud: false });
       return refreshed;
     }
     const stored = readJson(PUBLIC_KEY, null);
@@ -280,14 +283,14 @@
     const stored = migrated || readJson(ADMIN_PRODUCTS_KEY, null);
     const ensured = ensureCatalogVersion(stored && stored.length ? stored : cloneList(DEFAULT_PRODUCTS));
     writeJson(ADMIN_PRODUCTS_KEY, ensured);
-    publishClientCatalog(ensured, pruneSuggestions(ensured));
+    publishClientCatalog(ensured, pruneSuggestions(ensured), { cloud: false });
     return ensured;
   }
 
   function saveAdminProducts(products) {
     const list = Array.isArray(products) ? products : [];
     writeJson(ADMIN_PRODUCTS_KEY, list);
-    publishClientCatalog(list, pruneSuggestions(list));
+    publishClientCatalog(list, pruneSuggestions(list), { cloud: true });
     return list;
   }
 

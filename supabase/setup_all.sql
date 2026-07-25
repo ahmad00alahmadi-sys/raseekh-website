@@ -192,11 +192,17 @@ create table if not exists public.payments (
   payload jsonb default '{}'::jsonb
 );
 create index if not exists payments_created_at_idx on public.payments (created_at desc);
+create unique index if not exists payments_payment_id_uidx on public.payments (payment_id)
+  where coalesce(payment_id, '') <> '';
 alter table public.payments enable row level security;
 drop policy if exists "raseekh_payments_insert" on public.payments;
 drop policy if exists "raseekh_payments_select_own" on public.payments;
 drop policy if exists "raseekh_payments_select_admin" on public.payments;
-create policy "raseekh_payments_insert" on public.payments for insert to anon, authenticated with check (true);
+-- Pay page requires sign-in — never allow anonymous forged payment rows.
+create policy "raseekh_payments_insert" on public.payments for insert to authenticated with check (
+  coalesce(user_id, '') = coalesce(auth.uid()::text, '')
+  or lower(coalesce(email, '')) = lower(coalesce(auth.jwt() ->> 'email', ''))
+);
 create policy "raseekh_payments_select_own" on public.payments for select to authenticated using (
   lower(coalesce(email, '')) = lower(coalesce(auth.jwt() ->> 'email', ''))
   or coalesce(user_id, '') = coalesce(auth.uid()::text, '')
@@ -204,4 +210,5 @@ create policy "raseekh_payments_select_own" on public.payments for select to aut
 create policy "raseekh_payments_select_admin" on public.payments for select to authenticated using (
   lower(coalesce(auth.jwt() ->> 'email', '')) = 'ahmad00alahmadi@gmail.com'
 );
-grant select, insert on table public.payments to anon, authenticated;
+revoke all on table public.payments from anon;
+grant select, insert on table public.payments to authenticated;

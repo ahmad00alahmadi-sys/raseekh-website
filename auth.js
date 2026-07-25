@@ -238,17 +238,15 @@
       try {
         const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
         if (error) {
+          // Only fall back to local when the cloud is unreachable — never on wrong password.
           if (isNetworkAuthError(error)) return localSignIn({ email, password });
-          // Fall back to local account if cloud rejects but local has the user
-          try { return await localSignIn({ email, password }); }
-          catch (_) { throw error; }
+          throw error;
         }
         clearLocalSession();
         return { user: withRole(data.user), session: data.session, provider: 'supabase' };
       } catch (err) {
         if (isNetworkAuthError(err)) return localSignIn({ email, password });
-        try { return await localSignIn({ email, password }); }
-        catch (_) { throw err; }
+        throw err;
       }
     }
     return localSignIn({ email, password });
