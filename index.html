@@ -635,17 +635,12 @@ footer{
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="/auth.js"></script>
 <script>
 (function(){
-  const SUPABASE_URL = 'https://dupdkohciluepwrfuhod.supabase.co';
-  const SUPABASE_ANON_KEY = 'sb_publishable_UVbMT7eplHHBNdZbOpLssw_UUEYTxFA';
   const DASHBOARD_URL = '/dashboard/';
   const MOYASAR_PUBLISHABLE_KEY = 'pk_live_U94Vg5e2kjJY557CU8qjnxv83shQJx6o125RrRey';
-
-  let supabaseClient = null;
-  try {
-    if (window.supabase) supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-  } catch (e) { console.warn(e); }
+  const Auth = window.RaseekhAuth;
 
   let currentLang = localStorage.getItem('raseekh_lang') || 'ar';
   let loggedInUser = null;
@@ -751,33 +746,33 @@ footer{
   document.getElementById('loginForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const msg = document.getElementById('loginMsg');
-    if (!supabaseClient) {
+    if (!Auth) {
       msg.style.color = 'var(--danger)';
-      msg.textContent = t('تعذّر الاتصال بخدمة الحسابات', 'Could not connect to accounts service');
+      msg.textContent = t('تعذّر تحميل نظام الحسابات', 'Auth system failed to load');
       return;
     }
     msg.style.color = 'var(--muted)';
     msg.textContent = t('جاري تسجيل الدخول...', 'Signing in...');
     const email = document.getElementById('loginEmail').value.trim();
     const password = document.getElementById('loginPassword').value;
-    const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
-    if (error) {
+    try {
+      const result = await Auth.signIn({ email, password });
+      msg.style.color = 'var(--ok)';
+      msg.textContent = t('تم الدخول — جاري التحويل...', 'Signed in — redirecting...');
+      setPayUnlocked(result.user);
+      setTimeout(goDashboard, 400);
+    } catch (err) {
       msg.style.color = 'var(--danger)';
-      msg.textContent = t('البريد أو كلمة المرور غير صحيحة', 'Incorrect email or password');
-      return;
+      msg.textContent = Auth.friendlyError(err, currentLang);
     }
-    msg.style.color = 'var(--ok)';
-    msg.textContent = t('تم الدخول — جاري التحويل...', 'Signed in — redirecting...');
-    setPayUnlocked(data.user);
-    setTimeout(goDashboard, 500);
   });
 
   document.getElementById('registerForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const msg = document.getElementById('registerMsg');
-    if (!supabaseClient) {
+    if (!Auth) {
       msg.style.color = 'var(--danger)';
-      msg.textContent = t('تعذّر الاتصال بخدمة الحسابات', 'Could not connect to accounts service');
+      msg.textContent = t('تعذّر تحميل نظام الحسابات', 'Auth system failed to load');
       return;
     }
     const name = document.getElementById('registerName').value.trim();
@@ -786,71 +781,68 @@ footer{
     const password = document.getElementById('registerPassword').value;
     msg.style.color = 'var(--muted)';
     msg.textContent = t('جاري إنشاء الحساب...', 'Creating account...');
-    const { data, error } = await supabaseClient.auth.signUp({
-      email, password, options: { data: { full_name: name, phone } }
-    });
-    if (error) {
-      msg.style.color = 'var(--danger)';
-      msg.textContent = error.message.includes('already registered')
-        ? t('هذا البريد مسجّل مسبقاً', 'Email already registered')
-        : error.message;
-      return;
-    }
-    if (data.user) {
-      try {
-        await supabaseClient.from('profiles').upsert({ id: data.user.id, full_name: name, phone, email });
-      } catch (_) {}
-    }
-    if (data.session) {
+    try {
+      const result = await Auth.signUp({ email, password, full_name: name, phone });
       msg.style.color = 'var(--ok)';
       msg.textContent = t('تم إنشاء الحساب — جاري التحويل...', 'Account created — redirecting...');
-      setPayUnlocked(data.user);
-      setTimeout(goDashboard, 600);
-    } else {
-      msg.style.color = 'var(--ok)';
-      msg.textContent = t('تم إنشاء الحساب — فعّله من بريدك ثم سجّل الدخول', 'Account created — verify email then sign in');
+      setPayUnlocked(result.user);
+      setTimeout(goDashboard, 400);
+    } catch (err) {
+      msg.style.color = 'var(--danger)';
+      msg.textContent = Auth.friendlyError(err, currentLang);
     }
   });
 
   document.getElementById('forgotForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const msg = document.getElementById('forgotMsg');
-    if (!supabaseClient) return;
+    if (!Auth) return;
     msg.textContent = t('جاري الإرسال...', 'Sending...');
     const email = document.getElementById('forgotEmail').value.trim();
-    const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
-      redirectTo: window.location.origin + '/#reset'
-    });
-    msg.style.color = error ? 'var(--danger)' : 'var(--ok)';
-    msg.textContent = error
-      ? t('حدث خطأ، حاول مرة أخرى', 'Something went wrong')
-      : t('تم إرسال رابط إعادة التعيين', 'Reset link sent');
+    try {
+      const result = await Auth.resetPasswordRequest(email);
+      msg.style.color = 'var(--ok)';
+      if (result.provider === 'local') {
+        msg.textContent = t('تم التحقق — عيّن كلمة مرور جديدة الآن', 'Verified — set a new password now');
+        showAuthPanel('reset');
+      } else {
+        msg.textContent = t('تم إرسال رابط إعادة التعيين', 'Reset link sent');
+      }
+    } catch (err) {
+      msg.style.color = 'var(--danger)';
+      msg.textContent = Auth.friendlyError(err, currentLang);
+    }
   });
 
   document.getElementById('resetForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const msg = document.getElementById('resetMsg');
-    if (!supabaseClient) return;
+    if (!Auth) return;
     const password = document.getElementById('resetPassword').value;
-    const { error } = await supabaseClient.auth.updateUser({ password });
-    msg.style.color = error ? 'var(--danger)' : 'var(--ok)';
-    msg.textContent = error
-      ? t('تعذّر الحفظ', 'Could not save')
-      : t('تم تحديث كلمة المرور', 'Password updated');
+    try {
+      await Auth.completePasswordReset(password);
+      msg.style.color = 'var(--ok)';
+      msg.textContent = t('تم تحديث كلمة المرور', 'Password updated');
+    } catch (err) {
+      msg.style.color = 'var(--danger)';
+      msg.textContent = Auth.friendlyError(err, currentLang);
+    }
   });
 
-  if (supabaseClient) {
-    supabaseClient.auth.onAuthStateChange((event, session) => {
-      if (event === 'PASSWORD_RECOVERY' || (event === 'SIGNED_IN' && location.hash === '#reset')) {
-        openModal(); showAuthPanel('reset');
-      }
-      if (event === 'SIGNED_OUT') setPayUnlocked(null);
-      if (event === 'SIGNED_IN' && session?.user && location.hash !== '#reset') setPayUnlocked(session.user);
-    });
-    supabaseClient.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user) setPayUnlocked(session.user);
+  if (Auth) {
+    Auth.getSession().then(({ user }) => {
+      if (user) setPayUnlocked(user);
       if (location.hash === '#reset') { openModal(); showAuthPanel('reset'); }
     });
+    if (Auth.supabase) {
+      Auth.supabase.auth.onAuthStateChange((event, session) => {
+        if (event === 'PASSWORD_RECOVERY' || (event === 'SIGNED_IN' && location.hash === '#reset')) {
+          openModal(); showAuthPanel('reset');
+        }
+        if (event === 'SIGNED_OUT') setPayUnlocked(null);
+        if (event === 'SIGNED_IN' && session?.user && location.hash !== '#reset') setPayUnlocked(session.user);
+      });
+    }
   }
 
   document.getElementById('contactForm').addEventListener('submit', (e) => {

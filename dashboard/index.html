@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@600;700;800&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Syne:wght@600;700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="/auth.js"></script>
 <style>
 :root{
   --ink:#0F1F1A;--forest:#0A4D3C;--leaf:#1F8A6A;--brass:#A67C1A;
@@ -479,13 +480,8 @@ a{color:inherit;text-decoration:none}
 
 <script>
 (function(){
-  const SUPABASE_URL = 'https://dupdkohciluepwrfuhod.supabase.co';
-  const SUPABASE_ANON_KEY = 'sb_publishable_UVbMT7eplHHBNdZbOpLssw_UUEYTxFA';
   const DEMO_FLAG = 'raseekh_demo_session';
-
-  let supabaseClient = null;
-  try { if (window.supabase) supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); }
-  catch (e) { console.warn(e); }
+  const Auth = window.RaseekhAuth;
 
   function setDemoFlag(on){
     try {
@@ -686,32 +682,32 @@ a{color:inherit;text-decoration:none}
   document.getElementById('dashLoginForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const msg = document.getElementById('dashLoginMsg');
-    if (!supabaseClient) {
+    if (!Auth) {
       msg.style.color = 'var(--danger)';
-      msg.textContent = t('تعذّر الاتصال — استخدم التجربة الفورية', 'Connection failed — use demo');
+      msg.textContent = t('تعذّر تحميل نظام الحسابات', 'Auth system failed to load');
       return;
     }
     msg.style.color = 'var(--muted)';
     msg.textContent = t('جاري الدخول...', 'Signing in...');
     const email = document.getElementById('dashLoginEmail').value.trim();
     const password = document.getElementById('dashLoginPassword').value;
-    const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
-    if (error) {
+    try {
+      const result = await Auth.signIn({ email, password });
+      msg.style.color = 'var(--ok)';
+      msg.textContent = t('تم الدخول بنجاح', 'Signed in');
+      showDashboard(result.user, false);
+    } catch (err) {
       msg.style.color = 'var(--danger)';
-      msg.textContent = t('بيانات الدخول غير صحيحة', 'Invalid credentials');
-      return;
+      msg.textContent = Auth.friendlyError(err, currentLang);
     }
-    msg.style.color = 'var(--ok)';
-    msg.textContent = t('تم الدخول بنجاح', 'Signed in');
-    showDashboard(data.user, false);
   });
 
   document.getElementById('dashRegisterForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const msg = document.getElementById('dashRegisterMsg');
-    if (!supabaseClient) {
+    if (!Auth) {
       msg.style.color = 'var(--danger)';
-      msg.textContent = t('تعذّر الاتصال — استخدم التجربة الفورية', 'Connection failed — use demo');
+      msg.textContent = t('تعذّر تحميل نظام الحسابات', 'Auth system failed to load');
       return;
     }
     const name = document.getElementById('dashRegisterName').value.trim();
@@ -719,44 +715,40 @@ a{color:inherit;text-decoration:none}
     const password = document.getElementById('dashRegisterPassword').value;
     msg.style.color = 'var(--muted)';
     msg.textContent = t('جاري إنشاء الحساب...', 'Creating account...');
-    const { data, error } = await supabaseClient.auth.signUp({
-      email, password, options: { data: { full_name: name } }
-    });
-    if (error) {
-      msg.style.color = 'var(--danger)';
-      msg.textContent = error.message.includes('already registered')
-        ? t('البريد مسجّل مسبقاً', 'Email already registered')
-        : error.message;
-      return;
-    }
-    if (data.session?.user) showDashboard(data.user, false);
-    else {
+    try {
+      const result = await Auth.signUp({ email, password, full_name: name });
       msg.style.color = 'var(--ok)';
-      msg.textContent = t('تم الإنشاء — فعّل البريد ثم سجّل الدخول', 'Created — verify email then sign in');
+      msg.textContent = t('تم إنشاء الحساب', 'Account created');
+      showDashboard(result.user, false);
+    } catch (err) {
+      msg.style.color = 'var(--danger)';
+      msg.textContent = Auth.friendlyError(err, currentLang);
     }
   });
 
   document.getElementById('dashForgotForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const msg = document.getElementById('dashForgotMsg');
-    if (!supabaseClient) {
-      msg.style.color = 'var(--danger)';
-      msg.textContent = t('تعذّر الاتصال بخدمة الحسابات', 'Accounts service unavailable');
-      return;
-    }
+    if (!Auth) return;
     const email = document.getElementById('dashForgotEmail').value.trim();
     msg.textContent = t('جاري الإرسال...', 'Sending...');
-    const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
-      redirectTo: window.location.origin + '/#reset'
-    });
-    msg.style.color = error ? 'var(--danger)' : 'var(--ok)';
-    msg.textContent = error
-      ? t('حدث خطأ، حاول مرة أخرى', 'Something went wrong')
-      : t('تم إرسال رابط إعادة التعيين', 'Reset link sent');
+    try {
+      const result = await Auth.resetPasswordRequest(email);
+      msg.style.color = 'var(--ok)';
+      if (result.provider === 'local') {
+        msg.textContent = t('تم التحقق — ارجع للموقع وعيّن كلمة مرور من نافذة الحساب', 'Verified — open account reset on the main site');
+        window.location.href = '/#reset';
+      } else {
+        msg.textContent = t('تم إرسال رابط إعادة التعيين', 'Reset link sent');
+      }
+    } catch (err) {
+      msg.style.color = 'var(--danger)';
+      msg.textContent = Auth.friendlyError(err, currentLang);
+    }
   });
 
   document.getElementById('logoutBtn').addEventListener('click', async () => {
-    if (!isDemo && supabaseClient) await supabaseClient.auth.signOut();
+    if (!isDemo && Auth) await Auth.signOut();
     currentUser = null;
     showLogin();
   });
@@ -1101,24 +1093,19 @@ a{color:inherit;text-decoration:none}
       msg.textContent = t('الوضع التجريبي لا يحفظ على الحساب', 'Demo mode does not update account');
       return;
     }
-    if (!supabaseClient) return;
+    if (!Auth) return;
     const name = document.getElementById('settingsName').value.trim();
     const pass = document.getElementById('settingsPassword').value;
     try {
-      const updates = {};
-      if (pass) updates.password = pass;
-      if (name) updates.data = { full_name: name, display_name: name };
-      if (Object.keys(updates).length) {
-        const { error } = await supabaseClient.auth.updateUser(updates);
-        if (error) throw error;
-      }
+      const user = await Auth.updateUser({ full_name: name, password: pass || undefined });
+      currentUser = user || currentUser;
       document.getElementById('dashUserLabel').textContent = name || currentUser.email;
       document.getElementById('settingsPassword').value = '';
       msg.style.color = 'var(--ok)';
       msg.textContent = t('تم الحفظ','Saved');
     } catch (err) {
       msg.style.color = 'var(--danger)';
-      msg.textContent = err.message || t('تعذّر الحفظ','Could not save');
+      msg.textContent = Auth.friendlyError(err, currentLang);
     }
   });
 
@@ -1143,22 +1130,20 @@ a{color:inherit;text-decoration:none}
     const params = new URLSearchParams(window.location.search);
     const wantDemo = params.get('demo') === '1';
 
-    function bindAuthListener(){
-      if (!supabaseClient) return;
-      supabaseClient.auth.onAuthStateChange((event, session) => {
+    if (Auth && Auth.supabase) {
+      Auth.supabase.auth.onAuthStateChange((event, session) => {
         if (event === 'SIGNED_OUT' && !isDemo) showLogin();
         if (event === 'SIGNED_IN' && session?.user) showDashboard(session.user, false);
       });
     }
 
     // Real account always wins over sticky demo, unless ?demo=1 was requested.
-    if (supabaseClient && !wantDemo) {
+    if (Auth && !wantDemo) {
       try {
-        const { data } = await supabaseClient.auth.getSession();
-        if (data?.session?.user) {
+        const { user } = await Auth.getSession();
+        if (user) {
           setDemoFlag(false);
-          showDashboard(data.session.user, false);
-          bindAuthListener();
+          showDashboard(user, false);
           return;
         }
       } catch (_) {}
@@ -1166,12 +1151,10 @@ a{color:inherit;text-decoration:none}
 
     if (wantDemo || hasDemoFlag()) {
       enterDemo();
-      bindAuthListener();
       return;
     }
 
     showLogin();
-    bindAuthListener();
   })();
 })();
 </script>
