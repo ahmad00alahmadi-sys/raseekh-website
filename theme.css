@@ -1,0 +1,63 @@
+/* Raseekh theme tokens: white (default) + soft classic */
+:root,
+html[data-theme="white"]{
+  --ink:#10233A;
+  --navy:#16324F;
+  --harbor:#2A6F7A;
+  --copper:#C45C26;
+  --sand:#E8A05A;
+  --bg:#FFFFFF;
+  --panel:#FFFFFF;
+  --mist:#F2F4F7;
+  --line:#E4E8EE;
+  --muted:#5A6B7C;
+  --danger:#B42318;
+  --ok:#1F7A58;
+  --radius:6px;
+  --shadow:0 14px 34px -26px rgba(16,35,58,.28);
+  --header-bg:rgba(255,255,255,.92);
+  --surface-tint:#FAFBFC;
+  --forest:var(--navy);
+  --leaf:var(--harbor);
+  --brass:var(--copper);
+  color-scheme:light;
+}
+html[data-theme="soft"]{
+  --bg:#E8EDF2;
+  --panel:#F7F9FC;
+  --mist:#D5DEE8;
+  --line:#B8C4D1;
+  --shadow:0 18px 40px -28px rgba(16,35,58,.45);
+  --header-bg:rgba(232,237,242,.88);
+  --surface-tint:#F0F4F8;
+}
+html[data-theme="white"] body::before{
+  background:
+    radial-gradient(ellipse 70% 40% at 100% 0%, rgba(196,92,38,.07), transparent 55%),
+    radial-gradient(ellipse 60% 35% at 0% 8%, rgba(42,111,122,.07), transparent 50%),
+    linear-gradient(180deg,#FFFFFF 0%, var(--surface-tint) 55%, #FFFFFF 100%) !important;
+}
+html[data-theme="white"] body::after{opacity:.1 !important}
+html[data-theme="soft"] body::before{
+  background:
+    radial-gradient(ellipse 80% 50% at 100% -10%, rgba(196,92,38,.14), transparent 55%),
+    radial-gradient(ellipse 70% 45% at -10% 20%, rgba(42,111,122,.14), transparent 50%),
+    linear-gradient(165deg,#DCE4EC 0%, var(--bg) 42%, var(--surface-tint) 100%) !important;
+}
+html[data-theme="soft"] body::after{opacity:.18 !important}
+.theme-btn{
+  border:1.5px solid var(--line);
+  background:var(--panel);
+  border-radius:var(--radius);
+  padding:9px 12px;
+  font-size:.82rem;
+  font-weight:700;
+  cursor:pointer;
+  color:var(--ink);
+  min-width:3.2rem;
+}
+.theme-btn:hover{border-color:rgba(196,92,38,.45);color:var(--copper)}
+.theme-btn[aria-pressed="true"]{
+  border-color:rgba(42,111,122,.45);
+  color:var(--harbor);
+}

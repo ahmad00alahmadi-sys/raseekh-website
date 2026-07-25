@@ -8,7 +8,7 @@
 <meta name="keywords" content="راسخ, نظام مخزون, أنظمة شركات, لوحة تحكم عملاء, تطبيق مخزون, أنظمة تشغيل, برمجة سعودية, نسخة للمؤسسات, Raseekh, inventory system Saudi, ops dashboard">
 <meta property="og:title" content="راسخ — صيانة وبرمجة ومخزون وأنظمة">
 <meta property="og:description" content="صيانة مواقع، برمجة، مخزون، وأنظمة تشغيل — من الطلب حتى التسليم مع حساب عميل للمتابعة.">
-<meta name="theme-color" content="#10233A">
+<meta name="theme-color" content="#ffffff">
 <meta name="robots" content="index,follow">
 <link rel="canonical" href="https://raseekh.com/">
 <meta property="og:type" content="website">
@@ -26,6 +26,9 @@
 <link rel="icon" href="/icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<script>
+(function(){try{var t=localStorage.getItem('raseekh_theme');document.documentElement.setAttribute('data-theme',t==='soft'?'soft':'white');}catch(e){document.documentElement.setAttribute('data-theme','white');}})();
+</script>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -159,15 +162,18 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;500;600;700&family=Tajawal:wght@500;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap">
 <link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;500;600;700&family=Tajawal:wght@500;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/theme.css">
 <script src="/catalog.js"></script>
 <script src="/terms.js"></script>
 <script src="/activity.js"></script>
+<script src="/theme.js"></script>
 <style>
 :root{
   --ink:#10233A;--navy:#16324F;--harbor:#2A6F7A;--copper:#C45C26;--sand:#E8A05A;
-  --bg:#E8EDF2;--panel:#F7F9FC;--mist:#D5DEE8;--line:#B8C4D1;
+  --bg:#FFFFFF;--panel:#FFFFFF;--mist:#F2F4F7;--line:#E4E8EE;
   --muted:#5A6B7C;--danger:#B42318;--ok:#1F7A58;
-  --radius:6px;--shadow:0 18px 40px -28px rgba(16,35,58,.45);
+  --radius:6px;--shadow:0 14px 34px -26px rgba(16,35,58,.28);
+  --header-bg:rgba(255,255,255,.92);--surface-tint:#FAFBFC;
   --forest:var(--navy);--leaf:var(--harbor);--brass:var(--copper);
 }
 *{margin:0;padding:0;box-sizing:border-box}
@@ -205,7 +211,7 @@ button,input,select,textarea{font:inherit}
 
 header{
   position:sticky;top:0;z-index:80;
-  background:rgba(232,237,242,.88);backdrop-filter:blur(14px);
+  background:var(--header-bg);backdrop-filter:blur(14px);
   border-bottom:2px solid rgba(16,35,58,.08);
 }
 nav{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 0;max-width:1180px;margin:0 auto}
@@ -838,6 +844,7 @@ body.pay-paused .pay-public-entry{display:none!important}
       <a href="#pay" class="pay-public-entry" data-ar="سداد" data-en="Pay">سداد</a>
     </div>
     <div class="nav-actions">
+      <button class="theme-btn" type="button" data-theme-toggle data-ar="ناعم" data-en="Soft" aria-pressed="true" aria-label="وضع ناعم">ناعم</button>
       <button class="lang-btn" id="langToggle" type="button">EN</button>
       <button class="btn btn-primary" id="accountBtn" type="button" data-ar="تسجيل الدخول" data-en="Log in">تسجيل الدخول</button>
       <button class="nav-toggle" id="navToggle" type="button" aria-controls="navLinks" aria-expanded="false" data-ar-aria="القائمة" data-en-aria="Menu" aria-label="القائمة"><span></span><span></span><span></span></button>
@@ -1984,6 +1991,7 @@ body.pay-paused .pay-public-entry{display:none!important}
       if (v !== null) el.setAttribute('aria-label', v);
     });
     document.getElementById('langToggle').textContent = lang === 'ar' ? 'EN' : 'AR';
+    if (window.RaseekhTheme && RaseekhTheme.apply) RaseekhTheme.apply(RaseekhTheme.get());
     const title = lang === 'ar' ? 'راسخ — صيانة وبرمجة ومخزون وأنظمة' : 'Raseekh — Maintenance, coding, inventory & systems';
     const desc = lang === 'ar'
       ? 'راسخ في السعودية: صيانة مواقع، برمجة، تطبيقات مخزون، وأنظمة ولوحات — نطاق مكتوب من الطلب حتى التشغيل.'

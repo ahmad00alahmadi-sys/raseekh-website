@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl" id="htmlRoot">
 <head>
+<script>
+(function(){try{var t=localStorage.getItem("raseekh_theme");document.documentElement.setAttribute("data-theme",t==="soft"?"soft":"white");}catch(e){document.documentElement.setAttribute("data-theme","white");}})();
+</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>الشروط والأحكام — راسخ</title>
 <meta name="description" content="الشروط والأحكام لموقع راسخ: حلول للشركات، صيانة مواقع، برمجة، تطبيقات مخزون، وأنظمة ولوحات تحكم.">
-<meta name="theme-color" content="#10233A">
+<meta name="theme-color" content="#ffffff">
 <link rel="canonical" href="https://raseekh.com/terms/">
 <link rel="alternate" hreflang="ar" href="https://raseekh.com/terms/">
 <link rel="alternate" hreflang="en" href="https://raseekh.com/terms/?lang=en">
@@ -17,11 +20,13 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;500;600;700&family=Tajawal:wght@500;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="/terms.js"></script>
+<script src="/theme.js"></script>
 <style>
 :root{
   --ink:#10233A;--navy:#16324F;--harbor:#2A6F7A;--copper:#C45C26;--sand:#E8A05A;
-  --bg:#E8EDF2;--panel:#F7F9FC;--line:#B8C4D1;--muted:#5A6B7C;--radius:6px;
-  --shadow:0 18px 40px -28px rgba(16,35,58,.45);
+  --bg:#FFFFFF;--panel:#FFFFFF;--line:#E4E8EE;--muted:#5A6B7C;--radius:6px;
+  --shadow:0 14px 34px -26px rgba(16,35,58,.28);
+  --header-bg:rgba(255,255,255,.92);--surface-tint:#FAFBFC;--mist:#F2F4F7;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 body{
@@ -32,9 +37,9 @@ body.lang-en{font-family:'Space Grotesk',sans-serif}
 body::before{
   content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
   background:
-    radial-gradient(ellipse 70% 40% at 100% 0%, rgba(196,92,38,.12), transparent 50%),
-    radial-gradient(ellipse 60% 35% at 0% 10%, rgba(42,111,122,.12), transparent 50%),
-    linear-gradient(180deg,#DCE4EC,var(--bg));
+    radial-gradient(ellipse 70% 40% at 100% 0%, rgba(196,92,38,.07), transparent 50%),
+    radial-gradient(ellipse 60% 35% at 0% 10%, rgba(42,111,122,.07), transparent 50%),
+    linear-gradient(180deg,#FFFFFF,var(--surface-tint,#FAFBFC));
 }
 .wrap{max-width:800px;margin:0 auto;padding:28px 22px 60px;position:relative;z-index:1}
 .top{
@@ -54,10 +59,12 @@ body.lang-en .logo{font-family:'Space Grotesk',sans-serif}
 .btn-ghost{background:transparent;border:1.5px solid var(--line);color:var(--ink)}
 .eyebrow{display:inline-flex;align-items:center;gap:10px}
 .eyebrow::before{content:"";width:18px;height:2px;background:var(--copper);display:inline-block}
-.lang-btn{
+.lang-btn,.theme-btn{
   border:1.5px solid var(--line);background:var(--panel);border-radius:var(--radius);
-  padding:9px 12px;font-size:.82rem;font-weight:700;cursor:pointer;color:var(--ink);
+  padding:9px 12px;font-size:.82rem;font-weight:700;cursor:pointer;color:var(--ink);min-width:3.2rem;
 }
+.theme-btn:hover{border-color:rgba(196,92,38,.45);color:var(--copper)}
+.theme-btn[aria-pressed="true"]{border-color:rgba(42,111,122,.45);color:var(--harbor)}
 .panel{
   background:var(--panel);border:1.5px solid var(--line);border-radius:10px;padding:28px 22px;
   box-shadow:var(--shadow);border-top:4px solid var(--copper);
@@ -74,12 +81,14 @@ body.lang-en .logo{font-family:'Space Grotesk',sans-serif}
 h1,h2,h3{font-family:'Tajawal',sans-serif}
 body.lang-en h1,body.lang-en h2,body.lang-en h3{font-family:'Space Grotesk',sans-serif}
 </style>
+  <link rel="stylesheet" href="/theme.css">
 </head>
 <body>
   <div class="wrap">
     <div class="top">
       <a class="logo" href="/" data-ar-html='را<em>سخ</em>' data-en-html='Ra<em>seekh</em>'>را<em>سخ</em></a>
       <div class="actions">
+                <button class="theme-btn" type="button" data-theme-toggle data-ar="ناعم" data-en="Soft" aria-pressed="true" aria-label="وضع ناعم">ناعم</button>
         <button class="lang-btn" id="langToggle" type="button">EN</button>
         <a class="btn btn-ghost" href="/privacy/" data-ar="الخصوصية" data-en="Privacy">الخصوصية</a>
         <a class="btn btn-ghost" href="/security/" data-ar="الأمان" data-en="Security">الأمان</a>
@@ -112,6 +121,7 @@ body.lang-en h1,body.lang-en h2,body.lang-en h3{font-family:'Space Grotesk',sans
       if (v !== null) el.innerHTML = v;
     });
     document.getElementById('langToggle').textContent = lang === 'ar' ? 'EN' : 'AR';
+    if (window.RaseekhTheme && RaseekhTheme.apply) RaseekhTheme.apply(RaseekhTheme.get());
     document.title = lang === 'ar' ? 'الشروط والأحكام — راسخ' : 'Terms & Conditions — Raseekh';
     const canonical = document.querySelector('link[rel="canonical"]');
     if (canonical) canonical.setAttribute('href', lang === 'en' ? 'https://raseekh.com/terms/?lang=en' : 'https://raseekh.com/terms/');
@@ -120,5 +130,5 @@ body.lang-en h1,body.lang-en h2,body.lang-en h3{font-family:'Space Grotesk',sans
   applyLang(currentLang);
 })();
 </script>
-</body>
+  </body>
 </html>
