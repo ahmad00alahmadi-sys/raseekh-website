@@ -85,6 +85,9 @@ body.lang-en h1,body.lang-en h2,body.lang-en h3{font-family:'Space Grotesk',sans
 .page-legal-foot a:hover{color:var(--copper)}
 .page-legal-foot span{opacity:.45}
 
-.theme-switch{display:inline-flex;align-items:stretch;border:1.5px solid var(--line);border-radius:var(--radius);background:var(--ghost-bg);overflow:hidden;padding:2px;gap:2px}
-.theme-switch [data-theme-set]{border:0;background:transparent;color:var(--muted);font:inherit;font-size:.74rem;font-weight:700;padding:7px 10px;border-radius:calc(var(--radius) - 2px);cursor:pointer;min-width:3.4rem}
+.theme-switch{display:inline-flex;align-items:stretch;border:1.5px solid var(--line);border-radius:999px;background:var(--ghost-bg);overflow:hidden;padding:3px;gap:2px}
+.theme-switch [data-theme-set]{border:0;background:transparent;color:var(--muted);font:inherit;font-size:.72rem;font-weight:700;padding:6px 10px;border-radius:999px;cursor:pointer;min-width:0;display:inline-flex;align-items:center;gap:5px}
 .theme-switch [data-theme-set].is-active,.theme-switch [data-theme-set][aria-pressed="true"]{background:var(--panel);color:var(--harbor)}
+.theme-switch [data-theme-set="base"].is-active{color:#C45C26}
+.theme-switch [data-theme-set="soft"].is-active{color:#2A6F7A}
+.theme-ico{width:14px;height:14px;display:block;flex:0 0 auto}
