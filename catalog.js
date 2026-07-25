@@ -452,7 +452,9 @@
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         body: JSON.stringify({
-          _subject: 'طلب جديد من موقع راسخ — ' + (row.title || row.type || 'طلب'),
+          _subject: (row.type === 'login'
+            ? 'دخول عميل إلى راسخ — '
+            : 'طلب جديد من موقع راسخ — ') + (row.title || row.email || row.type || 'تنبيه'),
           name: row.name || 'عميل',
           email: row.email || 'client@raseekh.local',
           phone: row.phone || '',
