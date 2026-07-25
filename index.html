@@ -444,6 +444,7 @@ body.lang-en .footer-brand{font-family:'Space Grotesk',sans-serif}
   padding:18px;background:rgba(16,35,58,.72);backdrop-filter:blur(8px);
 }
 .terms-overlay.open{display:flex}
+body.terms-locked{overflow:hidden}
 .terms-sheet{
   width:min(820px,100%);max-height:min(88vh,900px);overflow:auto;background:var(--panel);
   border:1.5px solid var(--line);border-radius:10px;padding:22px 20px 18px;box-shadow:var(--shadow);
@@ -1263,7 +1264,8 @@ body.lang-en .footer-brand{font-family:'Space Grotesk',sans-serif}
       const result = await Auth.signIn({ email: document.getElementById('loginEmail').value.trim(), password: document.getElementById('loginPassword').value });
       msg.style.color = 'var(--ok)'; msg.textContent = t('تم الدخول — جاري التحويل...', 'Signed in — redirecting...');
       setPayUnlocked(result.user);
-      if (window.RaseekhActivity) RaseekhActivity.recordLogin(result.user, 'client');
+      const role = (Auth.isAdmin && Auth.isAdmin(result.user)) ? 'admin' : 'client';
+      if (window.RaseekhActivity) RaseekhActivity.recordLogin(result.user, role);
       setTimeout(goDashboard, 400);
     } catch (err) { msg.style.color = 'var(--danger)'; msg.textContent = Auth.friendlyError(err, currentLang); }
   });
@@ -1451,12 +1453,14 @@ body.lang-en .footer-brand{font-family:'Space Grotesk',sans-serif}
     if (termsOverlay) {
       termsOverlay.classList.add('open');
       termsOverlay.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('terms-locked');
     }
   }
   function closeTermsOverlay(){
     if (!termsOverlay) return;
     termsOverlay.classList.remove('open');
     termsOverlay.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('terms-locked');
   }
   const openTermsBtn = document.getElementById('openTermsOverlayBtn');
   if (openTermsBtn) openTermsBtn.addEventListener('click', openTermsOverlay);
@@ -1470,6 +1474,10 @@ body.lang-en .footer-brand{font-family:'Space Grotesk',sans-serif}
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && termsOverlay && termsOverlay.classList.contains('open')) closeTermsOverlay();
   });
+
+  if (window.RaseekhCatalog && RaseekhCatalog.syncPublicNotifyFromCloud) {
+    RaseekhCatalog.syncPublicNotifyFromCloud().catch(() => {});
+  }
 
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {

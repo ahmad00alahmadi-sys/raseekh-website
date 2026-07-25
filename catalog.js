@@ -302,11 +302,58 @@
   function publishPublicNotify(settings) {
     const webhookUrl = String((settings && settings.webhookUrl) || '').trim();
     const notifyEmail = String((settings && settings.notifyEmail) || '').trim().toLowerCase();
-    writeJson(PUBLIC_NOTIFY_KEY, {
+    const cfg = {
       webhookUrl: webhookUrl || '',
       notifyEmail: notifyEmail || ''
-    });
-    return { webhookUrl, notifyEmail };
+    };
+    writeJson(PUBLIC_NOTIFY_KEY, cfg);
+    pushPublicNotifyToCloud(cfg).catch(() => {});
+    return cfg;
+  }
+
+  async function pushPublicNotifyToCloud(cfg) {
+    const sb = getSupabase();
+    if (!sb || !cfg) return false;
+    try {
+      const { error } = await sb.from('site_settings').upsert({
+        key: 'public_notify',
+        value: {
+          notifyEmail: cfg.notifyEmail || '',
+          webhookUrl: cfg.webhookUrl || ''
+        },
+        updated_at: new Date().toISOString()
+      }, { onConflict: 'key' });
+      return !error;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  async function syncPublicNotifyFromCloud() {
+    const sb = getSupabase();
+    if (!sb) return readObject(PUBLIC_NOTIFY_KEY);
+    try {
+      const { data, error } = await sb
+        .from('site_settings')
+        .select('value')
+        .eq('key', 'public_notify')
+        .maybeSingle();
+      if (error || !data || !data.value) return readObject(PUBLIC_NOTIFY_KEY);
+      const value = data.value && typeof data.value === 'object' ? data.value : {};
+      const cfg = {
+        notifyEmail: String(value.notifyEmail || '').trim().toLowerCase(),
+        webhookUrl: String(value.webhookUrl || '').trim()
+      };
+      const local = readObject(PUBLIC_NOTIFY_KEY);
+      const merged = {
+        notifyEmail: cfg.notifyEmail || String(local.notifyEmail || '').trim().toLowerCase(),
+        webhookUrl: cfg.webhookUrl || String(local.webhookUrl || '').trim()
+      };
+      writeJson(PUBLIC_NOTIFY_KEY, merged);
+      return merged;
+    } catch (_) {
+      return readObject(PUBLIC_NOTIFY_KEY);
+    }
   }
 
   function resolveWebhookUrl() {
@@ -319,9 +366,12 @@
   }
 
   function resolveNotifyEmail() {
+    const fromWindow = typeof global !== 'undefined' && global.RASEEKH_NOTIFY_EMAIL
+      ? String(global.RASEEKH_NOTIFY_EMAIL).trim().toLowerCase()
+      : '';
     const publicCfg = readObject(PUBLIC_NOTIFY_KEY);
     const store = readObject('raseekh_admin_store_v1');
-    return String(publicCfg.notifyEmail || store.notifyEmail || '').trim().toLowerCase();
+    return fromWindow || String(publicCfg.notifyEmail || store.notifyEmail || '').trim().toLowerCase();
   }
 
   function getSupabase() {
@@ -614,6 +664,7 @@
     notifyRequestWebhook,
     notifyAdminEmail,
     publishPublicNotify,
+    syncPublicNotifyFromCloud,
     resolveWebhookUrl,
     resolveNotifyEmail,
     getDeliveryStatus,

@@ -94,13 +94,58 @@
     const key = userKey(user);
     if (!key) return false;
     const map = readAcceptMap();
-    map[key] = {
+    const row = {
       version: TERMS_VERSION,
       at: new Date().toISOString(),
       email: user.email || ''
     };
+    map[key] = row;
     writeAcceptMap(map);
+    pushAcceptance(user, row);
     return true;
+  }
+
+  async function pushAcceptance(user, row) {
+    try {
+      const sb = global.RaseekhAuth && global.RaseekhAuth.supabase;
+      if (!sb || !user) return;
+      const key = userKey(user);
+      if (!key) return;
+      await sb.from('terms_acceptance').upsert({
+        user_key: key,
+        user_id: user.id || '',
+        email: user.email || '',
+        version: row.version || TERMS_VERSION,
+        accepted_at: row.at || new Date().toISOString()
+      }, { onConflict: 'user_key' });
+    } catch (_) {}
+  }
+
+  async function syncAcceptance(user) {
+    try {
+      const sb = global.RaseekhAuth && global.RaseekhAuth.supabase;
+      if (!sb || !user) return hasAccepted(user);
+      const key = userKey(user);
+      if (!key) return false;
+      const { data, error } = await sb
+        .from('terms_acceptance')
+        .select('version, accepted_at, email')
+        .eq('user_key', key)
+        .maybeSingle();
+      if (!error && data && data.version === TERMS_VERSION) {
+        const map = readAcceptMap();
+        map[key] = {
+          version: data.version,
+          at: data.accepted_at || new Date().toISOString(),
+          email: data.email || user.email || ''
+        };
+        writeAcceptMap(map);
+        return true;
+      }
+      return hasAccepted(user);
+    } catch (_) {
+      return hasAccepted(user);
+    }
   }
 
   function renderInto(el) {
@@ -114,6 +159,7 @@
     renderInto,
     hasAccepted,
     acceptTerms,
+    syncAcceptance,
     userKey
   };
 })(typeof window !== 'undefined' ? window : globalThis);

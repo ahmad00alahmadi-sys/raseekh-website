@@ -49,7 +49,7 @@
     };
     store.users[key] = next;
     writeStore(store);
-    pushCloud(next, isLogin);
+    pushCloud(next);
     return next;
   }
 
@@ -94,7 +94,22 @@
     };
   }
 
-  async function pushCloud(row, isLogin) {
+  function newerIso(a, b) {
+    const ta = a ? new Date(a).getTime() : 0;
+    const tb = b ? new Date(b).getTime() : 0;
+    if (!ta && !tb) return '';
+    return ta >= tb ? (a || '') : (b || '');
+  }
+
+  function olderIso(a, b) {
+    const ta = a ? new Date(a).getTime() : 0;
+    const tb = b ? new Date(b).getTime() : 0;
+    if (!ta) return b || '';
+    if (!tb) return a || '';
+    return ta <= tb ? a : b;
+  }
+
+  async function pushCloud(row) {
     try {
       const sb = global.RaseekhAuth && global.RaseekhAuth.supabase;
       if (!sb || !row) return;
@@ -110,9 +125,6 @@
         login_count: Number(row.loginCount) || 0,
         updated_at: new Date().toISOString()
       }, { onConflict: 'user_key' });
-      if (isLogin) {
-        // best-effort; ignore failures
-      }
     } catch (_) {}
   }
 
@@ -131,10 +143,10 @@
           id: row.user_id || prev.id || '',
           email: row.email || prev.email || key,
           name: row.name || prev.name || '',
-          role: row.role || prev.role || 'client',
-          firstLoginAt: row.first_login_at || prev.firstLoginAt || '',
-          lastLoginAt: row.last_login_at || prev.lastLoginAt || '',
-          lastSeenAt: row.last_seen_at || prev.lastSeenAt || '',
+          role: (row.role === 'admin' || prev.role === 'admin') ? 'admin' : (row.role || prev.role || 'client'),
+          firstLoginAt: olderIso(row.first_login_at, prev.firstLoginAt),
+          lastLoginAt: newerIso(row.last_login_at, prev.lastLoginAt),
+          lastSeenAt: newerIso(row.last_seen_at, prev.lastSeenAt),
           loginCount: Math.max(Number(row.login_count) || 0, Number(prev.loginCount) || 0)
         };
       });
