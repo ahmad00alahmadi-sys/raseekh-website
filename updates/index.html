@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
+<script>
+(function(){try{var t=localStorage.getItem("raseekh_theme");document.documentElement.setAttribute("data-theme",t==="off"||t==="base"||t==="white"?"off":"soft");}catch(e){document.documentElement.setAttribute("data-theme","soft");}})();
+</script>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title data-ar="التحديثات — راسخ" data-en="Updates — Raseekh">التحديثات — راسخ</title>
@@ -13,8 +17,8 @@
 <link rel="icon" href="/icon.svg" type="image/svg+xml">
 <link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;500;600;700&family=Tajawal:wght@500;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/shared-page.css">
-<link rel="stylesheet" href="/theme.css?v=79">
-<script src="/theme.js?v=79" defer></script>
+<link rel="stylesheet" href="/theme.css?v=80">
+<script src="/theme.js?v=80" defer></script>
 <script src="/shared-page.js" defer></script>
 </head>
 <body>
@@ -22,7 +26,13 @@
     <div class="top">
       <a class="logo" href="/" data-ar-html='را<em>سخ</em>' data-en-html='Ra<em>seekh</em>'>را<em>سخ</em></a>
       <div class="actions">
-      <button class="lang-btn" id="langToggle" type="button">EN</button>
+      <div class="nav-prefs" role="group" data-ar-aria="اللغة والمظهر" data-en-aria="Language and look" aria-label="اللغة والمظهر">
+        <button class="lang-btn" id="langToggle" type="button">EN</button>
+        <div class="theme-switch" role="group" data-ar-aria="ناعم أو إيقاف" data-en-aria="Soft or Off" aria-label="ناعم أو إيقاف">
+          <button type="button" data-theme-set="soft" class="is-active" aria-pressed="true" data-ar-aria="المظهر الناعم" data-en-aria="Soft look" aria-label="المظهر الناعم"><span data-theme-label data-ar="ناعم" data-en="Soft">ناعم</span></button>
+          <button type="button" data-theme-set="off" aria-pressed="false" data-ar-aria="وضع الإيقاف" data-en-aria="Off mode" aria-label="وضع الإيقاف"><span data-theme-label data-ar="إيقاف" data-en="Off">إيقاف</span></button>
+        </div>
+      </div>
         <a class="btn btn-ghost" href="/help/" data-ar="المساعدة" data-en="Help">المساعدة</a>
         <a class="btn btn-ghost" href="/#contact" data-ar="اطلب عرض سعر" data-en="Request a quote">اطلب عرض سعر</a>
       </div>
@@ -31,7 +41,13 @@
       <div class="eyebrow" data-ar="تحديثات" data-en="Updates">تحديثات</div>
       <h1 class="hero-title" data-ar="المنتج يتطور باستمرار" data-en="The product keeps evolving">المنتج يتطور باستمرار</h1>
       <p class="lead" data-ar="ملخص إصدارات واضحة — ماذا أضفنا وماذا حسّنّا." data-en="Clear release notes — what we added and improved.">ملخص إصدارات واضحة — ماذا أضفنا وماذا حسّنّا.</p>
-                                                      <article class="card" style="margin-bottom:12px">
+                                                            <article class="card" style="margin-bottom:12px">
+    <h2>v80</h2>
+    <ul>
+      <li data-ar="بدل شمس/قمر: خياران فقط — ناعم (افتراضي) وإيقاف Off mode." data-en="Instead of Sun/Moon: only Soft (default) and Off mode.">بدل شمس/قمر: خياران فقط — ناعم (افتراضي) وإيقاف Off mode.</li>
+    </ul>
+  </article>
+  <article class="card" style="margin-bottom:12px">
     <h2>v79</h2>
     <ul>
       <li data-ar="اعتماد المظهر الناعم فقط، وإزالة خيار الأساسي/الشمس بالكامل من الواجهة." data-en="Adopt soft look only, and remove the base/sun option completely from the UI.">اعتماد المظهر الناعم فقط، وإزالة خيار الأساسي/الشمس بالكامل من الواجهة.</li>
