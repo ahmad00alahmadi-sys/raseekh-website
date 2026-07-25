@@ -137,6 +137,12 @@ body.lang-en h1,body.lang-en h2,body.lang-en h3{font-family:'Space Grotesk',sans
   }
   document.getElementById('langToggle').addEventListener('click', () => applyLang(currentLang === 'ar' ? 'en' : 'ar'));
   applyLang(currentLang);
+  if (location.hash === '#auth') {
+    setTimeout(function () {
+      var el = document.getElementById('terms-auth');
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 80);
+  }
 })();
 </script>
   </body>

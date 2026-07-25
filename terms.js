@@ -22,7 +22,7 @@
             <p data-ar="إرسال طلب عبر الموقع أو حساب العميل لا يُعد عقداً نهائياً. الأسعار الظاهرة كـ«حسب الطلب» أو عبر حاسبة التقدير إرشادية إلى حين المراجعة. يصبح العرض ملزماً بعد موافقة الطرفين على النطاق والتكلفة والمدة. أي تغيير جوهري في المتطلبات قد يحدّث السعر أو الجدول باتفاق مسبق." data-en="Submitting a request is not a final contract. “On request” prices and the estimate calculator are guidance until review. A quote becomes binding after both parties approve scope, cost, and timeline. Material requirement changes may update price or schedule by prior agreement.">إرسال طلب عبر الموقع أو حساب العميل لا يُعد عقداً نهائياً. الأسعار الظاهرة كـ«حسب الطلب» أو عبر حاسبة التقدير إرشادية إلى حين المراجعة. يصبح العرض ملزماً بعد موافقة الطرفين على النطاق والتكلفة والمدة. أي تغيير جوهري في المتطلبات قد يحدّث السعر أو الجدول باتفاق مسبق.</p>
           </article>
 
-          <article class="terms-item">
+          <article class="terms-item" id="terms-auth">
             <h3 data-ar="أ) شروط وأحكام تسجيل الدخول وإنشاء الحساب" data-en="A) Sign-in and account registration terms">أ) شروط وأحكام تسجيل الدخول وإنشاء الحساب</h3>
             <p data-ar="تنطبق البنود التالية عند تسجيل الدخول أو إنشاء حساب على موقع راسخ." data-en="The following clauses apply when signing in or creating an account on the Raseekh website.">تنطبق البنود التالية عند تسجيل الدخول أو إنشاء حساب على موقع راسخ.</p>
           </article>
@@ -129,6 +129,50 @@
             <h3 data-ar="15) التواصل" data-en="15) Contact">15) التواصل</h3>
             <p data-ar="للاستفسار عن الشروط أو الخدمات استخدموا نموذج طلب عرض السعر في الموقع أو حساب العميل (البريد ورقم الجوال مطلوبان في الطلب). نرد على بريدكم أو جوالكم بعد مراجعة الطلب." data-en="For questions about these terms or services, use the quote form on the website or client account (email and phone are required on requests). We reply on your email or phone after reviewing the request.">للاستفسار عن الشروط أو الخدمات استخدموا نموذج طلب عرض السعر في الموقع أو حساب العميل (البريد ورقم الجوال مطلوبان في الطلب). نرد على بريدكم أو جوالكم بعد مراجعة الطلب.</p>
           </article>
+        </div>
+      </div>
+    `;
+  }
+
+  function authTermsHtml() {
+    return `
+      <div class="terms-doc">
+        <div class="terms-doc-head">
+          <div class="eyebrow" data-ar="الحساب" data-en="Account">الحساب</div>
+          <h2 data-ar="شروط تسجيل الدخول وإنشاء الحساب" data-en="Sign-in & account registration terms">شروط تسجيل الدخول وإنشاء الحساب</h2>
+          <p data-ar="تنطبق هذه البنود عند تسجيل الدخول أو إنشاء حساب على موقع راسخ." data-en="These clauses apply when signing in or creating an account on the Raseekh website.">تنطبق هذه البنود عند تسجيل الدخول أو إنشاء حساب على موقع راسخ.</p>
+          <div class="terms-updated" data-ar="آخر تحديث: يوليو 2026" data-en="Last updated: July 2026">آخر تحديث: يوليو 2026</div>
+        </div>
+        <div class="terms-list">
+          <article class="terms-item">
+            <h3 data-ar="1) شروط التسجيل" data-en="1) Registration accuracy">1) شروط التسجيل</h3>
+            <p data-ar="يتعهد المستخدم بأن جميع البيانات المدخلة عند التسجيل (مثل الاسم، البريد الإلكتروني، ورقم الجوال) صحيحة، دقيقة، وحديثة، ويتحمل المسؤولية الكاملة عن أي تأخير أو ضرر ناتج عن تقديم بيانات وهمية أو خاطئة." data-en="The user warrants that all registration details (such as name, email, and mobile number) are true, accurate, and up to date, and accepts full responsibility for any delay or harm caused by false or incorrect information.">يتعهد المستخدم بأن جميع البيانات المدخلة عند التسجيل (مثل الاسم، البريد الإلكتروني، ورقم الجوال) صحيحة، دقيقة، وحديثة، ويتحمل المسؤولية الكاملة عن أي تأخير أو ضرر ناتج عن تقديم بيانات وهمية أو خاطئة.</p>
+          </article>
+          <article class="terms-item">
+            <h3 data-ar="2) أمان وحماية الحساب" data-en="2) Account security">2) أمان وحماية الحساب</h3>
+            <p data-ar="المستخدم هو المسؤول الوحيد عن الحفاظ على سرية بيانات حسابه (كلمة المرور، اسم المستخدم، أو رموز التحقق)، ويتحمل المسؤولية الكاملة عن كافة الأنشطة والعمليات التي تتم من خلال حسابه. ويلزم على المستخدم إبلاغ إدارة الموقع فوراً في حال اكتشاف أي استخدام غير مصرح به أو اختراق لحسابه." data-en="The user alone is responsible for keeping account credentials confidential (password, username, or verification codes) and accepts full responsibility for all activity through the account. The user must notify site administration immediately if any unauthorized use or account breach is discovered.">المستخدم هو المسؤول الوحيد عن الحفاظ على سرية بيانات حسابه (كلمة المرور، اسم المستخدم، أو رموز التحقق)، ويتحمل المسؤولية الكاملة عن كافة الأنشطة والعمليات التي تتم من خلال حسابه. ويلزم على المستخدم إبلاغ إدارة الموقع فوراً في حال اكتشاف أي استخدام غير مصرح به أو اختراق لحسابه.</p>
+          </article>
+          <article class="terms-item">
+            <h3 data-ar="3) القيود والاستخدام المقبول" data-en="3) Acceptable use">3) القيود والاستخدام المقبول</h3>
+            <p data-ar="يُمنع منعاً باتاً استخدام الحساب في أي أنشطة غير قانونية، أو محاولة اختراق الموقع، أو التلاعب بالأنظمة، أو محاولة إلحاق الضرر براسخ أو مستخدميه الآخرين. ويحق لإدارة الموقع إيقاف أو حظر أي حساب يخالف هذه الشروط دون أدنى مسؤولية." data-en="Accounts may not be used for unlawful activity, attempts to breach the site, system manipulation, or harm to Raseekh or other users. Site administration may suspend or ban any account that violates these terms without liability.">يُمنع منعاً باتاً استخدام الحساب في أي أنشطة غير قانونية، أو محاولة اختراق الموقع، أو التلاعب بالأنظمة، أو محاولة إلحاق الضرر براسخ أو مستخدميه الآخرين. ويحق لإدارة الموقع إيقاف أو حظر أي حساب يخالف هذه الشروط دون أدنى مسؤولية.</p>
+          </article>
+          <article class="terms-item">
+            <h3 data-ar="4) الحسابات الوهمية والمكررة" data-en="4) Fake or duplicate accounts">4) الحسابات الوهمية والمكررة</h3>
+            <p data-ar="لا يُسمح بإنشاء حسابات وهمية أو متعددة للشخص نفسه بغرض التحايل أو إساءة استخدام العروض والخدمات، وللموقع الحق المطلق في حذف أو تجميد أي حسابات مشبوهة أو مكررة." data-en="Creating fake or multiple accounts for the same person to circumvent or abuse offers and services is not allowed. The site has absolute right to delete or freeze any suspicious or duplicate accounts.">لا يُسمح بإنشاء حسابات وهمية أو متعددة للشخص نفسه بغرض التحايل أو إساءة استخدام العروض والخدمات، وللموقع الحق المطلق في حذف أو تجميد أي حسابات مشبوهة أو مكررة.</p>
+          </article>
+          <article class="terms-item">
+            <h3 data-ar="5) إيقاف أو إغلاق الحساب" data-en="5) Suspension or closure">5) إيقاف أو إغلاق الحساب</h3>
+            <p data-ar="يحق لإدارة الموقع إيقاف، تعليق، أو إغلاق أي حساب مستخدم في أي وقت ودون سابق إنذار، في حال مخالفة الشروط والأحكام، أو بناءً على طلب رسمي من الجهات المختصة، أو في حال عدم نشاط الحساب لفترات طويلة." data-en="Site administration may stop, suspend, or close any user account at any time without prior notice for terms violations, upon an official competent-authority request, or for prolonged inactivity.">يحق لإدارة الموقع إيقاف، تعليق، أو إغلاق أي حساب مستخدم في أي وقت ودون سابق إنذار، في حال مخالفة الشروط والأحكام، أو بناءً على طلب رسمي من الجهات المختصة، أو في حال عدم نشاط الحساب لفترات طويلة.</p>
+          </article>
+          <article class="terms-item">
+            <h3 data-ar="6) الخصوصية عند التسجيل والدخول" data-en="6) Privacy on sign-in and registration">6) الخصوصية عند التسجيل والدخول</h3>
+            <p data-ar="باستخدامك لميزتي تسجيل الدخول أو إنشاء حساب، فإنك توافق على جمع واستخدام بياناتك الشخصية ومعالجتها وفقاً لسياسة الخصوصية الخاصة بالموقع وبما يضمن تقديم الخدمات وتحسينها فقط." data-en="By using sign-in or account creation, you agree to collection, use, and processing of your personal data under the site Privacy Policy, solely to provide and improve services.">باستخدامك لميزتي تسجيل الدخول أو إنشاء حساب، فإنك توافق على جمع واستخدام بياناتك الشخصية ومعالجتها وفقاً لسياسة الخصوصية الخاصة بالموقع وبما يضمن تقديم الخدمات وتحسينها فقط.</p>
+          </article>
+          <p style="margin-top:14px;font-size:.9rem;color:var(--muted)">
+            <a href="/terms/" data-ar="عرض الشروط الكاملة" data-en="View full terms">عرض الشروط الكاملة</a>
+            <span aria-hidden="true"> · </span>
+            <a href="/privacy/" data-ar="سياسة الخصوصية" data-en="Privacy policy">سياسة الخصوصية</a>
+          </p>
         </div>
       </div>
     `;
@@ -317,6 +361,11 @@
     el.innerHTML = termsHtml();
   }
 
+  function renderAuthInto(el) {
+    if (!el) return;
+    el.innerHTML = authTermsHtml();
+  }
+
   function renderPrivacyInto(el) {
     if (!el) return;
     el.innerHTML = privacyHtml();
@@ -337,8 +386,10 @@
   global.RaseekhTerms = {
     TERMS_VERSION,
     termsHtml,
+    authTermsHtml,
     privacyHtml,
     renderInto,
+    renderAuthInto,
     renderPrivacyInto,
     hasAccepted,
     acceptTerms,

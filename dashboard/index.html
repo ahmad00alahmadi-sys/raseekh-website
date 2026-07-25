@@ -478,6 +478,14 @@ body.is-client .home-bar{
         <label class="field"><span data-ar="كلمة المرور" data-en="Password">كلمة المرور</span>
           <input type="password" id="dashLoginPassword" required data-ar-placeholder="كلمة المرور" data-en-placeholder="Password" placeholder="كلمة المرور" autocomplete="current-password">
         </label>
+        <label class="check" for="dashLoginTermsCheck">
+          <input type="checkbox" id="dashLoginTermsCheck" required>
+          <span class="check-text">
+            <span data-ar="أوافق على " data-en="I agree to the ">أوافق على </span>
+            <a href="/terms/#auth" id="dashLoginTermsLink" data-ar="شروط تسجيل الدخول" data-en="sign-in terms">شروط تسجيل الدخول</a>
+            <span data-ar="." data-en=".">.</span>
+          </span>
+        </label>
         <button class="btn btn-primary" type="submit" data-ar="دخول إلى النظام" data-en="Enter system">دخول إلى النظام</button>
       </form>
       <button type="button" class="linkish" id="forgotLink" data-ar="نسيت كلمة المرور؟" data-en="Forgot password?">نسيت كلمة المرور؟</button>
@@ -502,8 +510,8 @@ body.is-client .home-bar{
           <input type="checkbox" id="dashRegisterTermsCheck" required>
           <span class="check-text">
             <span data-ar="أوافق على " data-en="I agree to the ">أوافق على </span>
-            <a href="/terms/" id="dashRegisterTermsLink" target="_blank" rel="noopener" data-ar="الشروط والأحكام" data-en="Terms & Conditions">الشروط والأحكام</a>
-            <span data-ar=" لاستخدام حساب العميل وطلب الخدمات." data-en=" for using the client account and requesting services."> لاستخدام حساب العميل وطلب الخدمات.</span>
+            <a href="/terms/#auth" id="dashRegisterTermsLink" data-ar="شروط تسجيل الدخول وإنشاء الحساب" data-en="sign-in & registration terms">شروط تسجيل الدخول وإنشاء الحساب</a>
+            <span data-ar="." data-en=".">.</span>
           </span>
         </label>
         <button class="btn btn-primary" type="submit" data-ar="إنشاء حساب" data-en="Create account">إنشاء حساب</button>
@@ -1598,15 +1606,29 @@ body.is-client .home-bar{
   function setTermsBodyLock(on){
     document.body.classList.toggle('terms-locked', !!on);
   }
-  function openTermsGate(mode){
+  function openTermsGate(mode, view){
     termsGateMode = mode || 'accept';
+    const termsView = view === 'auth' ? 'auth' : 'full';
     const gate = document.getElementById('termsGate');
     const body = document.getElementById('termsGateBody');
     const acceptBtn = document.getElementById('acceptTermsBtn');
     const closeBtn = document.getElementById('termsGateCloseBtn');
+    const title = document.getElementById('termsGateTitle');
     if (Terms && body) {
-      Terms.renderInto(body);
+      if (termsView === 'auth' && Terms.renderAuthInto) Terms.renderAuthInto(body);
+      else Terms.renderInto(body);
       applyLang(currentLang);
+    }
+    if (title) {
+      if (termsView === 'auth') {
+        title.setAttribute('data-ar', 'شروط تسجيل الدخول وإنشاء الحساب');
+        title.setAttribute('data-en', 'Sign-in & registration terms');
+        title.textContent = t('شروط تسجيل الدخول وإنشاء الحساب', 'Sign-in & registration terms');
+      } else {
+        title.setAttribute('data-ar', 'الشروط والأحكام');
+        title.setAttribute('data-en', 'Terms & Conditions');
+        title.textContent = t('الشروط والأحكام', 'Terms & Conditions');
+      }
     }
     if (acceptBtn) acceptBtn.style.display = termsGateMode === 'accept' ? 'inline-flex' : 'none';
     if (closeBtn) closeBtn.style.display = termsGateMode === 'view' ? 'inline-flex' : 'none';
@@ -2071,6 +2093,13 @@ body.is-client .home-bar{
       msg.textContent = t('تعذّر تحميل نظام الحسابات', 'Auth system failed to load');
       return;
     }
+    const loginTerms = document.getElementById('dashLoginTermsCheck');
+    if (loginTerms && !loginTerms.checked) {
+      msg.style.color = 'var(--danger)';
+      msg.textContent = t('يلزم الموافقة على شروط تسجيل الدخول أولاً', 'Please accept the sign-in terms first');
+      loginTerms.focus();
+      return;
+    }
     const btn = form.querySelector('button[type="submit"]');
     form.dataset.submitting = '1';
     if (btn) { btn.disabled = true; btn.setAttribute('aria-busy', 'true'); }
@@ -2110,7 +2139,7 @@ body.is-client .home-bar{
     const termsCheck = document.getElementById('dashRegisterTermsCheck');
     if (termsCheck && !termsCheck.checked) {
       msg.style.color = 'var(--danger)';
-      msg.textContent = t('يجب الموافقة على الشروط والأحكام', 'You must accept the Terms & Conditions');
+      msg.textContent = t('يجب الموافقة على شروط تسجيل الدخول وإنشاء الحساب', 'You must accept the sign-in & registration terms');
       return;
     }
     const name = document.getElementById('dashRegisterName').value.trim();
@@ -2250,7 +2279,21 @@ body.is-client .home-bar{
   }
   const viewTermsBtn = document.getElementById('viewTermsBtn');
   if (viewTermsBtn) {
-    viewTermsBtn.addEventListener('click', () => openTermsGate('view'));
+    viewTermsBtn.addEventListener('click', () => openTermsGate('view', 'full'));
+  }
+  const dashLoginTermsLink = document.getElementById('dashLoginTermsLink');
+  if (dashLoginTermsLink) {
+    dashLoginTermsLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      openTermsGate('view', 'auth');
+    });
+  }
+  const dashRegisterTermsLink = document.getElementById('dashRegisterTermsLink');
+  if (dashRegisterTermsLink) {
+    dashRegisterTermsLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      openTermsGate('view', 'auth');
+    });
   }
 
   function renderAll(){
