@@ -316,6 +316,33 @@ nav{display:flex;align-items:center;justify-content:space-between;gap:16px;paddi
 .hero-quote input::placeholder{color:rgba(244,247,250,.55)}
 .hero-quote select:focus,.hero-quote input:focus{outline:2px solid rgba(232,160,90,.5);border-color:var(--sand)}
 .hero-quote .btn{white-space:nowrap;min-height:52px}
+.hero-contact-panel{
+  display:none;margin-top:14px;max-width:640px;padding:16px;
+  border:1.5px solid rgba(232,160,90,.55);border-radius:var(--radius);
+  background:rgba(12,27,46,.72);backdrop-filter:blur(12px);
+  box-shadow:0 0 0 3px rgba(232,160,90,.18);
+}
+.hero-contact-panel.is-open{display:block;animation:heroPanelIn .35s ease}
+.hero-contact-panel.is-pulse{animation:heroPanelIn .35s ease, heroPanelPulse .9s ease}
+@keyframes heroPanelIn{from{opacity:.2;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes heroPanelPulse{
+  0%,100%{box-shadow:0 0 0 3px rgba(232,160,90,.18)}
+  40%{box-shadow:0 0 0 8px rgba(232,160,90,.35)}
+}
+.hero-contact-panel .hero-contact-title{
+  color:#fff;font-weight:700;font-size:1rem;margin:0 0 12px;line-height:1.45;
+}
+.hero-contact-panel .hero-contact-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:10px;
+}
+.hero-contact-panel .field{display:flex;flex-direction:column;gap:6px;font-size:.8rem;font-weight:700;color:rgba(244,247,250,.78)}
+.hero-contact-panel .field-full{grid-column:1 / -1}
+.hero-contact-panel input{
+  width:100%;padding:12px 14px;border:1.5px solid rgba(244,247,250,.3);border-radius:var(--radius);
+  background:rgba(12,27,46,.55);color:#F4F7FA;
+}
+.hero-contact-panel input::placeholder{color:rgba(244,247,250,.55)}
+.hero-contact-panel .msg{min-height:1.2em;margin-top:10px;font-size:.9rem}
 .hero-note{
   margin-top:14px;display:flex;flex-wrap:wrap;align-items:center;gap:14px;
   color:rgba(232,237,242,.78);font-size:.92rem;
@@ -789,6 +816,7 @@ body.terms-locked,body.auth-locked{overflow:hidden}
   .price-card.featured{transform:none}
   .hero-quote{grid-template-columns:1fr}
   .hero-quote .btn{width:100%}
+  .hero-contact-panel .hero-contact-grid{grid-template-columns:1fr}
 }
 @media (max-width:768px){
 }
@@ -1025,6 +1053,25 @@ body.pay-paused .pay-public-entry{display:none!important}
           </span>
         </label>
       </form>
+      <div class="hero-contact-panel" id="heroContactPanel" aria-live="polite">
+        <p class="hero-contact-title" id="heroContactTitle" data-ar="أكملوا بيانات التواصل هنا لإرسال الطلب" data-en="Complete your contact details here to send the request">أكملوا بيانات التواصل هنا لإرسال الطلب</p>
+        <div class="hero-contact-grid">
+          <label class="field"><span data-ar="الاسم الكامل" data-en="Full name">الاسم الكامل</span>
+            <input type="text" id="heroContactName" autocomplete="name" data-ar-placeholder="الاسم الكامل" data-en-placeholder="Full name" placeholder="الاسم الكامل">
+          </label>
+          <label class="field" id="heroContactCompanyField" hidden>
+            <span id="heroContactCompanyLabel" data-ar="اسم المؤسسة / المنشأة" data-en="Institution / organization name">اسم المؤسسة / المنشأة</span>
+            <input type="text" id="heroContactCompany" autocomplete="organization" data-ar-placeholder="اسم المؤسسة أو المنشأة" data-en-placeholder="Institution or organization name" placeholder="اسم المؤسسة أو المنشأة">
+          </label>
+          <label class="field"><span data-ar="البريد الإلكتروني" data-en="Email">البريد الإلكتروني</span>
+            <input type="email" id="heroContactEmail" autocomplete="email" data-ar-placeholder="you@domain.com" data-en-placeholder="you@domain.com" placeholder="you@domain.com">
+          </label>
+          <label class="field"><span data-ar="رقم الجوال" data-en="Phone">رقم الجوال</span>
+            <input type="tel" id="heroContactPhone" inputmode="tel" maxlength="20" autocomplete="tel" data-ar-placeholder="05xxxxxxxx" data-en-placeholder="05xxxxxxxx" placeholder="05xxxxxxxx">
+          </label>
+        </div>
+        <div class="msg" id="heroContactMsg" role="status"></div>
+      </div>
       <div class="hero-note">
         <a href="#contact" id="heroOpenFullForm" data-ar="أو انتقلوا إلى النموذج الكامل" data-en="Or go to the full form">أو انتقلوا إلى النموذج الكامل</a>
         <span aria-hidden="true">·</span>
@@ -2259,6 +2306,78 @@ body.pay-paused .pay-public-entry{display:none!important}
     pendingGuestQuote = null;
     setModalOpenState(document.getElementById('guestQuoteModal'), false);
   }
+
+  function heroNeedsOrg(type){
+    return type === 'business' || type === 'institution';
+  }
+
+  function syncHeroCompanyVisibility(type){
+    const field = document.getElementById('heroContactCompanyField');
+    const input = document.getElementById('heroContactCompany');
+    const needs = heroNeedsOrg(type || (document.getElementById('heroQuoteType') && document.getElementById('heroQuoteType').value));
+    if (field) field.hidden = !needs;
+    if (input) input.required = !!needs;
+  }
+
+  function revealHeroContactPanel(opts){
+    const panel = document.getElementById('heroContactPanel');
+    if (!panel) return false;
+    const type = (opts && opts.type) || (document.getElementById('heroQuoteType') && document.getElementById('heroQuoteType').value) || 'programming';
+    syncHeroCompanyVisibility(type);
+    const draft = readContactDraft() || {};
+    const setIfEmpty = (id, value) => {
+      const el = document.getElementById(id);
+      if (el && !el.value.trim() && value) el.value = value;
+    };
+    setIfEmpty('heroContactName', (document.getElementById('contactName') && document.getElementById('contactName').value) || draft.name || '');
+    setIfEmpty('heroContactEmail', (document.getElementById('contactEmail') && document.getElementById('contactEmail').value) || draft.email || '');
+    setIfEmpty('heroContactPhone', (document.getElementById('contactPhone') && document.getElementById('contactPhone').value) || draft.phone || '');
+    setIfEmpty('heroContactCompany', (opts && opts.company) || (document.getElementById('contactCompany') && document.getElementById('contactCompany').value) || draft.company || '');
+    const title = document.getElementById('heroContactTitle');
+    if (title) {
+      title.textContent = t('أكملوا بيانات التواصل هنا لإرسال الطلب', 'Complete your contact details here to send the request');
+    }
+    const msg = document.getElementById('heroContactMsg');
+    if (msg) { msg.textContent = ''; msg.style.color = ''; }
+    panel.classList.add('is-open');
+    panel.classList.remove('is-pulse');
+    // restart pulse
+    void panel.offsetWidth;
+    panel.classList.add('is-pulse');
+    setTimeout(() => panel.classList.remove('is-pulse'), 1000);
+    scrollToEl(panel, { block: 'center' });
+    const btn = document.getElementById('heroQuoteBtn');
+    if (btn) {
+      btn.setAttribute('data-ar', 'إرسال الطلب');
+      btn.setAttribute('data-en', 'Send request');
+      btn.textContent = t('إرسال الطلب', 'Send request');
+    }
+    try {
+      const nameEl = document.getElementById('heroContactName');
+      const companyEl = document.getElementById('heroContactCompany');
+      const emailEl = document.getElementById('heroContactEmail');
+      const phoneEl = document.getElementById('heroContactPhone');
+      if (nameEl && !nameEl.value.trim()) nameEl.focus();
+      else if (heroNeedsOrg(type) && companyEl && !companyEl.value.trim()) companyEl.focus();
+      else if (emailEl && !emailEl.value.trim()) emailEl.focus();
+      else if (phoneEl && !phoneEl.value.trim()) phoneEl.focus();
+    } catch (_) {}
+    return true;
+  }
+
+  function applyHeroContactToForm(){
+    const name = (document.getElementById('heroContactName') && document.getElementById('heroContactName').value.trim()) || '';
+    const email = (document.getElementById('heroContactEmail') && document.getElementById('heroContactEmail').value.trim()) || '';
+    const phone = (document.getElementById('heroContactPhone') && document.getElementById('heroContactPhone').value.trim()) || '';
+    const company = (document.getElementById('heroContactCompany') && document.getElementById('heroContactCompany').value.trim()) || '';
+    const setVal = (id, v) => { const el = document.getElementById(id); if (el && v) el.value = v; };
+    setVal('contactName', name);
+    setVal('contactEmail', email);
+    setVal('contactPhone', phone);
+    if (company) setVal('contactCompany', company);
+    return { name, email, phone, company };
+  }
+
   function openGuestQuoteModal(opts){
     const type = (opts && opts.type) || 'programming';
     const message = ((opts && opts.message) || '').trim();
@@ -2568,9 +2687,13 @@ body.pay-paused .pay-public-entry{display:none!important}
       || (loggedInUser && loggedInUser.user_metadata && loggedInUser.user_metadata.full_name)
       || '';
     const guestReady = !!(fullName && isUsableEmail(email) && isUsablePhone(phone) && (!needsCompany || company));
-    // Guests send without account. Missing contact details → quick modal (never bury the form).
+    // Guests: from hero → expand visible contact panel under the hero (no buried form).
+    // From elsewhere → guest modal. Never leave a vague “complete the form” button.
     if ((!loggedInUser && !guestReady) || (needsCompany && !company) || !Catalog || !Catalog.addSharedRequest) {
       if (!loggedInUser && Catalog && Catalog.addSharedRequest) {
+        if (opts.focusHero && revealHeroContactPanel({ type, message, company })) {
+          return { ok: false, heroContact: true };
+        }
         const segForModal = (type === 'business' || type === 'institution')
           ? ((segment === 'company') ? 'company' : 'institution')
           : segment;
@@ -2705,28 +2828,72 @@ body.pay-paused .pay-public-entry{display:none!important}
       return;
     }
     syncPurchaseTermsChecks(true);
+    const panel = document.getElementById('heroContactPanel');
+    const panelOpen = !!(panel && panel.classList.contains('is-open'));
+    const heroContact = applyHeroContactToForm();
+    const needsOrg = heroNeedsOrg(type);
+    if (needsOrg) setContactSegment('institution');
+    const heroMsg = document.getElementById('heroContactMsg');
+    if (!panelOpen || !heroContact.name || !isUsableEmail(heroContact.email) || !isUsablePhone(heroContact.phone) || (needsOrg && !heroContact.company)) {
+      revealHeroContactPanel({ type, message, company: heroContact.company });
+      if (heroMsg) {
+        heroMsg.style.color = 'var(--sand)';
+        if (!heroContact.name) heroMsg.textContent = t('النموذج ظهر تحت — أكملوا الاسم ثم أرسلوا', 'The form appeared below — complete your name, then send');
+        else if (needsOrg && !heroContact.company) heroMsg.textContent = t('أدخلوا اسم المؤسسة ثم أرسلوا', 'Enter the organization name, then send');
+        else if (!isUsableEmail(heroContact.email)) heroMsg.textContent = t('أدخلوا بريداً صالحاً ثم أرسلوا', 'Enter a valid email, then send');
+        else if (!isUsablePhone(heroContact.phone)) heroMsg.textContent = t('أدخلوا رقم جوال صالح ثم أرسلوا', 'Enter a valid phone, then send');
+        else heroMsg.textContent = t('أكملوا الحقول الظاهرة ثم اضغطوا إرسال الطلب', 'Complete the fields shown, then press Send request');
+      }
+      return;
+    }
     const btn = document.getElementById('heroQuoteBtn');
     if (btn.getAttribute('aria-busy') === 'true') return;
     btn.disabled = true;
     btn.setAttribute('aria-busy', 'true');
     btn.textContent = t('جاري الإرسال...', 'Sending...');
+    if (heroMsg) {
+      heroMsg.style.color = 'rgba(244,247,250,.8)';
+      heroMsg.textContent = t('جاري إرسال الطلب...', 'Sending request...');
+    }
     try {
-      const result = await submitCatalogQuote({ type, message, focusHero: true });
+      const result = await submitCatalogQuote({
+        type,
+        message,
+        focusHero: true,
+        company: heroContact.company,
+        segment: needsOrg ? 'institution' : undefined
+      });
       if (result && result.needPurchaseTerms) {
         restoreQuoteBtn(btn);
+        return;
+      }
+      if (result && result.heroContact) {
+        restoreQuoteBtn(btn);
+        btn.setAttribute('data-ar', 'إرسال الطلب');
+        btn.setAttribute('data-en', 'Send request');
+        btn.textContent = t('إرسال الطلب', 'Send request');
         return;
       }
       if (result && result.ok) {
         btn.classList.add('sent');
         btn.textContent = t('تم الإرسال', 'Sent');
+        if (heroMsg) {
+          heroMsg.style.color = 'var(--ok)';
+          heroMsg.textContent = t('تم إرسال الطلب — نرد على بريدكم أو جوالكم.', 'Request sent — we will reply on your email or phone.');
+        }
         setTimeout(() => restoreQuoteBtn(btn), 2200);
       } else if (result && result.saved) {
         btn.textContent = t('حُفظ الطلب', 'Request saved');
+        if (heroMsg) {
+          heroMsg.style.color = 'rgba(244,247,250,.9)';
+          heroMsg.textContent = t('حُفظ الطلب — يمكن المتابعة لاحقاً بدون حساب.', 'Request saved — you can continue later without an account.');
+        }
         setTimeout(() => restoreQuoteBtn(btn), 2200);
       } else if (result && result.guestModal) {
         restoreQuoteBtn(btn);
       } else if (result && result.redirected) {
         restoreQuoteBtn(btn);
+        revealHeroContactPanel({ type, message, company: heroContact.company });
       } else {
         restoreQuoteBtn(btn);
       }
@@ -2734,6 +2901,17 @@ body.pay-paused .pay-public-entry{display:none!important}
       restoreQuoteBtn(btn);
     }
   });
+
+  const heroTypeEl = document.getElementById('heroQuoteType');
+  if (heroTypeEl) {
+    heroTypeEl.addEventListener('change', () => {
+      syncHeroCompanyVisibility(heroTypeEl.value);
+      const panel = document.getElementById('heroContactPanel');
+      if (panel && panel.classList.contains('is-open')) {
+        revealHeroContactPanel({ type: heroTypeEl.value });
+      }
+    });
+  }
 
   const heroOpenFullForm = document.getElementById('heroOpenFullForm');
   if (heroOpenFullForm) {
