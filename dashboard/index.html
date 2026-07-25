@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl" id="htmlRoot">
 <head>
+<script>
+(function(){try{var t=localStorage.getItem("raseekh_theme");document.documentElement.setAttribute("data-theme",t==="off"||t==="base"||t==="white"?"off":"soft");}catch(e){document.documentElement.setAttribute("data-theme","soft");}})();
+</script>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title id="pageTitle">لوحة التحكم — راسخ</title>
@@ -12,13 +16,13 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;500;600;700&family=Tajawal:wght@500;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/theme.css?v=79">
+<link rel="stylesheet" href="/theme.css?v=80">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="/auth.js"></script>
 <script src="/catalog.js"></script>
 <script src="/terms.js"></script>
 <script src="/activity.js"></script>
-<script src="/theme.js?v=79"></script>
+<script src="/theme.js?v=80"></script>
 <style>
 :root{
   --ink:#10233A;--navy:#16324F;--harbor:#2A6F7A;--copper:#C45C26;--sand:#E8A05A;
@@ -303,6 +307,12 @@ body.is-client .home-bar{
 .crumb span{color:var(--copper)}
 .top-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .nav-prefs{display:inline-flex;align-items:center;gap:6px}
+.theme-switch{display:inline-flex;align-items:stretch;border:1.5px solid var(--line);border-radius:999px;background:var(--ghost-bg,rgba(247,249,252,.88));overflow:hidden;padding:3px;gap:2px}
+.theme-switch [data-theme-set]{border:0;background:transparent;color:var(--muted);font:inherit;font-size:.72rem;font-weight:700;padding:6px 11px;border-radius:999px;cursor:pointer}
+.theme-switch [data-theme-set].is-active,.theme-switch [data-theme-set][aria-pressed="true"]{background:var(--panel);color:var(--harbor);box-shadow:0 1px 0 rgba(16,35,58,.06)}
+.theme-switch [data-theme-set="soft"].is-active{color:var(--copper)}
+.theme-switch [data-theme-set="off"].is-active{color:var(--muted)}
+
   border:1.5px solid var(--line);background:var(--panel);border-radius:var(--radius);
   padding:9px 12px;font-size:.82rem;font-weight:700;cursor:pointer;color:var(--ink);min-width:3.2rem;
 }
@@ -447,7 +457,13 @@ body.is-client .home-bar{
   <div class="login-card">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
       <div class="logo" data-ar-html='را<em>سخ</em>' data-en-html='Ra<em>seekh</em>'>را<em>سخ</em></div>
-      <button class="lang-btn" id="loginLangBtn" type="button">EN</button>
+      <div class="nav-prefs" role="group" data-ar-aria="اللغة والمظهر" data-en-aria="Language and look" aria-label="اللغة والمظهر">
+        <button class="lang-btn" id="loginLangBtn" type="button">EN</button>
+        <div class="theme-switch" role="group" data-ar-aria="ناعم أو إيقاف" data-en-aria="Soft or Off" aria-label="ناعم أو إيقاف">
+          <button type="button" data-theme-set="soft" class="is-active" aria-pressed="true" data-ar-aria="المظهر الناعم" data-en-aria="Soft look" aria-label="المظهر الناعم"><span data-theme-label data-ar="ناعم" data-en="Soft">ناعم</span></button>
+          <button type="button" data-theme-set="off" aria-pressed="false" data-ar-aria="وضع الإيقاف" data-en-aria="Off mode" aria-label="وضع الإيقاف"><span data-theme-label data-ar="إيقاف" data-en="Off">إيقاف</span></button>
+        </div>
+      </div>
     </div>
     <p class="sub" data-ar="سجّل كعميل لمتابعة الطلبات والاقتراحات. التعديل مخصص لحساب الإدارة فقط." data-en="Sign in as a client to follow requests and suggestions. Editing is admin-only.">سجّل كعميل لمتابعة الطلبات والاقتراحات. التعديل مخصص لحساب الإدارة فقط.</p>
     <div class="demo-banner" data-ar="التجربة الفورية = وضع عميل (بدون تعديل). الإدارة فقط بحساب خاص." data-en="Instant demo = client mode (no editing). Admin access is a private account only.">التجربة الفورية = وضع عميل (بدون تعديل). الإدارة فقط بحساب خاص.</div>
@@ -554,7 +570,13 @@ body.is-client .home-bar{
     </div>
     <div class="top-actions" style="justify-content:flex-end;margin-bottom:8px">
       <div class="clock" id="dashClock">—</div>
-      <button class="lang-btn" id="dashLangBtn" type="button">EN</button>
+      <div class="nav-prefs" role="group" data-ar-aria="اللغة والمظهر" data-en-aria="Language and look" aria-label="اللغة والمظهر">
+        <button class="lang-btn" id="dashLangBtn" type="button">EN</button>
+        <div class="theme-switch" role="group" data-ar-aria="ناعم أو إيقاف" data-en-aria="Soft or Off" aria-label="ناعم أو إيقاف">
+          <button type="button" data-theme-set="soft" class="is-active" aria-pressed="true" data-ar-aria="المظهر الناعم" data-en-aria="Soft look" aria-label="المظهر الناعم"><span data-theme-label data-ar="ناعم" data-en="Soft">ناعم</span></button>
+          <button type="button" data-theme-set="off" aria-pressed="false" data-ar-aria="وضع الإيقاف" data-en-aria="Off mode" aria-label="وضع الإيقاف"><span data-theme-label data-ar="إيقاف" data-en="Off">إيقاف</span></button>
+        </div>
+      </div>
       <button class="btn btn-ghost client-only" id="viewTermsBtn" type="button" data-ar="الشروط" data-en="Terms">الشروط</button>
       <a class="btn btn-ghost" href="/" data-ar="الصفحة الرئيسية" data-en="Home">الصفحة الرئيسية</a>
       <button class="btn btn-ghost mobile-logout" id="logoutBtnMobile" type="button" data-ar="خروج" data-en="Log out">خروج</button>
@@ -1498,6 +1520,7 @@ body.is-client .home-bar{
     });
     document.getElementById('loginLangBtn').textContent = lang === 'ar' ? 'EN' : 'AR';
     document.getElementById('dashLangBtn').textContent = lang === 'ar' ? 'EN' : 'AR';
+    if (window.RaseekhTheme && RaseekhTheme.apply) RaseekhTheme.apply(RaseekhTheme.get());
     if (isDemo) {
       document.getElementById('dashUserStatus').textContent = t('وضع تجريبي', 'Demo mode');
     }

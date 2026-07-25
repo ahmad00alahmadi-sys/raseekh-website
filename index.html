@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl" id="htmlRoot">
 <head>
+<script>
+(function(){try{var t=localStorage.getItem("raseekh_theme");document.documentElement.setAttribute("data-theme",t==="off"||t==="base"||t==="white"?"off":"soft");}catch(e){document.documentElement.setAttribute("data-theme","soft");}})();
+</script>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>راسخ — صيانة وبرمجة ومخزون وأنظمة في السعودية</title>
@@ -159,11 +163,11 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;500;600;700&family=Tajawal:wght@500;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap">
 <link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;500;600;700&family=Tajawal:wght@500;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/theme.css?v=79">
+<link rel="stylesheet" href="/theme.css?v=80">
 <script src="/catalog.js"></script>
 <script src="/terms.js"></script>
 <script src="/activity.js"></script>
-<script src="/theme.js?v=79"></script>
+<script src="/theme.js?v=80"></script>
 <style>
 :root{
   --ink:#10233A;--navy:#16324F;--harbor:#2A6F7A;--copper:#C45C26;--sand:#E8A05A;
@@ -226,6 +230,12 @@ nav{display:flex;align-items:center;justify-content:space-between;gap:16px;paddi
 .nav-links a:hover::after,.nav-links a.is-active::after{transform:scaleX(1);transform-origin:left}
 .nav-actions{display:flex;align-items:center;gap:8px}
 .nav-prefs{display:inline-flex;align-items:center;gap:6px;flex:0 0 auto}
+.theme-switch{display:inline-flex;align-items:stretch;border:1.5px solid var(--line);border-radius:999px;background:var(--ghost-bg,rgba(247,249,252,.88));overflow:hidden;padding:3px;gap:2px}
+.theme-switch [data-theme-set]{border:0;background:transparent;color:var(--muted);font:inherit;font-size:.72rem;font-weight:700;padding:6px 11px;border-radius:999px;cursor:pointer}
+.theme-switch [data-theme-set].is-active,.theme-switch [data-theme-set][aria-pressed="true"]{background:var(--panel);color:var(--harbor);box-shadow:0 1px 0 rgba(16,35,58,.06)}
+.theme-switch [data-theme-set="soft"].is-active{color:var(--copper)}
+.theme-switch [data-theme-set="off"].is-active{color:var(--muted)}
+
 .btn{
   display:inline-flex;align-items:center;justify-content:center;gap:8px;
   border:none;border-radius:var(--radius);padding:12px 20px;cursor:pointer;
@@ -846,7 +856,13 @@ body.pay-paused .pay-public-entry{display:none!important}
       <a href="#pay" class="pay-public-entry" data-ar="سداد" data-en="Pay">سداد</a>
     </div>
     <div class="nav-actions">
-      <button class="lang-btn" id="langToggle" type="button">EN</button>
+      <div class="nav-prefs" role="group" data-ar-aria="اللغة والمظهر" data-en-aria="Language and look" aria-label="اللغة والمظهر">
+        <button class="lang-btn" id="langToggle" type="button">EN</button>
+        <div class="theme-switch" role="group" data-ar-aria="ناعم أو إيقاف" data-en-aria="Soft or Off" aria-label="ناعم أو إيقاف">
+          <button type="button" data-theme-set="soft" class="is-active" aria-pressed="true" data-ar-aria="المظهر الناعم" data-en-aria="Soft look" aria-label="المظهر الناعم"><span data-theme-label data-ar="ناعم" data-en="Soft">ناعم</span></button>
+          <button type="button" data-theme-set="off" aria-pressed="false" data-ar-aria="وضع الإيقاف" data-en-aria="Off mode" aria-label="وضع الإيقاف"><span data-theme-label data-ar="إيقاف" data-en="Off">إيقاف</span></button>
+        </div>
+      </div>
       <button class="btn btn-primary" id="accountBtn" type="button" data-ar="تسجيل الدخول" data-en="Log in">تسجيل الدخول</button>
       <button class="nav-toggle" id="navToggle" type="button" aria-controls="navLinks" aria-expanded="false" data-ar-aria="القائمة" data-en-aria="Menu" aria-label="القائمة"><span></span><span></span><span></span></button>
     </div>
@@ -1992,6 +2008,7 @@ body.pay-paused .pay-public-entry{display:none!important}
       if (v !== null) el.setAttribute('aria-label', v);
     });
     document.getElementById('langToggle').textContent = lang === 'ar' ? 'EN' : 'AR';
+    if (window.RaseekhTheme && RaseekhTheme.apply) RaseekhTheme.apply(RaseekhTheme.get());
     const title = lang === 'ar' ? 'راسخ — صيانة وبرمجة ومخزون وأنظمة' : 'Raseekh — Maintenance, coding, inventory & systems';
     const desc = lang === 'ar'
       ? 'راسخ في السعودية: صيانة مواقع، برمجة، تطبيقات مخزون، وأنظمة ولوحات — نطاق مكتوب من الطلب حتى التشغيل.'
