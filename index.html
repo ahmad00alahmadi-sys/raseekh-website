@@ -1233,7 +1233,7 @@ body.terms-locked{overflow:hidden}
     clientProducts = Catalog.getClientProducts();
     clientSuggestions = Catalog.getClientSuggestions();
     if (!localStorage.getItem('raseekh_client_catalog_v1')) {
-      Catalog.publishClientCatalog(clientProducts, clientSuggestions);
+      Catalog.publishClientCatalog(clientProducts, clientSuggestions, { cloud: false });
     }
 
     const grid = document.getElementById('clientProductsGrid');
