@@ -501,22 +501,6 @@ section{padding:100px 0;position:relative;z-index:1}
 }
 .voice-who h3{font-size:.95rem;margin:0 0 2px;color:var(--navy)}
 .voice-who p{margin:0;font-size:.8rem;color:var(--muted)}
-.segment-pills{
-  display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 0 4px
-}
-.segment-pills label{
-  display:flex;align-items:center;justify-content:center;gap:6px;text-align:center;
-  border:1.5px solid var(--line);border-radius:10px;padding:12px 8px;cursor:pointer;
-  background:#fff;font-weight:700;font-size:.9rem;color:var(--navy);min-height:48px
-}
-.segment-pills input{position:absolute;opacity:0;pointer-events:none}
-.segment-pills label:has(input:checked){
-  border-color:var(--copper);background:rgba(196,92,38,.08);color:var(--copper)
-}
-.segment-pills label:has(input:focus-visible){outline:2px solid var(--harbor);outline-offset:2px}
-@media (max-width:560px){
-  .segment-pills{grid-template-columns:1fr}
-}
 .tour-stage{
   position:relative;max-width:820px;margin:0 auto;border:1.5px solid var(--line);border-radius:12px;overflow:hidden;
   background:linear-gradient(160deg,#0F2438,#16324F 45%,#1D4A58);min-height:320px;box-shadow:var(--shadow)
@@ -1785,24 +1769,7 @@ body.terms-locked,body.auth-locked{overflow:hidden}
       <h2 data-ar="اطلب عرض سعر" data-en="Request a quote">اطلب عرض سعر</h2>
       <p data-ar="نراجع طلبكم ونرد على بريدكم أو جوالكم." data-en="We review your request and reply on your email or phone.">نراجع طلبكم ونرد على بريدكم أو جوالكم.</p>
       <p class="hint-inline" style="margin-bottom:14px" data-ar="ساعات العمل المعتادة: الأحد–الخميس · الرياض / السعودية" data-en="Usual business hours: Sun–Thu · Riyadh / Saudi Arabia">ساعات العمل المعتادة: الأحد–الخميس · الرياض / السعودية</p>
-      <form class="form" id="contactForm">
-        <fieldset style="border:0;padding:0;margin:0 0 8px">
-          <legend style="font-size:.85rem;font-weight:700;color:var(--muted);margin-bottom:8px" data-ar="أنا أطلب كـ" data-en="I am requesting as">أنا أطلب كـ</legend>
-          <div class="segment-pills" role="radiogroup" aria-label="Customer type">
-            <label>
-              <input type="radio" name="contactSegment" value="individual" checked>
-              <span data-ar="فرد" data-en="Individual">فرد</span>
-            </label>
-            <label>
-              <input type="radio" name="contactSegment" value="company">
-              <span data-ar="شركة" data-en="Company">شركة</span>
-            </label>
-            <label>
-              <input type="radio" name="contactSegment" value="institution">
-              <span data-ar="مؤسسة" data-en="Institution">مؤسسة</span>
-            </label>
-          </div>
-        </fieldset>
+      <form class="form" id="contactForm" novalidate>
         <label class="field"><span data-ar="الاسم الكامل" data-en="Full name">الاسم الكامل</span>
           <input type="text" required data-ar-placeholder="الاسم الكامل" data-en-placeholder="Full name" placeholder="الاسم الكامل" id="contactName" autocomplete="name">
         </label>
@@ -1812,9 +1779,21 @@ body.terms-locked,body.auth-locked{overflow:hidden}
         <label class="field"><span data-ar="رقم الجوال" data-en="Phone">رقم الجوال</span>
           <input type="tel" required inputmode="tel" maxlength="20" data-ar-placeholder="05xxxxxxxx" data-en-placeholder="05xxxxxxxx" placeholder="05xxxxxxxx" id="contactPhone" autocomplete="tel">
         </label>
+        <label class="field"><span data-ar="أنا أطلب كـ" data-en="I am requesting as">أنا أطلب كـ</span>
+          <select id="contactSegment" required>
+            <option value="individual" data-ar="أفراد" data-en="Individuals" selected>أفراد</option>
+            <option value="company" data-ar="شركات" data-en="Companies">شركات</option>
+            <option value="institution" data-ar="مؤسسات" data-en="Institutions">مؤسسات</option>
+            <option value="other" data-ar="شي ثاني" data-en="Something else">شي ثاني</option>
+          </select>
+        </label>
         <label class="field" id="contactCompanyField" hidden>
           <span id="contactCompanyLabel" data-ar="اسم الشركة / المنشأة" data-en="Company / organization name">اسم الشركة / المنشأة</span>
           <input type="text" data-ar-placeholder="اسم الشركة أو المنشأة" data-en-placeholder="Company or organization name" placeholder="اسم الشركة أو المنشأة" id="contactCompany" autocomplete="organization">
+        </label>
+        <label class="field" id="contactOtherField" hidden>
+          <span data-ar="وضّحوا باختصار" data-en="Briefly describe">وضّحوا باختصار</span>
+          <input type="text" data-ar-placeholder="مثلاً: جهة حكومية، فريق، مشروع…" data-en-placeholder="e.g. government body, team, project…" placeholder="مثلاً: جهة حكومية، فريق، مشروع…" id="contactOtherNote" maxlength="120" autocomplete="off">
         </label>
         <label class="field"><span data-ar="نوع الطلب" data-en="Request type">نوع الطلب</span>
           <select id="contactType">
@@ -1989,25 +1968,41 @@ body.terms-locked,body.auth-locked{overflow:hidden}
   }
 
   function getContactSegment(){
-    const el = document.querySelector('input[name="contactSegment"]:checked');
+    const el = document.getElementById('contactSegment');
     return (el && el.value) || 'individual';
   }
 
+  function setContactSegment(value){
+    const el = document.getElementById('contactSegment');
+    if (!el) return;
+    const allowed = ['individual', 'company', 'institution', 'other'];
+    el.value = allowed.includes(value) ? value : 'individual';
+  }
+
   function segmentLabel(seg){
-    if (seg === 'company') return t('شركة', 'Company');
-    if (seg === 'institution') return t('مؤسسة', 'Institution');
-    return t('فرد', 'Individual');
+    if (seg === 'company') return t('شركات', 'Companies');
+    if (seg === 'institution') return t('مؤسسات', 'Institutions');
+    if (seg === 'other') return t('شي ثاني', 'Something else');
+    return t('أفراد', 'Individuals');
   }
 
   function syncCompanyFieldForSegment(segment){
     const field = document.getElementById('contactCompanyField');
     const company = document.getElementById('contactCompany');
     const label = document.getElementById('contactCompanyLabel');
+    const otherField = document.getElementById('contactOtherField');
+    const otherNote = document.getElementById('contactOtherNote');
     if (!field || !company || !label) return;
     const seg = segment || getContactSegment();
     const needsOrg = seg === 'company' || seg === 'institution';
+    const needsOther = seg === 'other';
     field.hidden = !needsOrg;
     company.required = needsOrg;
+    if (otherField) otherField.hidden = !needsOther;
+    if (otherNote) {
+      otherNote.required = needsOther;
+      if (!needsOther) otherNote.value = '';
+    }
     if (seg === 'institution') {
       label.setAttribute('data-ar', 'اسم المؤسسة / المنشأة');
       label.setAttribute('data-en', 'Institution / organization name');
@@ -2030,12 +2025,9 @@ body.terms-locked,body.auth-locked{overflow:hidden}
   function syncCompanyFieldForType(type){
     // Kept for older call sites — company visibility follows segment, not request type.
     syncCompanyFieldForSegment(getContactSegment());
-    if (type === 'business' || type === 'institution') {
-      const inst = document.querySelector('input[name="contactSegment"][value="institution"]');
-      if (inst && getContactSegment() === 'individual') {
-        inst.checked = true;
-        syncCompanyFieldForSegment('institution');
-      }
+    if ((type === 'business' || type === 'institution') && getContactSegment() === 'individual') {
+      setContactSegment('institution');
+      syncCompanyFieldForSegment('institution');
     }
   }
 
@@ -2048,6 +2040,37 @@ body.terms-locked,body.auth-locked{overflow:hidden}
     return digits.length >= 9 && digits.length <= 15;
   }
 
+  function isUsableEmail(value){
+    const email = String(value || '').trim().toLowerCase();
+    if (!email || email.length > 254) return false;
+    if (/\s/.test(email)) return false;
+    if (!/^[a-z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)+$/i.test(email)) return false;
+    const at = email.lastIndexOf('@');
+    const local = email.slice(0, at);
+    const domain = email.slice(at + 1);
+    if (!local || local.length > 64 || local.startsWith('.') || local.endsWith('.') || local.includes('..')) return false;
+    if (!domain || domain.includes('..') || domain.startsWith('-') || domain.endsWith('-') || domain.startsWith('.') || domain.endsWith('.')) return false;
+    const labels = domain.split('.');
+    if (labels.length < 2) return false;
+    const tld = labels[labels.length - 1];
+    if (!/^[a-z]{2,24}$/i.test(tld)) return false;
+    if (labels.some((part) => !part || part.length > 63)) return false;
+    const blockedDomains = new Set([
+      'example.com', 'example.org', 'example.net', 'test.com', 'test.org', 'test.net',
+      'localhost', 'invalid', 'local',
+      'mailinator.com', 'guerrillamail.com', 'guerrillamail.net', 'sharklasers.com',
+      'tempmail.com', 'temp-mail.org', 'tmpmail.org', 'yopmail.com', 'trashmail.com',
+      '10minutemail.com', 'fakeinbox.com', 'getnada.com', 'discard.email', 'mailnesia.com',
+      'moakt.com', 'emailondeck.com', 'throwaway.email'
+    ]);
+    if (blockedDomains.has(domain)) return false;
+    if (labels.some((part) => part === 'example' || part === 'localhost' || part === 'invalid')) return false;
+    // Obvious placeholder local parts.
+    if (/^(test|testing|fake|asdf|qwert|qwerty|none|null|n\/?a|xxx+|aaa+|bbb+|sample|demo|temp)$/i.test(local)) return false;
+    if (/^(a|b|c|x|z|1|123|111|000)$/i.test(local)) return false;
+    return true;
+  }
+
   function requestFromCatalog(opts){
     const typeEl = document.getElementById('contactType');
     const msgEl = document.getElementById('contactMsg');
@@ -2056,16 +2079,14 @@ body.terms-locked,body.auth-locked{overflow:hidden}
     if (opts.type && typeEl) typeEl.value = opts.type;
     if (msgEl) msgEl.value = opts.message || '';
     if (opts.segment) {
-      const segEl = document.querySelector('input[name="contactSegment"][value="' + opts.segment + '"]');
-      if (segEl) segEl.checked = true;
+      setContactSegment(opts.segment);
     } else if (opts.type === 'business') {
-      const inst = document.querySelector('input[name="contactSegment"][value="institution"]');
-      if (inst) inst.checked = true;
+      setContactSegment('institution');
     }
     if (opts.company && companyEl && !companyEl.value.trim()) companyEl.value = opts.company;
     syncCompanyFieldForSegment(getContactSegment());
     scrollToEl(document.getElementById('contact'), { block: 'start' });
-    const needsOrg = getContactSegment() !== 'individual';
+    const needsOrg = getContactSegment() === 'company' || getContactSegment() === 'institution';
     const focusEl = (nameEl && !nameEl.value.trim())
       ? nameEl
       : (needsOrg && companyEl && !companyEl.value.trim()
@@ -2106,14 +2127,18 @@ body.terms-locked,body.auth-locked{overflow:hidden}
     const emailFromForm = (document.getElementById('contactEmail') && document.getElementById('contactEmail').value.trim()) || '';
     const email = emailFromForm || loggedInUser.email || '';
     // Both email and phone are required for every quote request.
-    if (!email || !isUsablePhone(phone)) {
+    if (!email || !isUsableEmail(email) || !isUsablePhone(phone)) {
       requestFromCatalog({ type, message, company, segment });
       const resultEl = document.getElementById('contactResult');
       if (resultEl) {
         resultEl.style.color = 'var(--danger)';
-        resultEl.textContent = t('أكملوا البريد ورقم الجوال ثم أرسلوا الطلب', 'Complete email and phone, then send the request');
+        if (!email || !isUsableEmail(email)) {
+          resultEl.textContent = t('أدخلوا بريداً إلكترونياً صالحاً (ليس وهمياً)', 'Enter a real, valid email address');
+        } else {
+          resultEl.textContent = t('أكملوا البريد ورقم الجوال ثم أرسلوا الطلب', 'Complete email and phone, then send the request');
+        }
       }
-      if (!email) document.getElementById('contactEmail') && document.getElementById('contactEmail').focus();
+      if (!email || !isUsableEmail(email)) document.getElementById('contactEmail') && document.getElementById('contactEmail').focus();
       else document.getElementById('contactPhone') && document.getElementById('contactPhone').focus();
       return { ok: false, redirected: true, needContact: true };
     }
@@ -2526,8 +2551,8 @@ body.terms-locked,body.auth-locked{overflow:hidden}
     if (typeEl) {
       typeEl.addEventListener('change', () => syncCompanyFieldForType(typeEl.value));
     }
-    document.querySelectorAll('input[name="contactSegment"]').forEach((el) => {
-      el.addEventListener('change', () => syncCompanyFieldForSegment(el.value));
+    document.getElementById('contactSegment').addEventListener('change', (e) => {
+      syncCompanyFieldForSegment(e.target.value);
     });
     syncCompanyFieldForSegment(getContactSegment());
     const heroType = document.getElementById('heroQuoteType');
@@ -3123,13 +3148,20 @@ body.terms-locked,body.auth-locked{overflow:hidden}
     const emailVal = document.getElementById('contactEmail').value.trim();
     const phoneVal = document.getElementById('contactPhone').value.trim();
     const companyVal = document.getElementById('contactCompany').value.trim();
+    const otherNoteVal = (document.getElementById('contactOtherNote') && document.getElementById('contactOtherNote').value.trim()) || '';
     const typeVal = document.getElementById('contactType').value;
     const segmentVal = getContactSegment();
     const sessionEmail = loggedInUser && loggedInUser.email ? loggedInUser.email : '';
     const email = emailVal || sessionEmail;
-    if (!email) {
+    if (!emailVal && !sessionEmail) {
       result.style.color = 'var(--danger)';
       result.textContent = t('أدخل البريد الإلكتروني', 'Enter your email address');
+      document.getElementById('contactEmail').focus();
+      return;
+    }
+    if (!isUsableEmail(email)) {
+      result.style.color = 'var(--danger)';
+      result.textContent = t('البريد غير صالح أو يبدو وهمياً — استخدموا بريداً حقيقياً', 'Email is invalid or looks fake — use a real address');
       document.getElementById('contactEmail').focus();
       return;
     }
@@ -3153,13 +3185,36 @@ body.terms-locked,body.auth-locked{overflow:hidden}
       document.getElementById('contactCompany').focus();
       return;
     }
+    if (segmentVal === 'other' && !otherNoteVal) {
+      result.style.color = 'var(--danger)';
+      result.textContent = t('وضّحوا نوع الطلب باختصار', 'Briefly describe what you are');
+      document.getElementById('contactOtherNote').focus();
+      return;
+    }
+    const nameVal = document.getElementById('contactName').value.trim();
+    if (!nameVal) {
+      result.style.color = 'var(--danger)';
+      result.textContent = t('أدخل الاسم الكامل', 'Enter your full name');
+      document.getElementById('contactName').focus();
+      return;
+    }
+    const msgVal = document.getElementById('contactMsg').value.trim();
+    if (!msgVal) {
+      result.style.color = 'var(--danger)';
+      result.textContent = t('اكتبوا تفاصيل الطلب', 'Enter request details');
+      document.getElementById('contactMsg').focus();
+      return;
+    }
+    const companyForSave = segmentVal === 'other'
+      ? (otherNoteVal || companyVal)
+      : companyVal;
     const payload = {
-      name: document.getElementById('contactName').value.trim(),
+      name: nameVal,
       phone: phoneVal,
-      company: companyVal,
+      company: companyForSave,
       segment: segmentVal,
       type: typeVal,
-      message: document.getElementById('contactMsg').value.trim(),
+      message: msgVal,
       at: new Date().toISOString(),
       email: email,
       userId: loggedInUser && loggedInUser.id ? loggedInUser.id : ''
@@ -3243,8 +3298,7 @@ body.terms-locked,body.auth-locked{overflow:hidden}
       }
       if (ok) {
         e.target.reset();
-        const individual = document.querySelector('input[name="contactSegment"][value="individual"]');
-        if (individual) individual.checked = true;
+        setContactSegment('individual');
         syncCompanyFieldForSegment('individual');
         const hq = document.getElementById('heroQuoteMsg');
         if (hq) hq.value = '';

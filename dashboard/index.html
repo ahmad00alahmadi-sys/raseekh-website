@@ -1097,6 +1097,34 @@ body.is-client .home-bar{
     const digits = String(value || '').replace(/\D/g, '');
     return digits.length >= 9 && digits.length <= 15;
   }
+  function isUsableEmail(value){
+    const email = String(value || '').trim().toLowerCase();
+    if (!email || email.length > 254) return false;
+    if (/\s/.test(email)) return false;
+    if (!/^[a-z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)+$/i.test(email)) return false;
+    const at = email.lastIndexOf('@');
+    const local = email.slice(0, at);
+    const domain = email.slice(at + 1);
+    if (!local || local.length > 64 || local.startsWith('.') || local.endsWith('.') || local.includes('..')) return false;
+    if (!domain || domain.includes('..') || domain.startsWith('-') || domain.endsWith('-')) return false;
+    const labels = domain.split('.');
+    if (labels.length < 2) return false;
+    const tld = labels[labels.length - 1];
+    if (!/^[a-z]{2,24}$/i.test(tld)) return false;
+    const blockedDomains = new Set([
+      'example.com', 'example.org', 'example.net', 'test.com', 'test.org', 'test.net',
+      'localhost', 'invalid', 'local',
+      'mailinator.com', 'guerrillamail.com', 'guerrillamail.net', 'sharklasers.com',
+      'tempmail.com', 'temp-mail.org', 'tmpmail.org', 'yopmail.com', 'trashmail.com',
+      '10minutemail.com', 'fakeinbox.com', 'getnada.com', 'discard.email', 'mailnesia.com',
+      'moakt.com', 'emailondeck.com', 'throwaway.email'
+    ]);
+    if (blockedDomains.has(domain)) return false;
+    if (labels.some((part) => part === 'example' || part === 'localhost' || part === 'invalid')) return false;
+    if (/^(test|testing|fake|asdf|qwert|qwerty|none|null|n\/?a|xxx+|aaa+|bbb+|sample|demo|temp)$/i.test(local)) return false;
+    if (/^(a|b|c|x|z|1|123|111|000)$/i.test(local)) return false;
+    return true;
+  }
   function escapeHtml(str){
     const d = document.createElement('div');
     d.textContent = str == null ? '' : String(str);
@@ -2496,7 +2524,7 @@ body.is-client .home-bar{
           </div>
           <div style="color:var(--muted);font-size:.86rem;margin-top:2px">
             ${escapeHtml([
-              r.segment === 'company' ? t('شركة','Company') : (r.segment === 'institution' ? t('مؤسسة','Institution') : (r.segment === 'individual' ? t('فرد','Individual') : '')),
+              r.segment === 'company' ? t('شركات','Companies') : (r.segment === 'institution' ? t('مؤسسات','Institutions') : (r.segment === 'other' ? t('شي ثاني','Something else') : (r.segment === 'individual' ? t('أفراد','Individuals') : ''))),
               r.phone, r.email, r.company
             ].filter(Boolean).join(' · ') || t('بدون بيانات تواصل إضافية','No extra contact details'))}
           </div>
@@ -2657,7 +2685,7 @@ body.is-client .home-bar{
       const r = clientRequests.find((x) => x.id === id);
       if (!r) return;
       const text = [
-        r.segment === 'company' ? 'شركة' : (r.segment === 'institution' ? 'مؤسسة' : (r.segment === 'individual' ? 'فرد' : '')),
+        r.segment === 'company' ? 'شركات' : (r.segment === 'institution' ? 'مؤسسات' : (r.segment === 'other' ? 'شي ثاني' : (r.segment === 'individual' ? 'أفراد' : ''))),
         r.name || '',
         r.phone || '',
         r.email || '',
@@ -2746,8 +2774,8 @@ body.is-client .home-bar{
     const company = companyEl ? companyEl.value.trim() : '';
     const draft = Object.assign({}, pendingClientRequest);
     const needsCompany = draft.type === 'business' || draft.type === 'system';
-    if (!email || email.indexOf('@') < 0) {
-      showToast(t('أدخل البريد الإلكتروني', 'Enter your email address'));
+    if (!email || !isUsableEmail(email)) {
+      showToast(t('أدخلوا بريداً إلكترونياً صالحاً (ليس وهمياً)', 'Enter a real, valid email address'));
       if (emailEl) emailEl.focus();
       return;
     }
