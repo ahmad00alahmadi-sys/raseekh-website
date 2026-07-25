@@ -2369,10 +2369,6 @@ body.terms-locked,body.auth-locked{overflow:hidden}
     });
     const dots = Array.from(dotsWrap.querySelectorAll('button'));
 
-    function isRtl(){
-      return (document.documentElement.dir || 'rtl') === 'rtl';
-    }
-
     function syncFromScroll(){
       const scrollerRect = scroller.getBoundingClientRect();
       const center = scrollerRect.left + scrollerRect.width / 2;
