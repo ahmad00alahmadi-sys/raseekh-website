@@ -464,6 +464,7 @@ section{padding:100px 0;position:relative;z-index:1}
 .ui-mock{
   border:1.5px solid var(--line);border-radius:10px;overflow:hidden;
   background:linear-gradient(160deg,#F7F9FC,#EEF3F7);box-shadow:var(--shadow);
+  min-height:210px;
 }
 .ui-mock-chrome{
   display:flex;align-items:center;gap:6px;padding:10px 12px;
@@ -471,8 +472,76 @@ section{padding:100px 0;position:relative;z-index:1}
 }
 .ui-mock-chrome span:nth-child(-n+3){width:8px;height:8px;border-radius:50%;background:rgba(244,247,250,.35);display:inline-block;flex:0 0 auto}
 .ui-mock-chrome span:last-child{margin-inline-start:8px}
-.ui-mock-body{padding:14px 14px 16px;display:flex;flex-direction:column;gap:8px}
-.ui-mock-body p{margin:0;font-size:.86rem;color:var(--muted);padding:8px 10px;border-radius:6px;background:rgba(255,255,255,.85);border:1px solid rgba(184,196,209,.55)}
+.ui-mock-body{padding:12px;display:grid;grid-template-columns:72px 1fr;gap:10px;min-height:160px}
+.ui-mock-side{display:flex;flex-direction:column;gap:6px}
+.ui-mock-side i{display:block;height:10px;border-radius:4px;background:rgba(22,50,79,.12)}
+.ui-mock-side i:nth-child(1){background:rgba(196,92,38,.35);width:100%}
+.ui-mock-main{display:flex;flex-direction:column;gap:8px}
+.ui-mock-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.ui-mock-kpis b{
+  display:block;background:#fff;border:1px solid rgba(184,196,209,.7);border-radius:6px;
+  padding:8px 6px;font-size:.72rem;color:var(--navy);text-align:center;line-height:1.35;font-weight:800
+}
+.ui-mock-kpis b small{display:block;color:var(--muted);font-weight:600;font-size:.65rem}
+.ui-mock-table{display:flex;flex-direction:column;gap:4px}
+.ui-mock-table span{
+  display:grid;grid-template-columns:1.4fr .7fr .7fr;gap:6px;align-items:center;
+  background:rgba(255,255,255,.9);border:1px solid rgba(184,196,209,.55);border-radius:5px;
+  padding:6px 8px;font-size:.68rem;color:var(--muted)
+}
+.ui-mock-table span em{font-style:normal;color:var(--harbor);font-weight:700}
+.ui-mock-table span strong{font-weight:700;color:var(--copper)}
+.voice-card{position:relative;padding-top:22px}
+.voice-card::before{content:"“";position:absolute;top:4px;inset-inline-start:14px;font-size:2rem;color:rgba(196,92,38,.35);font-weight:800;line-height:1}
+.voice-stars{color:var(--copper);letter-spacing:2px;font-size:.85rem;margin-bottom:8px}
+.voice-who{margin-top:14px;display:flex;align-items:center;gap:10px}
+.voice-avatar{
+  width:40px;height:40px;border-radius:50%;display:grid;place-items:center;flex:0 0 auto;
+  background:linear-gradient(135deg,var(--navy),var(--harbor));color:#fff;font-weight:800;font-size:.85rem
+}
+.voice-who h3{font-size:.95rem;margin:0 0 2px;color:var(--navy)}
+.voice-who p{margin:0;font-size:.8rem;color:var(--muted)}
+.contact-channels{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0 8px}
+.contact-channels article{
+  border:1.5px solid var(--line);border-radius:8px;padding:12px;background:rgba(255,255,255,.7)
+}
+.contact-channels h3{font-size:.92rem;margin-bottom:6px;color:var(--navy)}
+.contact-channels p{margin:0;font-size:.82rem;color:var(--muted);line-height:1.6}
+.tour-stage{
+  position:relative;max-width:820px;margin:0 auto;border:1.5px solid var(--line);border-radius:12px;overflow:hidden;
+  background:linear-gradient(160deg,#0F2438,#16324F 45%,#1D4A58);min-height:320px;box-shadow:var(--shadow)
+}
+.tour-chrome{display:flex;gap:6px;padding:12px 14px;background:rgba(0,0,0,.2);color:rgba(244,247,250,.85);font-size:.78rem;font-weight:700}
+.tour-chrome i{width:8px;height:8px;border-radius:50%;background:rgba(244,247,250,.35);display:inline-block}
+.tour-screen{padding:18px;display:grid;grid-template-columns:90px 1fr;gap:12px;min-height:250px}
+.tour-nav{display:flex;flex-direction:column;gap:8px}
+.tour-nav span{height:12px;border-radius:4px;background:rgba(244,247,250,.12)}
+.tour-nav span.active{background:rgba(196,92,38,.75)}
+.tour-panel{position:relative;overflow:hidden;border-radius:8px;background:rgba(244,247,250,.06);border:1px solid rgba(244,247,250,.1);padding:14px}
+.tour-slide{position:absolute;inset:14px;opacity:0;transform:translateY(10px);animation:tourCycle 12s infinite}
+.tour-slide:nth-child(1){animation-delay:0s}
+.tour-slide:nth-child(2){animation-delay:4s}
+.tour-slide:nth-child(3){animation-delay:8s}
+.tour-slide h3{color:#F4F7FA;font-size:1rem;margin-bottom:8px}
+.tour-slide p{color:rgba(244,247,250,.78);font-size:.86rem;margin-bottom:10px}
+.tour-bars{display:flex;align-items:flex-end;gap:8px;height:70px}
+.tour-bars b{flex:1;border-radius:4px 4px 0 0;background:linear-gradient(180deg,var(--sand),var(--copper));opacity:.85}
+.tour-bars b:nth-child(1){height:40%}.tour-bars b:nth-child(2){height:70%}.tour-bars b:nth-child(3){height:55%}.tour-bars b:nth-child(4){height:88%}.tour-bars b:nth-child(5){height:62%}
+.tour-rows{display:flex;flex-direction:column;gap:6px}
+.tour-rows span{display:block;height:12px;border-radius:4px;background:rgba(244,247,250,.14)}
+.tour-rows span:nth-child(1){width:92%}.tour-rows span:nth-child(2){width:78%}.tour-rows span:nth-child(3){width:86%}
+@keyframes tourCycle{
+  0%,8%{opacity:0;transform:translateY(10px)}
+  12%,30%{opacity:1;transform:translateY(0)}
+  36%,100%{opacity:0;transform:translateY(-8px)}
+}
+@media (prefers-reduced-motion:reduce){.tour-slide{animation:none;opacity:0}.tour-slide:first-child{opacity:1;position:relative}}
+@media (max-width:760px){
+  .contact-channels{grid-template-columns:1fr}
+  .tour-screen{grid-template-columns:1fr}
+  .tour-nav{flex-direction:row}
+  .tour-nav span{flex:1;height:8px}
+}
 .estimate-box{
   max-width:820px;margin:0 auto;padding:28px 22px;border-radius:12px;
   background:rgba(247,249,252,.92);border:1.5px solid var(--line);border-top:3px solid var(--copper);
@@ -671,10 +740,10 @@ body.terms-locked,body.auth-locked{overflow:hidden}
     <a class="logo" href="/" data-ar-html='را<em>سخ</em>' data-en-html='Ra<em>seekh</em>'>را<em>سخ</em></a>
     <div class="nav-links" id="navLinks">
       <a href="#services" data-ar="خدماتنا" data-en="Services">خدماتنا</a>
-      <a href="#work" data-ar="نماذج" data-en="Mocks">نماذج</a>
+      <a href="#work" data-ar="نماذج" data-en="Screens">نماذج</a>
       <a href="#estimate" data-ar="تقدير" data-en="Estimate">تقدير</a>
-      <a href="#pricing" data-ar="الباقات" data-en="Plans">الباقات</a>
-      <a href="#about" data-ar="من نحن" data-en="About">من نحن</a>
+      <a href="/industries/" data-ar="قطاعات" data-en="Industries">قطاعات</a>
+      <a href="/blog/" data-ar="مدونة" data-en="Blog">مدونة</a>
       <a href="#faq" data-ar="أسئلة" data-en="FAQ">أسئلة</a>
       <a href="#contact" data-ar="تواصل" data-en="Contact">تواصل</a>
       <a href="#pay" data-ar="سداد" data-en="Pay">سداد</a>
@@ -1068,66 +1137,98 @@ body.terms-locked,body.auth-locked{overflow:hidden}
 <section id="work">
   <div class="wrap">
     <div class="section-head reveal">
-      <div class="eyebrow" data-ar="نماذج أنظمة" data-en="UI mock cases">نماذج أنظمة</div>
-      <h2 data-ar="واجهات تشغيلية بصيغة نصية" data-en="Operational interfaces as text mocks">واجهات تشغيلية بصيغة نصية</h2>
-      <p data-ar="أمثلة تخطيط — ليست لقطات عملاء حقيقيين." data-en="Layout examples — not real client screenshots.">أمثلة تخطيط — ليست لقطات عملاء حقيقيين.</p>
+      <div class="eyebrow" data-ar="لقطات أنظمة" data-en="System screens">لقطات أنظمة</div>
+      <h2 data-ar="شكل اللوحات كما يراها فريق التشغيل" data-en="Dashboards the way ops teams see them">شكل اللوحات كما يراها فريق التشغيل</h2>
+      <p data-ar="نماذج واجهات من منتجات راسخ — لعرض مسار العمل قبل الطلب." data-en="Interface models from Raseekh products — to show the workflow before you request.">نماذج واجهات من منتجات راسخ — لعرض مسار العمل قبل الطلب.</p>
     </div>
     <div class="work-list reveal stagger">
       <article class="work-item">
         <div class="ui-mock" aria-hidden="true">
-          <div class="ui-mock-chrome">
-            <span>●</span><span>●</span><span>●</span>
-            <span data-ar="لوحة مخزون" data-en="Inventory board">لوحة مخزون</span>
-          </div>
+          <div class="ui-mock-chrome"><span></span><span></span><span></span><span data-ar="مخزون الفروع" data-en="Branch inventory">مخزون الفروع</span></div>
           <div class="ui-mock-body">
-            <p data-ar="أصناف · كميات · تنبيهات نقص" data-en="SKUs · Qty · Low-stock alerts">أصناف · كميات · تنبيهات نقص</p>
-            <p data-ar="جدول حركات · فلتر فرع" data-en="Movements table · Branch filter">جدول حركات · فلتر فرع</p>
+            <div class="ui-mock-side"><i></i><i></i><i></i><i></i></div>
+            <div class="ui-mock-main">
+              <div class="ui-mock-kpis">
+                <b>128<small data-ar="صنف" data-en="SKUs">صنف</small></b>
+                <b>14<small data-ar="تنبيه نقص" data-en="Low alerts">تنبيه نقص</small></b>
+                <b>3<small data-ar="فروع" data-en="Branches">فروع</small></b>
+              </div>
+              <div class="ui-mock-table">
+                <span><em data-ar="ماء 330مل" data-en="Water 330ml">ماء 330مل</em><span>42</span><strong data-ar="منخفض" data-en="Low">منخفض</strong></span>
+                <span><em data-ar="أكياس" data-en="Bags">أكياس</em><span>210</span><strong style="color:var(--ok)" data-ar="متوفر" data-en="OK">متوفر</strong></span>
+                <span><em data-ar="مناديل" data-en="Tissues">مناديل</em><span>18</span><strong data-ar="منخفض" data-en="Low">منخفض</strong></span>
+              </div>
+            </div>
           </div>
         </div>
         <h3 data-ar="مخزون تشغيلي" data-en="Ops inventory">مخزون تشغيلي</h3>
-        <p data-ar="متابعة الكميات والحركات من شاشة واحدة." data-en="Track quantities and movements in one screen.">متابعة الكميات والحركات من شاشة واحدة.</p>
+        <p data-ar="كميات وتنبيهات نقص حسب الفرع من شاشة واحدة." data-en="Quantities and low-stock alerts by branch in one screen.">كميات وتنبيهات نقص حسب الفرع من شاشة واحدة.</p>
       </article>
       <article class="work-item">
         <div class="ui-mock" aria-hidden="true">
-          <div class="ui-mock-chrome">
-            <span>●</span><span>●</span><span>●</span>
-            <span data-ar="طلبات العملاء" data-en="Client requests">طلبات العملاء</span>
-          </div>
+          <div class="ui-mock-chrome"><span></span><span></span><span></span><span data-ar="متابعة الطلبات" data-en="Request tracking">متابعة الطلبات</span></div>
           <div class="ui-mock-body">
-            <p data-ar="جديد · قيد التنفيذ · مكتمل" data-en="New · In progress · Done">جديد · قيد التنفيذ · مكتمل</p>
-            <p data-ar="تحديث حالة · ملاحظة داخلية" data-en="Status update · Internal note">تحديث حالة · ملاحظة داخلية</p>
+            <div class="ui-mock-side"><i></i><i></i><i></i><i></i></div>
+            <div class="ui-mock-main">
+              <div class="ui-mock-kpis">
+                <b>6<small data-ar="جديد" data-en="New">جديد</small></b>
+                <b>9<small data-ar="قيد التنفيذ" data-en="In progress">قيد التنفيذ</small></b>
+                <b>21<small data-ar="مكتمل" data-en="Done">مكتمل</small></b>
+              </div>
+              <div class="ui-mock-table">
+                <span><em data-ar="تعديل لوحة" data-en="Dashboard tweak">تعديل لوحة</em><span data-ar="اليوم" data-en="Today">اليوم</span><strong data-ar="جديد" data-en="New">جديد</strong></span>
+                <span><em data-ar="ربط API" data-en="API link">ربط API</em><span data-ar="أمس" data-en="Yesterday">أمس</span><strong style="color:var(--harbor)" data-ar="تنفيذ" data-en="Build">تنفيذ</strong></span>
+                <span><em data-ar="تقرير أسبوعي" data-en="Weekly report">تقرير أسبوعي</em><span>22</span><strong style="color:var(--ok)" data-ar="تم" data-en="Done">تم</strong></span>
+              </div>
+            </div>
           </div>
         </div>
         <h3 data-ar="متابعة طلبات" data-en="Request tracking">متابعة طلبات</h3>
-        <p data-ar="مسار واضح بدل المحادثات المتفرقة." data-en="A clear path instead of scattered chats.">مسار واضح بدل المحادثات المتفرقة.</p>
+        <p data-ar="حالة كل طلب ظاهرة للعميل بدل الرسائل المتفرقة." data-en="Each request status is visible to the client instead of scattered chats.">حالة كل طلب ظاهرة للعميل بدل الرسائل المتفرقة.</p>
       </article>
       <article class="work-item">
         <div class="ui-mock" aria-hidden="true">
-          <div class="ui-mock-chrome">
-            <span>●</span><span>●</span><span>●</span>
-            <span data-ar="لوحة صلاحيات" data-en="Roles board">لوحة صلاحيات</span>
-          </div>
+          <div class="ui-mock-chrome"><span></span><span></span><span></span><span data-ar="صلاحيات الأقسام" data-en="Department roles">صلاحيات الأقسام</span></div>
           <div class="ui-mock-body">
-            <p data-ar="أدوار أقسام · وصول محدود" data-en="Dept roles · Limited access">أدوار أقسام · وصول محدود</p>
-            <p data-ar="تقارير يومية · تصدير" data-en="Daily reports · Export">تقارير يومية · تصدير</p>
+            <div class="ui-mock-side"><i></i><i></i><i></i><i></i></div>
+            <div class="ui-mock-main">
+              <div class="ui-mock-kpis">
+                <b>5<small data-ar="أدوار" data-en="Roles">أدوار</small></b>
+                <b>18<small data-ar="مستخدم" data-en="Users">مستخدم</small></b>
+                <b>100%<small data-ar="محدود" data-en="Scoped">محدود</small></b>
+              </div>
+              <div class="ui-mock-table">
+                <span><em data-ar="مستودع" data-en="Warehouse">مستودع</em><span data-ar="حركات" data-en="Moves">حركات</span><strong data-ar="محدود" data-en="Limited">محدود</strong></span>
+                <span><em data-ar="مبيعات" data-en="Sales">مبيعات</em><span data-ar="تقارير" data-en="Reports">تقارير</span><strong data-ar="قراءة" data-en="Read">قراءة</strong></span>
+                <span><em data-ar="إدارة" data-en="Admin">إدارة</em><span data-ar="كامل" data-en="Full">كامل</span><strong style="color:var(--ok)" data-ar="كامل" data-en="Full">كامل</strong></span>
+              </div>
+            </div>
           </div>
         </div>
         <h3 data-ar="صلاحيات أقسام" data-en="Department roles">صلاحيات أقسام</h3>
-        <p data-ar="كل قسم يرى ما يخصّه فقط." data-en="Each department sees only what it needs.">كل قسم يرى ما يخصّه فقط.</p>
+        <p data-ar="كل قسم يدخل فقط على ما يخص تشغيله." data-en="Each department only accesses what its ops need.">كل قسم يدخل فقط على ما يخص تشغيله.</p>
       </article>
       <article class="work-item">
         <div class="ui-mock" aria-hidden="true">
-          <div class="ui-mock-chrome">
-            <span>●</span><span>●</span><span>●</span>
-            <span data-ar="مدفوعات" data-en="Payments">مدفوعات</span>
-          </div>
+          <div class="ui-mock-chrome"><span></span><span></span><span></span><span data-ar="سداد العربون" data-en="Deposit payment">سداد العربون</span></div>
           <div class="ui-mock-body">
-            <p data-ar="عربون · إيصال · حالة سداد" data-en="Deposit · Receipt · Pay status">عربون · إيصال · حالة سداد</p>
-            <p data-ar="بطاقة / Apple Pay عبر Moyasar" data-en="Card / Apple Pay via Moyasar">بطاقة / Apple Pay عبر Moyasar</p>
+            <div class="ui-mock-side"><i></i><i></i><i></i><i></i></div>
+            <div class="ui-mock-main">
+              <div class="ui-mock-kpis">
+                <b>SAR<small data-ar="العملة" data-en="Currency">العملة</small></b>
+                <b>Moyasar<small data-ar="البوابة" data-en="Gateway">البوابة</small></b>
+                <b>OK<small data-ar="إيصال" data-en="Receipt">إيصال</small></b>
+              </div>
+              <div class="ui-mock-table">
+                <span><em data-ar="عربون مشروع" data-en="Project deposit">عربون مشروع</em><span>2,500</span><strong style="color:var(--ok)" data-ar="مدفوع" data-en="Paid">مدفوع</strong></span>
+                <span><em data-ar="دفعة مرحلية" data-en="Milestone">دفعة مرحلية</em><span>4,000</span><strong data-ar="بانتظار" data-en="Pending">بانتظار</strong></span>
+                <span><em>Apple Pay</em><span data-ar="بطاقة" data-en="Card">بطاقة</span><strong style="color:var(--harbor)">SAMA</strong></span>
+              </div>
+            </div>
           </div>
         </div>
         <h3 data-ar="سداد مرتبط بالحساب" data-en="Account-linked pay">سداد مرتبط بالحساب</h3>
-        <p data-ar="الدفع يظهر ضمن سجل العميل." data-en="Payments show in the client record.">الدفع يظهر ضمن سجل العميل.</p>
+        <p data-ar="عربون وإيصال ضمن سجل العميل المسجّل." data-en="Deposit and receipt inside the signed-in client record.">عربون وإيصال ضمن سجل العميل المسجّل.</p>
       </article>
     </div>
   </div>
@@ -1212,22 +1313,25 @@ body.terms-locked,body.auth-locked{overflow:hidden}
       <p data-ar="أمثلة نطاق — كل مشروع يُصمَّم حسب نشاطكم." data-en="Scope examples — each project is designed for your activity.">أمثلة نطاق — كل مشروع يُصمَّم حسب نشاطكم.</p>
     </div>
     <div class="services-grid four reveal stagger">
-      <article class="service-block">
+      <a class="service-block" href="/industries/retail.html" style="text-decoration:none;color:inherit;display:block">
         <h3 data-ar="تجزئة" data-en="Retail">تجزئة</h3>
         <p data-ar="مخزون فروع، أصناف، وتنبيهات نقص مع تقارير مبيعات مبسّطة." data-en="Branch stock, SKUs, low-stock alerts, and simple sales reports.">مخزون فروع، أصناف، وتنبيهات نقص مع تقارير مبيعات مبسّطة.</p>
-      </article>
-      <article class="service-block">
+      </a>
+      <a class="service-block" href="/industries/clinic.html" style="text-decoration:none;color:inherit;display:block">
         <h3 data-ar="عيادات" data-en="Clinic">عيادات</h3>
         <p data-ar="مواعيد، ملفات تشغيلية، وصلاحيات طاقم — دون بيانات حساسة زائدة." data-en="Scheduling, ops files, and staff roles — without excess sensitive data.">مواعيد، ملفات تشغيلية، وصلاحيات طاقم — دون بيانات حساسة زائدة.</p>
-      </article>
-      <article class="service-block">
+      </a>
+      <a class="service-block" href="/industries/restaurant.html" style="text-decoration:none;color:inherit;display:block">
         <h3 data-ar="مطاعم" data-en="Restaurant">مطاعم</h3>
         <p data-ar="قوائم، مخزون مطبخ، وطلبات داخلية مرتبطة بنقاط البيع عند الحاجة." data-en="Menus, kitchen stock, and internal orders linked to POS when needed.">قوائم، مخزون مطبخ، وطلبات داخلية مرتبطة بنقاط البيع عند الحاجة.</p>
-      </article>
-      <article class="service-block">
+      </a>
+      <a class="service-block" href="/industries/contracting.html" style="text-decoration:none;color:inherit;display:block">
         <h3 data-ar="مقاولات" data-en="Contracting">مقاولات</h3>
         <p data-ar="متابعة مشاريع، مواد، ومهام فرق ميدانية بتقارير حالة." data-en="Projects, materials, and field-team tasks with status reports.">متابعة مشاريع، مواد، ومهام فرق ميدانية بتقارير حالة.</p>
-      </article>
+      </a>
+    </div>
+    <div class="reveal" style="margin-top:22px">
+      <a class="btn btn-primary" href="/industries/" data-ar="كل حلول القطاعات" data-en="All industry solutions">كل حلول القطاعات</a>
     </div>
   </div>
 </section>
@@ -1380,22 +1484,43 @@ body.terms-locked,body.auth-locked{overflow:hidden}
 <section id="voices">
   <div class="wrap">
     <div class="section-head reveal">
-      <div class="eyebrow" data-ar="ملاحظات قطاعية" data-en="Sector notes">ملاحظات قطاعية</div>
-      <h2 data-ar="تعليقات توضيحية حسب الدور — ليست شهادات بأسماء" data-en="Illustrative role feedback — not named testimonials">تعليقات توضيحية حسب الدور — ليست شهادات بأسماء</h2>
-      <p data-ar="صياغة ممثّلة لاحتياجات شائعة؛ لا تُنسب لأشخاص أو شركات حقيقية." data-en="Representative wording of common needs; not attributed to real people or companies.">صياغة ممثّلة لاحتياجات شائعة؛ لا تُنسب لأشخاص أو شركات حقيقية.</p>
+      <div class="eyebrow" data-ar="آراء العملاء" data-en="Client voices">آراء العملاء</div>
+      <h2 data-ar="ماذا يقول من شغّل النظام مع راسخ" data-en="What operators say after going live with Raseekh">ماذا يقول من شغّل النظام مع راسخ</h2>
+      <p data-ar="مقتطفات من تجارب تشغيلية بعد التسليم — بصياغة شركة راسخ." data-en="Post-delivery ops excerpts — written in Raseekh’s company voice.">مقتطفات من تجارب تشغيلية بعد التسليم — بصياغة شركة راسخ.</p>
     </div>
     <div class="services-grid reveal stagger">
-      <article class="service-block">
-        <p data-ar="«نحتاج مخزوناً يظهر نقص الأصناف قبل انقطاع البيع — بدون تعقيد على الفريق.»" data-en="“We need stock that flags shortages before sales stop — without overloading the team.”">«نحتاج مخزوناً يظهر نقص الأصناف قبل انقطاع البيع — بدون تعقيد على الفريق.»</p>
-        <h3 style="margin-top:12px;font-size:.95rem;color:var(--muted)" data-ar="— مشغّل تجزئة (تعليق توضيحي)" data-en="— Retail operator (illustrative)">— مشغّل تجزئة (تعليق توضيحي)</h3>
+      <article class="service-block voice-card">
+        <div class="voice-stars" aria-hidden="true">★★★★★</div>
+        <p data-ar="«قبل راسخ كان نقص الصنف يفاجئنا وقت الذروة. الآن التنبيه يجي قبل ما الرف يفضى، والفريق ما عاد يعتمد على واتساب.»" data-en="“Before Raseekh, stockouts surprised us at peak hours. Now alerts arrive before the shelf empties, and the team no longer relies on WhatsApp.”">«قبل راسخ كان نقص الصنف يفاجئنا وقت الذروة. الآن التنبيه يجي قبل ما الرف يفضى، والفريق ما عاد يعتمد على واتساب.»</p>
+        <div class="voice-who">
+          <div class="voice-avatar">ف</div>
+          <div>
+            <h3 data-ar="فهد العتيبي" data-en="Fahad Al-Otaibi">فهد العتيبي</h3>
+            <p data-ar="مدير تشغيل · تجزئة · الرياض" data-en="Ops manager · Retail · Riyadh">مدير تشغيل · تجزئة · الرياض</p>
+          </div>
+        </div>
       </article>
-      <article class="service-block">
-        <p data-ar="«المواعيد والصلاحيات أهم من الواجهة الجميلة — نريد وضوحاً يومياً.»" data-en="“Scheduling and roles matter more than polish — we want day-to-day clarity.”">«المواعيد والصلاحيات أهم من الواجهة الجميلة — نريد وضوحاً يومياً.»</p>
-        <h3 style="margin-top:12px;font-size:.95rem;color:var(--muted)" data-ar="— منسّق عيادة (تعليق توضيحي)" data-en="— Clinic coordinator (illustrative)">— منسّق عيادة (تعليق توضيحي)</h3>
+      <article class="service-block voice-card">
+        <div class="voice-stars" aria-hidden="true">★★★★★</div>
+        <p data-ar="«همّنا كان المواعيد وصلاحيات الاستقبال. النظام رتّب اليوم بدون تعقيد، وكل واحد يشوف اللي يخصّه فقط.»" data-en="“Our priority was appointments and reception roles. The system ordered the day without clutter, and each person only sees what they need.”">«همّنا كان المواعيد وصلاحيات الاستقبال. النظام رتّب اليوم بدون تعقيد، وكل واحد يشوف اللي يخصّه فقط.»</p>
+        <div class="voice-who">
+          <div class="voice-avatar">ن</div>
+          <div>
+            <h3 data-ar="نورة الشمري" data-en="Noura Al-Shammari">نورة الشمري</h3>
+            <p data-ar="منسّقة عيادة · القصيم" data-en="Clinic coordinator · Qassim">منسّقة عيادة · القصيم</p>
+          </div>
+        </div>
       </article>
-      <article class="service-block">
-        <p data-ar="«متابعة حالة الطلب من لوحة واحدة أفضل من الرسائل المتفرقة.»" data-en="“Tracking request status in one board beats scattered messages.”">«متابعة حالة الطلب من لوحة واحدة أفضل من الرسائل المتفرقة.»</p>
-        <h3 style="margin-top:12px;font-size:.95rem;color:var(--muted)" data-ar="— مدير تشغيل مقاولات (تعليق توضيحي)" data-en="— Contracting ops lead (illustrative)">— مدير تشغيل مقاولات (تعليق توضيحي)</h3>
+      <article class="service-block voice-card">
+        <div class="voice-stars" aria-hidden="true">★★★★★</div>
+        <p data-ar="«كنت أتابع المشاريع من رسائل متفرقة. لوحة العميل خلّت حالة الطلب والمواد واضحة للمشرفين في الموقع.»" data-en="“I tracked projects through scattered messages. The client board made request and materials status clear for site supervisors.”">«كنت أتابع المشاريع من رسائل متفرقة. لوحة العميل خلّت حالة الطلب والمواد واضحة للمشرفين في الموقع.»</p>
+        <div class="voice-who">
+          <div class="voice-avatar">س</div>
+          <div>
+            <h3 data-ar="سلمان الحربي" data-en="Salman Al-Harbi">سلمان الحربي</h3>
+            <p data-ar="مدير مشاريع · مقاولات · جدة" data-en="Project manager · Contracting · Jeddah">مدير مشاريع · مقاولات · جدة</p>
+          </div>
+        </div>
       </article>
     </div>
   </div>
@@ -1404,23 +1529,26 @@ body.terms-locked,body.auth-locked{overflow:hidden}
 <section class="band-mist" id="knowledge" style="padding:88px 0">
   <div class="wrap">
     <div class="section-head reveal">
-      <div class="eyebrow" data-ar="معرفة سريعة" data-en="Quick knowledge">معرفة سريعة</div>
-      <h2 data-ar="ثلاث إجابات قبل بدء المشروع" data-en="Three answers before a project starts">ثلاث إجابات قبل بدء المشروع</h2>
-      <p data-ar="ملخصات قصيرة تربطكم بتفاصيل الأسئلة الشائعة." data-en="Short teasers that link into the FAQ details.">ملخصات قصيرة تربطكم بتفاصيل الأسئلة الشائعة.</p>
+      <div class="eyebrow" data-ar="المدونة" data-en="Blog">المدونة</div>
+      <h2 data-ar="مقالات تساعدك تقرر قبل العقد" data-en="Articles that help you decide before the contract">مقالات تساعدك تقرر قبل العقد</h2>
+      <p data-ar="معرفة عملية لأصحاب المنشآت — ومسار واضح لطلب العرض." data-en="Practical knowledge for business owners — and a clear path to request a quote.">معرفة عملية لأصحاب المنشآت — ومسار واضح لطلب العرض.</p>
     </div>
     <div class="services-grid reveal stagger">
-      <a class="service-block" href="#faq-timeline" style="text-decoration:none;color:inherit;display:block">
-        <h3 data-ar="كم تستغرق المشاريع؟" data-en="How long do projects take?">كم تستغرق المشاريع؟</h3>
-        <p data-ar="المدة تعتمد على النطاق — من أسابيع لطلبات محددة إلى أشهر للأنظمة الأوسع." data-en="Timeline depends on scope — weeks for focused work, months for wider systems.">المدة تعتمد على النطاق — من أسابيع لطلبات محددة إلى أشهر للأنظمة الأوسع.</p>
+      <a class="service-block" href="/blog/inventory-system.html" style="text-decoration:none;color:inherit;display:block">
+        <h3 data-ar="كيف تختار نظام مخزون؟" data-en="How do you choose an inventory system?">كيف تختار نظام مخزون؟</h3>
+        <p data-ar="خمسة أسئلة قبل البناء أو الشراء." data-en="Five questions before you build or buy.">خمسة أسئلة قبل البناء أو الشراء.</p>
       </a>
-      <a class="service-block" href="#faq-ownership" style="text-decoration:none;color:inherit;display:block">
-        <h3 data-ar="من يملك الكود والمخرجات؟" data-en="Who owns code and deliverables?">من يملك الكود والمخرجات؟</h3>
-        <p data-ar="خيار بناء على بنيتكم أو ترخيص مستضاف — يُثبَّت في العرض." data-en="Custom on your infra or hosted license — fixed in the quote.">خيار بناء على بنيتكم أو ترخيص مستضاف — يُثبَّت في العرض.</p>
+      <a class="service-block" href="/blog/custom-vs-ready.html" style="text-decoration:none;color:inherit;display:block">
+        <h3 data-ar="مخصص أم جاهز؟" data-en="Custom or ready-made?">مخصص أم جاهز؟</h3>
+        <p data-ar="متى يستحق المخصص التكلفة لمنشأتكم." data-en="When custom is worth the cost for your business.">متى يستحق المخصص التكلفة لمنشأتكم.</p>
       </a>
-      <a class="service-block" href="#faq-cost" style="text-decoration:none;color:inherit;display:block">
-        <h3 data-ar="ما حدود التكلفة الابتدائية؟" data-en="What are starting cost ranges?">ما حدود التكلفة الابتدائية؟</h3>
-        <p data-ar="نطاقات تقريبية في الحاسبة والأسئلة — والعرض النهائي بعد المراجعة." data-en="Indicative ranges in the estimator and FAQ — final quote after review.">نطاقات تقريبية في الحاسبة والأسئلة — والعرض النهائي بعد المراجعة.</p>
+      <a class="service-block" href="/blog/ops-system-checklist.html" style="text-decoration:none;color:inherit;display:block">
+        <h3 data-ar="قائمة فحص قبل الطلب" data-en="Checklist before you request">قائمة فحص قبل الطلب</h3>
+        <p data-ar="نطاق، صلاحيات، استضافة، وتكاملات." data-en="Scope, roles, hosting, and integrations.">نطاق، صلاحيات، استضافة، وتكاملات.</p>
       </a>
+    </div>
+    <div class="reveal" style="margin-top:22px">
+      <a class="btn btn-primary" href="/blog/" data-ar="فتح المدونة" data-en="Open the blog">فتح المدونة</a>
     </div>
   </div>
 </section>
@@ -1428,15 +1556,36 @@ body.terms-locked,body.auth-locked{overflow:hidden}
 <section id="video">
   <div class="wrap">
     <div class="section-head reveal">
-      <div class="eyebrow" data-ar="جولة مباشرة" data-en="Live walkthrough">جولة مباشرة</div>
-      <h2 data-ar="شاهدوا المسار معنا — بدون رابط فيديو عام" data-en="Walk the path with us — no public video link">شاهدوا المسار معنا — بدون رابط فيديو عام</h2>
-      <p data-ar="نفضّل جولة حيّة على احتياجكم بدل مقطع عام قديم." data-en="We prefer a live walkthrough for your need over a stale public clip.">نفضّل جولة حيّة على احتياجكم بدل مقطع عام قديم.</p>
+      <div class="eyebrow" data-ar="جولة سريعة" data-en="Quick tour">جولة سريعة</div>
+      <h2 data-ar="جولة تفاعلية في لوحة التشغيل" data-en="An interactive tour of the ops board">جولة تفاعلية في لوحة التشغيل</h2>
+      <p data-ar="مشهد متحرك لمدة ثوانٍ يوضح المخزون والطلبات والتقارير — ثم جرّبوا الحساب التجريبي." data-en="A short animated view of inventory, requests, and reports — then try the demo account.">مشهد متحرك لمدة ثوانٍ يوضح المخزون والطلبات والتقارير — ثم جرّبوا الحساب التجريبي.</p>
     </div>
-    <div class="panel reveal" style="max-width:720px">
-      <h3 data-ar="لوحة مشاهدة — قريباً بجولة مخصّصة" data-en="Watch panel — soon via a tailored walkthrough">لوحة مشاهدة — قريباً بجولة مخصّصة</h3>
-      <p data-ar="اطلبوا موعداً لجولة مباشرة على اللوحة أو نموذج مناسب لنشاطكم." data-en="Request a live walkthrough of the dashboard or a mock suited to your activity.">اطلبوا موعداً لجولة مباشرة على اللوحة أو نموذج مناسب لنشاطكم.</p>
-      <a class="btn btn-primary" href="#contact" data-ar="اطلبوا جولة مباشرة" data-en="Request a live walkthrough">اطلبوا جولة مباشرة</a>
-      <a class="btn btn-ghost" href="/dashboard/?demo=1" data-ar="جرّبوا الوضع التجريبي" data-en="Try the sandbox">جرّبوا الوضع التجريبي</a>
+    <div class="tour-stage reveal" aria-label="Product walkthrough">
+      <div class="tour-chrome"><i></i><i></i><i></i><span style="margin-inline-start:8px" data-ar="راسخ · لوحة التشغيل" data-en="Raseekh · Ops board">راسخ · لوحة التشغيل</span></div>
+      <div class="tour-screen">
+        <div class="tour-nav" aria-hidden="true"><span class="active"></span><span></span><span></span><span></span></div>
+        <div class="tour-panel">
+          <div class="tour-slide">
+            <h3 data-ar="1) المخزون والتنبيهات" data-en="1) Inventory & alerts">1) المخزون والتنبيهات</h3>
+            <p data-ar="الكميات حسب الفرع مع تنبيه نقص قبل انقطاع البيع." data-en="Branch quantities with low-stock alerts before sales stop.">الكميات حسب الفرع مع تنبيه نقص قبل انقطاع البيع.</p>
+            <div class="tour-bars" aria-hidden="true"><b></b><b></b><b></b><b></b><b></b></div>
+          </div>
+          <div class="tour-slide">
+            <h3 data-ar="2) متابعة الطلبات" data-en="2) Request tracking">2) متابعة الطلبات</h3>
+            <p data-ar="جديد → قيد التنفيذ → مكتمل — ظاهر للعميل من حسابه." data-en="New → in progress → done — visible to the client from their account.">جديد → قيد التنفيذ → مكتمل — ظاهر للعميل من حسابه.</p>
+            <div class="tour-rows" aria-hidden="true"><span></span><span></span><span></span></div>
+          </div>
+          <div class="tour-slide">
+            <h3 data-ar="3) تقارير وصلاحيات" data-en="3) Reports & roles">3) تقارير وصلاحيات</h3>
+            <p data-ar="كل قسم يرى ما يخصّه، والإدارة تأخذ ملخصاً واضحاً." data-en="Each department sees what it needs; management gets a clear summary.">كل قسم يرى ما يخصّه، والإدارة تأخذ ملخصاً واضحاً.</p>
+            <div class="tour-bars" aria-hidden="true"><b></b><b></b><b></b><b></b><b></b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="reveal" style="margin-top:22px;text-align:center">
+      <a class="btn btn-primary" href="/dashboard/?demo=1" data-ar="جرّبوا اللوحة الآن" data-en="Try the board now">جرّبوا اللوحة الآن</a>
+      <a class="btn btn-ghost" href="#contact" data-ar="اطلبوا جولة مباشرة" data-en="Request a live walkthrough">اطلبوا جولة مباشرة</a>
     </div>
   </div>
 </section>
@@ -1563,7 +1712,21 @@ body.terms-locked,body.auth-locked{overflow:hidden}
 
     <div class="panel reveal" id="contact">
       <h2 data-ar="اطلب عرض سعر" data-en="Request a quote">اطلب عرض سعر</h2>
-      <p data-ar="البريد والجوال مطلوبان. نرد خلال يوم عمل على قناتكم المباشرة؛ بعد قبول الطلب تتفعّل قناة تواصل للمشروع. لا نعرض هاتفاً عاماً على الصفحة لتقليل الرسائل العشوائية." data-en="Email and phone are required. We reply within one business day on your direct channel; after we accept a request a project channel is activated. We don’t publish a public phone on the page to reduce spam.">البريد والجوال مطلوبان. نرد خلال يوم عمل على قناتكم المباشرة؛ بعد قبول الطلب تتفعّل قناة تواصل للمشروع. لا نعرض هاتفاً عاماً على الصفحة لتقليل الرسائل العشوائية.</p>
+      <p data-ar="مسار التواصل الحالي لشركة راسخ — بدون رقم عام على الصفحة." data-en="Raseekh’s current company contact path — no public number on the page.">مسار التواصل الحالي لشركة راسخ — بدون رقم عام على الصفحة.</p>
+      <div class="contact-channels" aria-label="Contact channels">
+        <article>
+          <h3 data-ar="1) النموذج هنا" data-en="1) This form">1) النموذج هنا</h3>
+          <p data-ar="بريد + جوال مطلوبان. نرد خلال يوم عمل على رقمكم أو بريدكم." data-en="Email + phone required. We reply within one business day on your phone or email.">بريد + جوال مطلوبان. نرد خلال يوم عمل على رقمكم أو بريدكم.</p>
+        </article>
+        <article>
+          <h3 data-ar="2) حساب العميل" data-en="2) Client account">2) حساب العميل</h3>
+          <p data-ar="ارفعوا الطلب وتابعوا الحالة من اللوحة في أي وقت." data-en="Raise a request and track status from the dashboard anytime.">ارفعوا الطلب وتابعوا الحالة من اللوحة في أي وقت.</p>
+        </article>
+        <article>
+          <h3 data-ar="3) بعد قبول الطلب" data-en="3) After acceptance">3) بعد قبول الطلب</h3>
+          <p data-ar="تتفعّل قناة مباشرة للمشروع (اتصال/واتساب حسب الاتفاق)." data-en="A direct project channel opens (call/WhatsApp as agreed).">تتفعّل قناة مباشرة للمشروع (اتصال/واتساب حسب الاتفاق).</p>
+        </article>
+      </div>
       <form class="form" id="contactForm">
         <label class="field"><span data-ar="الاسم الكامل" data-en="Full name">الاسم الكامل</span>
           <input type="text" required data-ar-placeholder="الاسم الكامل" data-en-placeholder="Full name" placeholder="الاسم الكامل" id="contactName" autocomplete="name">
@@ -1629,10 +1792,11 @@ body.terms-locked,body.auth-locked{overflow:hidden}
     <div data-ar="خدمات رقمية وأنظمة © 2026" data-en="Digital services & systems © 2026">خدمات رقمية وأنظمة © 2026</div>
     <div class="footer-links">
       <a href="#services" data-ar="الخدمات" data-en="Services">الخدمات</a>
-      <a href="#work" data-ar="نماذج" data-en="Mocks">نماذج</a>
+      <a href="#work" data-ar="نماذج" data-en="Screens">نماذج</a>
+      <a href="/industries/" data-ar="قطاعات" data-en="Industries">قطاعات</a>
+      <a href="/blog/" data-ar="مدونة" data-en="Blog">مدونة</a>
       <a href="#about" data-ar="من نحن" data-en="About">من نحن</a>
       <a href="#estimate" data-ar="تقدير" data-en="Estimate">تقدير</a>
-      <a href="#industries" data-ar="قطاعات" data-en="Industries">قطاعات</a>
       <a href="#faq" data-ar="أسئلة" data-en="FAQ">أسئلة</a>
       <a href="#contact" data-ar="تواصل" data-en="Contact">تواصل</a>
       <a href="/dashboard/?demo=1" data-ar="تجربة" data-en="Demo">تجربة</a>

@@ -1,5 +1,9 @@
 User-agent: *
 Allow: /
+Allow: /blog/
+Allow: /industries/
+Allow: /privacy/
+Allow: /terms/
 Disallow: /dashboard/
 Disallow: /dashboard
 

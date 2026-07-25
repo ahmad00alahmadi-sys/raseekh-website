@@ -1,6 +1,12 @@
 /* Lightweight offline shell for Raseekh marketing site */
-const CACHE = 'raseekh-shell-v50';
-const ASSETS = ['/', '/index.html', '/catalog.js', '/auth.js', '/terms.js', '/activity.js', '/terms/', '/terms/index.html', '/privacy/', '/privacy/index.html', '/dashboard/', '/dashboard/index.html', '/manifest.webmanifest', '/icon.svg', '/icon-192.png', '/icon-512.png', '/icon-512-maskable.png'];
+const CACHE = 'raseekh-shell-v51';
+const ASSETS = [
+  '/', '/index.html', '/catalog.js', '/auth.js', '/terms.js', '/activity.js', '/shared-page.css', '/shared-page.js',
+  '/terms/', '/terms/index.html', '/privacy/', '/privacy/index.html',
+  '/blog/', '/blog/index.html', '/blog/inventory-system.html', '/blog/custom-vs-ready.html', '/blog/ops-system-checklist.html',
+  '/industries/', '/industries/index.html', '/industries/retail.html', '/industries/clinic.html', '/industries/restaurant.html', '/industries/contracting.html',
+  '/dashboard/', '/dashboard/index.html', '/manifest.webmanifest', '/icon.svg', '/icon-192.png', '/icon-512.png', '/icon-512-maskable.png'
+];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(ASSETS)).then(() => self.skipWaiting()));
@@ -17,7 +23,7 @@ function isNavigate(req) {
 }
 
 function isShellScript(url) {
-  return /\/(catalog|auth|terms|activity)\.js$/.test(url.pathname);
+  return /\/(catalog|auth|terms|activity|shared-page)\.js$/.test(url.pathname) || /\/shared-page\.css$/.test(url.pathname);
 }
 
 function offlineShellFor(url) {
@@ -25,6 +31,8 @@ function offlineShellFor(url) {
   if (path.indexOf('/dashboard') === 0) return '/dashboard/index.html';
   if (path.indexOf('/terms') === 0) return '/terms/index.html';
   if (path.indexOf('/privacy') === 0) return '/privacy/index.html';
+  if (path.indexOf('/blog') === 0) return '/blog/index.html';
+  if (path.indexOf('/industries') === 0) return '/industries/index.html';
   return '/index.html';
 }
 
