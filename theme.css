@@ -148,6 +148,18 @@ html[data-theme="night"] h1,
 html[data-theme="night"] h2,
 html[data-theme="night"] h3{color:var(--ink)}
 
+/* Mid-page CTA stays high-contrast on dark band in both themes */
+.mid-cta,
+.mid-cta h3,
+.mid-cta p{color:#FFFFFF}
+html[data-theme="night"] .mid-cta h3,
+html[data-theme="soft"] .mid-cta h3,
+:root .mid-cta h3{color:#FFFFFF !important}
+html[data-theme="night"] .mid-cta p,
+html[data-theme="soft"] .mid-cta p,
+:root .mid-cta p{color:rgba(255,255,255,.92) !important}
+.mid-cta .btn-ghost{color:#FFFFFF !important;border-color:rgba(255,255,255,.55) !important}
+
 html,body,header,.panel,.card,.login-card,.btn-ghost,.lang-btn,.theme-icon-btn,input,textarea,select{
   transition:background-color .2s ease, color .2s ease, border-color .2s ease, box-shadow .2s ease;
 }

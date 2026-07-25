@@ -162,13 +162,13 @@
 }
 </script>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;500;600;700&family=Tajawal:wght@500;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap">
-<link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;500;600;700&family=Tajawal:wght@500;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/theme.css?v=81">
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/theme.css?v=94">
 <script src="/catalog.js"></script>
 <script src="/terms.js"></script>
 <script src="/activity.js"></script>
-<script src="/theme.js?v=81"></script>
+<script src="/theme.js?v=94"></script>
 <style>
 :root{
   --ink:#10233A;--navy:#16324F;--harbor:#2A6F7A;--copper:#C45C26;--sand:#E8A05A;
@@ -190,9 +190,9 @@ html{scroll-behavior:smooth}
 section[id],#contact{scroll-margin-top:84px}
 body{
   background:var(--bg);color:var(--ink);
-  font-family:'Readex Pro','Tajawal',sans-serif;line-height:1.75;overflow-x:hidden;
+  font-family:'IBM Plex Sans Arabic','IBM Plex Sans',sans-serif;line-height:1.75;overflow-x:hidden;
 }
-body.lang-en{font-family:'Space Grotesk',sans-serif}
+body.lang-en{font-family:'IBM Plex Sans','IBM Plex Sans Arabic',sans-serif}
 body::before{
   content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
   background:
@@ -208,8 +208,8 @@ body::after{
   background-size:48px 48px;
 }
 .wrap{max-width:1180px;margin:0 auto;padding:0 28px;position:relative;z-index:1}
-h1,h2,h3,.logo,.brand-mark{font-family:'Tajawal',sans-serif;letter-spacing:-.02em}
-body.lang-en h1,body.lang-en h2,body.lang-en h3,body.lang-en .logo,body.lang-en .brand-mark{font-family:'Space Grotesk',sans-serif}
+h1,h2,h3,.logo,.brand-mark{font-family:'IBM Plex Sans Arabic','IBM Plex Sans',sans-serif;letter-spacing:-.01em;font-weight:700}
+body.lang-en h1,body.lang-en h2,body.lang-en h3,body.lang-en .logo,body.lang-en .brand-mark{font-family:'IBM Plex Sans','IBM Plex Sans Arabic',sans-serif}
 a{color:inherit;text-decoration:none}
 button,input,select,textarea{font:inherit}
 
@@ -671,8 +671,8 @@ section{padding:100px 0;position:relative;z-index:1}
 
 .site-note{border-top:1.5px solid var(--line);padding:16px 18px;text-align:center;font-size:.9rem;font-weight:600;color:var(--muted);position:relative;z-index:1}
 footer{border-top:1.5px solid var(--line);padding:48px 0 36px;text-align:center;color:var(--muted);font-size:.92rem;position:relative;z-index:1}
-.footer-brand{font-family:'Tajawal',sans-serif;font-weight:800;color:var(--ink);font-size:1.55rem;margin-bottom:8px}
-body.lang-en .footer-brand{font-family:'Space Grotesk',sans-serif}
+.footer-brand{font-family:'IBM Plex Sans Arabic','IBM Plex Sans',sans-serif;font-weight:700;color:var(--ink);font-size:1.55rem;margin-bottom:8px}
+body.lang-en .footer-brand{font-family:'IBM Plex Sans','IBM Plex Sans Arabic',sans-serif}
 .footer-links{display:flex;gap:18px;justify-content:center;margin-top:12px;flex-wrap:wrap}
 .footer-links a:hover{color:var(--copper)}
 .reveal{opacity:0;transform:translateY(22px);transition:opacity .75s ease,transform .75s ease}
@@ -824,18 +824,25 @@ body.pay-paused .pay-public-entry{display:none!important}
   margin:0;padding:32px 0;
   background:#10233A;
   background:linear-gradient(105deg,#0C1B2E 0%,#16324F 55%,#1A4554 100%);
-  border-block:1px solid rgba(255,255,255,.1);
-  color:#F4F7FA;
+  border-block:1px solid rgba(255,255,255,.14);
+  color:#F4F7FA !important;
 }
 .mid-cta .wrap{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
-.mid-cta h3{color:#F4F7FA;font-size:1.2rem;margin:0 0 6px}
-.mid-cta p{color:rgba(244,247,250,.88);margin:0;font-size:.92rem}
-.mid-cta .btn-primary{background:var(--copper);color:#fff;border:none}
-.mid-cta .btn-primary:hover{background:#A84C1E;color:#fff}
-.mid-cta .btn-ghost{
-  background:transparent;color:#F4F7FA;border:1.5px solid rgba(244,247,250,.45)
+.mid-cta h3{
+  color:#FFFFFF !important;
+  font-size:1.25rem;margin:0 0 8px;font-weight:700;
+  text-shadow:0 1px 0 rgba(0,0,0,.25);
 }
-.mid-cta .btn-ghost:hover{background:rgba(244,247,250,.1);border-color:#F4F7FA;color:#fff}
+.mid-cta p{
+  color:rgba(255,255,255,.92) !important;
+  margin:0;font-size:.95rem;line-height:1.65;
+}
+.mid-cta .btn-primary{background:var(--copper);color:#fff !important;border:none}
+.mid-cta .btn-primary:hover{background:#A84C1E;color:#fff !important}
+.mid-cta .btn-ghost{
+  background:transparent;color:#FFFFFF !important;border:1.5px solid rgba(255,255,255,.55)
+}
+.mid-cta .btn-ghost:hover{background:rgba(255,255,255,.12);border-color:#FFFFFF;color:#fff !important}
 .plan-guide{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:22px}
 .plan-guide article{padding:18px 16px}
 @media (max-width:900px){
@@ -862,14 +869,14 @@ body.pay-paused .pay-public-entry{display:none!important}
   <nav class="wrap">
     <a class="logo" href="/" data-ar-html='را<em>سخ</em>' data-en-html='Ra<em>seekh</em>'>را<em>سخ</em></a>
     <div class="nav-links" id="navLinks">
-      <a href="#services" data-ar="خدماتنا" data-en="Services">خدماتنا</a>
+      <a href="#services" data-ar="خدماتنا" data-en="Our services">خدماتنا</a>
       <a href="#work" data-ar="نماذج" data-en="Screens">نماذج</a>
       <a href="#estimate" data-ar="تقدير" data-en="Estimate">تقدير</a>
       <a href="/features/" data-ar="مزايا" data-en="Features">مزايا</a>
       <a href="/industries/" data-ar="قطاعات" data-en="Industries">قطاعات</a>
       <a href="/blog/" data-ar="مدونة" data-en="Blog">مدونة</a>
       <a href="/help/" data-ar="مساعدة" data-en="Help">مساعدة</a>
-      <a href="#faq" data-ar="أسئلة" data-en="FAQ">أسئلة</a>
+      <a href="#faq" data-ar="أسئلة" data-en="Frequently asked questions">أسئلة</a>
       <a href="#contact" data-ar="تواصل" data-en="Contact">تواصل</a>
       <a href="#pay" class="pay-public-entry" data-ar="سداد" data-en="Pay">سداد</a>
     </div>
@@ -956,22 +963,22 @@ body.pay-paused .pay-public-entry{display:none!important}
   <div class="hero-visual" aria-hidden="true"></div>
   <div class="wrap hero-content">
     <div class="brand-mark" data-ar-html='را<span>سخ</span>' data-en-html='Ra<span>seekh</span>'>را<span>سخ</span></div>
-    <h1 data-ar="من الطلب… إلى نظام يعمل" data-en="From request… to a running system">من الطلب… إلى نظام يعمل</h1>
-    <p data-ar="نسخة للمؤسسات، برمجة، مواقع، مخزون، وأنظمة حسب احتياجكم — نراجع الطلب ونرسل عرض سعر." data-en="Institution edition, programming, websites, inventory, and systems to your need — we review and send a quote.">نسخة للمؤسسات، برمجة، مواقع، مخزون، وأنظمة حسب احتياجكم — نراجع الطلب ونرسل عرض سعر.</p>
+    <h1 data-ar="من طلبكم… إلى نظام تشغيلي جاهز" data-en="From your request… to an operational system">من طلبكم… إلى نظام تشغيلي جاهز</h1>
+    <p data-ar="نقدّم حلول البرمجة، وتطوير المواقع، وإدارة المخزون، والأنظمة التشغيلية، إضافةً إلى نسخة المؤسسات، وفق احتياج منشأتكم. نراجع طلبكم ونوافيكم بعرض سعر مكتوب." data-en="We provide programming, website development, inventory management, operational systems, and an Institution edition tailored to your organization. We review your request and issue a written quote.">نقدّم حلول البرمجة، وتطوير المواقع، وإدارة المخزون، والأنظمة التشغيلية، إضافةً إلى نسخة المؤسسات، وفق احتياج منشأتكم. نراجع طلبكم ونوافيكم بعرض سعر مكتوب.</p>
     <div class="hero-cta-block">
       <form class="hero-quote" id="heroQuoteForm" autocomplete="off">
         <select id="heroQuoteType" data-ar-aria="نوع الخدمة" data-en-aria="Service type" aria-label="نوع الخدمة">
-          <option value="maintenance" data-ar="صيانة مواقع" data-en="Website maintenance">صيانة مواقع</option>
-          <option value="web-dev" data-ar="تطوير مواقع" data-en="Website development">تطوير مواقع</option>
-          <option value="programming" data-ar="برمجة / تعديل" data-en="Coding / changes" selected>برمجة / تعديل</option>
-          <option value="inventory" data-ar="تطبيق مخزون" data-en="Inventory app">تطبيق مخزون</option>
-          <option value="business" data-ar="نسخة للمؤسسات" data-en="Institution edition">نسخة للمؤسسات</option>
-          <option value="systems" data-ar="أنظمة ولوحات" data-en="Systems & dashboards">أنظمة ولوحات</option>
-          <option value="api" data-ar="ربط API" data-en="API & integrations">ربط API</option>
+          <option value="maintenance" data-ar="صيانة المواقع الإلكترونية" data-en="Website maintenance">صيانة المواقع الإلكترونية</option>
+          <option value="web-dev" data-ar="تطوير المواقع الإلكترونية" data-en="Website development">تطوير المواقع الإلكترونية</option>
+          <option value="programming" data-ar="خدمات البرمجة وتعديل الكود" data-en="Coding / changes" selected>خدمات البرمجة وتعديل الكود</option>
+          <option value="inventory" data-ar="تطبيق إدارة المخزون" data-en="Inventory management app">تطبيق إدارة المخزون</option>
+          <option value="business" data-ar="نسخة المؤسسات" data-en="Institution edition">نسخة المؤسسات</option>
+          <option value="systems" data-ar="الأنظمة ولوحات التحكم" data-en="Systems and dashboards">الأنظمة ولوحات التحكم</option>
+          <option value="api" data-ar="ربط واجهات البرمجة (API)" data-en="API connections and integrations">ربط واجهات البرمجة (API)</option>
           <option value="hardware" data-ar="أجهزة (الرياض فقط)" data-en="Hardware (Riyadh only)">أجهزة (الرياض فقط)</option>
         </select>
-        <input type="text" id="heroQuoteMsg" required maxlength="220" data-ar-placeholder="صف طلبكم في سطر واحد" data-en-placeholder="Describe your request in one line" placeholder="صف طلبكم في سطر واحد" data-ar-aria="وصف الطلب" data-en-aria="Request summary" aria-label="وصف الطلب">
-        <button class="btn btn-primary" type="submit" id="heroQuoteBtn" data-ar="اطلب عرض سعر" data-en="Request a quote">اطلب عرض سعر</button>
+        <input type="text" id="heroQuoteMsg" required maxlength="220" data-ar-placeholder="اكتبوا ملخص الطلب في سطر واحد" data-en-placeholder="Summarize your request in one line" placeholder="اكتبوا ملخص الطلب في سطر واحد" data-ar-aria="وصف الطلب" data-en-aria="Request summary" aria-label="وصف الطلب">
+        <button class="btn btn-primary" type="submit" id="heroQuoteBtn" data-ar="اطلبوا عرض سعر" data-en="Request a quote">اطلبوا عرض سعر</button>
         <label class="check" for="heroPurchaseTermsCheck">
           <input type="checkbox" id="heroPurchaseTermsCheck" required>
           <span class="check-text">
@@ -982,17 +989,17 @@ body.pay-paused .pay-public-entry{display:none!important}
         </label>
       </form>
       <div class="hero-note">
-        <a href="#contact" id="heroOpenFullForm" data-ar="أو افتحوا النموذج الكامل" data-en="Or open the full form">أو افتحوا النموذج الكامل</a>
+        <a href="#contact" id="heroOpenFullForm" data-ar="أو انتقلوا إلى النموذج الكامل" data-en="Or go to the full form">أو انتقلوا إلى النموذج الكامل</a>
         <span aria-hidden="true">·</span>
-        <a href="#pricing" data-ar="قارنوا الباقات" data-en="Compare plans">قارنوا الباقات</a>
+        <a href="#pricing" data-ar="قارنوا مسارات الأسعار" data-en="Compare pricing paths">قارنوا مسارات الأسعار</a>
         <span aria-hidden="true">·</span>
         <a href="/terms/" id="heroShortTermsLink" data-ar="الشروط" data-en="Terms">الشروط</a>
       </div>
       <div class="trust-strip reveal" aria-label="Trust signals">
-        <article><strong data-ar="تقدير أولي" data-en="Quick estimate">تقدير أولي</strong><span data-ar="حاسبة تقريبية قبل إرسال الطلب" data-en="Indicative calculator before you send a request">حاسبة تقريبية قبل إرسال الطلب</span></article>
-        <article><strong data-ar="نطاق مكتوب" data-en="Written scope">نطاق مكتوب</strong><span data-ar="قبل التنفيذ — واضح ومتفق عليه" data-en="Before build — clear and agreed">قبل التنفيذ — واضح ومتفق عليه</span></article>
-        <article><strong data-ar="عربي / EN" data-en="AR / EN">عربي / EN</strong><span data-ar="واجهة الموقع وحساب العميل" data-en="Site and client account UI">واجهة الموقع وحساب العميل</span></article>
-        <article><strong data-ar="لوحة عميل" data-en="Client board">لوحة عميل</strong><span data-ar="متابعة حالة الطلب خطوة بخطوة" data-en="Track request status step by step">متابعة حالة الطلب خطوة بخطوة</span></article>
+        <article><strong data-ar="تقدير مبدئي" data-en="Initial estimate">تقدير مبدئي</strong><span data-ar="حاسبة إرشادية قبل إرسال الطلب" data-en="An indicative calculator before you submit">حاسبة إرشادية قبل إرسال الطلب</span></article>
+        <article><strong data-ar="نطاق مكتوب" data-en="Written scope">نطاق مكتوب</strong><span data-ar="يُعتمد قبل التنفيذ بصورة واضحة ومتفق عليها" data-en="Confirmed before build — clear and agreed">يُعتمد قبل التنفيذ بصورة واضحة ومتفق عليها</span></article>
+        <article><strong data-ar="عربي / EN" data-en="AR / EN">عربي / EN</strong><span data-ar="واجهة الموقع وحساب العميل بالعربية والإنجليزية" data-en="Site and client account in Arabic and English">واجهة الموقع وحساب العميل بالعربية والإنجليزية</span></article>
+        <article><strong data-ar="لوحة العميل" data-en="Client dashboard">لوحة العميل</strong><span data-ar="متابعة حالة الطلب مرحلياً وبوضوح" data-en="Track request status by stage, clearly">متابعة حالة الطلب مرحلياً وبوضوح</span></article>
       </div>
     </div>
   </div>
@@ -1000,56 +1007,56 @@ body.pay-paused .pay-public-entry{display:none!important}
 
 <div class="wrap">
   <div class="promise-line reveal">
-    <span data-ar="صيانة مواقع" data-en="Maintenance">صيانة مواقع</span>
-    <span data-ar="برمجة مخصصة" data-en="Custom coding">برمجة مخصصة</span>
-    <span data-ar="نسخة للمؤسسات" data-en="Institution edition">نسخة للمؤسسات</span>
-    <span data-ar="متابعة من حساب العميل" data-en="Track in client account">متابعة من حساب العميل</span>
+    <span data-ar="صيانة المواقع الإلكترونية" data-en="Maintenance">صيانة المواقع الإلكترونية</span>
+    <span data-ar="برمجة مخصّصة" data-en="Custom programming">برمجة مخصّصة</span>
+    <span data-ar="نسخة المؤسسات" data-en="Institution edition">نسخة المؤسسات</span>
+    <span data-ar="المتابعة عبر حساب العميل" data-en="Track via the client account">المتابعة عبر حساب العميل</span>
   </div>
 </div>
 
 <section id="services">
   <div class="wrap">
     <div class="section-head reveal">
-      <div class="eyebrow" data-ar="خدماتنا" data-en="Services">خدماتنا</div>
-      <h2 data-ar="صيانة، برمجة، مخزون، وأنظمة" data-en="Maintenance, coding, inventory, and systems">صيانة، برمجة، مخزون، وأنظمة</h2>
-      <p data-ar="مسار واحد واضح — التفاصيل في البنود أدناه." data-en="One clear path — details in the items below.">مسار واحد واضح — التفاصيل في البنود أدناه.</p>
+      <div class="eyebrow" data-ar="خدماتنا" data-en="Our services">خدماتنا</div>
+      <h2 data-ar="صيانة المواقع، والبرمجة، والمخزون، والأنظمة التشغيلية" data-en="Website maintenance, programming, inventory, and operational systems">صيانة المواقع، والبرمجة، والمخزون، والأنظمة التشغيلية</h2>
+      <p data-ar="نقدّم مساراً واضحاً للخدمة؛ وتجدون تفاصيل كل بند فيما يلي." data-en="A clear service path — details for each item follow below.">نقدّم مساراً واضحاً للخدمة؛ وتجدون تفاصيل كل بند فيما يلي.</p>
     </div>
     <div class="catalog-rail-wrap services-rail-wrap reveal">
       <button type="button" class="catalog-nav catalog-nav-prev" id="servicesPrev" data-ar-aria="السابق" data-en-aria="Previous" aria-label="السابق">‹</button>
       <div class="services-grid four catalog-rail services-rail" id="programming" tabindex="0" role="list" data-ar-aria="خدماتنا" data-en-aria="Our services" aria-label="خدماتنا">
       <article class="service-block" role="listitem">
-        <h3 data-ar="صيانة المواقع" data-en="Website maintenance">صيانة المواقع</h3>
-        <p data-ar="متابعة دورية لموقعكم الحالي بدون إعادة بناء." data-en="Ongoing care for your current site — no rebuild required.">متابعة دورية لموقعكم الحالي بدون إعادة بناء.</p>
+        <h3 data-ar="صيانة المواقع الإلكترونية" data-en="Website maintenance">صيانة المواقع الإلكترونية</h3>
+        <p data-ar="متابعة دورية لموقعكم الحالي دون الحاجة إلى إعادة بنائه." data-en="Ongoing care for your current website without requiring a rebuild.">متابعة دورية لموقعكم الحالي دون الحاجة إلى إعادة بنائه.</p>
       </article>
       <article class="service-block" role="listitem">
-        <h3 data-ar="تطوير مواقع" data-en="Website development">تطوير مواقع</h3>
-        <p data-ar="موقع جديد جاهز للتشغيل — متجاوب ونماذج تواصل." data-en="A new site ready to launch — responsive with contact forms.">موقع جديد جاهز للتشغيل — متجاوب ونماذج تواصل.</p>
+        <h3 data-ar="تطوير المواقع الإلكترونية" data-en="Website development">تطوير المواقع الإلكترونية</h3>
+        <p data-ar="تطوير موقع جديد جاهز للتشغيل، متوافق مع الأجهزة المختلفة، ويتضمن نماذج تواصل." data-en="A new website ready to launch, responsive across devices, with contact forms.">تطوير موقع جديد جاهز للتشغيل، متوافق مع الأجهزة المختلفة، ويتضمن نماذج تواصل.</p>
       </article>
       <article class="service-block" role="listitem">
-        <h3 data-ar="تعديل برمجة" data-en="Code changes">تعديل برمجة</h3>
-        <p data-ar="إصلاحات ومزايا على مشروعكم بعد مراجعة الكود." data-en="Fixes and features on your project after a code review.">إصلاحات ومزايا على مشروعكم بعد مراجعة الكود.</p>
+        <h3 data-ar="تعديلات برمجية" data-en="Code changes">تعديلات برمجية</h3>
+        <p data-ar="إصلاح الأعطال وإضافة المزايا على مشروعكم الحالي بعد مراجعة الكود." data-en="Bug fixes and feature additions on your current project after a code review.">إصلاح الأعطال وإضافة المزايا على مشروعكم الحالي بعد مراجعة الكود.</p>
       </article>
       <article class="service-block" role="listitem">
-        <h3 data-ar="تطبيق مخزون" data-en="Inventory app">تطبيق مخزون</h3>
-        <p data-ar="منتجات وكميات وحركات وتنبيهات نقص حسب نشاطكم." data-en="Products, quantities, movements, and low-stock alerts for your workflow.">منتجات وكميات وحركات وتنبيهات نقص حسب نشاطكم.</p>
+        <h3 data-ar="تطبيق إدارة المخزون" data-en="Inventory management app">تطبيق إدارة المخزون</h3>
+        <p data-ar="إدارة المنتجات والكميات والحركات مع تنبيهات نقص المخزون بما يلائم نشاط منشأتكم." data-en="Manage products, quantities, and stock movements with low-stock alerts suited to your operations.">إدارة المنتجات والكميات والحركات مع تنبيهات نقص المخزون بما يلائم نشاط منشأتكم.</p>
       </article>
       <article class="service-block" role="listitem">
-        <h3 data-ar="أنظمة ولوحات" data-en="Systems & dashboards">أنظمة ولوحات</h3>
-        <p data-ar="إدارة وتقارير وصلاحيات مستخدمين واضحة." data-en="Ops, reports, and clear user roles.">إدارة وتقارير وصلاحيات مستخدمين واضحة.</p>
+        <h3 data-ar="الأنظمة ولوحات التحكم" data-en="Systems and dashboards">الأنظمة ولوحات التحكم</h3>
+        <p data-ar="إدارة تشغيلية وتقارير وصلاحيات مستخدمين محددة بوضوح." data-en="Operational management, reports, and clearly defined user roles.">إدارة تشغيلية وتقارير وصلاحيات مستخدمين محددة بوضوح.</p>
       </article>
       <article class="service-block" role="listitem">
-        <h3 data-ar="ربط API" data-en="API integrations">ربط API</h3>
-        <p data-ar="دفع ورسائل ومزامنة مع أنظمتكم الخارجية." data-en="Payments, messaging, and sync with your external systems.">دفع ورسائل ومزامنة مع أنظمتكم الخارجية.</p>
+        <h3 data-ar="ربط واجهات البرمجة (API)" data-en="API integrations">ربط واجهات البرمجة (API)</h3>
+        <p data-ar="ربط أنظمة الدفع والرسائل ومزامنة البيانات مع أنظمتكم الخارجية." data-en="Connect payments, messaging, and data sync with your external systems.">ربط أنظمة الدفع والرسائل ومزامنة البيانات مع أنظمتكم الخارجية.</p>
       </article>
       <a class="service-block featured" role="listitem" href="#contact" data-quote-type="business" data-quote-msg-ar="أرغب بنسخة للمؤسسات — موقع/نظام/مخزون حسب نشاط مؤسستنا." data-quote-msg-en="I want the Institution edition — site/system/inventory for our organization." style="text-decoration:none;color:inherit;display:block">
-        <h3 data-ar="نسخة للمؤسسات" data-en="Institution edition">نسخة للمؤسسات</h3>
-        <p data-ar="تشغيل ومخزون وصلاحيات أقسام حسب الهيكل." data-en="Ops, inventory, and department roles by structure.">تشغيل ومخزون وصلاحيات أقسام حسب الهيكل.</p>
+        <h3 data-ar="نسخة المؤسسات" data-en="Institution edition">نسخة المؤسسات</h3>
+        <p data-ar="حلول تشغيل ومخزون وصلاحيات للأقسام وفق الهيكل التنظيمي لمنشأتكم." data-en="Operations, inventory, and department roles aligned to your organizational structure.">حلول تشغيل ومخزون وصلاحيات للأقسام وفق الهيكل التنظيمي لمنشأتكم.</p>
       </a>
       </div>
       <button type="button" class="catalog-nav catalog-nav-next" id="servicesNext" data-ar-aria="التالي" data-en-aria="Next" aria-label="التالي">›</button>
     </div>
     <div class="reveal" style="margin-top:22px">
-      <a class="btn btn-ghost" href="/features/" data-ar="صفحات المزايا" data-en="Feature pages">صفحات المزايا</a>
+      <a class="btn btn-ghost" href="/features/" data-ar="استعراض صفحات المزايا" data-en="View feature pages">استعراض صفحات المزايا</a>
     </div>
   </div>
 </section>
@@ -1058,8 +1065,8 @@ body.pay-paused .pay-public-entry{display:none!important}
   <div class="wrap">
     <div class="section-head reveal">
       <div class="eyebrow" data-ar="الكتالوج" data-en="Catalog">الكتالوج</div>
-      <h2 data-ar="خدمات منشورة للطلب من الإدارة" data-en="Published services to request from admin">خدمات منشورة للطلب من الإدارة</h2>
-      <p data-ar="بطاقات حيّة من لوحة المالك — غير قائمة «خدماتنا» الثابتة أعلاه." data-en="Live cards from the owner dashboard — separate from the fixed Services list above.">بطاقات حيّة من لوحة المالك — غير قائمة «خدماتنا» الثابتة أعلاه.</p>
+      <h2 data-ar="خدمات منشورة متاحة للطلب" data-en="Published services available to request">خدمات منشورة متاحة للطلب</h2>
+      <p data-ar="بطاقات محدّثة من لوحة الإدارة، مستقلة عن قائمة «خدماتنا» الثابتة أعلاه." data-en="Live cards from the admin dashboard, separate from the fixed Services list above.">بطاقات محدّثة من لوحة الإدارة، مستقلة عن قائمة «خدماتنا» الثابتة أعلاه.</p>
     </div>
     <div class="catalog-rail-wrap reveal">
       <button type="button" class="catalog-nav catalog-nav-prev" id="productsPrev" data-ar-aria="السابق" data-en-aria="Previous" aria-label="السابق">‹</button>
@@ -1072,9 +1079,9 @@ body.pay-paused .pay-public-entry{display:none!important}
 <section id="suggestions">
   <div class="wrap">
     <div class="section-head reveal">
-      <div class="eyebrow" data-ar="باقات جاهزة" data-en="Ready packages">باقات جاهزة</div>
-      <h2 data-ar="مسارات جاهزة للطلب" data-en="Ready paths to request">مسارات جاهزة للطلب</h2>
-      <p data-ar="إن ظهرت باقات هنا فهي من كتالوج الإدارة." data-en="If packages appear here, they come from the admin catalog.">إن ظهرت باقات هنا فهي من كتالوج الإدارة.</p>
+      <div class="eyebrow" data-ar="الباقات الجاهزة" data-en="Ready packages">الباقات الجاهزة</div>
+      <h2 data-ar="مسارات جاهزة لتقديم الطلب" data-en="Ready paths for submitting a request">مسارات جاهزة لتقديم الطلب</h2>
+      <p data-ar="إن ظهرت باقات في هذا القسم فهي منشورة من كتالوج الإدارة." data-en="If packages appear in this section, they are published from the admin catalog.">إن ظهرت باقات في هذا القسم فهي منشورة من كتالوج الإدارة.</p>
     </div>
     <div class="catalog-rail-wrap reveal">
       <button type="button" class="catalog-nav catalog-nav-prev" id="suggestPrev" data-ar-aria="السابق" data-en-aria="Previous" aria-label="السابق">‹</button>
@@ -1088,73 +1095,73 @@ body.pay-paused .pay-public-entry{display:none!important}
   <div class="wrap">
     <div class="section-head reveal">
       <div class="eyebrow" data-ar="الأسعار" data-en="Pricing">الأسعار</div>
-      <h2 data-ar="قارن الباقات بوضوح" data-en="Compare plans clearly">قارن الباقات بوضوح</h2>
-      <p data-ar="ثلاث مسارات — السعر النهائي حسب نطاق مشروعكم." data-en="Three paths — final price depends on your project scope.">ثلاث مسارات — السعر النهائي حسب نطاق مشروعكم.</p>
+      <h2 data-ar="مقارنة واضحة لمسارات الخدمة" data-en="A clear comparison of service paths">مقارنة واضحة لمسارات الخدمة</h2>
+      <p data-ar="ثلاثة مسارات للاختيار؛ ويُحدَّد السعر النهائي وفق نطاق مشروعكم." data-en="Three paths to choose from; the final price is set according to your project scope.">ثلاثة مسارات للاختيار؛ ويُحدَّد السعر النهائي وفق نطاق مشروعكم.</p>
     </div>
     <div class="pricing-grid reveal">
       <article class="price-card">
         <div class="plan" data-ar="ابدأ" data-en="Start">ابدأ</div>
         <h3 data-ar="أساسي" data-en="Basic">أساسي</h3>
-        <p class="tagline" data-ar="مناسب لطلب صغير أو تعديل محدود." data-en="Best for a small request or limited change.">مناسب لطلب صغير أو تعديل محدود.</p>
+        <p class="tagline" data-ar="مناسب للطلبات الصغيرة أو التعديلات المحدودة." data-en="Suitable for small requests or limited changes.">مناسب للطلبات الصغيرة أو التعديلات المحدودة.</p>
         <ul>
           <li data-ar="استشارة أولية" data-en="Initial consult">استشارة أولية</li>
-          <li data-ar="تعديل برمجة بسيط" data-en="Simple code change">تعديل برمجة بسيط</li>
+          <li data-ar="تعديل برمجي محدود النطاق" data-en="A limited-scope code change">تعديل برمجي محدود النطاق</li>
           <li data-ar="عرض سعر بعد مراجعة الطلب" data-en="Quote after reviewing the request">عرض سعر بعد مراجعة الطلب</li>
         </ul>
-        <a class="btn btn-ghost" href="#contact" data-quote-type="programming" data-quote-msg-ar="أرغب بباقة أساسي — طلب صغير أو تعديل محدود." data-quote-msg-en="I want the Basic plan — small request or limited change." data-ar="ابدأ أساسي" data-en="Start Basic">ابدأ أساسي</a>
+        <a class="btn btn-ghost" href="#contact" data-quote-type="programming" data-quote-msg-ar="أرغب بباقة أساسي — طلب صغير أو تعديل محدود." data-quote-msg-en="I want the Basic plan — small request or limited change." data-ar="اطلبوا الباقة الأساسية" data-en="Request the Basic plan">اطلبوا الباقة الأساسية</a>
       </article>
       <article class="price-card featured">
         <div class="plan" data-ar="احترافي" data-en="Pro">احترافي</div>
         <h3 data-ar="احترافي" data-en="Pro">احترافي</h3>
-        <p class="tagline" data-ar="للمواقع والأنظمة متوسطة الحجم." data-en="For mid-size websites and systems.">للمواقع والأنظمة متوسطة الحجم.</p>
+        <p class="tagline" data-ar="مناسبة للمواقع والأنظمة متوسطة الحجم." data-en="Suitable for mid-size websites and systems.">مناسبة للمواقع والأنظمة متوسطة الحجم.</p>
         <ul>
-          <li data-ar="تطوير موقع أو لوحة" data-en="Website or dashboard build">تطوير موقع أو لوحة</li>
-          <li data-ar="تطبيق مخزون أو نظام تشغيلي متوسط" data-en="Inventory app or mid-size ops system">تطبيق مخزون أو نظام تشغيلي متوسط</li>
-          <li data-ar="صيانة بعد التسليم" data-en="Post-launch care">صيانة بعد التسليم</li>
-          <li data-ar="دعم عبر حساب العميل" data-en="Support via client account">دعم عبر حساب العميل</li>
+          <li data-ar="تطوير موقع أو لوحة تحكم" data-en="Website or dashboard build">تطوير موقع أو لوحة تحكم</li>
+          <li data-ar="تطبيق مخزون أو نظام تشغيلي متوسط الحجم" data-en="Inventory app or mid-size operational system">تطبيق مخزون أو نظام تشغيلي متوسط الحجم</li>
+          <li data-ar="صيانة بعد التسليم ضمن النطاق المتفق عليه" data-en="Post-delivery care within the agreed scope">صيانة بعد التسليم ضمن النطاق المتفق عليه</li>
+          <li data-ar="الدعم عبر حساب العميل" data-en="Support via the client account">الدعم عبر حساب العميل</li>
         </ul>
-        <a class="btn btn-primary" href="#contact" data-quote-type="inventory" data-quote-msg-ar="أرغب بباقة احترافي — موقع أو تطبيق مخزون / لوحة متوسطة." data-quote-msg-en="I want the Pro plan — mid-size site, inventory app, or dashboard." data-ar="اطلب احترافي" data-en="Choose Pro">اطلب احترافي</a>
+        <a class="btn btn-primary" href="#contact" data-quote-type="inventory" data-quote-msg-ar="أرغب بباقة احترافي — موقع أو تطبيق مخزون / لوحة متوسطة." data-quote-msg-en="I want the Pro plan — mid-size site, inventory app, or dashboard." data-ar="اطلبوا الباقة الاحترافية" data-en="Request the Pro plan">اطلبوا الباقة الاحترافية</a>
       </article>
       <article class="price-card">
         <div class="plan" data-ar="مؤسسات" data-en="Institutions">مؤسسات</div>
-        <h3 data-ar="نسخة للمؤسسات" data-en="Institution edition">نسخة للمؤسسات</h3>
-        <p class="tagline" data-ar="للمؤسسات والمنشآت التي تحتاج نظاماً أو مخزوناً أو عدة أقسام." data-en="For institutions and organizations that need a system, inventory, or multiple departments.">للمؤسسات والمنشآت التي تحتاج نظاماً أو مخزوناً أو عدة أقسام.</p>
+        <h3 data-ar="نسخة المؤسسات" data-en="Institution edition">نسخة المؤسسات</h3>
+        <p class="tagline" data-ar="مخصّصة للمؤسسات والمنشآت التي تحتاج نظاماً تشغيلياً أو مخزوناً أو تعدّد أقسام." data-en="Designed for institutions and organizations that need an operational system, inventory, or multiple departments.">مخصّصة للمؤسسات والمنشآت التي تحتاج نظاماً تشغيلياً أو مخزوناً أو تعدّد أقسام.</p>
         <ul>
-          <li data-ar="حلول تشغيلية للمؤسسة" data-en="Institutional operations solutions">حلول تشغيلية للمؤسسة</li>
-          <li data-ar="مخزون وصلاحيات أقسام" data-en="Inventory & department roles">مخزون وصلاحيات أقسام</li>
-          <li data-ar="ربط API وتكاملات" data-en="API & integrations">ربط API وتكاملات</li>
-          <li data-ar="متابعة أولوية ودعم مخصص" data-en="Priority follow-up and dedicated support">متابعة أولوية ودعم مخصص</li>
+          <li data-ar="حلول تشغيلية على مستوى المؤسسة" data-en="Institution-level operational solutions">حلول تشغيلية على مستوى المؤسسة</li>
+          <li data-ar="إدارة المخزون وصلاحيات الأقسام" data-en="Inventory management and department roles">إدارة المخزون وصلاحيات الأقسام</li>
+          <li data-ar="ربط واجهات البرمجة والتكاملات" data-en="API connections and integrations">ربط واجهات البرمجة والتكاملات</li>
+          <li data-ar="متابعة ذات أولوية ودعم مخصّص" data-en="Priority follow-up and dedicated support">متابعة ذات أولوية ودعم مخصّص</li>
         </ul>
-        <a class="btn btn-ghost" href="#contact" data-quote-type="business" data-quote-msg-ar="أرغب بنسخة للمؤسسات — حلول تشغيلية حسب نشاط مؤسستنا." data-quote-msg-en="I want the Institution edition — operational solutions for our organization." data-ar="اطلب نسخة المؤسسات" data-en="Request Institution edition">اطلب نسخة المؤسسات</a>
+        <a class="btn btn-ghost" href="#contact" data-quote-type="business" data-quote-msg-ar="أرغب بنسخة للمؤسسات — حلول تشغيلية حسب نشاط مؤسستنا." data-quote-msg-en="I want the Institution edition — operational solutions for our organization." data-ar="اطلبوا نسخة المؤسسات" data-en="Request the Institution edition">اطلبوا نسخة المؤسسات</a>
       </article>
     </div>
-    <p class="hint-inline reveal" id="pricingClarityNote" style="margin-top:16px;margin-bottom:0" data-ar="يشمل العرض المكتوب: النطاق والسعر والمدة. لا يشمل: أعمال خارج النطاق أو تراخيص طرف ثالث ما لم يُذكر. اختاروا المسار الأنسب أعلاه ثم أرسلوا الطلب من النموذج." data-en="The written quote covers: scope, price, and timeline. It does not cover: out-of-scope work or third-party licenses unless stated. Pick the best path above, then send the request from the form.">يشمل العرض المكتوب: النطاق والسعر والمدة. لا يشمل: أعمال خارج النطاق أو تراخيص طرف ثالث ما لم يُذكر. اختاروا المسار الأنسب أعلاه ثم أرسلوا الطلب من النموذج.</p>
+    <p class="hint-inline reveal" id="pricingClarityNote" style="margin-top:16px;margin-bottom:0" data-ar="يشمل العرض المكتوب: النطاق والسعر والمدة الزمنية. ولا يشمل الأعمال خارج النطاق أو تراخيص الأطراف الثالثة ما لم يُنصّ عليها. يُرجى اختيار المسار الأنسب أعلاه ثم إرسال الطلب عبر النموذج." data-en="The written quote covers scope, price, and timeline. It excludes out-of-scope work and third-party licenses unless stated. Please choose the most suitable path above, then submit the request via the form.">يشمل العرض المكتوب: النطاق والسعر والمدة الزمنية. ولا يشمل الأعمال خارج النطاق أو تراخيص الأطراف الثالثة ما لم يُنصّ عليها. يُرجى اختيار المسار الأنسب أعلاه ثم إرسال الطلب عبر النموذج.</p>
   </div>
 </section>
 
 <section class="band-mist" id="trust" style="padding:88px 0">
   <div class="wrap">
     <div class="section-head reveal">
-      <div class="eyebrow" data-ar="لماذا راسخ" data-en="Why Raseekh">لماذا راسخ</div>
-      <h2 data-ar="عمل واضح من أول رسالة" data-en="Clear work from the first message">عمل واضح من أول رسالة</h2>
-      <p data-ar="نوضّح النطاق والسعر والمدة قبل التنفيذ، ونبقي مسار الطلب ظاهرًا حتى التسليم." data-en="We clarify scope, price, and timeline before build — and keep the request path visible until delivery.">نوضّح النطاق والسعر والمدة قبل التنفيذ، ونبقي مسار الطلب ظاهرًا حتى التسليم.</p>
+      <div class="eyebrow" data-ar="لماذا تختارون راسخ" data-en="Why choose Raseekh">لماذا تختارون راسخ</div>
+      <h2 data-ar="وضوح في العمل منذ التواصل الأول" data-en="Clarity from the first contact">وضوح في العمل منذ التواصل الأول</h2>
+      <p data-ar="نحدّد النطاق والسعر والمدة قبل بدء التنفيذ، ونُبقي مسار الطلب واضحاً حتى التسليم." data-en="We define scope, price, and timeline before work begins, and keep the request path clear through delivery.">نحدّد النطاق والسعر والمدة قبل بدء التنفيذ، ونُبقي مسار الطلب واضحاً حتى التسليم.</p>
     </div>
     <div class="trust-proof reveal stagger">
       <article>
         <h3 data-ar="نطاق مكتوب" data-en="Written scope">نطاق مكتوب</h3>
-        <p data-ar="قبل البدء نثبّت المطلوب والمستثنى حتى لا يتغيّر الاتفاق أثناء التنفيذ." data-en="We lock what is included and excluded before work starts.">قبل البدء نثبّت المطلوب والمستثنى حتى لا يتغيّر الاتفاق أثناء التنفيذ.</p>
+        <p data-ar="قبل البدء نُثبّت ما يشمله الاتفاق وما يُستثنى منه؛ حمايةً لوضوح التنفيذ." data-en="Before work starts, we confirm what the agreement includes and excludes.">قبل البدء نُثبّت ما يشمله الاتفاق وما يُستثنى منه؛ حمايةً لوضوح التنفيذ.</p>
       </article>
       <article>
-        <h3 data-ar="تسعير قبل التنفيذ" data-en="Price before build">تسعير قبل التنفيذ</h3>
-        <p data-ar="تعرفون نطاق التكلفة أو الباقة قبل البدء — والتفاصيل النهائية تُثبت في العرض المكتوب." data-en="You see the cost or plan range before work starts — final details are locked in the written quote.">تعرفون نطاق التكلفة أو الباقة قبل البدء — والتفاصيل النهائية تُثبت في العرض المكتوب.</p>
+        <h3 data-ar="التسعير قبل التنفيذ" data-en="Pricing before build">التسعير قبل التنفيذ</h3>
+        <p data-ar="تطّلعون على نطاق التكلفة أو مسار الباقة قبل البدء، وتُعتمد التفاصيل النهائية في العرض المكتوب." data-en="You review the cost range or plan path before work starts; final details are confirmed in the written quote.">تطّلعون على نطاق التكلفة أو مسار الباقة قبل البدء، وتُعتمد التفاصيل النهائية في العرض المكتوب.</p>
       </article>
       <article>
-        <h3 data-ar="متابعة من لوحتكم" data-en="Track from your account">متابعة من لوحتكم</h3>
-        <p data-ar="ترفعون الطلب وتتابعون حالته من حساب العميل بدل الرسائل المتفرقة." data-en="Raise and track the request from the client account instead of scattered chats.">ترفعون الطلب وتتابعون حالته من حساب العميل بدل الرسائل المتفرقة.</p>
+        <h3 data-ar="المتابعة من لوحتكم" data-en="Tracking from your account">المتابعة من لوحتكم</h3>
+        <p data-ar="يمكنكم رفع الطلب ومتابعة حالته عبر حساب العميل بدلاً من الرسائل المتفرقة." data-en="Submit and track your request via the client account instead of scattered messages.">يمكنكم رفع الطلب ومتابعة حالته عبر حساب العميل بدلاً من الرسائل المتفرقة.</p>
       </article>
       <article>
-        <h3 data-ar="عربي وإنجليزي" data-en="Arabic and English">عربي وإنجليزي</h3>
-        <p data-ar="الموقع وحساب العميل يدعمان التبديل الفوري بين العربية والإنجليزية." data-en="The site and client account support instant AR/EN switching.">الموقع وحساب العميل يدعمان التبديل الفوري بين العربية والإنجليزية.</p>
+        <h3 data-ar="العربية والإنجليزية" data-en="Arabic and English">العربية والإنجليزية</h3>
+        <p data-ar="يدعم الموقع وحساب العميل التبديل الفوري بين العربية والإنجليزية." data-en="The website and client account support instant switching between Arabic and English.">يدعم الموقع وحساب العميل التبديل الفوري بين العربية والإنجليزية.</p>
       </article>
     </div>
   </div>
@@ -1163,9 +1170,9 @@ body.pay-paused .pay-public-entry{display:none!important}
 <section class="band-mist" id="cases" style="padding:88px 0">
   <div class="wrap">
     <div class="section-head reveal">
-      <div class="eyebrow" data-ar="نتائج تشغيلية نموذجية" data-en="Typical operational outcomes">نتائج تشغيلية نموذجية</div>
-      <h2 data-ar="كيف يبدو التحسّن في التشغيل" data-en="What ops improvement can look like">كيف يبدو التحسّن في التشغيل</h2>
-      <p data-ar="أمثلة افتراضية مبنية على متطلبات شائعة حسب القطاع — ليست تقييمات أو شهادات عملاء. أي مرجع حقيقي يُذكر فقط بموافقة العميل." data-en="Hypothetical examples based on common sector needs — not reviews or client testimonials. Real references are named only with client consent.">أمثلة افتراضية مبنية على متطلبات شائعة حسب القطاع — ليست تقييمات أو شهادات عملاء. أي مرجع حقيقي يُذكر فقط بموافقة العميل.</p>
+      <div class="eyebrow" data-ar="نتائج تشغيلية إرشادية" data-en="Indicative operational outcomes">نتائج تشغيلية إرشادية</div>
+      <h2 data-ar="كيف يظهر التحسّن في التشغيل" data-en="How operational improvement can appear">كيف يظهر التحسّن في التشغيل</h2>
+      <p data-ar="أمثلة افتراضية مبنية على متطلبات شائعة بحسب القطاع، وليست تقييمات أو شهادات عملاء. ولا يُذكر أي مرجع حقيقي إلا بموافقة العميل." data-en="Hypothetical examples based on common sector requirements — not reviews or client testimonials. Real references are named only with client consent.">أمثلة افتراضية مبنية على متطلبات شائعة بحسب القطاع، وليست تقييمات أو شهادات عملاء. ولا يُذكر أي مرجع حقيقي إلا بموافقة العميل.</p>
     </div>
     <div class="services-grid reveal stagger">
       <article class="service-block">
@@ -1200,35 +1207,35 @@ body.pay-paused .pay-public-entry{display:none!important}
 <section id="process">
   <div class="wrap">
     <div class="section-head reveal">
-      <div class="eyebrow" data-ar="دورة الحياة" data-en="Lifecycle">دورة الحياة</div>
-      <h2 data-ar="خمس مراحل من الطلب إلى التوسيع" data-en="Five stages from request to scale">خمس مراحل من الطلب إلى التوسيع</h2>
-      <p data-ar="مسار واضح يقلّل اللبس — ويغطي التطوير المستمر بعد التشغيل." data-en="A clear path that reduces confusion — and covers ongoing upgrades after go-live.">مسار واضح يقلّل اللبس — ويغطي التطوير المستمر بعد التشغيل.</p>
+      <div class="eyebrow" data-ar="دورة التنفيذ" data-en="Delivery lifecycle">دورة التنفيذ</div>
+      <h2 data-ar="خمس مراحل من تقديم الطلب حتى التوسيع" data-en="Five stages from request through expansion">خمس مراحل من تقديم الطلب حتى التوسيع</h2>
+      <p data-ar="مسار واضح يقلّل الالتباس، ويشمل التطوير المستمر بعد بدء التشغيل." data-en="A clear path that reduces ambiguity and covers ongoing development after go-live.">مسار واضح يقلّل الالتباس، ويشمل التطوير المستمر بعد بدء التشغيل.</p>
     </div>
     <div class="work-list reveal stagger">
       <div class="work-item">
         <div class="num">01</div>
         <h3 data-ar="الفهم" data-en="Discovery">الفهم</h3>
-        <p data-ar="نثبت الاحتياج والنطاق والمستثنى." data-en="We lock need, scope, and exclusions.">نثبت الاحتياج والنطاق والمستثنى.</p>
+        <p data-ar="نُثبّت الاحتياج والنطاق وما يُستثنى من الاتفاق." data-en="We confirm the need, scope, and exclusions.">نُثبّت الاحتياج والنطاق وما يُستثنى من الاتفاق.</p>
       </div>
       <div class="work-item">
         <div class="num">02</div>
         <h3 data-ar="التصميم" data-en="Design">التصميم</h3>
-        <p data-ar="شاشات وصلاحيات ومسار تشغيل متفق عليه." data-en="Screens, roles, and an agreed ops path.">شاشات وصلاحيات ومسار تشغيل متفق عليه.</p>
+        <p data-ar="تصميم الشاشات والصلاحيات ومسار التشغيل المتفق عليه." data-en="Screen design, roles, and an agreed operating path.">تصميم الشاشات والصلاحيات ومسار التشغيل المتفق عليه.</p>
       </div>
       <div class="work-item">
         <div class="num">03</div>
         <h3 data-ar="البناء" data-en="Build">البناء</h3>
-        <p data-ar="تنفيذ على مراحل مع تحديثات ظاهرة لكم." data-en="Phased build with visible updates for you.">تنفيذ على مراحل مع تحديثات ظاهرة لكم.</p>
+        <p data-ar="تنفيذ مرحلي مع تحديثات ظاهرة لجهتكم." data-en="A phased build with visible updates for your team.">تنفيذ مرحلي مع تحديثات ظاهرة لجهتكم.</p>
       </div>
       <div class="work-item">
         <div class="num">04</div>
         <h3 data-ar="التسليم" data-en="Deliver">التسليم</h3>
-        <p data-ar="تشغيل جاهز ودعم 30 يوماً ضمن النطاق." data-en="Go-live with 30 days of in-scope support.">تشغيل جاهز ودعم 30 يوماً ضمن النطاق.</p>
+        <p data-ar="تشغيل جاهز مع دعم لمدة ثلاثين يوماً ضمن النطاق المتفق عليه." data-en="Go-live with thirty days of in-scope support.">تشغيل جاهز مع دعم لمدة ثلاثين يوماً ضمن النطاق المتفق عليه.</p>
       </div>
       <div class="work-item">
         <div class="num">05</div>
         <h3 data-ar="التوسيع" data-en="Scale & upgrades">التوسيع</h3>
-        <p data-ar="ميزات جديدة أو توسيع بعد سنة — بعرض نطاق إضافي." data-en="New features or scale later — via an add-on scope quote.">ميزات جديدة أو توسيع بعد سنة — بعرض نطاق إضافي.</p>
+        <p data-ar="إضافة مزايا جديدة أو توسيع لاحق بموجب عرض نطاق إضافي." data-en="Add new features or expand later under an add-on scope quote.">إضافة مزايا جديدة أو توسيع لاحق بموجب عرض نطاق إضافي.</p>
       </div>
     </div>
   </div>
@@ -1237,30 +1244,30 @@ body.pay-paused .pay-public-entry{display:none!important}
 <section id="whats-new">
   <div class="wrap">
     <div class="section-head reveal">
-      <div class="eyebrow" data-ar="الآن في راسخ" data-en="Now on Raseekh">الآن في راسخ</div>
-      <h2 data-ar="ما يعمل لكم من أول يوم" data-en="What works for you from day one">ما يعمل لكم من أول يوم</h2>
-      <p data-ar="مسار واحد: اطلبوا عرض سعر وتابعوا الحالة من حساب العميل." data-en="One path: request a quote and track status from the client account.">مسار واحد: اطلبوا عرض سعر وتابعوا الحالة من حساب العميل.</p>
+      <div class="eyebrow" data-ar="ما يتوفر في راسخ الآن" data-en="Available on Raseekh now">ما يتوفر في راسخ الآن</div>
+      <h2 data-ar="ما يمكنكم الاستفادة منه منذ اليوم الأول" data-en="What you can use from day one">ما يمكنكم الاستفادة منه منذ اليوم الأول</h2>
+      <p data-ar="مسار واضح: اطلبوا عرض سعر مكتوب، ويمكنكم متابعة الحالة عبر حساب العميل عند الرغبة." data-en="A clear path: request a written quote, and optionally track status via the client account.">مسار واضح: اطلبوا عرض سعر مكتوب، ويمكنكم متابعة الحالة عبر حساب العميل عند الرغبة.</p>
     </div>
     <div class="now-rail reveal stagger">
       <article class="now-item">
         <span class="now-label" data-ar="عرض سعر" data-en="Quote">عرض سعر</span>
-        <h3 data-ar="طلب واضح بدون تسعير مبهم" data-en="A clear request — no vague pricing">طلب واضح بدون تسعير مبهم</h3>
-        <p data-ar="برمجة، مواقع، تطبيقات مخزون، أو أنظمة — من الصفحة أو حساب العميل." data-en="Coding, sites, inventory apps, or systems — from the site or client account.">برمجة، مواقع، تطبيقات مخزون، أو أنظمة — من الصفحة أو حساب العميل.</p>
+        <h3 data-ar="طلب واضح دون تسعير غير محدد" data-en="A clear request without vague pricing">طلب واضح دون تسعير غير محدد</h3>
+        <p data-ar="برمجة، مواقع، تطبيقات مخزون، أو أنظمة — عبر الصفحة أو حساب العميل." data-en="Programming, websites, inventory apps, or systems — via the site or client account.">برمجة، مواقع، تطبيقات مخزون، أو أنظمة — عبر الصفحة أو حساب العميل.</p>
       </article>
       <article class="now-item">
         <span class="now-label" data-ar="متابعة" data-en="Tracking">متابعة</span>
         <h3 data-ar="حالة الطلب ظاهرة في حسابكم" data-en="Request status visible in your account">حالة الطلب ظاهرة في حسابكم</h3>
-        <p data-ar="بدل الرسائل المتفرقة — تدخلون وترون الجديد وقيد المعالجة والمكتمل." data-en="Instead of scattered chats — sign in and see new, in progress, and done.">بدل الرسائل المتفرقة — تدخلون وترون الجديد وقيد المعالجة والمكتمل.</p>
+        <p data-ar="بدلاً من الرسائل المتفرقة، يمكنكم الدخول ومتابعة الطلبات الجديدة وقيد المعالجة والمكتملة." data-en="Instead of scattered messages, sign in to follow new, in-progress, and completed requests.">بدلاً من الرسائل المتفرقة، يمكنكم الدخول ومتابعة الطلبات الجديدة وقيد المعالجة والمكتملة.</p>
       </article>
       <article class="now-item">
         <span class="now-label" data-ar="اتفاق" data-en="Agreement">اتفاق</span>
-        <h3 data-ar="عربون وفق العرض المكتوب" data-en="Deposit per the written quote">عربون وفق العرض المكتوب</h3>
-        <p data-ar="طريقة الدفع تُتفق في العرض — السداد الإلكتروني العام من الموقع متوقف مؤقتاً." data-en="Payment method is agreed in the quote — public online checkout is temporarily paused.">طريقة الدفع تُتفق في العرض — السداد الإلكتروني العام من الموقع متوقف مؤقتاً.</p>
+        <h3 data-ar="العربون وفق العرض المكتوب" data-en="Deposit according to the written quote">العربون وفق العرض المكتوب</h3>
+        <p data-ar="تُتفق طريقة الدفع ضمن العرض المكتوب، علماً أن السداد الإلكتروني العام عبر الموقع متوقف مؤقتاً." data-en="Payment method is agreed in the written quote; public online checkout on the site is temporarily paused.">تُتفق طريقة الدفع ضمن العرض المكتوب، علماً أن السداد الإلكتروني العام عبر الموقع متوقف مؤقتاً.</p>
       </article>
     </div>
     <div class="now-foot reveal">
-      <a class="btn btn-primary" href="#contact" data-quote-type="business" data-quote-msg-ar="أرغب بنسخة للمؤسسات حسب نشاط مؤسستنا." data-quote-msg-en="I want the Institution edition for our organization." data-ar="نسخة للمؤسسات" data-en="Institution edition">نسخة للمؤسسات</a>
-      <a class="btn btn-ghost" href="#contact" data-quote-type="inventory" data-quote-msg-ar="أرغب بتطبيق مخزون حسب نشاطنا." data-quote-msg-en="I want an inventory app for our workflow." data-ar="تطبيق مخزون" data-en="Inventory app">تطبيق مخزون</a>
+      <a class="btn btn-primary" href="#contact" data-quote-type="business" data-quote-msg-ar="أرغب بنسخة للمؤسسات حسب نشاط مؤسستنا." data-quote-msg-en="I want the Institution edition for our organization." data-ar="نسخة المؤسسات" data-en="Institution edition">نسخة المؤسسات</a>
+      <a class="btn btn-ghost" href="#contact" data-quote-type="inventory" data-quote-msg-ar="أرغب بتطبيق مخزون حسب نشاطنا." data-quote-msg-en="I want an inventory app for our workflow." data-ar="تطبيق إدارة المخزون" data-en="Inventory management app">تطبيق إدارة المخزون</a>
       <a class="btn btn-ghost" href="/dashboard/" data-ar="دخول حساب العميل" data-en="Open client account">دخول حساب العميل</a>
     </div>
   </div>
@@ -1309,7 +1316,7 @@ body.pay-paused .pay-public-entry{display:none!important}
               </div>
               <div class="ui-mock-table">
                 <span><em data-ar="تعديل لوحة" data-en="Dashboard tweak">تعديل لوحة</em><span data-ar="اليوم" data-en="Today">اليوم</span><strong data-ar="جديد" data-en="New">جديد</strong></span>
-                <span><em data-ar="ربط API" data-en="API link">ربط API</em><span data-ar="أمس" data-en="Yesterday">أمس</span><strong style="color:var(--harbor)" data-ar="تنفيذ" data-en="Build">تنفيذ</strong></span>
+                <span><em data-ar="ربط واجهات البرمجة (API)" data-en="API link">ربط واجهات البرمجة (API)</em><span data-ar="أمس" data-en="Yesterday">أمس</span><strong style="color:var(--harbor)" data-ar="تنفيذ" data-en="Build">تنفيذ</strong></span>
                 <span><em data-ar="تقرير أسبوعي" data-en="Weekly report">تقرير أسبوعي</em><span>22</span><strong style="color:var(--ok)" data-ar="تم" data-en="Done">تم</strong></span>
               </div>
             </div>
@@ -1369,7 +1376,7 @@ body.pay-paused .pay-public-entry{display:none!important}
 <section id="estimate" style="padding:88px 0">
   <div class="wrap">
     <div class="section-head reveal">
-      <div class="eyebrow" data-ar="تقدير أولي" data-en="Quick estimate">تقدير أولي</div>
+      <div class="eyebrow" data-ar="تقدير مبدئي" data-en="Initial estimate">تقدير مبدئي</div>
       <h2 data-ar="نطاق تكلفة تقريبي قبل الطلب" data-en="Indicative cost range before you request">نطاق تكلفة تقريبي قبل الطلب</h2>
       <p data-ar="حاسبة إرشادية — العرض النهائي بعد مراجعة النطاق." data-en="Guidance only — final quote after scope review.">حاسبة إرشادية — العرض النهائي بعد مراجعة النطاق.</p>
     </div>
@@ -1380,9 +1387,9 @@ body.pay-paused .pay-public-entry{display:none!important}
             <span data-ar="نوع الحل" data-en="Solution type">نوع الحل</span>
             <select id="estimateType">
               <option value="web" data-ar="موقع أو لوحة" data-en="Website or dashboard">موقع أو لوحة</option>
-              <option value="inventory" data-ar="تطبيق مخزون" data-en="Inventory app">تطبيق مخزون</option>
+              <option value="inventory" data-ar="تطبيق إدارة المخزون" data-en="Inventory management app">تطبيق إدارة المخزون</option>
               <option value="system" data-ar="نظام تشغيلي" data-en="Ops system">نظام تشغيلي</option>
-              <option value="institution" data-ar="نسخة للمؤسسات" data-en="Institution edition">نسخة للمؤسسات</option>
+              <option value="institution" data-ar="نسخة المؤسسات" data-en="Institution edition">نسخة المؤسسات</option>
             </select>
           </label>
           <label class="field">
@@ -1699,12 +1706,12 @@ body.pay-paused .pay-public-entry{display:none!important}
 <div class="mid-cta" role="region" aria-label="Next steps">
   <div class="wrap">
     <div>
-      <h3 data-ar="جاهزون للخطوة التالية؟" data-en="Ready for the next step?">جاهزون للخطوة التالية؟</h3>
-      <p data-ar="راجعوا المزايا أو المساعدة، ثم أكملوا النموذج أسفل الصفحة." data-en="Review features or help, then complete the form at the bottom of the page.">راجعوا المزايا أو المساعدة، ثم أكملوا النموذج أسفل الصفحة.</p>
+      <h3 data-ar="هل أنتم جاهزون للخطوة التالية؟" data-en="Are you ready for the next step?">هل أنتم جاهزون للخطوة التالية؟</h3>
+      <p data-ar="يمكنكم مراجعة صفحات المزايا أو مركز المساعدة، ثم إكمال نموذج الطلب أسفل الصفحة." data-en="You may review the feature pages or help center, then complete the request form at the bottom of the page.">يمكنكم مراجعة صفحات المزايا أو مركز المساعدة، ثم إكمال نموذج الطلب أسفل الصفحة.</p>
     </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
-      <a class="btn btn-primary" href="#contact" data-ar="إلى نموذج الطلب" data-en="Go to request form">إلى نموذج الطلب</a>
-      <a class="btn btn-ghost" href="/features/" data-ar="صفحات المزايا" data-en="Feature pages">صفحات المزايا</a>
+      <a class="btn btn-primary" href="#contact" data-ar="الانتقال إلى نموذج الطلب" data-en="Go to the request form">الانتقال إلى نموذج الطلب</a>
+      <a class="btn btn-ghost" href="/features/" data-ar="استعراض صفحات المزايا" data-en="View feature pages">استعراض صفحات المزايا</a>
       <a class="btn btn-ghost" href="/help/" data-ar="المساعدة" data-en="Help">المساعدة</a>
     </div>
   </div>
@@ -1713,14 +1720,14 @@ body.pay-paused .pay-public-entry{display:none!important}
 <section id="faq">
   <div class="wrap">
     <div class="section-head reveal">
-      <div class="eyebrow" data-ar="أسئلة شائعة" data-en="FAQ">أسئلة شائعة</div>
-      <h2 data-ar="إجابات سريعة قبل الطلب" data-en="Quick answers before you request">إجابات سريعة قبل الطلب</h2>
-      <p data-ar="ما تحتاجونه لبدء عرض السعر بوضوح." data-en="What you need to start a clear quote.">ما تحتاجونه لبدء عرض السعر بوضوح.</p>
+      <div class="eyebrow" data-ar="الأسئلة الشائعة" data-en="Frequently asked questions">الأسئلة الشائعة</div>
+      <h2 data-ar="إجابات موجزة قبل تقديم الطلب" data-en="Brief answers before you submit a request">إجابات موجزة قبل تقديم الطلب</h2>
+      <p data-ar="ما يلزمكم لبدء طلب عرض السعر بوضوح." data-en="What you need to start a clear quote request.">ما يلزمكم لبدء طلب عرض السعر بوضوح.</p>
     </div>
     <div class="faq-list reveal">
       <details class="faq-item">
         <summary data-ar="كيف أحصل على عرض سعر؟" data-en="How do I get a quote?">كيف أحصل على عرض سعر؟</summary>
-        <p data-ar="اكتبوا احتياجكم من الصفحة أو حساب العميل. نراجع النطاق ونرد على بريدكم أو جوالكم." data-en="Send your need from the site or client account. We review scope and reply on your email or phone.">اكتبوا احتياجكم من الصفحة أو حساب العميل. نراجع النطاق ونرد على بريدكم أو جوالكم.</p>
+        <p data-ar="اكتبوا احتياجكم عبر الصفحة أو حساب العميل. نراجع النطاق ونردّ عليكم عبر البريد الإلكتروني أو رقم الجوال." data-en="Submit your need via the site or client account. We review the scope and respond by email or phone.">اكتبوا احتياجكم عبر الصفحة أو حساب العميل. نراجع النطاق ونردّ عليكم عبر البريد الإلكتروني أو رقم الجوال.</p>
       </details>
       <details class="faq-item">
         <summary data-ar="هل الأسعار ظاهرة على الخدمات؟" data-en="Are service prices listed?">هل الأسعار ظاهرة على الخدمات؟</summary>
@@ -1849,10 +1856,10 @@ body.pay-paused .pay-public-entry{display:none!important}
     </div>
 
     <div class="panel reveal" id="contact">
-      <h2 data-ar="اطلب عرض سعر" data-en="Request a quote">اطلب عرض سعر</h2>
-      <p data-ar="نراجع طلبكم ونرد على بريدكم أو جوالكم." data-en="We review your request and reply on your email or phone.">نراجع طلبكم ونرد على بريدكم أو جوالكم.</p>
-      <p class="hint-inline" style="margin-bottom:8px" data-ar="الرد المتوقع عادة خلال يوم عمل." data-en="Typical reply within one business day.">الرد المتوقع عادة خلال يوم عمل.</p>
-      <p class="hint-inline" style="margin-bottom:14px" data-ar="ساعات العمل المعتادة: الأحد–الخميس · الرياض / السعودية" data-en="Usual business hours: Sun–Thu · Riyadh / Saudi Arabia">ساعات العمل المعتادة: الأحد–الخميس · الرياض / السعودية</p>
+      <h2 data-ar="اطلبوا عرض سعر" data-en="Request a quote">اطلبوا عرض سعر</h2>
+      <p data-ar="نراجع طلبكم ونردّ عليكم عبر البريد الإلكتروني أو رقم الجوال." data-en="We review your request and respond via email or phone.">نراجع طلبكم ونردّ عليكم عبر البريد الإلكتروني أو رقم الجوال.</p>
+      <p class="hint-inline" style="margin-bottom:8px" data-ar="يُتوقَّع الرد عادةً خلال يوم عمل واحد." data-en="A reply is typically expected within one business day.">يُتوقَّع الرد عادةً خلال يوم عمل واحد.</p>
+      <p class="hint-inline" style="margin-bottom:14px" data-ar="ساعات العمل المعتادة: من الأحد إلى الخميس · الرياض، المملكة العربية السعودية" data-en="Usual business hours: Sunday to Thursday · Riyadh, Saudi Arabia">ساعات العمل المعتادة: من الأحد إلى الخميس · الرياض، المملكة العربية السعودية</p>
       <form class="form" id="contactForm" novalidate>
         <label class="field"><span data-ar="الاسم الكامل" data-en="Full name">الاسم الكامل</span>
           <input type="text" required data-ar-placeholder="الاسم الكامل" data-en-placeholder="Full name" placeholder="الاسم الكامل" id="contactName" autocomplete="name">
@@ -1881,21 +1888,21 @@ body.pay-paused .pay-public-entry{display:none!important}
         </label>
         <label class="field"><span data-ar="نوع الطلب" data-en="Request type">نوع الطلب</span>
           <select id="contactType">
-            <option value="maintenance" data-ar="صيانة مواقع" data-en="Website maintenance">صيانة مواقع</option>
-            <option value="web-dev" data-ar="تطوير مواقع" data-en="Website development">تطوير مواقع</option>
-            <option value="programming" data-ar="برمجة / تعديل" data-en="Coding / changes">برمجة / تعديل</option>
-            <option value="inventory" data-ar="تطبيق مخزون" data-en="Inventory app">تطبيق مخزون</option>
-            <option value="business" data-ar="نسخة للمؤسسات" data-en="Institution edition">نسخة للمؤسسات</option>
-            <option value="systems" data-ar="أنظمة ولوحات" data-en="Systems & dashboards">أنظمة ولوحات</option>
-            <option value="api" data-ar="ربط API" data-en="API & integrations">ربط API</option>
+            <option value="maintenance" data-ar="صيانة المواقع الإلكترونية" data-en="Website maintenance">صيانة المواقع الإلكترونية</option>
+            <option value="web-dev" data-ar="تطوير المواقع الإلكترونية" data-en="Website development">تطوير المواقع الإلكترونية</option>
+            <option value="programming" data-ar="خدمات البرمجة وتعديل الكود" data-en="Coding / changes">خدمات البرمجة وتعديل الكود</option>
+            <option value="inventory" data-ar="تطبيق إدارة المخزون" data-en="Inventory management app">تطبيق إدارة المخزون</option>
+            <option value="business" data-ar="نسخة المؤسسات" data-en="Institution edition">نسخة المؤسسات</option>
+            <option value="systems" data-ar="الأنظمة ولوحات التحكم" data-en="Systems and dashboards">الأنظمة ولوحات التحكم</option>
+            <option value="api" data-ar="ربط واجهات البرمجة (API)" data-en="API connections and integrations">ربط واجهات البرمجة (API)</option>
             <option value="hardware" data-ar="أجهزة (الرياض فقط)" data-en="Hardware (Riyadh only)">أجهزة (الرياض فقط)</option>
           </select>
         </label>
         <label class="field"><span data-ar="تفاصيل الطلب" data-en="Request details">تفاصيل الطلب</span>
-          <textarea required data-ar-placeholder="صف طلبكم باختصار" data-en-placeholder="Briefly describe your request" placeholder="صف طلبكم باختصار" id="contactMsg"></textarea>
+          <textarea required data-ar-placeholder="اكتبوا تفاصيل طلبكم باختصار" data-en-placeholder="Describe your request briefly" placeholder="اكتبوا تفاصيل طلبكم باختصار" id="contactMsg"></textarea>
         </label>
         <p class="hint-inline" id="contactTrustLine" style="margin:0 0 10px">
-          <span data-ar="لا نبيع بياناتكم · نستخدمها للرد على طلبكم فقط · راجعوا " data-en="We do not sell your data · used only to reply to your request · see ">لا نبيع بياناتكم · نستخدمها للرد على طلبكم فقط · راجعوا </span>
+          <span data-ar="لا نبيع بياناتكم، ونستخدمها للرد على طلبكم فقط. راجعوا " data-en="We do not sell your data and use it only to reply to your request. See ">لا نبيع بياناتكم، ونستخدمها للرد على طلبكم فقط. راجعوا </span>
           <a href="/privacy/" data-ar="سياسة الخصوصية" data-en="Privacy Policy">سياسة الخصوصية</a>
           <span aria-hidden="true"> · </span>
           <a href="/terms/" id="openShortTermsLink" data-ar="ملخص الشروط" data-en="Terms summary">ملخص الشروط</a>
@@ -1929,14 +1936,14 @@ body.pay-paused .pay-public-entry{display:none!important}
   </div>
 </div>
 
-<div class="site-note"><span data-ar="راسخ — صيانة وبرمجة وأنظمة تشغيل من الطلب حتى التسليم." data-en="Raseekh — maintenance, coding, and systems from request to delivery.">راسخ — صيانة وبرمجة وأنظمة تشغيل من الطلب حتى التسليم.</span></div>
+<div class="site-note"><span data-ar="راسخ — خدمات الصيانة والبرمجة والأنظمة التشغيلية من الطلب حتى التسليم." data-en="Raseekh — maintenance, programming, and operational systems from request through delivery.">راسخ — خدمات الصيانة والبرمجة والأنظمة التشغيلية من الطلب حتى التسليم.</span></div>
 
 <footer>
   <div class="wrap">
     <div class="footer-brand" data-ar-html='را<em style="color:var(--copper);font-style:normal">سخ</em>' data-en-html='Ra<em style="color:var(--copper);font-style:normal">seekh</em>'>را<em style="color:var(--copper);font-style:normal">سخ</em></div>
-    <div data-ar="خدمات رقمية وأنظمة © 2026" data-en="Digital services & systems © 2026">خدمات رقمية وأنظمة © 2026</div>
+    <div data-ar="خدمات رقمية وأنظمة تشغيلية © 2026" data-en="Digital services and operational systems © 2026">خدمات رقمية وأنظمة تشغيلية © 2026</div>
     <div class="footer-links">
-      <a href="#services" data-ar="الخدمات" data-en="Services">الخدمات</a>
+      <a href="#services" data-ar="الخدمات" data-en="Our services">الخدمات</a>
       <a href="#work" data-ar="نماذج" data-en="Screens">نماذج</a>
       <a href="#cases" data-ar="حالات" data-en="Cases">حالات</a>
       <a href="/features/" data-ar="مزايا" data-en="Features">مزايا</a>
@@ -1947,7 +1954,7 @@ body.pay-paused .pay-public-entry{display:none!important}
       <a href="/updates/" data-ar="تحديثات" data-en="Updates">تحديثات</a>
       <a href="#about" data-ar="من نحن" data-en="About">من نحن</a>
       <a href="#estimate" data-ar="تقدير" data-en="Estimate">تقدير</a>
-      <a href="#faq" data-ar="أسئلة" data-en="FAQ">أسئلة</a>
+      <a href="#faq" data-ar="أسئلة" data-en="Frequently asked questions">أسئلة</a>
       <a href="#contact" data-ar="تواصل" data-en="Contact">تواصل</a>
       <a href="/dashboard/?demo=1" data-ar="تجربة" data-en="Demo">تجربة</a>
       <a href="/privacy/" data-ar="الخصوصية" data-en="Privacy">الخصوصية</a>
