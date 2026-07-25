@@ -2256,10 +2256,12 @@ body.is-admin .client-only{display:none!important}
     closeRequestConfirm();
     showToast(t('جاري إرسال الطلب...', 'Sending request...'));
     const finish = (delivery) => {
-      if (delivery && delivery.delivered) {
+      if (delivery && (delivery.delivered || delivery.cloud)) {
         showToast(t('تم إرسال طلب عرض السعر', 'Quote request sent'));
+      } else if (delivery && delivery.pendingNotify) {
+        showToast(t('استلمنا الطلب — إشعار الإدارة قيد التفعيل', 'Request received — admin notify is activating'));
       } else {
-        showToast(t('حُفظ الطلب محلياً — تأكدوا من بريد الإشعار/السحابة', 'Saved locally — check notify email/cloud setup'));
+        showToast(t('حُفظ الطلب — تابعوه من طلباتي', 'Request saved — track it under My requests'));
       }
       renderAll();
       switchPage('requests');
@@ -2275,7 +2277,7 @@ body.is-admin .client-only{display:none!important}
 
   function requestProductAsClient(productId){
     if (isAdminUser) {
-      showToast(t('أنت في حساب الإدارة — استخدم إدارة المنتجات للتعديل', 'You are admin — use product management to edit'));
+      showToast(t('أنت في حساب الإدارة — استخدم إدارة الخدمات للتعديل', 'You are admin — use service management to edit'));
       return;
     }
     const p = products.find(x => x.id === productId);
