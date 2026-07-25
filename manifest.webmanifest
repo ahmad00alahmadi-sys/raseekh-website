@@ -1,7 +1,7 @@
 {
   "name": "راسخ / Raseekh",
   "short_name": "راسخ",
-  "description": "Website maintenance, programming, and client systems — صيانة مواقع وبرمجة وأنظمة تشغيل.",
+  "description": "Website maintenance, programming, inventory apps, and client systems — صيانة مواقع وبرمجة وتطبيقات مخزون وأنظمة تشغيل.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
@@ -15,6 +15,12 @@
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any"
+    },
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
     }
   ]
 }

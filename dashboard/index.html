@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title id="pageTitle">لوحة التحكم — راسخ</title>
 <meta name="robots" content="noindex,nofollow">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='10' fill='%2310233A'/%3E%3Cpath d='M14 44V20h12.2c7.2 0 11.4 3.4 11.4 9.2 0 4.4-2.4 7.4-6.4 8.6L40 44h-7.2l-7.4-11.4H21V44H14zm7-17.2h4.8c3.2 0 5-1.4 5-4s-1.8-4-5-4H21v8z' fill='%23E8A05A'/%3E%3C/svg%3E">
-<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='10' fill='%2310233A'/%3E%3Cpath d='M14 44V20h12.2c7.2 0 11.4 3.4 11.4 9.2 0 4.4-2.4 7.4-6.4 8.6L40 44h-7.2l-7.4-11.4H21V44H14zm7-17.2h4.8c3.2 0 5-1.4 5-4s-1.8-4-5-4H21v8z' fill='%23E8A05A'/%3E%3C/svg%3E">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/icon.svg">
 <meta name="theme-color" content="#10233A">
 <link rel="manifest" href="/manifest.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -62,6 +62,11 @@ a{color:inherit;text-decoration:none}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 .site-banner.update{background:var(--harbor)}
 .site-banner.update.show{display:block}
+.skip-link{
+  position:absolute;inset-inline-start:12px;top:-48px;z-index:300;
+  background:var(--navy);color:#fff;padding:10px 14px;border-radius:var(--radius);font-weight:700;
+}
+.skip-link:focus{top:12px}
 .login-card .logo{font-size:1.85rem;font-weight:800;margin-bottom:6px}
 .login-card .logo em{font-style:normal;color:var(--copper)}
 .login-card .sub{color:var(--muted);margin-bottom:22px;font-size:.95rem}
@@ -395,6 +400,7 @@ body.is-admin .client-only{display:none!important}
 </style>
 </head>
 <body>
+<a class="skip-link" href="#page-overview" data-ar="تخطّ إلى المحتوى" data-en="Skip to content">تخطّ إلى المحتوى</a>
 <div class="site-banner" id="offlineBanner" role="status" style="display:none;position:sticky;top:0;z-index:90;padding:10px 16px;text-align:center;font-size:.88rem;font-weight:700;background:var(--navy);color:#F4F7FA;border-bottom:2px solid var(--copper)" data-ar="لا يوجد اتصال — أُرسل الطلبات عند عودة الشبكة" data-en="You are offline — send requests when back online">لا يوجد اتصال — أُرسل الطلبات عند عودة الشبكة</div>
 <div class="site-banner update" id="updateBanner" role="status" hidden style="position:sticky;top:0;z-index:90;padding:10px 16px;text-align:center;font-size:.88rem;font-weight:700;color:#F4F7FA;border-bottom:2px solid var(--copper)">
   <span data-ar="يتوفر تحديث للموقع" data-en="A site update is available">يتوفر تحديث للموقع</span>
@@ -521,7 +527,7 @@ body.is-admin .client-only{display:none!important}
     <div class="page active" id="page-overview">
       <div class="topbar">
         <div>
-          <h1 id="overviewTitle" data-ar="أهلاً بعودتك" data-en="Welcome back">أهلاً بعودتك</h1>
+          <h1 id="overviewTitle">أهلاً بعودتك</h1>
           <div class="crumb"><span data-ar="راسخ" data-en="Raseekh">راسخ</span> <span>/</span> <span data-ar="نظرة عامة" data-en="Overview">نظرة عامة</span></div>
         </div>
         <button class="btn btn-primary admin-only" data-goto="leads" data-ar="فتح الطلبات" data-en="Open requests">فتح الطلبات</button>
@@ -828,7 +834,7 @@ body.is-admin .client-only{display:none!important}
           <input type="password" id="settingsPassword" data-ar-placeholder="كلمة مرور جديدة (اختياري)" data-en-placeholder="New password (optional)" placeholder="كلمة مرور جديدة (اختياري)">
           <button class="btn btn-primary" type="submit" style="width:fit-content" data-ar="حفظ التغييرات" data-en="Save changes">حفظ التغييرات</button>
         </form>
-        <div class="msg" id="settingsMsg"></div>
+        <div class="msg" id="settingsMsg" role="status" aria-live="polite"></div>
       </div>
       <div class="panel admin-only" id="storeSettingsPanel">
         <h3 data-ar="بيانات الشركة والإشعارات" data-en="Company & notifications">بيانات الشركة والإشعارات</h3>
@@ -2020,27 +2026,38 @@ body.is-admin .client-only{display:none!important}
     const suggestBox = document.getElementById('overviewSuggestions');
     if (suggestBox && Catalog) {
       const suggestions = Catalog.getClientSuggestions();
-      suggestBox.innerHTML = suggestions.map((s) => {
-        const titleText = Catalog.label(s, currentLang, 'title', 'title_en');
-        const items = Catalog.suggestionItems(s, products, currentLang).join(currentLang === 'ar' ? '، ' : ', ');
-        const priceText = Catalog.suggestionPriceLabel
-          ? Catalog.suggestionPriceLabel(s, products, currentLang === 'en' ? 'en' : 'ar')
-          : t('عرض سعر بعد المراجعة', 'Custom quote after review');
-        const action = isAdminUser
-          ? ''
-          : `<button class="btn btn-primary" style="margin-top:8px;padding:8px 12px;font-size:.82rem" data-client-suggest="${escapeHtml(s.id)}">${escapeHtml(t('اطلب عرض سعر','Request a quote'))}</button>`;
-        return `<div class="item"><strong>${escapeHtml(titleText)}</strong><span>${escapeHtml(items)}</span><div style="margin-top:6px;font-weight:700;color:var(--harbor)">${escapeHtml(priceText)}</div>${action}</div>`;
-      }).join('');
+      if (!suggestions.length) {
+        suggestBox.innerHTML = `<div class="empty"><strong>${t('لا توجد اقتراحات حالياً','No suggestions right now')}</strong><p>${t('تصفحوا الكتالوج أو اطلبوا تطبيق مخزون.','Browse the catalog or request an inventory app.')}</p><div class="empty-actions"><button class="btn btn-primary" data-goto="catalog">${t('فتح الكتالوج','Open catalog')}</button></div></div>`;
+      } else {
+        suggestBox.innerHTML = suggestions.map((s) => {
+          const titleText = Catalog.label(s, currentLang, 'title', 'title_en');
+          const items = Catalog.suggestionItems(s, products, currentLang).join(currentLang === 'ar' ? '، ' : ', ');
+          const priceText = Catalog.suggestionPriceLabel
+            ? Catalog.suggestionPriceLabel(s, products, currentLang === 'en' ? 'en' : 'ar')
+            : t('عرض سعر بعد المراجعة', 'Custom quote after review');
+          const action = isAdminUser
+            ? ''
+            : `<button class="btn btn-primary" style="margin-top:8px;padding:8px 12px;font-size:.82rem" data-client-suggest="${escapeHtml(s.id)}">${escapeHtml(t('اطلب عرض سعر','Request a quote'))}</button>`;
+          return `<div class="item"><strong>${escapeHtml(titleText)}</strong><span>${escapeHtml(items)}</span><div style="margin-top:6px;font-weight:700;color:var(--harbor)">${escapeHtml(priceText)}</div>${action}</div>`;
+        }).join('');
+      }
     }
   }
 
   function renderClientCatalog(){
     const grid = document.getElementById('clientCatalogGrid');
     if (!grid) return;
-    const q = (document.getElementById('clientCatalogSearch')?.value || '').trim().toLowerCase();
+    const searchEl = document.getElementById('clientCatalogSearch');
+    const q = (searchEl?.value || '').trim().toLowerCase();
     const list = products.filter(p => !q || productSearchBlob(p).includes(q));
     if (!list.length) {
-      grid.innerHTML = `<div class="empty" style="grid-column:1/-1"><strong>${t('لا توجد خدمات ظاهرة','No services shown')}</strong><p>${t('اطلبوا عرض سعر مباشرة، بما في ذلك تطبيق مخزون.','Request a quote directly — including an inventory app.')}</p></div>`;
+      if (q) {
+        grid.innerHTML = `<div class="empty" style="grid-column:1/-1"><strong>${t('لا نتائج لهذا البحث','No results for this search')}</strong><p>${t('جرّبوا كلمة أخرى أو امسحوا البحث.','Try another word or clear the search.')}</p><div class="empty-actions"><button class="btn btn-ghost" type="button" id="clearCatalogSearchBtn">${t('مسح البحث','Clear search')}</button></div></div>`;
+        const clearBtn = document.getElementById('clearCatalogSearchBtn');
+        if (clearBtn && searchEl) clearBtn.addEventListener('click', () => { searchEl.value = ''; renderClientCatalog(); });
+      } else {
+        grid.innerHTML = `<div class="empty" style="grid-column:1/-1"><strong>${t('لا توجد خدمات ظاهرة','No services shown')}</strong><p>${t('اطلبوا عرض سعر مباشرة، بما في ذلك تطبيق مخزون.','Request a quote directly — including an inventory app.')}</p></div>`;
+      }
       return;
     }
     grid.innerHTML = list.map(p => `
@@ -2326,18 +2343,37 @@ body.is-admin .client-only{display:none!important}
   document.getElementById('requestConfirmModal').addEventListener('click', (e) => {
     if (e.target.id === 'requestConfirmModal') closeRequestConfirm();
   });
-  document.getElementById('requestConfirmForm').addEventListener('submit', (e) => {
+  document.getElementById('requestConfirmForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!pendingClientRequest) return;
     if (!navigator.onLine) {
       showToast(t('أنتم غير متصلين — أعيدوا الإرسال بعد عودة الشبكة', 'You are offline — send again when back online'));
       return;
     }
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    if (submitBtn && submitBtn.disabled) return;
     const phone = document.getElementById('requestConfirmPhone').value.trim();
     const note = document.getElementById('requestConfirmNote').value.trim();
     if (!phone && !(currentUser && currentUser.email)) {
       showToast(t('أدخل رقم جوال للتواصل', 'Enter a phone number for reply'));
       return;
+    }
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.setAttribute('aria-busy', 'true');
+      submitBtn.textContent = t('جاري الإرسال...', 'Sending...');
+    }
+    const prevPhone = (currentUser && currentUser.user_metadata && currentUser.user_metadata.phone) || '';
+    if (phone && phone !== prevPhone && Auth && Auth.updateUser && !isDemo) {
+      try {
+        const updated = await Auth.updateUser({ phone });
+        if (updated) currentUser = updated;
+        else if (currentUser && currentUser.user_metadata) currentUser.user_metadata.phone = phone;
+        const settingsPhone = document.getElementById('settingsPhone');
+        if (settingsPhone) settingsPhone.value = phone;
+      } catch (_) {
+        if (currentUser && currentUser.user_metadata) currentUser.user_metadata.phone = phone;
+      }
     }
     const baseMsg = pendingClientRequest.message || '';
     const message = note ? (baseMsg + '\n' + t('ملاحظة: ', 'Note: ') + note) : baseMsg;
@@ -2348,6 +2384,11 @@ body.is-admin .client-only{display:none!important}
     closeRequestConfirm();
     showToast(t('جاري إرسال الطلب...', 'Sending request...'));
     const finish = (delivery) => {
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.removeAttribute('aria-busy');
+        applyLang(currentLang);
+      }
       if (delivery && (delivery.delivered || delivery.cloud)) {
         showToast(t('تم إرسال طلب عرض السعر', 'Quote request sent'));
       } else if (delivery && delivery.pendingNotify) {
@@ -2836,12 +2877,14 @@ body.is-admin .client-only{display:none!important}
       currentUser = user || currentUser;
       if (currentUser && currentUser.user_metadata) {
         currentUser.user_metadata.full_name = name;
+        currentUser.user_metadata.display_name = name;
         currentUser.user_metadata.phone = phone;
       }
       document.getElementById('dashUserLabel').textContent = name || currentUser.email;
       document.getElementById('settingsPassword').value = '';
       msg.style.color = 'var(--ok)';
       msg.textContent = t('تم الحفظ','Saved');
+      renderOverview();
     } catch (err) {
       msg.style.color = 'var(--danger)';
       msg.textContent = Auth.friendlyError(err, currentLang);

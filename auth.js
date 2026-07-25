@@ -318,6 +318,7 @@
   async function updateUser({ full_name, phone, password }) {
     const current = await getSession();
     if (!current.user) throw new Error('NOT_FOUND');
+    const isLocal = current.provider === 'local' || String(current.user.id || '').startsWith('local-');
     if (current.provider === 'supabase' && supabaseClient) {
       try {
         const updates = {};
@@ -331,23 +332,28 @@
         if (full_name != null || phone != null) updates.data = meta;
         if (Object.keys(updates).length) {
           const { data, error } = await supabaseClient.auth.updateUser(updates);
-          if (error && !isNetworkAuthError(error)) throw error;
-          if (!error) {
-            try {
-              await supabaseClient.from('profiles').upsert({
-                id: current.user.id,
-                full_name: meta.full_name || '',
-                phone: meta.phone || '',
-                email: current.user.email || ''
-              });
-            } catch (_) {}
-            return withRole(data && data.user ? data.user : Object.assign({}, current.user, { user_metadata: meta }));
+          if (error) {
+            if (isNetworkAuthError(error)) throw new Error('NETWORK');
+            throw error;
           }
+          try {
+            await supabaseClient.from('profiles').upsert({
+              id: current.user.id,
+              full_name: meta.full_name || '',
+              phone: meta.phone || '',
+              email: current.user.email || ''
+            });
+          } catch (_) {}
+          return withRole(data && data.user ? data.user : Object.assign({}, current.user, { user_metadata: meta }));
         }
+        return withRole(current.user);
       } catch (err) {
-        if (!isNetworkAuthError(err)) throw err;
+        if (isNetworkAuthError(err) || String(err && err.message) === 'NETWORK') throw new Error('NETWORK');
+        throw err;
       }
     }
+    // Never invent a local profile row for a cloud UUID.
+    if (!isLocal) throw new Error('NETWORK');
     return localUpdateProfile(current.user.id, { full_name, phone, password });
   }
 
@@ -365,6 +371,9 @@
     }
     if (code === 'NOT_FOUND') {
       return ar ? 'الحساب غير موجود' : 'Account not found';
+    }
+    if (code === 'NETWORK') {
+      return ar ? 'تعذّر الاتصال بالخادم — حاولوا مرة أخرى' : 'Could not reach the server — try again';
     }
     if (code === 'EMAIL_CONFIRM_REQUIRED' || /email.*confirm|confirm.*email|email not confirmed/i.test(code)) {
       return ar ? 'تحققوا من البريد لتفعيل الحساب ثم سجّلوا الدخول' : 'Check your email to activate the account, then sign in';
