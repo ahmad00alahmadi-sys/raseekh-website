@@ -103,6 +103,17 @@ a{color:inherit;text-decoration:none}
 .status-chip.closed{background:var(--mist);color:var(--muted)}
 .setup-steps{display:flex;flex-direction:column;gap:8px;text-align:start;margin-top:12px;color:var(--muted);font-size:.9rem}
 .setup-steps b{color:var(--navy)}
+.setup-banner{
+  display:none;margin-bottom:14px;padding:16px 18px;border:1.5px solid rgba(196,92,38,.35);
+  border-radius:var(--radius);background:rgba(232,160,90,.12);border-inline-start:4px solid var(--copper);
+}
+.setup-banner.show{display:block}
+.setup-banner h3{color:var(--navy);margin-bottom:6px;font-size:1.05rem}
+.setup-banner p{color:var(--muted);font-size:.9rem;margin-bottom:10px}
+.setup-banner ol{margin:0 0 12px;padding-inline-start:1.2em;color:var(--ink);font-size:.9rem;display:flex;flex-direction:column;gap:4px}
+.setup-banner.ok{
+  border-color:rgba(31,122,88,.35);background:rgba(31,122,88,.08);border-inline-start-color:var(--ok);
+}
 .terms-gate{
   position:fixed;inset:0;z-index:300;display:none;align-items:center;justify-content:center;
   padding:16px;background:rgba(16,35,58,.78);backdrop-filter:blur(8px);
@@ -490,6 +501,20 @@ body.is-admin .client-only{display:none!important}
         </div>
         <button class="btn btn-primary admin-only" data-goto="pos" data-ar="فتح طلبات البيع" data-en="Open sales desk">فتح طلبات البيع</button>
         <button class="btn btn-primary client-only" data-goto="catalog" data-ar="تصفح الكتالوج" data-en="Browse catalog">تصفح الكتالوج</button>
+      </div>
+
+      <div class="setup-banner admin-only" id="adminSetupBanner">
+        <h3 data-ar="إعداد وصول الطلبات وتسجيل الدخول" data-en="Set up requests & login tracking">إعداد وصول الطلبات وتسجيل الدخول</h3>
+        <p id="adminSetupBannerText" data-ar="أكملوا هذه الخطوات مرة واحدة حتى تصلكم الطلبات وتعرفوا من سجّل دخول من أي جهاز." data-en="Complete these once so requests and logins reach you across devices.">أكملوا هذه الخطوات مرة واحدة حتى تصلكم الطلبات وتعرفوا من سجّل دخول من أي جهاز.</p>
+        <ol>
+          <li data-ar="في Supabase → SQL شغّلوا ملف supabase/setup_all.sql" data-en="In Supabase → SQL run supabase/setup_all.sql">في Supabase → SQL شغّلوا ملف supabase/setup_all.sql</li>
+          <li data-ar="من الإعدادات احفظوا «بريد وصول الطلبات» وفعّلوا FormSubmit" data-en="In Settings save “Request notify email” and activate FormSubmit">من الإعدادات احفظوا «بريد وصول الطلبات» وفعّلوا FormSubmit</li>
+          <li data-ar="ادخلوا بحساب الإدارة السحابي (ليس جلسة محلية)" data-en="Sign in with the cloud admin account (not a local session)">ادخلوا بحساب الإدارة السحابي (ليس جلسة محلية)</li>
+        </ol>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn btn-primary" type="button" data-goto="settings" data-ar="فتح الإعدادات" data-en="Open settings">فتح الإعدادات</button>
+          <button class="btn btn-ghost" type="button" id="recheckSetupBtn" data-ar="إعادة الفحص" data-en="Recheck">إعادة الفحص</button>
+        </div>
       </div>
 
       <div class="stats admin-only">
@@ -1127,7 +1152,33 @@ body.is-admin .client-only{display:none!important}
           : (notifyPublished ? t('بريد منشور', 'Email published') : t('سحابة فقط', 'Cloud only')))
         : t('اضبط البريد من الإعدادات', 'Set email in Settings');
     }
+    updateAdminSetupBanner({ status, cloudOk, settingsOk, activityOk, termsOk, notifyPublished });
     return { status, cloudOk, settingsOk, activityOk, termsOk, notifyPublished };
+  }
+
+  function updateAdminSetupBanner(info){
+    const banner = document.getElementById('adminSetupBanner');
+    const text = document.getElementById('adminSetupBannerText');
+    if (!banner || !isAdminUser) {
+      if (banner) banner.classList.remove('show', 'ok');
+      return;
+    }
+    const localSession = authProvider === 'local' || (currentUser && currentUser.app_metadata && currentUser.app_metadata.provider === 'local');
+    const ready = !!(info && info.cloudOk && info.settingsOk && info.activityOk && info.notifyPublished && !localSession);
+    banner.classList.add('show');
+    banner.classList.toggle('ok', ready);
+    if (!text) return;
+    if (ready) {
+      text.textContent = t('الإعداد مكتمل — الطلبات وتسجيل الدخول يصلانكم عبر السحابة والبريد.', 'Setup complete — requests and logins reach you via cloud and email.');
+    } else if (localSession) {
+      text.textContent = t('جلستكم محلية حالياً. اخرجوا ثم ادخلوا بحساب الإدارة السحابي بعد تشغيل SQL.', 'You are on a local session. Sign out and sign in with the cloud admin account after running SQL.');
+    } else if (!(info && info.cloudOk && info.settingsOk && info.activityOk)) {
+      text.textContent = t('الجداول السحابية غير جاهزة بعد. شغّلوا supabase/setup_all.sql ثم اضغطوا إعادة الفحص.', 'Cloud tables are not ready yet. Run supabase/setup_all.sql then tap Recheck.');
+    } else if (!(info && info.notifyPublished)) {
+      text.textContent = t('احفظوا بريد وصول الطلبات من الإعدادات حتى يُنشر للزوار، ثم فعّلوا FormSubmit.', 'Save the notify email in Settings so it publishes to visitors, then activate FormSubmit.');
+    } else {
+      text.textContent = t('أكملوا الخطوات أدناه مرة واحدة.', 'Complete the steps below once.');
+    }
   }
   function saveClientRequests(){
     if (Catalog && Catalog.saveSharedRequests) {
