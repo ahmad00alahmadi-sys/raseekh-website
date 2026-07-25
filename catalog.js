@@ -282,6 +282,34 @@
     return list;
   }
 
+  function readStoreSettings() {
+    try {
+      const raw = localStorage.getItem('raseekh_admin_store_v1');
+      if (!raw) return {};
+      const parsed = JSON.parse(raw);
+      return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {};
+    } catch (_) {
+      return {};
+    }
+  }
+
+  function notifyRequestWebhook(row) {
+    try {
+      const store = readStoreSettings();
+      const url = String(store.webhookUrl || '').trim();
+      if (!url || !/^https?:\/\//i.test(url)) return Promise.resolve(false);
+      return fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ event: 'raseekh.request', request: row }),
+        mode: 'cors',
+        keepalive: true
+      }).then((res) => !!res && res.ok).catch(() => false);
+    } catch (_) {
+      return Promise.resolve(false);
+    }
+  }
+
   function addSharedRequest(payload) {
     const list = readJson(CLIENT_REQUESTS_KEY, []);
     const row = Object.assign({
@@ -292,6 +320,7 @@
     }, payload || {});
     list.unshift(row);
     writeJson(CLIENT_REQUESTS_KEY, list.slice(0, 200));
+    notifyRequestWebhook(row);
     return row;
   }
 
@@ -366,6 +395,7 @@
     saveAdminProducts,
     pruneSuggestions,
     addSharedRequest,
+    notifyRequestWebhook,
     getSharedRequests,
     saveSharedRequests,
     updateSharedRequestStatus,

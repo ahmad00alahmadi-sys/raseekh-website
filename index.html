@@ -15,6 +15,11 @@
 <meta property="og:url" content="https://raseekh.com/">
 <meta property="og:locale" content="ar_SA">
 <meta property="og:locale:alternate" content="en_US">
+<meta property="og:image" content="https://raseekh.com/icon.svg">
+<meta name="twitter:card" content="summary">
+<link rel="alternate" hreflang="ar" href="https://raseekh.com/">
+<link rel="alternate" hreflang="en" href="https://raseekh.com/?lang=en">
+<link rel="alternate" hreflang="x-default" href="https://raseekh.com/">
 <link rel="manifest" href="/manifest.webmanifest">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='10' fill='%2310233A'/%3E%3Cpath d='M14 44V20h12.2c7.2 0 11.4 3.4 11.4 9.2 0 4.4-2.4 7.4-6.4 8.6L40 44h-7.2l-7.4-11.4H21V44H14zm7-17.2h4.8c3.2 0 5-1.4 5-4s-1.8-4-5-4H21v8z' fill='%23E8A05A'/%3E%3C/svg%3E">
 <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='10' fill='%2310233A'/%3E%3Cpath d='M14 44V20h12.2c7.2 0 11.4 3.4 11.4 9.2 0 4.4-2.4 7.4-6.4 8.6L40 44h-7.2l-7.4-11.4H21V44H14zm7-17.2h4.8c3.2 0 5-1.4 5-4s-1.8-4-5-4H21v8z' fill='%23E8A05A'/%3E%3C/svg%3E">
@@ -196,6 +201,9 @@ nav{display:flex;align-items:center;justify-content:space-between;gap:16px;paddi
 .btn.sent{background:var(--ok)!important;pointer-events:none}
 .msg.ok-pulse{animation:okPulse .55s ease}
 @keyframes okPulse{0%{opacity:.35;transform:translateY(4px)}100%{opacity:1;transform:none}}
+.form label.field{display:flex;flex-direction:column;gap:6px;font-size:.8rem;font-weight:700;color:var(--muted)}
+.form label.field > span{padding-inline-start:2px}
+.hint-inline{font-size:.8rem;color:var(--muted);margin-top:-4px}
 .faq-list{display:flex;flex-direction:column;gap:10px;max-width:820px}
 .faq-item{
   border:1.5px solid var(--line);border-radius:var(--radius);background:rgba(247,249,252,.85);overflow:hidden;
@@ -445,16 +453,15 @@ body.lang-en .footer-brand{font-family:'Space Grotesk',sans-serif}
     </div>
     <div class="nav-actions">
       <button class="lang-btn" id="langToggle" type="button">EN</button>
-      <button class="btn btn-ghost" id="accountBtn" type="button" data-ar="تسجيل الدخول" data-en="Log in">تسجيل الدخول</button>
-      <a class="btn btn-primary" href="/dashboard/" data-ar="حسابي" data-en="My account">حسابي</a>
-      <button class="nav-toggle" id="navToggle" aria-label="menu" type="button"><span></span><span></span><span></span></button>
+      <button class="btn btn-primary" id="accountBtn" type="button" data-ar="تسجيل الدخول" data-en="Log in">تسجيل الدخول</button>
+      <button class="nav-toggle" id="navToggle" type="button" aria-controls="navLinks" aria-expanded="false" data-ar-aria="القائمة" data-en-aria="Menu" aria-label="القائمة"><span></span><span></span><span></span></button>
     </div>
   </nav>
 </header>
 
 <div class="modal-overlay" id="authModal">
   <div class="modal">
-    <button class="modal-close" id="modalCloseBtn" type="button" aria-label="close">×</button>
+    <button class="modal-close" id="modalCloseBtn" type="button" data-ar-aria="إغلاق" data-en-aria="Close" aria-label="إغلاق">×</button>
     <div id="authTabs">
       <div class="tabs" id="modalTabsBar">
         <button type="button" class="tab active" id="modalLoginTabBtn" data-ar="دخول" data-en="Login">دخول</button>
@@ -520,14 +527,14 @@ body.lang-en .footer-brand{font-family:'Space Grotesk',sans-serif}
     <h1 data-ar="إلكترونيات وبرمجة وأنظمة… من الطلب للتشغيل" data-en="Electronics, coding, and systems — from request to launch">إلكترونيات وبرمجة وأنظمة… من الطلب للتشغيل</h1>
     <p data-ar="اطلب احتياجك الآن، ونرسل عرض سعر حقيقي بعد المراجعة." data-en="Request what you need — we send a real quote after review.">اطلب احتياجك الآن، ونرسل عرض سعر حقيقي بعد المراجعة.</p>
     <form class="hero-quote" id="heroQuoteForm" autocomplete="off">
-      <select id="heroQuoteType" aria-label="Service type">
+      <select id="heroQuoteType" data-ar-aria="نوع الخدمة" data-en-aria="Service type" aria-label="نوع الخدمة">
         <option value="electronics" data-ar="إلكترونيات" data-en="Electronics">إلكترونيات</option>
         <option value="maintenance" data-ar="صيانة مواقع" data-en="Maintenance">صيانة مواقع</option>
         <option value="programming" data-ar="برمجة" data-en="Programming" selected>برمجة</option>
         <option value="systems" data-ar="أنظمة" data-en="Systems">أنظمة</option>
         <option value="system" data-ar="نظام كامل" data-en="Full system">نظام كامل</option>
       </select>
-      <input type="text" id="heroQuoteMsg" required maxlength="220" data-ar-placeholder="صف طلبكم في سطر واحد" data-en-placeholder="Describe your request in one line" placeholder="صف طلبكم في سطر واحد">
+      <input type="text" id="heroQuoteMsg" required maxlength="220" data-ar-placeholder="صف طلبكم في سطر واحد" data-en-placeholder="Describe your request in one line" placeholder="صف طلبكم في سطر واحد" data-ar-aria="وصف الطلب" data-en-aria="Request summary" aria-label="وصف الطلب">
       <button class="btn btn-primary" type="submit" id="heroQuoteBtn" data-ar="اطلب عرض سعر" data-en="Request a quote">اطلب عرض سعر</button>
     </form>
     <div class="hero-ctas">
@@ -641,7 +648,7 @@ body.lang-en .footer-brand{font-family:'Space Grotesk',sans-serif}
     </div>
     <div class="pricing-grid reveal">
       <article class="price-card">
-        <div class="plan">Start</div>
+        <div class="plan" data-ar="ابدأ" data-en="Start">ابدأ</div>
         <h3 data-ar="أساسي" data-en="Basic">أساسي</h3>
         <p class="tagline" data-ar="مناسب لطلب صغير أو تعديل محدود." data-en="Best for a small request or limited change.">مناسب لطلب صغير أو تعديل محدود.</p>
         <ul>
@@ -652,7 +659,7 @@ body.lang-en .footer-brand{font-family:'Space Grotesk',sans-serif}
         <a class="btn btn-ghost" href="#contact" data-ar="ابدأ أساسي" data-en="Start Basic">ابدأ أساسي</a>
       </article>
       <article class="price-card featured">
-        <div class="plan">Pro</div>
+        <div class="plan" data-ar="احترافي" data-en="Pro">احترافي</div>
         <h3 data-ar="احترافي" data-en="Pro">احترافي</h3>
         <p class="tagline" data-ar="للمواقع والأنظمة متوسطة الحجم." data-en="For mid-size websites and systems.">للمواقع والأنظمة متوسطة الحجم.</p>
         <ul>
@@ -664,7 +671,7 @@ body.lang-en .footer-brand{font-family:'Space Grotesk',sans-serif}
         <a class="btn btn-primary" href="#contact" data-ar="اطلب احترافي" data-en="Choose Pro">اطلب احترافي</a>
       </article>
       <article class="price-card">
-        <div class="plan">Teams</div>
+        <div class="plan" data-ar="فرق" data-en="Teams">فرق</div>
         <h3 data-ar="مؤسسات" data-en="Teams">مؤسسات</h3>
         <p class="tagline" data-ar="لنظام كامل أو عمل متعدد الأقسام." data-en="For a full system or multi-team work.">لنظام كامل أو عمل متعدد الأقسام.</p>
         <ul>
@@ -692,7 +699,7 @@ body.lang-en .footer-brand{font-family:'Space Grotesk',sans-serif}
       <div class="trust-item" data-ar="فرق تقنية" data-en="Tech teams">فرق تقنية</div>
       <div class="trust-item" data-ar="منشآت ناشئة" data-en="Growing businesses">منشآت ناشئة</div>
     </div>
-    <p class="trust-note reveal" data-ar="Trusted by clients across Saudi Arabia" data-en="Trusted by clients across Saudi Arabia">Trusted by clients across Saudi Arabia</p>
+    <p class="trust-note reveal" data-ar="موثوق من عملاء في السعودية" data-en="Trusted by clients across Saudi Arabia">موثوق من عملاء في السعودية</p>
   </div>
 </section>
 
@@ -836,19 +843,33 @@ body.lang-en .footer-brand{font-family:'Space Grotesk',sans-serif}
       <h2 data-ar="اطلب عرض سعر" data-en="Request a quote">اطلب عرض سعر</h2>
       <p data-ar="سطرين عن احتياجكم — نرد خلال يوم عمل." data-en="Two lines about your need — reply within one business day.">سطرين عن احتياجكم — نرد خلال يوم عمل.</p>
       <form class="form" id="contactForm">
-        <input type="text" required data-ar-placeholder="الاسم الكامل" data-en-placeholder="Full name" placeholder="الاسم الكامل" id="contactName">
-        <input type="tel" data-ar-placeholder="رقم الجوال" data-en-placeholder="Phone" placeholder="رقم الجوال" id="contactPhone">
-        <input type="text" data-ar-placeholder="اسم الشركة" data-en-placeholder="Company name" placeholder="اسم الشركة" id="contactCompany">
-        <select id="contactType">
-          <option value="electronics" data-ar="منتجات إلكترونية" data-en="Electronics">منتجات إلكترونية</option>
-          <option value="maintenance" data-ar="صيانة مواقع" data-en="Website maintenance">صيانة مواقع</option>
-          <option value="web-dev" data-ar="تطوير مواقع" data-en="Website development">تطوير مواقع</option>
-          <option value="programming" data-ar="خدمات البرمجة / تعديل كود" data-en="Programming / code changes">خدمات البرمجة / تعديل كود</option>
-          <option value="systems" data-ar="برمجة أنظمة ولوحات" data-en="Systems & dashboards">برمجة أنظمة ولوحات</option>
-          <option value="api" data-ar="ربط API وأنظمة" data-en="API & integrations">ربط API وأنظمة</option>
-          <option value="system" data-ar="نظام كامل" data-en="Complete system">نظام كامل</option>
-        </select>
-        <textarea required data-ar-placeholder="صف طلبكم باختصار" data-en-placeholder="Briefly describe your request" placeholder="صف طلبكم باختصار" id="contactMsg"></textarea>
+        <label class="field"><span data-ar="الاسم الكامل" data-en="Full name">الاسم الكامل</span>
+          <input type="text" required data-ar-placeholder="الاسم الكامل" data-en-placeholder="Full name" placeholder="الاسم الكامل" id="contactName" autocomplete="name">
+        </label>
+        <label class="field"><span data-ar="البريد الإلكتروني" data-en="Email">البريد الإلكتروني</span>
+          <input type="email" data-ar-placeholder="name@example.com" data-en-placeholder="name@example.com" placeholder="name@example.com" id="contactEmail" autocomplete="email">
+        </label>
+        <label class="field"><span data-ar="رقم الجوال" data-en="Phone">رقم الجوال</span>
+          <input type="tel" data-ar-placeholder="05xxxxxxxx" data-en-placeholder="05xxxxxxxx" placeholder="05xxxxxxxx" id="contactPhone" autocomplete="tel">
+        </label>
+        <p class="hint-inline" data-ar="يلزم بريد أو جوال واحد على الأقل للتواصل." data-en="Provide at least an email or phone so we can reply.">يلزم بريد أو جوال واحد على الأقل للتواصل.</p>
+        <label class="field"><span data-ar="اسم الشركة (اختياري)" data-en="Company (optional)">اسم الشركة (اختياري)</span>
+          <input type="text" data-ar-placeholder="اسم الشركة" data-en-placeholder="Company name" placeholder="اسم الشركة" id="contactCompany" autocomplete="organization">
+        </label>
+        <label class="field"><span data-ar="نوع الطلب" data-en="Request type">نوع الطلب</span>
+          <select id="contactType">
+            <option value="electronics" data-ar="منتجات إلكترونية" data-en="Electronics">منتجات إلكترونية</option>
+            <option value="maintenance" data-ar="صيانة مواقع" data-en="Website maintenance">صيانة مواقع</option>
+            <option value="web-dev" data-ar="تطوير مواقع" data-en="Website development">تطوير مواقع</option>
+            <option value="programming" data-ar="خدمات البرمجة / تعديل كود" data-en="Programming / code changes">خدمات البرمجة / تعديل كود</option>
+            <option value="systems" data-ar="برمجة أنظمة ولوحات" data-en="Systems & dashboards">برمجة أنظمة ولوحات</option>
+            <option value="api" data-ar="ربط API وأنظمة" data-en="API & integrations">ربط API وأنظمة</option>
+            <option value="system" data-ar="نظام كامل" data-en="Complete system">نظام كامل</option>
+          </select>
+        </label>
+        <label class="field"><span data-ar="تفاصيل الطلب" data-en="Request details">تفاصيل الطلب</span>
+          <textarea required data-ar-placeholder="صف طلبكم باختصار" data-en-placeholder="Briefly describe your request" placeholder="صف طلبكم باختصار" id="contactMsg"></textarea>
+        </label>
         <button class="btn btn-primary" type="submit" data-ar="إرسال الطلب" data-en="Send request">إرسال الطلب</button>
         <div class="msg" id="contactResult"></div>
       </form>
@@ -929,9 +950,26 @@ body.lang-en .footer-brand{font-family:'Space Grotesk',sans-serif}
       const v = lang === 'ar' ? el.getAttribute('data-ar-placeholder') : el.getAttribute('data-en-placeholder');
       if (v !== null) el.setAttribute('placeholder', v);
     });
+    document.querySelectorAll('[data-ar-aria]').forEach(el => {
+      const v = lang === 'ar' ? el.getAttribute('data-ar-aria') : el.getAttribute('data-en-aria');
+      if (v !== null) el.setAttribute('aria-label', v);
+    });
     document.getElementById('langToggle').textContent = lang === 'ar' ? 'EN' : 'AR';
-    document.title = lang === 'ar' ? 'راسخ — منتجات إلكترونية وخدمات تقنية' : 'Raseekh — Electronics & Technical Services';
+    const title = lang === 'ar' ? 'راسخ — منتجات إلكترونية وخدمات تقنية' : 'Raseekh — Electronics & Technical Services';
+    const desc = lang === 'ar'
+      ? 'راسخ في السعودية: بيع إلكترونيات، صيانة مواقع، خدمات برمجة، وتطوير أنظمة ولوحات تحكم للعملاء.'
+      : 'Raseekh in Saudi Arabia: electronics, website maintenance, programming services, and custom client systems.';
+    document.title = title;
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) metaDesc.setAttribute('content', desc);
+    const ogTitle = document.querySelector('meta[property="og:title"]');
+    if (ogTitle) ogTitle.setAttribute('content', lang === 'ar' ? 'راسخ — إلكترونيات وخدمات تقنية' : 'Raseekh — Electronics & Technical Services');
+    const ogDesc = document.querySelector('meta[property="og:description"]');
+    if (ogDesc) ogDesc.setAttribute('content', desc);
+    const ogLocale = document.querySelector('meta[property="og:locale"]');
+    if (ogLocale) ogLocale.setAttribute('content', lang === 'ar' ? 'ar_SA' : 'en_US');
     if (loggedInUser) document.getElementById('accountBtn').textContent = t('حسابي', 'My account');
+    else document.getElementById('accountBtn').textContent = t('تسجيل الدخول', 'Log in');
     renderClientCatalog();
   }
 
@@ -1067,10 +1105,20 @@ body.lang-en .footer-brand{font-family:'Space Grotesk',sans-serif}
   });
 
   document.getElementById('langToggle').addEventListener('click', () => applyLang(currentLang === 'ar' ? 'en' : 'ar'));
-  applyLang(currentLang);
+  (function bootLang(){
+    const q = new URLSearchParams(location.search).get('lang');
+    if (q === 'en' || q === 'ar') currentLang = q;
+    applyLang(currentLang);
+  })();
 
-  document.getElementById('navToggle').addEventListener('click', () => document.getElementById('navLinks').classList.toggle('open'));
-  document.getElementById('navLinks').querySelectorAll('a').forEach(a => a.addEventListener('click', () => document.getElementById('navLinks').classList.remove('open')));
+  const navToggle = document.getElementById('navToggle');
+  const navLinks = document.getElementById('navLinks');
+  function setNavOpen(open){
+    navLinks.classList.toggle('open', open);
+    navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+  navToggle.addEventListener('click', () => setNavOpen(!navLinks.classList.contains('open')));
+  navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => setNavOpen(false)));
 
   function openModal(){ authModal.classList.add('open'); }
   function closeModal(){
@@ -1103,10 +1151,13 @@ body.lang-en .footer-brand{font-family:'Space Grotesk',sans-serif}
     loggedInUser = user || null;
     const locked = document.getElementById('payLockedMessage');
     const box = document.getElementById('payBoxContent');
+    const accountBtn = document.getElementById('accountBtn');
     if (user) {
       locked.style.display = 'none';
       box.style.display = 'block';
-      document.getElementById('accountBtn').textContent = t('حسابي', 'My account');
+      accountBtn.classList.remove('btn-ghost');
+      accountBtn.classList.add('btn-primary');
+      accountBtn.textContent = t('حسابي', 'My account');
       const fullName = user.user_metadata && user.user_metadata.full_name;
       const phone = user.user_metadata && user.user_metadata.phone;
       if (fullName) {
@@ -1114,10 +1165,12 @@ body.lang-en .footer-brand{font-family:'Space Grotesk',sans-serif}
         if (!document.getElementById('contactName').value) document.getElementById('contactName').value = fullName;
       }
       if (phone && !document.getElementById('contactPhone').value) document.getElementById('contactPhone').value = phone;
+      if (user.email && !document.getElementById('contactEmail').value) document.getElementById('contactEmail').value = user.email;
     } else {
       locked.style.display = 'flex';
       box.style.display = 'none';
-      document.getElementById('accountBtn').textContent = t('تسجيل الدخول', 'Log in');
+      accountBtn.classList.add('btn-primary');
+      accountBtn.textContent = t('تسجيل الدخول', 'Log in');
     }
   }
 
@@ -1190,14 +1243,24 @@ body.lang-en .footer-brand{font-family:'Space Grotesk',sans-serif}
   document.getElementById('contactForm').addEventListener('submit', (e) => {
     e.preventDefault();
     const result = document.getElementById('contactResult');
+    const emailVal = document.getElementById('contactEmail').value.trim();
+    const phoneVal = document.getElementById('contactPhone').value.trim();
+    const sessionEmail = loggedInUser && loggedInUser.email ? loggedInUser.email : '';
+    const email = emailVal || sessionEmail;
+    if (!email && !phoneVal) {
+      result.style.color = 'var(--danger)';
+      result.textContent = t('أدخل بريداً أو رقم جوال للتواصل', 'Enter an email or phone number so we can reply');
+      (emailVal ? document.getElementById('contactPhone') : document.getElementById('contactEmail')).focus();
+      return;
+    }
     const payload = {
       name: document.getElementById('contactName').value.trim(),
-      phone: document.getElementById('contactPhone').value.trim(),
+      phone: phoneVal,
       company: document.getElementById('contactCompany').value.trim(),
       type: document.getElementById('contactType').value,
       message: document.getElementById('contactMsg').value.trim(),
       at: new Date().toISOString(),
-      email: loggedInUser && loggedInUser.email ? loggedInUser.email : '',
+      email: email,
       userId: loggedInUser && loggedInUser.id ? loggedInUser.id : ''
     };
     try {
@@ -1241,6 +1304,7 @@ body.lang-en .footer-brand{font-family:'Space Grotesk',sans-serif}
       const phone = loggedInUser.user_metadata && loggedInUser.user_metadata.phone;
       if (fullName) document.getElementById('contactName').value = fullName;
       if (phone) document.getElementById('contactPhone').value = phone;
+      if (loggedInUser.email) document.getElementById('contactEmail').value = loggedInUser.email;
     }
   });
 
