@@ -302,9 +302,11 @@
   function publishPublicNotify(settings) {
     const webhookUrl = String((settings && settings.webhookUrl) || '').trim();
     const notifyEmail = String((settings && settings.notifyEmail) || '').trim().toLowerCase();
+    const notifyOnLogin = settings && settings.notifyOnLogin === false ? false : true;
     const cfg = {
       webhookUrl: webhookUrl || '',
-      notifyEmail: notifyEmail || ''
+      notifyEmail: notifyEmail || '',
+      notifyOnLogin: notifyOnLogin
     };
     writeJson(PUBLIC_NOTIFY_KEY, cfg);
     pushPublicNotifyToCloud(cfg).catch(() => {});
@@ -319,7 +321,8 @@
         key: 'public_notify',
         value: {
           notifyEmail: cfg.notifyEmail || '',
-          webhookUrl: cfg.webhookUrl || ''
+          webhookUrl: cfg.webhookUrl || '',
+          notifyOnLogin: cfg.notifyOnLogin !== false
         },
         updated_at: new Date().toISOString()
       }, { onConflict: 'key' });
@@ -342,12 +345,14 @@
       const value = data.value && typeof data.value === 'object' ? data.value : {};
       const cfg = {
         notifyEmail: String(value.notifyEmail || '').trim().toLowerCase(),
-        webhookUrl: String(value.webhookUrl || '').trim()
+        webhookUrl: String(value.webhookUrl || '').trim(),
+        notifyOnLogin: value.notifyOnLogin === false ? false : true
       };
       const local = readObject(PUBLIC_NOTIFY_KEY);
       const merged = {
         notifyEmail: cfg.notifyEmail || String(local.notifyEmail || '').trim().toLowerCase(),
-        webhookUrl: cfg.webhookUrl || String(local.webhookUrl || '').trim()
+        webhookUrl: cfg.webhookUrl || String(local.webhookUrl || '').trim(),
+        notifyOnLogin: cfg.notifyOnLogin !== false && local.notifyOnLogin !== false
       };
       writeJson(PUBLIC_NOTIFY_KEY, merged);
       return merged;

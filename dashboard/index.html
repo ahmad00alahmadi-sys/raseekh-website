@@ -450,6 +450,7 @@ body.is-admin .client-only{display:none!important}
       <button class="nav-item admin-only" data-page="products"><span class="ico">▤</span><span data-ar="إدارة المنتجات" data-en="Manage products">إدارة المنتجات</span></button>
       <button class="nav-item admin-only" data-page="sales"><span class="ico">฿</span><span data-ar="سجل الطلبات" data-en="Orders">سجل الطلبات</span></button>
       <button class="nav-item admin-only" data-page="leads"><span class="ico">✉</span><span data-ar="طلبات العملاء" data-en="Client requests">طلبات العملاء</span><span class="nav-badge" id="leadsNavBadge">0</span></button>
+      <button class="nav-item admin-only" data-page="activity"><span class="ico">◎</span><span data-ar="تسجيل الدخول" data-en="Logins">تسجيل الدخول</span><span class="nav-badge" id="activityNavBadge">0</span></button>
       <button class="nav-item" data-page="settings"><span class="ico">⚙</span><span data-ar="الإعدادات" data-en="Settings">الإعدادات</span></button>
     </nav>
     <div class="side-foot">
@@ -502,15 +503,23 @@ body.is-admin .client-only{display:none!important}
         </div>
       </div>
       <div class="stats admin-only audience-stats">
-        <div class="stat"><div class="label" data-ar="سجّلوا دخول" data-en="Logged-in users">سجّلوا دخول</div><div class="value" id="statRegisteredUsers">0</div><div class="hint" data-ar="حسابات فريدة" data-en="unique accounts">حسابات فريدة</div></div>
-        <div class="stat"><div class="label" data-ar="نشط الآن" data-en="Active now">نشط الآن</div><div class="value" id="statActiveUsers">0</div><div class="hint" data-ar="آخر 15 دقيقة" data-en="last 15 minutes">آخر 15 دقيقة</div></div>
-        <div class="stat"><div class="label" data-ar="دخول اليوم" data-en="Logins today">دخول اليوم</div><div class="value" id="statLoginsToday">0</div><div class="hint" data-ar="حسابات نشطة اليوم" data-en="accounts active today">حسابات نشطة اليوم</div></div>
-        <div class="stat"><div class="label" data-ar="إجمالي الدخول" data-en="Total logins">إجمالي الدخول</div><div class="value" id="statTotalLogins">0</div><div class="hint" data-ar="كل الجلسات" data-en="all sessions">كل الجلسات</div></div>
+        <div class="stat clickable" id="statRegisteredCard" role="button" tabindex="0" data-goto="activity"><div class="label" data-ar="سجّلوا دخول" data-en="Logged-in users">سجّلوا دخول</div><div class="value" id="statRegisteredUsers">0</div><div class="hint" data-ar="اضغط للتفاصيل" data-en="tap for details">اضغط للتفاصيل</div></div>
+        <div class="stat clickable" id="statActiveCard" role="button" tabindex="0" data-goto="activity"><div class="label" data-ar="نشط الآن" data-en="Active now">نشط الآن</div><div class="value" id="statActiveUsers">0</div><div class="hint" data-ar="آخر 15 دقيقة" data-en="last 15 minutes">آخر 15 دقيقة</div></div>
+        <div class="stat clickable" data-goto="activity"><div class="label" data-ar="دخول اليوم" data-en="Logins today">دخول اليوم</div><div class="value" id="statLoginsToday">0</div><div class="hint" data-ar="حسابات اليوم" data-en="accounts today">حسابات اليوم</div></div>
+        <div class="stat clickable" data-goto="leads"><div class="label" data-ar="طلبات جديدة" data-en="New requests">طلبات جديدة</div><div class="value" id="statNewRequestsDup">0</div><div class="hint" data-ar="صندوق الطلبات" data-en="request inbox">صندوق الطلبات</div></div>
       </div>
       <div class="panel admin-only" style="margin-top:14px">
-        <h3 data-ar="آخر النشاط" data-en="Recent activity">آخر النشاط</h3>
-        <p style="color:var(--muted);font-size:.9rem;margin:4px 0 0" data-ar="من سجّل دخول ومن نشط خلال آخر 15 دقيقة." data-en="Who signed in and who is active in the last 15 minutes.">من سجّل دخول ومن نشط خلال آخر 15 دقيقة.</p>
-        <div class="activity-list" id="audienceActivityList"></div>
+        <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center">
+          <div>
+            <h3 data-ar="كيف تعرف الدخول والطلبات؟" data-en="How to track logins & requests">كيف تعرف الدخول والطلبات؟</h3>
+            <p style="color:var(--muted);font-size:.9rem;margin:4px 0 0" data-ar="تسجيل الدخول من قائمة «تسجيل الدخول». الطلبات من «طلبات العملاء» + بريد الإشعار في الإعدادات." data-en="Logins: open “Logins”. Requests: “Client requests” + notify email in Settings.">تسجيل الدخول من قائمة «تسجيل الدخول». الطلبات من «طلبات العملاء» + بريد الإشعار في الإعدادات.</p>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn btn-primary" type="button" data-goto="activity" data-ar="فتح تسجيل الدخول" data-en="Open logins">فتح تسجيل الدخول</button>
+            <button class="btn btn-ghost" type="button" data-goto="leads" data-ar="فتح الطلبات" data-en="Open requests">فتح الطلبات</button>
+          </div>
+        </div>
+        <div class="activity-list" id="audienceActivityList" style="margin-top:12px"></div>
       </div>
       <div class="stats client-only">
         <div class="stat"><div class="label" data-ar="خدمات متاحة" data-en="Available services">خدمات متاحة</div><div class="value" id="statClientProducts">0</div><div class="hint" data-ar="للطلب" data-en="to request">للطلب</div></div>
@@ -597,6 +606,36 @@ body.is-admin .client-only{display:none!important}
       <div class="panel">
         <h3 data-ar="الطلبات المرسلة" data-en="Submitted requests">الطلبات المرسلة</h3>
         <div id="clientRequestsList" style="margin-top:12px"></div>
+      </div>
+    </div>
+
+    <div class="page admin-only" id="page-activity">
+      <div class="topbar">
+        <div>
+          <h1 data-ar="تسجيل الدخول والنشاط" data-en="Logins & activity">تسجيل الدخول والنشاط</h1>
+          <div class="crumb"><span data-ar="راسخ" data-en="Raseekh">راسخ</span> <span>/</span> <span data-ar="إدارة" data-en="Admin">إدارة</span></div>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn btn-ghost" type="button" id="refreshActivityBtn" data-ar="↻ تحديث" data-en="↻ Refresh">↻ تحديث</button>
+          <button class="btn btn-ghost" type="button" id="exportActivityBtn" data-ar="تصدير CSV" data-en="Export CSV">تصدير CSV</button>
+        </div>
+      </div>
+      <div class="stats admin-only">
+        <div class="stat"><div class="label" data-ar="حسابات سجّلت دخول" data-en="Accounts logged in">حسابات سجّلت دخول</div><div class="value" id="activityStatRegistered">0</div></div>
+        <div class="stat"><div class="label" data-ar="نشط الآن" data-en="Active now">نشط الآن</div><div class="value" id="activityStatActive">0</div></div>
+        <div class="stat"><div class="label" data-ar="دخول اليوم" data-en="Logins today">دخول اليوم</div><div class="value" id="activityStatToday">0</div></div>
+        <div class="stat"><div class="label" data-ar="إجمالي الدخول" data-en="Total logins">إجمالي الدخول</div><div class="value" id="activityStatTotal">0</div></div>
+      </div>
+      <div class="panel" style="margin-top:14px">
+        <h3 data-ar="سجل الدخول" data-en="Login log">سجل الدخول</h3>
+        <p style="color:var(--muted);font-size:.9rem;margin:4px 0 10px" data-ar="كل من دخل لحساب راسخ، ومن نشط خلال آخر 15 دقيقة. للمزامنة بين الأجهزة شغّل setup_all.sql." data-en="Everyone who signed into Raseekh, and who is active in the last 15 minutes. For cross-device sync run setup_all.sql.">كل من دخل لحساب راسخ، ومن نشط خلال آخر 15 دقيقة. للمزامنة بين الأجهزة شغّل setup_all.sql.</p>
+        <div class="lead-filters" id="activityFilters">
+          <button type="button" class="active" data-activity-filter="all" data-ar="الكل" data-en="All">الكل</button>
+          <button type="button" data-activity-filter="active" data-ar="نشط الآن" data-en="Active now">نشط الآن</button>
+          <button type="button" data-activity-filter="today" data-ar="اليوم" data-en="Today">اليوم</button>
+          <button type="button" data-activity-filter="client" data-ar="عملاء" data-en="Clients">عملاء</button>
+        </div>
+        <div class="activity-list" id="activityFullList" style="margin-top:12px"></div>
       </div>
     </div>
 
@@ -737,7 +776,11 @@ body.is-admin .client-only{display:none!important}
           <label class="field"><span data-ar="بريد وصول الطلبات" data-en="Request notify email">بريد وصول الطلبات</span>
             <input type="email" id="storeNotifyEmail" data-ar-placeholder="you@example.com" data-en-placeholder="you@example.com" placeholder="you@example.com" autocomplete="email">
           </label>
-          <p style="color:var(--muted);font-size:.82rem" data-ar="عند إرسال طلب جديد يُرسل ملخص إلى هذا البريد (FormSubmit). أول مرة يؤكد FormSubmit البريد برسالة تفعيل." data-en="New requests email a summary here via FormSubmit. The first time, FormSubmit sends an activation email.">عند إرسال طلب جديد يُرسل ملخص إلى هذا البريد (FormSubmit). أول مرة يؤكد FormSubmit البريد برسالة تفعيل.</p>
+          <p style="color:var(--muted);font-size:.82rem" data-ar="يُرسل ملخص الطلبات الجديدة هنا (FormSubmit). أول مرة يؤكد FormSubmit البريد برسالة تفعيل. كذلك يُرسل تنبيه عند دخول عميل جديد (مرة كل ٦ ساعات لكل بريد)." data-en="New requests email a summary here (FormSubmit). First time needs activation. Client logins also notify here (once every 6 hours per email).">يُرسل ملخص الطلبات الجديدة هنا (FormSubmit). أول مرة يؤكد FormSubmit البريد برسالة تفعيل. كذلك يُرسل تنبيه عند دخول عميل جديد (مرة كل ٦ ساعات لكل بريد).</p>
+          <label class="check" style="align-items:center;margin:8px 0 12px">
+            <input type="checkbox" id="storeNotifyLogin" checked>
+            <span data-ar="أرسل تنبيه بريد عند تسجيل دخول عميل" data-en="Email me when a client signs in">أرسل تنبيه بريد عند تسجيل دخول عميل</span>
+          </label>
           <label class="field"><span data-ar="Webhook للطلبات (اختياري)" data-en="Request webhook (optional)">Webhook للطلبات (اختياري)</span>
             <input type="url" id="storeWebhook" data-ar-placeholder="https://hooks.example.com/..." data-en-placeholder="https://hooks.example.com/..." placeholder="https://hooks.example.com/...">
           </label>
@@ -969,8 +1012,9 @@ body.is-admin .client-only{display:none!important}
   }
   function loadStore(){
     migrateLegacyKey('raseekh_store_', ADMIN_STORE_KEY);
-    try { store = Object.assign({ name: 'راسخ', phone: '', webhookUrl: '', notifyEmail: '' }, JSON.parse(localStorage.getItem(ADMIN_STORE_KEY) || '{}')); }
-    catch (_) { store = { name: 'راسخ', phone: '', webhookUrl: '', notifyEmail: '' }; }
+    try { store = Object.assign({ name: 'راسخ', phone: '', webhookUrl: '', notifyEmail: '', notifyOnLogin: true }, JSON.parse(localStorage.getItem(ADMIN_STORE_KEY) || '{}')); }
+    catch (_) { store = { name: 'راسخ', phone: '', webhookUrl: '', notifyEmail: '', notifyOnLogin: true }; }
+    if (typeof store.notifyOnLogin !== 'boolean') store.notifyOnLogin = true;
   }
   function saveStore(){
     if (!requireAdmin('saveStore')) return;
@@ -1283,12 +1327,63 @@ body.is-admin .client-only{display:none!important}
       if (isAdminUser) renderAudienceStats();
     }, 60000);
   }
+  let activityFilter = 'all';
+  let lastActivityStats = { users: [], registered: 0, activeNow: 0, loginsToday: 0, totalLogins: 0 };
+
+  function activityRowHtml(u, now, loc){
+    const active = Activity && typeof Activity.ACTIVE_MS === 'number'
+      ? (now - new Date(u.lastSeenAt || 0).getTime()) <= Activity.ACTIVE_MS
+      : false;
+    const label = escapeHtml(u.name || u.email || '—');
+    const email = escapeHtml(u.email || '');
+    const seen = u.lastSeenAt ? new Date(u.lastSeenAt).toLocaleString(loc) : '—';
+    const loginAt = u.lastLoginAt ? new Date(u.lastLoginAt).toLocaleString(loc) : '—';
+    const logins = Number(u.loginCount) || 0;
+    const role = u.role === 'admin' ? t('إدارة','Admin') : t('عميل','Client');
+    return `
+      <div class="activity-row">
+        <div>
+          <div style="font-weight:700">${label}</div>
+          <div class="meta">${email} · ${escapeHtml(role)} · ${escapeHtml(t('دخول','logins') + ': ' + logins)}</div>
+          <div class="meta">${escapeHtml(t('آخر دخول','Last login') + ': ' + loginAt)}</div>
+          <div class="meta">${escapeHtml(t('آخر ظهور','Last seen') + ': ' + seen)}</div>
+        </div>
+        <span class="activity-pill${active ? '' : ' off'}">${escapeHtml(active ? t('نشط الآن','Active now') : t('غير نشط','Idle'))}</span>
+      </div>
+    `;
+  }
+
+  function filterActivityUsers(users, filter){
+    const now = Date.now();
+    const start = new Date(); start.setHours(0,0,0,0);
+    const startMs = start.getTime();
+    return (users || []).filter((u) => {
+      if (filter === 'active') {
+        return Activity && (now - new Date(u.lastSeenAt || 0).getTime()) <= Activity.ACTIVE_MS;
+      }
+      if (filter === 'today') {
+        return new Date(u.lastLoginAt || 0).getTime() >= startMs;
+      }
+      if (filter === 'client') return u.role !== 'admin';
+      return true;
+    });
+  }
+
+  function updateActivityBadge(activeNow){
+    const badge = document.getElementById('activityNavBadge');
+    if (!badge) return;
+    const n = Number(activeNow) || 0;
+    badge.textContent = String(n);
+    badge.classList.toggle('show', n > 0);
+  }
+
   async function renderAudienceStats(){
     if (!isAdminUser || !Activity) return;
     let stats = Activity.getStats();
     try {
       if (Activity.syncFromCloud) stats = await Activity.syncFromCloud();
     } catch (_) {}
+    lastActivityStats = stats || lastActivityStats;
     const set = (id, val) => {
       const el = document.getElementById(id);
       if (el) el.textContent = String(val == null ? 0 : val);
@@ -1297,36 +1392,37 @@ body.is-admin .client-only{display:none!important}
     set('statActiveUsers', stats.activeNow);
     set('statLoginsToday', stats.loginsToday);
     set('statTotalLogins', stats.totalLogins);
+    set('activityStatRegistered', stats.registered);
+    set('activityStatActive', stats.activeNow);
+    set('activityStatToday', stats.loginsToday);
+    set('activityStatTotal', stats.totalLogins);
+    updateActivityBadge(stats.activeNow);
 
-    const list = document.getElementById('audienceActivityList');
-    if (!list) return;
-    const rows = (stats.users || []).slice(0, 12);
-    if (!rows.length) {
-      list.innerHTML = `<div class="empty">${t('لا يوجد نشاط دخول بعد','No login activity yet')}</div>`;
-      return;
-    }
     const now = Date.now();
     const loc = currentLang === 'ar' ? 'ar-SA' : 'en-US';
-    list.innerHTML = rows.map((u) => {
-      const active = Activity && typeof Activity.ACTIVE_MS === 'number'
-        ? (now - new Date(u.lastSeenAt || 0).getTime()) <= Activity.ACTIVE_MS
-        : false;
-      const label = escapeHtml(u.name || u.email || '—');
-      const email = escapeHtml(u.email || '');
-      const seen = u.lastSeenAt ? new Date(u.lastSeenAt).toLocaleString(loc) : '—';
-      const logins = Number(u.loginCount) || 0;
-      const role = u.role === 'admin' ? t('إدارة','Admin') : t('عميل','Client');
-      return `
-        <div class="activity-row">
-          <div>
-            <div style="font-weight:700">${label}</div>
-            <div class="meta">${email} · ${escapeHtml(role)} · ${escapeHtml(t('دخول','logins'))}: ${logins}</div>
-            <div class="meta">${escapeHtml(t('آخر ظهور','Last seen'))}: ${escapeHtml(seen)}</div>
-          </div>
-          <span class="activity-pill${active ? '' : ' off'}">${escapeHtml(active ? t('نشط الآن','Active now') : t('غير نشط','Idle'))}</span>
-        </div>
-      `;
-    }).join('');
+    const preview = document.getElementById('audienceActivityList');
+    if (preview) {
+      const rows = (stats.users || []).slice(0, 6);
+      preview.innerHTML = rows.length
+        ? rows.map((u) => activityRowHtml(u, now, loc)).join('')
+        : `<div class="empty">${t('لا يوجد نشاط دخول بعد — عندما يسجّل عميل دخوله يظهر هنا','No login activity yet — client sign-ins will appear here')}</div>`;
+    }
+    renderActivityPage(stats);
+  }
+
+  function renderActivityPage(stats){
+    if (!isAdminUser) return;
+    const data = stats || lastActivityStats || Activity.getStats();
+    const list = document.getElementById('activityFullList');
+    if (!list) return;
+    const now = Date.now();
+    const loc = currentLang === 'ar' ? 'ar-SA' : 'en-US';
+    const rows = filterActivityUsers(data.users || [], activityFilter);
+    if (!rows.length) {
+      list.innerHTML = `<div class="empty">${t('لا توجد نتائج ضمن هذا التصفية','No rows in this filter')}</div>`;
+      return;
+    }
+    list.innerHTML = rows.map((u) => activityRowHtml(u, now, loc)).join('');
   }
 
   async function showDashboard(user, demo){
@@ -1371,17 +1467,19 @@ body.is-admin .client-only{display:none!important}
       loadClientRequests();
       document.getElementById('storeName').value = store.name || '';
       document.getElementById('storePhone').value = store.phone || '';
-      const webhookEl = document.getElementById('storeWebhook');
-      if (webhookEl) webhookEl.value = store.webhookUrl || '';
-      const notifyEl = document.getElementById('storeNotifyEmail');
-      if (notifyEl) {
-        const fallbackEmail = (!store.notifyEmail && user && user.email && isAdminUser) ? String(user.email).toLowerCase() : '';
-        notifyEl.value = store.notifyEmail || fallbackEmail || '';
-        if (!store.notifyEmail && fallbackEmail) {
-          store.notifyEmail = fallbackEmail;
-          saveStore();
-        }
+    const webhookEl = document.getElementById('storeWebhook');
+    if (webhookEl) webhookEl.value = store.webhookUrl || '';
+    const notifyEl = document.getElementById('storeNotifyEmail');
+    if (notifyEl) {
+      const fallbackEmail = (!store.notifyEmail && user && user.email && isAdminUser) ? String(user.email).toLowerCase() : '';
+      notifyEl.value = store.notifyEmail || fallbackEmail || '';
+      if (!store.notifyEmail && fallbackEmail) {
+        store.notifyEmail = fallbackEmail;
+        saveStore();
       }
+    }
+    const notifyLoginEl = document.getElementById('storeNotifyLogin');
+    if (notifyLoginEl) notifyLoginEl.checked = store.notifyOnLogin !== false;
       if (isAdminUser && Catalog && Catalog.publishPublicNotify) Catalog.publishPublicNotify(store);
       if (isAdminUser) renderDeliveryStatus();
       cart = [];
@@ -1419,7 +1517,7 @@ body.is-admin .client-only{display:none!important}
       showToast(t('وافقوا على الشروط للمتابعة', 'Accept the terms to continue'));
       return;
     }
-    const adminPages = { pos:1, products:1, sales:1, leads:1 };
+    const adminPages = { pos:1, products:1, sales:1, leads:1, activity:1 };
     const clientPages = { catalog:1, suggestions:1, requests:1 };
     if (adminPages[page] && !isAdminUser) {
       showToast(t('هذه الصفحة للإدارة فقط', 'This page is admin-only'));
@@ -1440,6 +1538,7 @@ body.is-admin .client-only{display:none!important}
     if (page === 'suggestions') renderClientSuggestionsPage();
     if (page === 'requests') renderClientRequestsPage();
     if (page === 'leads') renderAdminLeads();
+    if (page === 'activity') renderAudienceStats();
     if (page === 'settings' && isAdminUser) renderDeliveryStatus();
   }
   document.querySelectorAll('.nav-item').forEach(btn => btn.addEventListener('click', () => switchPage(btn.dataset.page)));
@@ -1624,6 +1723,8 @@ body.is-admin .client-only{display:none!important}
       loadClientRequests();
       const newCount = clientRequests.filter((r) => (r.status || 'new') === 'new').length;
       document.getElementById('statNewRequests').textContent = newCount;
+      const dup = document.getElementById('statNewRequestsDup');
+      if (dup) dup.textContent = newCount;
       updateLeadsBadge();
       renderAudienceStats();
       const holder = document.getElementById('recentSales');
@@ -1845,6 +1946,41 @@ body.is-admin .client-only{display:none!important}
         </div>
       </div>
     `).join('');
+  }
+
+  const activityFilters = document.getElementById('activityFilters');
+  if (activityFilters) {
+    activityFilters.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-activity-filter]');
+      if (!btn) return;
+      activityFilter = btn.dataset.activityFilter || 'all';
+      activityFilters.querySelectorAll('button').forEach((b) => b.classList.toggle('active', b === btn));
+      renderActivityPage(lastActivityStats);
+    });
+  }
+  const refreshActivityBtn = document.getElementById('refreshActivityBtn');
+  if (refreshActivityBtn) {
+    refreshActivityBtn.addEventListener('click', () => {
+      renderAudienceStats().then(() => showToast(t('تم تحديث النشاط', 'Activity refreshed')));
+    });
+  }
+  const exportActivityBtn = document.getElementById('exportActivityBtn');
+  if (exportActivityBtn) {
+    exportActivityBtn.addEventListener('click', () => {
+      if (!requireAdmin('exportActivity')) return;
+      const rows = filterActivityUsers((lastActivityStats && lastActivityStats.users) || [], activityFilter);
+      const header = ['name','email','role','loginCount','lastLoginAt','lastSeenAt'];
+      const csv = [header.join(',')].concat(rows.map((u) => header.map((k) => {
+        const v = u[k] == null ? '' : String(u[k]);
+        return '"' + v.replace(/"/g, '""') + '"';
+      }).join(','))).join('\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'raseekh-logins.csv';
+      a.click();
+      URL.revokeObjectURL(a.href);
+    });
   }
 
   const leadFilters = document.getElementById('leadFilters');
@@ -2392,13 +2528,15 @@ body.is-admin .client-only{display:none!important}
     store.phone = document.getElementById('storePhone').value.trim();
     store.webhookUrl = (document.getElementById('storeWebhook').value || '').trim();
     store.notifyEmail = (document.getElementById('storeNotifyEmail').value || '').trim().toLowerCase();
+    const notifyLoginEl = document.getElementById('storeNotifyLogin');
+    store.notifyOnLogin = notifyLoginEl ? !!notifyLoginEl.checked : true;
     saveStore();
     renderDeliveryStatus();
     document.getElementById('storeMsg').style.color = 'var(--ok)';
     if (store.notifyEmail) {
       document.getElementById('storeMsg').textContent = t(
-        'تم الحفظ — الطلبات الجديدة ستصل لهذا البريد (فعّل FormSubmit من رسالة التأكيد)',
-        'Saved — new requests will email this address (activate FormSubmit from the confirmation mail)'
+        'تم الحفظ — الطلبات وتسجيل دخول العملاء يصلان لهذا البريد (فعّل FormSubmit إن لزم)',
+        'Saved — requests and client logins email this address (activate FormSubmit if needed)'
       );
     } else if (store.webhookUrl) {
       document.getElementById('storeMsg').textContent = t('تم الحفظ — إشعارات الطلبات مفعّلة عبر Webhook', 'Saved — request webhook notifications enabled');
