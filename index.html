@@ -269,13 +269,28 @@ nav{display:flex;align-items:center;justify-content:space-between;gap:16px;paddi
 .faq-item summary::after{content:"+";color:var(--copper);font-weight:800;font-size:1.2rem}
 .faq-item[open] summary::after{content:"–"}
 .faq-item p{padding:0 18px 16px;color:var(--muted);font-size:.95rem}
-.news-list{display:flex;flex-direction:column;gap:0;border-top:1.5px solid var(--line)}
-.news-item{
-  display:grid;grid-template-columns:110px 1fr;gap:18px;padding:18px 0;border-bottom:1.5px solid var(--line);
+.now-rail{
+  position:relative;max-width:720px;display:flex;flex-direction:column;gap:0;
+  padding-inline-start:28px;
 }
-.news-item time{color:var(--copper);font-weight:700;font-size:.86rem}
-.news-item h3{font-size:1.05rem;margin-bottom:4px}
-.news-item p{color:var(--muted);font-size:.92rem}
+.now-rail::before{
+  content:"";position:absolute;inset-inline-start:7px;top:8px;bottom:8px;width:2px;
+  background:linear-gradient(180deg, var(--copper), rgba(42,111,122,.35));
+}
+.now-item{
+  position:relative;padding:0 0 28px 0;border:none;background:transparent;
+}
+.now-item:last-child{padding-bottom:0}
+.now-item::before{
+  content:"";position:absolute;inset-inline-start:-25px;top:8px;width:12px;height:12px;
+  border-radius:50%;background:var(--panel);border:2px solid var(--copper);box-shadow:0 0 0 4px rgba(196,92,38,.12);
+}
+.now-item .now-label{
+  display:inline-block;font-size:.78rem;font-weight:800;color:var(--copper);margin-bottom:6px;
+}
+.now-item h3{font-size:1.15rem;margin-bottom:6px;color:var(--navy)}
+.now-item p{color:var(--muted);font-size:.95rem;line-height:1.7;max-width:52ch}
+.now-foot{margin-top:28px;display:flex;gap:10px;flex-wrap:wrap}
 @keyframes rise{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:none}}
 
 section{padding:100px 0;position:relative;z-index:1}
@@ -817,6 +832,42 @@ body.terms-locked{overflow:hidden}
         <h3 data-ar="التسليم" data-en="Deliver">التسليم</h3>
         <p data-ar="تشغيل جاهز ودعم بعد الإطلاق." data-en="Ready launch with post-go-live support.">تشغيل جاهز ودعم بعد الإطلاق.</p>
       </div>
+    </div>
+  </div>
+</section>
+
+<section id="whats-new">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow" data-ar="الآن في راسخ" data-en="Now on Raseekh">الآن في راسخ</div>
+      <h2 data-ar="ما يعمل لكم من أول يوم" data-en="What works for you from day one">ما يعمل لكم من أول يوم</h2>
+      <p data-ar="مسار واحد: اطلبوا عرض سعر، تابعوا الحالة، وادفعوا العربون عند الحاجة." data-en="One path: request a quote, track status, and pay a deposit when needed.">مسار واحد: اطلبوا عرض سعر، تابعوا الحالة، وادفعوا العربون عند الحاجة.</p>
+    </div>
+    <div class="now-rail reveal stagger">
+      <article class="now-item">
+        <span class="now-label" data-ar="عرض سعر" data-en="Quote">عرض سعر</span>
+        <h3 data-ar="طلب واضح بدون تسعير مبهم" data-en="A clear request — no vague pricing">طلب واضح بدون تسعير مبهم</h3>
+        <p data-ar="من الصفحة أو حساب العميل. نراجع النطاق ونرسل عرض السعر خلال يوم عمل." data-en="From the site or client account. We review scope and send a quote within one business day.">من الصفحة أو حساب العميل. نراجع النطاق ونرسل عرض السعر خلال يوم عمل.</p>
+      </article>
+      <article class="now-item">
+        <span class="now-label" data-ar="متابعة" data-en="Tracking">متابعة</span>
+        <h3 data-ar="حالة الطلب ظاهرة في حسابكم" data-en="Request status visible in your account">حالة الطلب ظاهرة في حسابكم</h3>
+        <p data-ar="بدل الرسائل المتفرقة — تدخلون وترون الجديد وقيد المعالجة والمكتمل." data-en="Instead of scattered chats — sign in and see new, in progress, and done.">بدل الرسائل المتفرقة — تدخلون وترون الجديد وقيد المعالجة والمكتمل.</p>
+      </article>
+      <article class="now-item">
+        <span class="now-label" data-ar="سداد" data-en="Pay">سداد</span>
+        <h3 data-ar="عربون آمن بعد تسجيل الدخول" data-en="Secure deposit after sign-in">عربون آمن بعد تسجيل الدخول</h3>
+        <p data-ar="بطاقة أو Apple Pay عبر Moyasar — للعملاء المسجّلين فقط." data-en="Card or Apple Pay via Moyasar — for signed-in clients only.">بطاقة أو Apple Pay عبر Moyasar — للعملاء المسجّلين فقط.</p>
+      </article>
+      <article class="now-item">
+        <span class="now-label" data-ar="لغة" data-en="Language">لغة</span>
+        <h3 data-ar="عربي وإنجليزي في نفس اللحظة" data-en="Arabic and English in one click">عربي وإنجليزي في نفس اللحظة</h3>
+        <p data-ar="تبديل فوري على الموقع وحساب العميل بدون إعادة تحميل مربكة." data-en="Instant switch on the site and client area — no awkward reloads.">تبديل فوري على الموقع وحساب العميل بدون إعادة تحميل مربكة.</p>
+      </article>
+    </div>
+    <div class="now-foot reveal">
+      <a class="btn btn-primary" href="#contact" data-ar="اطلب عرض سعر" data-en="Request a quote">اطلب عرض سعر</a>
+      <a class="btn btn-ghost" href="/dashboard/" data-ar="دخول حساب العميل" data-en="Open client account">دخول حساب العميل</a>
     </div>
   </div>
 </section>
