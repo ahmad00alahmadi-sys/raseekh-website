@@ -51,7 +51,6 @@
     applyTextAttrs(lang);
     const btn = document.getElementById('langToggle');
     if (btn) btn.textContent = lang === 'ar' ? 'EN' : 'AR';
-    if (window.RaseekhTheme && RaseekhTheme.apply) RaseekhTheme.apply(RaseekhTheme.get());
     const titleEl = document.querySelector('title');
     if (titleEl) {
       const ar = titleEl.getAttribute('data-ar');
@@ -68,7 +67,6 @@
   }
 
   document.addEventListener('DOMContentLoaded', () => {
-    if (window.RaseekhTheme && RaseekhTheme.bind) RaseekhTheme.bind();
     const btn = document.getElementById('langToggle');
     if (btn) btn.addEventListener('click', () => applyLang(currentLang === 'ar' ? 'en' : 'ar'));
     applyLang(currentLang);
