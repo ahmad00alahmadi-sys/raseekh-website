@@ -191,12 +191,25 @@
     }
   }
 
+  async function probeCloud() {
+    try {
+      const sb = global.RaseekhAuth && global.RaseekhAuth.supabase;
+      if (!sb) return { ok: false, reason: 'no-client' };
+      const { error } = await sb.from('user_activity').select('user_key').limit(1);
+      if (error) return { ok: false, reason: error.message || 'table-missing' };
+      return { ok: true };
+    } catch (err) {
+      return { ok: false, reason: String(err && err.message || err || 'error') };
+    }
+  }
+
   global.RaseekhActivity = {
     ACTIVE_MS,
     recordLogin,
     heartbeat,
     getStats,
     syncFromCloud,
-    listUsers
+    listUsers,
+    probeCloud
   };
 })(typeof window !== 'undefined' ? window : globalThis);

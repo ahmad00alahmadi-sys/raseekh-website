@@ -741,11 +741,14 @@ body.is-admin .client-only{display:none!important}
           <label class="field"><span data-ar="Webhook للطلبات (اختياري)" data-en="Request webhook (optional)">Webhook للطلبات (اختياري)</span>
             <input type="url" id="storeWebhook" data-ar-placeholder="https://hooks.example.com/..." data-en-placeholder="https://hooks.example.com/..." placeholder="https://hooks.example.com/...">
           </label>
-          <p style="color:var(--muted);font-size:.82rem" data-ar="اختياري: Zapier / Make / n8n. للمزامنة بين الأجهزة شغّل في Supabase: client_requests.sql ثم site_settings.sql ثم user_activity.sql ثم terms_acceptance.sql." data-en="Optional: Zapier / Make / n8n. For cross-device sync in Supabase run: client_requests.sql, site_settings.sql, user_activity.sql, then terms_acceptance.sql.">اختياري: Zapier / Make / n8n. للمزامنة بين الأجهزة شغّل في Supabase: client_requests.sql ثم site_settings.sql ثم user_activity.sql ثم terms_acceptance.sql.</p>
+          <p style="color:var(--muted);font-size:.82rem" data-ar="Webhook اختياري (Zapier/Make). للمزامنة بين الأجهزة: شغّل supabase/setup_all.sql مرة واحدة في Supabase، ثم احفظ البريد هنا." data-en="Webhook optional (Zapier/Make). For cross-device sync: run supabase/setup_all.sql once in Supabase, then save the email here.">Webhook اختياري (Zapier/Make). للمزامنة بين الأجهزة: شغّل supabase/setup_all.sql مرة واحدة في Supabase، ثم احفظ البريد هنا.</p>
           <div class="delivery-status" id="deliveryStatusBox">
             <div class="row"><span data-ar="حالة وصول الطلبات" data-en="Request delivery status">حالة وصول الطلبات</span><button type="button" class="btn btn-ghost" id="refreshDeliveryStatusBtn" style="padding:6px 10px;font-size:.78rem" data-ar="فحص" data-en="Check">فحص</button></div>
             <div class="row"><span data-ar="البريد" data-en="Email">البريد</span><span class="delivery-pill off" id="deliveryEmailPill">—</span></div>
-            <div class="row"><span data-ar="السحابة (Supabase)" data-en="Cloud (Supabase)">السحابة (Supabase)</span><span class="delivery-pill off" id="deliveryCloudPill">—</span></div>
+            <div class="row"><span data-ar="طلبات العملاء (SQL)" data-en="Client requests (SQL)">طلبات العملاء (SQL)</span><span class="delivery-pill off" id="deliveryCloudPill">—</span></div>
+            <div class="row"><span data-ar="إعدادات الإشعار (SQL)" data-en="Notify settings (SQL)">إعدادات الإشعار (SQL)</span><span class="delivery-pill off" id="deliverySettingsPill">—</span></div>
+            <div class="row"><span data-ar="نشاط الدخول (SQL)" data-en="Login activity (SQL)">نشاط الدخول (SQL)</span><span class="delivery-pill off" id="deliveryActivityPill">—</span></div>
+            <div class="row"><span data-ar="قبول الشروط (SQL)" data-en="Terms acceptance (SQL)">قبول الشروط (SQL)</span><span class="delivery-pill off" id="deliveryTermsPill">—</span></div>
             <div class="row"><span data-ar="Webhook" data-en="Webhook">Webhook</span><span class="delivery-pill off" id="deliveryWebhookPill">—</span></div>
           </div>
           <div style="display:flex;gap:8px;flex-wrap:wrap">
@@ -1015,18 +1018,27 @@ body.is-admin .client-only{display:none!important}
     }
     const status = Catalog && Catalog.getDeliveryStatus ? Catalog.getDeliveryStatus() : { hasEmail: false, hasWebhook: false, hasSupabaseClient: false, notifyEmail: '' };
     let cloudOk = false;
+    let settingsOk = false;
+    let activityOk = false;
+    let termsOk = false;
     let notifyPublished = false;
-    if (Catalog && status.hasSupabaseClient) {
-      if (Catalog.probeCloudRequests) {
+    if (status.hasSupabaseClient) {
+      if (Catalog && Catalog.probeCloudRequests) {
         const probe = await Catalog.probeCloudRequests();
         cloudOk = !!(probe && probe.ok);
       }
-      if (Catalog.probePublicNotifyCloud) {
+      if (Catalog && Catalog.probePublicNotifyCloud) {
         const pub = await Catalog.probePublicNotifyCloud();
+        settingsOk = !!(pub && pub.ok);
         notifyPublished = !!(pub && pub.ok && pub.published);
-        if (pub && pub.ok === false && pub.reason && /relation|does not exist|table/i.test(String(pub.reason))) {
-          notifyPublished = false;
-        }
+      }
+      if (Activity && Activity.probeCloud) {
+        const act = await Activity.probeCloud();
+        activityOk = !!(act && act.ok);
+      }
+      if (Terms && Terms.probeCloud) {
+        const tr = await Terms.probeCloud();
+        termsOk = !!(tr && tr.ok);
       }
     }
     const setPill = (id, on, onText, offText) => {
@@ -1037,22 +1049,22 @@ body.is-admin .client-only{display:none!important}
       el.textContent = on ? onText : offText;
     };
     let emailText = t('غير مضبوط', 'Not set');
-    let emailOn = !!status.hasEmail;
     if (status.hasEmail) {
       emailText = notifyPublished
         ? (status.notifyEmail + ' · ' + t('منشور للزوار', 'published'))
-        : (status.notifyEmail + ' · ' + t('محلي فقط — شغّل site_settings.sql', 'local only — run site_settings.sql'));
-      emailOn = notifyPublished;
+        : (status.notifyEmail + ' · ' + t('محلي فقط — شغّل setup_all.sql', 'local only — run setup_all.sql'));
     }
-    setPill('deliveryEmailPill', emailOn, emailText, status.hasEmail ? emailText : t('غير مضبوط', 'Not set'));
-    // Keep visible warning color when email exists but is not published.
+    setPill('deliveryEmailPill', !!(status.hasEmail && notifyPublished), emailText, emailText);
     const emailPill = document.getElementById('deliveryEmailPill');
     if (emailPill && status.hasEmail && !notifyPublished) {
       emailPill.classList.add('off');
       emailPill.classList.remove('on');
       emailPill.textContent = emailText;
     }
-    setPill('deliveryCloudPill', cloudOk, t('متصل', 'Connected'), status.hasSupabaseClient ? t('شغّل SQL أولاً', 'Run SQL first') : t('غير متصل', 'Offline'));
+    setPill('deliveryCloudPill', cloudOk, t('جاهز', 'Ready'), status.hasSupabaseClient ? t('شغّل setup_all.sql', 'Run setup_all.sql') : t('غير متصل', 'Offline'));
+    setPill('deliverySettingsPill', settingsOk, notifyPublished ? t('منشور', 'Published') : t('الجدول موجود', 'Table ok'), t('شغّل setup_all.sql', 'Run setup_all.sql'));
+    setPill('deliveryActivityPill', activityOk, t('جاهز', 'Ready'), t('شغّل setup_all.sql', 'Run setup_all.sql'));
+    setPill('deliveryTermsPill', termsOk, t('جاهز', 'Ready'), t('شغّل setup_all.sql', 'Run setup_all.sql'));
     setPill('deliveryWebhookPill', status.hasWebhook, t('مفعّل', 'On'), t('اختياري', 'Optional'));
     const leadsPill = document.getElementById('leadsDeliveryPill');
     if (leadsPill) {
@@ -1065,7 +1077,7 @@ body.is-admin .client-only{display:none!important}
           : (notifyPublished ? t('بريد منشور', 'Email published') : t('سحابة فقط', 'Cloud only')))
         : t('اضبط البريد من الإعدادات', 'Set email in Settings');
     }
-    return { status, cloudOk, notifyPublished };
+    return { status, cloudOk, settingsOk, activityOk, termsOk, notifyPublished };
   }
   function saveClientRequests(){
     if (Catalog && Catalog.saveSharedRequests) {
@@ -1488,6 +1500,12 @@ body.is-admin .client-only{display:none!important}
     msg.textContent = t('جاري إنشاء الحساب...', 'Creating account...');
     try {
       const result = await Auth.signUp({ email, password, full_name: name, phone });
+      if (result && result.needsEmailConfirm) {
+        msg.style.color = 'var(--ok)';
+        msg.textContent = t('تم إنشاء الحساب — تحققوا من البريد لتفعيله ثم سجّلوا الدخول', 'Account created — check your email to activate, then sign in');
+        showAuthPanel('loginPanel');
+        return;
+      }
       if (Terms && result.user) Terms.acceptTerms(result.user);
       msg.style.color = 'var(--ok)';
       msg.textContent = t('تم إنشاء الحساب', 'Account created');
@@ -1788,7 +1806,7 @@ body.is-admin .client-only{display:none!important}
           <div class="setup-steps">
             <div><b>1.</b> ${escapeHtml(t('احفظ «بريد وصول الطلبات» من الإعدادات','Save “Request notify email” in Settings'))}</div>
             <div><b>2.</b> ${escapeHtml(t('فعّل رسالة FormSubmit الأولى على بريدك','Activate the first FormSubmit email'))}</div>
-            <div><b>3.</b> ${escapeHtml(t('اختياري: شغّل ملفات supabase/*_requests/settings/activity/terms_acceptance.sql','Optional: run supabase SQL files for cross-device sync'))}</div>
+            <div><b>3.</b> ${escapeHtml(t('شغّل supabase/setup_all.sql مرة واحدة في Supabase','Run supabase/setup_all.sql once in Supabase'))}</div>
             <div><b>4.</b> ${escapeHtml(t('أرسل طلب تجريبي من الصفحة الرئيسية','Send a test request from the homepage'))}</div>
           </div>
         </div>`;

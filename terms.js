@@ -153,6 +153,18 @@
     el.innerHTML = termsHtml();
   }
 
+  async function probeCloud() {
+    try {
+      const sb = global.RaseekhAuth && global.RaseekhAuth.supabase;
+      if (!sb) return { ok: false, reason: 'no-client' };
+      const { error } = await sb.from('terms_acceptance').select('user_key').limit(1);
+      if (error) return { ok: false, reason: error.message || 'table-missing' };
+      return { ok: true };
+    } catch (err) {
+      return { ok: false, reason: String(err && err.message || err || 'error') };
+    }
+  }
+
   global.RaseekhTerms = {
     TERMS_VERSION,
     termsHtml,
@@ -160,6 +172,7 @@
     hasAccepted,
     acceptTerms,
     syncAcceptance,
+    probeCloud,
     userKey
   };
 })(typeof window !== 'undefined' ? window : globalThis);

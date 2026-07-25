@@ -465,7 +465,17 @@
       }).then(async (res) => {
         let body = null;
         try { body = await res.json(); } catch (_) {}
-        return { ok: !!res && res.ok, status: res.status, body: body };
+        const blob = JSON.stringify(body || {}).toLowerCase();
+        const needsConfirm = /confirm|activate|activation|check your email|verify your email/.test(blob);
+        const explicitFail = !!(body && (body.error || body.success === false || body.success === 'false'));
+        const ok = !!res && res.ok && !needsConfirm && !explicitFail;
+        return {
+          ok: ok,
+          pendingConfirm: needsConfirm,
+          status: res.status,
+          body: body,
+          reason: needsConfirm ? 'formsubmit-confirm' : (explicitFail ? 'formsubmit-error' : '')
+        };
       }).catch((err) => ({ ok: false, reason: String(err && err.message || err || 'network') }));
     } catch (err) {
       return Promise.resolve({ ok: false, reason: String(err && err.message || err || 'error') });

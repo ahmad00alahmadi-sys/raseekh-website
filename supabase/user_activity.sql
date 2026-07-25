@@ -1,4 +1,4 @@
--- Optional: run in Supabase SQL Editor for cross-device login/active stats.
+-- Run in Supabase SQL Editor for cross-device login/active stats.
 
 create table if not exists public.user_activity (
   user_key text primary key,
@@ -18,19 +18,43 @@ alter table public.user_activity enable row level security;
 drop policy if exists "raseekh_activity_upsert" on public.user_activity;
 drop policy if exists "raseekh_activity_update" on public.user_activity;
 drop policy if exists "raseekh_activity_select" on public.user_activity;
+drop policy if exists "raseekh_activity_insert_own" on public.user_activity;
+drop policy if exists "raseekh_activity_update_own" on public.user_activity;
+drop policy if exists "raseekh_activity_select_own" on public.user_activity;
+drop policy if exists "raseekh_activity_select_admin" on public.user_activity;
 
-create policy "raseekh_activity_upsert"
+create policy "raseekh_activity_insert_own"
   on public.user_activity for insert
   to authenticated
-  with check (true);
+  with check (
+    lower(coalesce(email, user_key, '')) = lower(coalesce(auth.jwt() ->> 'email', ''))
+    or coalesce(user_id, '') = coalesce(auth.uid()::text, '')
+  );
 
-create policy "raseekh_activity_update"
+create policy "raseekh_activity_update_own"
   on public.user_activity for update
   to authenticated
-  using (true)
-  with check (true);
+  using (
+    lower(coalesce(email, user_key, '')) = lower(coalesce(auth.jwt() ->> 'email', ''))
+    or coalesce(user_id, '') = coalesce(auth.uid()::text, '')
+  )
+  with check (
+    lower(coalesce(email, user_key, '')) = lower(coalesce(auth.jwt() ->> 'email', ''))
+    or coalesce(user_id, '') = coalesce(auth.uid()::text, '')
+  );
 
-create policy "raseekh_activity_select"
+create policy "raseekh_activity_select_own"
   on public.user_activity for select
   to authenticated
-  using (true);
+  using (
+    lower(coalesce(email, user_key, '')) = lower(coalesce(auth.jwt() ->> 'email', ''))
+    or coalesce(user_id, '') = coalesce(auth.uid()::text, '')
+  );
+
+create policy "raseekh_activity_select_admin"
+  on public.user_activity for select
+  to authenticated
+  using (lower(coalesce(auth.jwt() ->> 'email', '')) = 'ahmad00alahmadi@gmail.com');
+
+grant usage on schema public to anon, authenticated;
+grant select, insert, update on table public.user_activity to authenticated;

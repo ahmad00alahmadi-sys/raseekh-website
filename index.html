@@ -1282,6 +1282,12 @@ body.terms-locked{overflow:hidden}
         full_name: document.getElementById('registerName').value.trim(),
         phone: document.getElementById('registerPhone').value.trim()
       });
+      if (result && result.needsEmailConfirm) {
+        msg.style.color = 'var(--ok)';
+        msg.textContent = t('تم إنشاء الحساب — تحققوا من البريد لتفعيله ثم سجّلوا الدخول', 'Account created — check your email to activate, then sign in');
+        showAuthPanel('login');
+        return;
+      }
       msg.style.color = 'var(--ok)'; msg.textContent = t('تم إنشاء الحساب — جاري التحويل...', 'Account created — redirecting...');
       setPayUnlocked(result.user);
       if (window.RaseekhTerms && result.user) RaseekhTerms.acceptTerms(result.user);

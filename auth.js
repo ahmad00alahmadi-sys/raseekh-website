@@ -211,15 +211,15 @@
             });
           } catch (_) {}
         }
-        // If cloud requires email confirm and no session, still create local usable account
+        // Email confirmation enabled: account created in cloud but no JWT yet.
+        // Do NOT invent a local session — cloud sync/RLS would silently fail.
         if (!data.session) {
-          try { return await localSignUp({ email, password, full_name, phone }); }
-          catch (e) {
-            if (String(e.message) === 'ALREADY_REGISTERED') {
-              return localSignIn({ email, password });
-            }
-            throw e;
-          }
+          return {
+            user: data.user ? withRole(data.user) : null,
+            session: null,
+            provider: 'supabase',
+            needsEmailConfirm: true
+          };
         }
         clearLocalSession();
         return { user: withRole(data.user), session: data.session, provider: 'supabase' };
@@ -350,6 +350,9 @@
     }
     if (code === 'NOT_FOUND') {
       return ar ? 'الحساب غير موجود' : 'Account not found';
+    }
+    if (code === 'EMAIL_CONFIRM_REQUIRED' || /email.*confirm|confirm.*email|email not confirmed/i.test(code)) {
+      return ar ? 'تحققوا من البريد لتفعيل الحساب ثم سجّلوا الدخول' : 'Check your email to activate the account, then sign in';
     }
     if (isNetworkAuthError(err)) {
       return ar ? 'تعذّر الاتصال بالخادم، تم استخدام الحساب المحلي' : 'Cloud unavailable, using local account';
