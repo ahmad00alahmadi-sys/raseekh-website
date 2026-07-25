@@ -240,7 +240,10 @@
   function getClientProducts() {
     const current = parseInt(localStorage.getItem(VERSION_KEY) || '0', 10) || 0;
     if (current < CATALOG_VERSION) {
-      return loadAdminProducts().filter((p) => p && p.client !== false);
+      const refreshed = loadAdminProducts().filter((p) => p && p.client !== false);
+      ensureSuggestionsVersion();
+      publishClientCatalog(refreshed, getClientSuggestions());
+      return refreshed;
     }
     const stored = readJson(PUBLIC_KEY, null);
     if (stored && stored.length) return stored.filter((p) => p && p.client !== false);
