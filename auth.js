@@ -12,6 +12,8 @@
   let cloudReady = null;
   let cloudReadyCheckedAt = 0;
   const CLOUD_PROBE_TTL_MS = 45000;
+  // Negative probes must be short — a brief Auth blip must not force local accounts for 45s.
+  const CLOUD_PROBE_NEGATIVE_TTL_MS = 4000;
 
   try {
     if (global.supabase) {
@@ -120,7 +122,7 @@
     const now = Date.now();
     // Cache both positive and negative probes briefly so a later outage can fall back to local.
     if (cloudReady === true && (now - cloudReadyCheckedAt) < CLOUD_PROBE_TTL_MS) return true;
-    if (cloudReady === false && (now - cloudReadyCheckedAt) < CLOUD_PROBE_TTL_MS) return false;
+    if (cloudReady === false && (now - cloudReadyCheckedAt) < CLOUD_PROBE_NEGATIVE_TTL_MS) return false;
     const ctrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
     const timer = setTimeout(() => { try { ctrl && ctrl.abort(); } catch (_) {} }, timeoutMs || 2500);
     try {
@@ -229,6 +231,8 @@
             });
           } catch (_) {}
         }
+        cloudReady = true;
+        cloudReadyCheckedAt = Date.now();
         // Email confirmation enabled: account created in cloud but no JWT yet.
         // Do NOT invent a local session — cloud sync/RLS would silently fail.
         if (!data.session) {
@@ -259,6 +263,8 @@
           if (isNetworkAuthError(error)) return localSignIn({ email, password });
           throw error;
         }
+        cloudReady = true;
+        cloudReadyCheckedAt = Date.now();
         clearLocalSession();
         return { user: withRole(data.user), session: data.session, provider: 'supabase' };
       } catch (err) {

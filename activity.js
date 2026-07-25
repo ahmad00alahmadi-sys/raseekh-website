@@ -284,7 +284,8 @@
         const key = String(email || row.user_key || row.user_id || '').toLowerCase();
         if (!key) return;
         const prev = store.users[key] || {};
-        store.users[key] = mergeUserRow(prev, {
+        const cloudCount = Number(row.login_count) || 0;
+        const merged = mergeUserRow(prev, {
           id: row.user_id || '',
           email: email || key,
           name: row.name || '',
@@ -292,14 +293,31 @@
           firstLoginAt: row.first_login_at || '',
           lastLoginAt: row.last_login_at || '',
           lastSeenAt: row.last_seen_at || '',
-          loginCount: Number(row.login_count) || 0
+          loginCount: cloudCount
         });
-        delete store.users[key].syncPending;
+        store.users[key] = merged;
+        // Local-max wins in merge — push that back instead of dropping syncPending.
+        const localAhead =
+          (Number(merged.loginCount) || 0) > cloudCount ||
+          (!!merged.lastLoginAt && merged.lastLoginAt !== (row.last_login_at || '')) ||
+          (!!merged.lastSeenAt && merged.lastSeenAt !== (row.last_seen_at || '')) ||
+          !!prev.syncPending;
+        if (localAhead) store.users[key].syncPending = true;
+        else delete store.users[key].syncPending;
         // Remove id-keyed duplicates after email merge.
         const idKey = String(row.user_id || '').toLowerCase();
         if (idKey && idKey !== key && store.users[idKey]) delete store.users[idKey];
       });
       writeStore(store);
+      const pushAgain = Object.keys(store.users || {})
+        .map((k) => store.users[k])
+        .filter((u) => u && u.syncPending);
+      for (const row of pushAgain) {
+        const ok = await pushCloud(row);
+        const key = String((row && (row.email || row.id)) || '').toLowerCase();
+        if (ok && key && store.users[key]) delete store.users[key].syncPending;
+      }
+      if (pushAgain.length) writeStore(store);
       return getStats();
     } catch (_) {
       return getStats();

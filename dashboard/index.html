@@ -2722,7 +2722,7 @@ body.is-admin .client-only{display:none!important}
       if (submitToken !== requestConfirmSubmitToken) return;
       if (!saved) {
         showToast(t('تعذّر إرسال الطلب — حاولوا مرة أخرى', 'Could not send the request — try again'));
-      } else if (delivery && (delivery.delivered || delivery.cloud)) {
+      } else if (delivery && delivery.delivered) {
         showToast(t('تم إرسال طلب عرض السعر', 'Quote request sent'));
       } else if (delivery && delivery.pendingNotify) {
         showToast(t('استلمنا الطلب — إشعار الإدارة قيد التفعيل', 'Request received — admin notify is activating'));
@@ -3215,7 +3215,7 @@ body.is-admin .client-only{display:none!important}
       } else loadSales();
       cart = [];
       renderAll();
-      openReceipt(sale);
+      showToast(t('جاري تسجيل الدفعة...', 'Recording payment...'));
       let delivery = null;
       try {
         if (sale && sale.deliveryPromise) delivery = await sale.deliveryPromise;
@@ -3232,7 +3232,8 @@ body.is-admin .client-only{display:none!important}
       } catch (_) {
         catalogCloud = false;
       }
-      const paymentSynced = !!(delivery && (delivery.cloud || delivery.delivered));
+      const paymentSynced = !!(delivery && delivery.cloud);
+      openReceipt(sale);
       showToast(paymentSynced && catalogCloud
         ? (method === 'card' ? t('تم تسجيل دفعة بالبطاقة','Card payment recorded') : t('تم تسجيل دفعة نقداً','Cash payment recorded'))
         : t('حُفظت الدفعة محلياً — تعذّرت مزامنة السحابة', 'Payment saved locally — cloud sync failed'));
@@ -3296,12 +3297,17 @@ body.is-admin .client-only{display:none!important}
           if (row && row.deliveryPromise) delivery = await row.deliveryPromise;
         } catch (_) {}
         try { await refreshSalesFromCloud(); } catch (_) { loadSales(); }
-        const synced = !!(delivery && (delivery.cloud || delivery.delivered));
+        const synced = !!(delivery && delivery.cloud);
+        const notified = !!(delivery && delivery.delivered);
         // Clear form only after local record exists; keep fields if nothing was saved.
         if (row || !Catalog) manualDepositForm.reset();
         msg.style.color = synced ? 'var(--ok)' : 'var(--danger)';
         msg.textContent = synced
-          ? t('تم تسجيل العربون', 'Deposit recorded')
+          ? (notified
+            ? t('تم تسجيل العربون', 'Deposit recorded')
+            : (delivery && delivery.pendingNotify
+              ? t('حُفظ في السحابة — إشعار البريد قيد الإكمال', 'Saved to cloud — email notify still completing')
+              : t('حُفظ في السحابة — تعذّر إشعار البريد الآن', 'Saved to cloud — email notify failed for now')))
           : t('حُفظ محلياً — تعذّرت مزامنة السحابة', 'Saved locally — cloud sync failed');
         renderOverview();
         renderSales();

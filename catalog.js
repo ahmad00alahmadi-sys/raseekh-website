@@ -495,6 +495,27 @@
     return fromWindow || String(publicCfg.notifyEmail || store.notifyEmail || '').trim().toLowerCase();
   }
 
+  function notifyEmailConfigured() {
+    const email = resolveNotifyEmail();
+    return !!(email && email.indexOf('@') >= 0);
+  }
+
+  /** Cloud/webhook alone is not "delivered" when admin email is configured but failed. */
+  function settleDeliveryChannels(cloud, email, webhook) {
+    const emailOk = !!(email && email.ok);
+    const pendingConfirm = !!(email && email.pendingConfirm);
+    const wantEmail = notifyEmailConfigured();
+    const anyChannel = !!(cloud || webhook || emailOk);
+    const delivered = anyChannel && (!wantEmail || emailOk);
+    // Keep retrying email when cloud/webhook worked but FormSubmit did not.
+    const pendingNotify = pendingConfirm || !!(wantEmail && !emailOk && (cloud || webhook));
+    return {
+      emailOk: emailOk,
+      pendingNotify: pendingNotify,
+      delivered: delivered
+    };
+  }
+
   function getSupabase() {
     try {
       return (global.RaseekhAuth && global.RaseekhAuth.supabase) || null;
@@ -984,18 +1005,17 @@
         }, 12000).then((res) => !!res && res.ok).catch(() => false);
       }
     } catch (_) {}
-    const delivered = !!(cloud || (email && email.ok) || webhook);
-    const pendingNotify = !!(email && email.pendingConfirm);
+    const settled = settleDeliveryChannels(cloud, email, webhook);
     try {
       const list = getPaymentRecords();
       const idx = list.findIndex((r) => r && row && r.id === row.id);
       if (idx >= 0) {
-        if (delivered) {
+        if (settled.delivered) {
           delete list[idx].syncPending;
           list[idx].deliveryStatus = 'delivered';
         } else {
           list[idx].syncPending = true;
-          list[idx].deliveryStatus = pendingNotify ? 'pending_notify' : 'local';
+          list[idx].deliveryStatus = settled.pendingNotify ? 'pending_notify' : 'local';
         }
         savePaymentRecords(list);
         row.deliveryStatus = list[idx].deliveryStatus;
@@ -1004,11 +1024,11 @@
     } catch (_) {}
     return {
       cloud: !!cloud,
-      email: !!(email && email.ok),
+      email: settled.emailOk,
       webhook: !!webhook,
       emailDetail: email || null,
-      pendingNotify: pendingNotify,
-      delivered: delivered
+      pendingNotify: settled.pendingNotify,
+      delivered: settled.delivered
     };
   }
 
@@ -1105,7 +1125,7 @@
         webhook: false,
         emailDetail: null,
         pendingNotify: false,
-        delivered: true,
+        delivered: !!cloud,
         accepted: true,
         statusOnly: true
       };
@@ -1114,18 +1134,17 @@
     const cloud = await pushRequestToCloud(row);
     const email = await notifyAdminEmail(row);
     const webhook = await notifyRequestWebhook(row);
-    const delivered = !!(cloud || (email && email.ok) || webhook);
-    const pendingNotify = !!(email && email.pendingConfirm);
+    const settled = settleDeliveryChannels(cloud, email, webhook);
     try {
       const list = getSharedRequests();
       const idx = list.findIndex((r) => r && row && r.id === row.id);
       if (idx >= 0) {
-        if (delivered) {
+        if (settled.delivered) {
           delete list[idx].syncPending;
           list[idx].deliveryStatus = 'delivered';
         } else {
           list[idx].syncPending = true;
-          list[idx].deliveryStatus = pendingNotify ? 'pending_notify' : 'local';
+          list[idx].deliveryStatus = settled.pendingNotify ? 'pending_notify' : 'local';
         }
         saveSharedRequests(list);
         row.deliveryStatus = list[idx].deliveryStatus;
@@ -1134,11 +1153,11 @@
     } catch (_) {}
     return {
       cloud: !!cloud,
-      email: !!(email && email.ok),
+      email: settled.emailOk,
       webhook: !!webhook,
       emailDetail: email || null,
-      pendingNotify: pendingNotify,
-      delivered: delivered,
+      pendingNotify: settled.pendingNotify,
+      delivered: settled.delivered,
       accepted: true
     };
   }
@@ -1234,6 +1253,13 @@
       if (localVersion >= CATALOG_VERSION && cloudVersion < CATALOG_VERSION) {
         return null;
       }
+      try {
+        const cloudUpdated = data.value.updatedAt ? new Date(data.value.updatedAt).getTime() : 0;
+        const localSavedRaw = localStorage.getItem(ADMIN_CATALOG_SAVED_AT_KEY) || '';
+        const localSaved = localSavedRaw ? new Date(localSavedRaw).getTime() : 0;
+        // Same freshness gate as admin hydrate — do not clobber newer local POS/restock.
+        if (localSaved && cloudUpdated && localSaved > cloudUpdated) return null;
+      } catch (_) {}
       const products = Array.isArray(data.value.products) ? data.value.products : [];
       const suggestions = Array.isArray(data.value.suggestions) ? data.value.suggestions : [];
       if (products.length) writeJson(PUBLIC_KEY, products);
