@@ -8,7 +8,7 @@
 <meta name="keywords" content="راسخ, نظام مخزون, أنظمة شركات, لوحة تحكم عملاء, تطبيق مخزون, أنظمة تشغيل, برمجة سعودية, نسخة للمؤسسات, Raseekh, inventory system Saudi, ops dashboard">
 <meta property="og:title" content="راسخ — صيانة وبرمجة ومخزون وأنظمة">
 <meta property="og:description" content="صيانة مواقع، برمجة، مخزون، وأنظمة تشغيل — من الطلب حتى التسليم مع حساب عميل للمتابعة.">
-<meta name="theme-color" content="#10233A">
+<meta name="theme-color" content="#ffffff">
 <meta name="robots" content="index,follow">
 <link rel="canonical" href="https://raseekh.com/">
 <meta property="og:type" content="website">
@@ -26,6 +26,9 @@
 <link rel="icon" href="/icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<script>
+(function(){try{var t=localStorage.getItem('raseekh_theme');document.documentElement.setAttribute('data-theme',t==='night'||t==='dark'?'night':'base');}catch(e){document.documentElement.setAttribute('data-theme','base');}})();
+</script>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -159,15 +162,20 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;500;600;700&family=Tajawal:wght@500;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap">
 <link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;500;600;700&family=Tajawal:wght@500;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/theme.css">
 <script src="/catalog.js"></script>
 <script src="/terms.js"></script>
 <script src="/activity.js"></script>
+<script src="/theme.js"></script>
 <style>
 :root{
   --ink:#10233A;--navy:#16324F;--harbor:#2A6F7A;--copper:#C45C26;--sand:#E8A05A;
-  --bg:#E8EDF2;--panel:#F7F9FC;--mist:#D5DEE8;--line:#B8C4D1;
+  --bg:#FFFFFF;--panel:#FFFFFF;--mist:#F2F4F7;--line:#E4E8EE;
   --muted:#5A6B7C;--danger:#B42318;--ok:#1F7A58;
-  --radius:6px;--shadow:0 18px 40px -28px rgba(16,35,58,.45);
+  --radius:6px;--shadow:0 14px 34px -26px rgba(16,35,58,.28);
+  --header-bg:rgba(255,255,255,.92);--surface-tint:#FAFBFC;
+  --ghost-bg:rgba(247,249,252,.8);--elevated:#FFFFFF;--chip:#F2F4F7;--table-head:#F7F9FC;
+  --hairline:rgba(16,35,58,.08);
   --forest:var(--navy);--leaf:var(--harbor);--brass:var(--copper);
 }
 *{margin:0;padding:0;box-sizing:border-box}
@@ -188,7 +196,7 @@ body::before{
   background:
     radial-gradient(ellipse 80% 50% at 100% -10%, rgba(196,92,38,.14), transparent 55%),
     radial-gradient(ellipse 70% 45% at -10% 20%, rgba(42,111,122,.14), transparent 50%),
-    linear-gradient(165deg,#DCE4EC 0%, var(--bg) 42%, #F0F4F8 100%);
+    linear-gradient(165deg,var(--mist) 0%, var(--bg) 42%, var(--surface-tint) 100%);
 }
 body::after{
   content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.22;
@@ -205,8 +213,8 @@ button,input,select,textarea{font:inherit}
 
 header{
   position:sticky;top:0;z-index:80;
-  background:rgba(232,237,242,.88);backdrop-filter:blur(14px);
-  border-bottom:2px solid rgba(16,35,58,.08);
+  background:var(--header-bg);backdrop-filter:blur(14px);
+  border-bottom:2px solid var(--hairline);
 }
 nav{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 0;max-width:1180px;margin:0 auto}
 .logo{font-weight:800;font-size:1.5rem}
@@ -228,14 +236,14 @@ nav{display:flex;align-items:center;justify-content:space-between;gap:16px;paddi
 .btn:hover{transform:translateY(-2px)}
 .btn-primary{background:var(--copper);color:#fff}
 .btn-primary:hover{background:#A84C1E}
-.btn-ghost{background:rgba(247,249,252,.75);border:1.5px solid var(--line);color:var(--ink);padding:11px 18px}
-.btn-ghost:hover{border-color:var(--harbor);color:var(--harbor);background:#fff}
+.btn-ghost{background:var(--ghost-bg);border:1.5px solid var(--line);color:var(--ink);padding:11px 18px}
+.btn-ghost:hover{border-color:var(--harbor);color:var(--harbor);background:var(--elevated)}
 .btn-navy{background:var(--navy);color:#F4F7FA}
 .btn-navy:hover{background:#0C1B2E}
 .btn-brass{background:var(--copper);color:#fff}
 .lang-btn{
   min-width:44px;padding:10px 12px;border-radius:var(--radius);border:1.5px solid var(--line);
-  background:rgba(247,249,252,.8);color:var(--ink);font-weight:700;cursor:pointer;font-size:.78rem;
+  background:var(--ghost-bg);color:var(--ink);font-weight:700;cursor:pointer;font-size:.78rem;
 }
 .nav-toggle{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:6px}
 .nav-toggle span{width:22px;height:2px;background:var(--ink);display:block}
@@ -291,7 +299,7 @@ nav{display:flex;align-items:center;justify-content:space-between;gap:16px;paddi
   width:100%;padding:14px 15px;border:1.5px solid rgba(244,247,250,.3);border-radius:var(--radius);
   background:rgba(12,27,46,.55);color:#F4F7FA;backdrop-filter:blur(10px);
 }
-.hero-quote select option{color:var(--ink);background:#fff}
+.hero-quote select option{color:var(--ink);background:var(--elevated)}
 .hero-quote input::placeholder{color:rgba(244,247,250,.55)}
 .hero-quote select:focus,.hero-quote input:focus{outline:2px solid rgba(232,160,90,.5);border-color:var(--sand)}
 .hero-quote .btn{white-space:nowrap;min-height:52px}
@@ -309,7 +317,7 @@ nav{display:flex;align-items:center;justify-content:space-between;gap:16px;paddi
 .hint-inline{font-size:.8rem;color:var(--muted);margin-top:-4px}
 .faq-list{display:flex;flex-direction:column;gap:10px;max-width:820px}
 .faq-item{
-  border:1.5px solid var(--line);border-radius:var(--radius);background:rgba(247,249,252,.85);overflow:hidden;
+  border:1.5px solid var(--line);border-radius:var(--radius);background:var(--ghost-bg);overflow:hidden;
 }
 .faq-item summary{
   cursor:pointer;list-style:none;padding:16px 18px;font-weight:700;color:var(--navy);
@@ -359,15 +367,15 @@ section{padding:100px 0;position:relative;z-index:1}
 .band-navy .section-head p,.band-navy .section-head h2{color:#F4F7FA}
 .band-navy .eyebrow{color:var(--sand)}
 .band-navy .eyebrow::before{background:var(--sand)}
-.band-mist{background:rgba(247,249,252,.55)}
+.band-mist{background:var(--mist)}
 
 .services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
 .services-grid.four{grid-template-columns:repeat(2,1fr)}
 .service-block{
-  background:rgba(247,249,252,.82);border:1.5px solid var(--line);border-radius:var(--radius);
+  background:var(--ghost-bg);border:1.5px solid var(--line);border-radius:var(--radius);
   padding:28px 22px;border-top:3px solid transparent;transition:border-color .25s,transform .25s,background .25s;
 }
-.service-block:hover{border-color:var(--harbor);border-top-color:var(--copper);transform:translateY(-3px);background:#fff}
+.service-block:hover{border-color:var(--harbor);border-top-color:var(--copper);transform:translateY(-3px);background:var(--panel)}
 .service-block.featured{
   background:linear-gradient(145deg,#10233A 0%, #16324F 55%, #1D4A58 100%);
   color:#F4F7FA;border-color:transparent;border-top:3px solid var(--copper);
@@ -410,7 +418,7 @@ section{padding:100px 0;position:relative;z-index:1}
   flex:0 0 min(78vw,300px);scroll-snap-align:center;scroll-snap-stop:always;
 }
 .product-item{
-  background:rgba(247,249,252,.92);border:1.5px solid var(--line);border-radius:var(--radius);
+  background:var(--panel);border:1.5px solid var(--line);border-radius:var(--radius);
   padding:22px 18px;display:flex;flex-direction:column;gap:8px;min-height:220px;
   transition:border-color .2s,transform .2s;
 }
@@ -424,7 +432,7 @@ section{padding:100px 0;position:relative;z-index:1}
 .catalog-nav{
   position:absolute;top:50%;transform:translateY(-60%);z-index:3;
   width:42px;height:42px;border-radius:50%;border:1.5px solid var(--line);
-  background:rgba(247,249,252,.96);color:var(--navy);font-size:1.35rem;font-weight:700;
+  background:var(--panel);color:var(--navy);font-size:1.35rem;font-weight:700;
   cursor:pointer;display:inline-flex;align-items:center;justify-content:center;
   box-shadow:0 10px 24px -18px rgba(16,35,58,.55);
 }
@@ -490,7 +498,7 @@ section{padding:100px 0;position:relative;z-index:1}
 #work .ui-mock{margin-bottom:14px}
 .ui-mock{
   border:1.5px solid var(--line);border-radius:10px;overflow:hidden;
-  background:linear-gradient(160deg,#F7F9FC,#EEF3F7);box-shadow:var(--shadow);
+  background:linear-gradient(160deg,var(--panel),var(--mist));box-shadow:var(--shadow);
   min-height:210px;
 }
 .ui-mock-chrome{
@@ -506,14 +514,14 @@ section{padding:100px 0;position:relative;z-index:1}
 .ui-mock-main{display:flex;flex-direction:column;gap:8px}
 .ui-mock-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
 .ui-mock-kpis b{
-  display:block;background:#fff;border:1px solid rgba(184,196,209,.7);border-radius:6px;
+  display:block;background:var(--panel);border:1px solid var(--line);border-radius:6px;
   padding:8px 6px;font-size:.72rem;color:var(--navy);text-align:center;line-height:1.35;font-weight:800
 }
 .ui-mock-kpis b small{display:block;color:var(--muted);font-weight:600;font-size:.65rem}
 .ui-mock-table{display:flex;flex-direction:column;gap:4px}
 .ui-mock-table span{
   display:grid;grid-template-columns:1.4fr .7fr .7fr;gap:6px;align-items:center;
-  background:rgba(255,255,255,.9);border:1px solid rgba(184,196,209,.55);border-radius:5px;
+  background:var(--panel);border:1px solid var(--line);border-radius:5px;
   padding:6px 8px;font-size:.68rem;color:var(--muted)
 }
 .ui-mock-table span em{font-style:normal;color:var(--harbor);font-weight:700}
@@ -575,7 +583,7 @@ section{padding:100px 0;position:relative;z-index:1}
 }
 .estimate-box{
   max-width:820px;margin:0 auto;padding:28px 22px;border-radius:12px;
-  background:rgba(247,249,252,.92);border:1.5px solid var(--line);border-top:3px solid var(--copper);
+  background:var(--panel);border:1.5px solid var(--line);border-top:3px solid var(--copper);
 }
 .estimate-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px}
 .estimate-out{margin-top:14px;font-weight:700;color:var(--navy);font-size:.95rem;min-height:1.4em}
@@ -583,7 +591,7 @@ section{padding:100px 0;position:relative;z-index:1}
 
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:18px}
 .panel{
-  background:rgba(247,249,252,.9);border:1.5px solid var(--line);border-radius:var(--radius);
+  background:var(--panel);border:1.5px solid var(--line);border-radius:var(--radius);
   padding:34px 28px;box-shadow:var(--shadow);
 }
 .panel h2{font-size:1.45rem;margin-bottom:10px}
@@ -592,7 +600,7 @@ section{padding:100px 0;position:relative;z-index:1}
 .form input:not([type="checkbox"]):not([type="radio"]),
 .form select,.form textarea{
   width:100%;padding:13px 14px;border:1.5px solid var(--line);border-radius:var(--radius);
-  background:#fff;color:var(--ink);
+  background:var(--panel);color:var(--ink);
 }
 .form input:not([type="checkbox"]):not([type="radio"]):focus,
 .form select:focus,.form textarea:focus{outline:2px solid rgba(42,111,122,.28);border-color:var(--harbor)}
@@ -666,7 +674,7 @@ body.lang-en .footer-brand{font-family:'Space Grotesk',sans-serif}
 
 .pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
 .price-card{
-  background:rgba(247,249,252,.9);border:1.5px solid var(--line);border-radius:var(--radius);
+  background:var(--panel);border:1.5px solid var(--line);border-radius:var(--radius);
   padding:26px 22px;display:flex;flex-direction:column;gap:10px;min-height:280px;
 }
 .price-card.featured{
@@ -732,7 +740,7 @@ body.terms-locked,body.auth-locked{overflow:hidden}
 .contact-band .panel{border-top:3px solid var(--copper)}
 
 @media (max-width:960px){
-  .nav-links{display:none;position:absolute;top:66px;inset-inline:16px;flex-direction:column;background:rgba(247,249,252,.98);border:1.5px solid var(--line);padding:16px;border-radius:10px;box-shadow:var(--shadow);gap:14px;z-index:90}
+  .nav-links{display:none;position:absolute;top:66px;inset-inline:16px;flex-direction:column;background:var(--panel);border:1.5px solid var(--line);padding:16px;border-radius:10px;box-shadow:var(--shadow);gap:14px;z-index:90}
   .nav-links.open{display:flex}
   .nav-toggle{display:flex}
   .services-grid,.services-grid.four,.pricing-grid,.trust-proof{grid-template-columns:1fr 1fr}
@@ -781,7 +789,7 @@ body.pay-paused .pay-public-entry{display:none!important}
   display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:18px 0 0;max-width:920px
 }
 .trust-strip article{
-  background:rgba(247,249,252,.88);border:1.5px solid rgba(184,196,209,.75);border-radius:10px;padding:14px 12px
+  background:var(--ghost-bg);border:1.5px solid var(--line);border-radius:10px;padding:14px 12px
 }
 .trust-strip strong{display:block;color:var(--navy);font-size:1.05rem;margin-bottom:4px}
 .trust-strip span{color:var(--muted);font-size:.82rem;line-height:1.5}
@@ -838,6 +846,7 @@ body.pay-paused .pay-public-entry{display:none!important}
       <a href="#pay" class="pay-public-entry" data-ar="سداد" data-en="Pay">سداد</a>
     </div>
     <div class="nav-actions">
+      <button class="theme-btn" type="button" data-theme-toggle data-ar="ليلي" data-en="Night" aria-pressed="true" aria-label="تفعيل النظام الليلي">ليلي</button>
       <button class="lang-btn" id="langToggle" type="button">EN</button>
       <button class="btn btn-primary" id="accountBtn" type="button" data-ar="تسجيل الدخول" data-en="Log in">تسجيل الدخول</button>
       <button class="nav-toggle" id="navToggle" type="button" aria-controls="navLinks" aria-expanded="false" data-ar-aria="القائمة" data-en-aria="Menu" aria-label="القائمة"><span></span><span></span><span></span></button>
@@ -1984,6 +1993,7 @@ body.pay-paused .pay-public-entry{display:none!important}
       if (v !== null) el.setAttribute('aria-label', v);
     });
     document.getElementById('langToggle').textContent = lang === 'ar' ? 'EN' : 'AR';
+    if (window.RaseekhTheme && RaseekhTheme.apply) RaseekhTheme.apply(RaseekhTheme.get());
     const title = lang === 'ar' ? 'راسخ — صيانة وبرمجة ومخزون وأنظمة' : 'Raseekh — Maintenance, coding, inventory & systems';
     const desc = lang === 'ar'
       ? 'راسخ في السعودية: صيانة مواقع، برمجة، تطبيقات مخزون، وأنظمة ولوحات — نطاق مكتوب من الطلب حتى التشغيل.'

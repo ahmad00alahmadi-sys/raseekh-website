@@ -1,7 +1,7 @@
 /* Lightweight offline shell for Raseekh marketing site (dashboard excluded). */
-const CACHE = 'raseekh-shell-v70';
+const CACHE = 'raseekh-shell-v74';
 const ASSETS = [
-  '/', '/index.html', '/catalog.js', '/auth.js', '/terms.js', '/activity.js', '/shared-page.css', '/shared-page.js',
+  '/', '/index.html', '/catalog.js', '/auth.js', '/terms.js', '/activity.js', '/theme.js', '/theme.css', '/shared-page.css', '/shared-page.js',
   '/terms/', '/terms/index.html', '/privacy/', '/privacy/index.html',
   '/blog/', '/blog/index.html', '/blog/inventory-system.html', '/blog/custom-vs-ready.html', '/blog/ops-system-checklist.html',
   '/blog/hosting-pdpl.html', '/blog/quote-process.html', '/blog/ops-habits.html', '/blog/digital-ops-help.html', '/blog/tools-review.html',
@@ -27,7 +27,7 @@ function isNavigate(req) {
 }
 
 function isShellScript(url) {
-  return /\/(catalog|auth|terms|activity|shared-page)\.js$/.test(url.pathname) || /\/shared-page\.css$/.test(url.pathname);
+  return /\/(catalog|auth|terms|activity|theme|shared-page)\.js$/.test(url.pathname) || /\/(theme|shared-page)\.css$/.test(url.pathname);
 }
 
 function isDashboard(url) {

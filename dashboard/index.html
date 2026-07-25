@@ -1,28 +1,36 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl" id="htmlRoot">
 <head>
+<script>
+(function(){try{var t=localStorage.getItem("raseekh_theme");document.documentElement.setAttribute("data-theme",t==="night"||t==="dark"?"night":"base");}catch(e){document.documentElement.setAttribute("data-theme","base");}})();
+</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title id="pageTitle">لوحة التحكم — راسخ</title>
 <meta name="robots" content="noindex,nofollow">
 <link rel="icon" href="/icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/icon-192.png">
-<meta name="theme-color" content="#10233A">
+<meta name="theme-color" content="#ffffff">
 <link rel="manifest" href="/manifest.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;500;600;700&family=Tajawal:wght@500;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/theme.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="/auth.js"></script>
 <script src="/catalog.js"></script>
 <script src="/terms.js"></script>
 <script src="/activity.js"></script>
+<script src="/theme.js"></script>
 <style>
 :root{
   --ink:#10233A;--navy:#16324F;--harbor:#2A6F7A;--copper:#C45C26;--sand:#E8A05A;
-  --bg:#E8EDF2;--panel:#F7F9FC;--mist:#D5DEE8;--line:#B8C4D1;
+  --bg:#FFFFFF;--panel:#FFFFFF;--mist:#F2F4F7;--line:#E4E8EE;
   --muted:#5A6B7C;--danger:#B42318;--ok:#1F7A58;
-  --radius:6px;--shadow:0 18px 40px -28px rgba(16,35,58,.45);
+  --radius:6px;--shadow:0 14px 34px -26px rgba(16,35,58,.28);
+  --header-bg:rgba(255,255,255,.92);--surface-tint:#FAFBFC;
+  --ghost-bg:rgba(247,249,252,.8);--elevated:#FFFFFF;--chip:#F2F4F7;--table-head:#F7F9FC;
+  --hairline:rgba(16,35,58,.08);
   --forest:var(--navy);--leaf:var(--harbor);--brass:var(--copper);
 }
 *{margin:0;padding:0;box-sizing:border-box}
@@ -35,9 +43,9 @@ body.lang-en{font-family:'Space Grotesk',sans-serif}
 body::before{
   content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
   background:
-    radial-gradient(ellipse 70% 40% at 100% 0%, rgba(196,92,38,.12), transparent 50%),
-    radial-gradient(ellipse 60% 35% at 0% 10%, rgba(42,111,122,.12), transparent 50%),
-    linear-gradient(180deg,#DCE4EC,var(--bg));
+    radial-gradient(ellipse 70% 40% at 100% 0%, rgba(196,92,38,.07), transparent 50%),
+    radial-gradient(ellipse 60% 35% at 0% 10%, rgba(42,111,122,.07), transparent 50%),
+    linear-gradient(180deg,#FFFFFF,var(--surface-tint,#FAFBFC));
 }
 body::after{
   content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.18;
@@ -74,7 +82,7 @@ a{color:inherit;text-decoration:none}
 .form label.field{display:flex;flex-direction:column;gap:6px;font-size:.8rem;font-weight:700;color:var(--muted)}
 .form input:not([type="checkbox"]):not([type="radio"]),
 .form select,.form textarea{
-  width:100%;padding:13px 14px;border:1.5px solid var(--line);border-radius:var(--radius);background:#fff;
+  width:100%;padding:13px 14px;border:1.5px solid var(--line);border-radius:var(--radius);background:var(--panel);
 }
 .form input:not([type="checkbox"]):not([type="radio"]):focus,
 .form select:focus,.form textarea:focus{outline:2px solid rgba(42,111,122,.28);border-color:var(--harbor)}
@@ -86,7 +94,7 @@ a{color:inherit;text-decoration:none}
 .nav-badge.show{display:inline-flex}
 .lead-filters{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 4px}
 .lead-filters button{
-  border:1.5px solid var(--line);background:#fff;color:var(--muted);border-radius:var(--radius);
+  border:1.5px solid var(--line);background:var(--panel);color:var(--muted);border-radius:var(--radius);
   padding:8px 12px;cursor:pointer;font-weight:700;font-size:.82rem;
 }
 .lead-filters button.active{background:var(--navy);color:#F4F7FA;border-color:var(--navy)}
@@ -94,7 +102,7 @@ a{color:inherit;text-decoration:none}
 .stat.clickable:hover{transform:translateY(-2px);border-color:var(--copper)}
 .delivery-status{
   display:grid;gap:8px;margin:10px 0 14px;padding:12px 14px;border:1.5px solid var(--line);
-  border-radius:var(--radius);background:rgba(247,249,252,.9);font-size:.86rem;
+  border-radius:var(--radius);background:var(--ghost-bg);font-size:.86rem;
 }
 .delivery-status .row{display:flex;justify-content:space-between;gap:10px;align-items:center}
 .delivery-pill{
@@ -151,7 +159,7 @@ body.terms-locked{overflow:hidden}
 .activity-list{display:flex;flex-direction:column;gap:8px;margin-top:10px}
 .activity-row{
   display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;
-  padding:10px 12px;border:1.5px solid var(--line);border-radius:8px;background:rgba(247,249,252,.7);
+  padding:10px 12px;border:1.5px solid var(--line);border-radius:8px;background:var(--ghost-bg);
 }
 .activity-row .meta{color:var(--muted);font-size:.8rem}
 .activity-pill{
@@ -197,7 +205,7 @@ body.terms-locked{overflow:hidden}
 }
 .suggest-mini{display:flex;flex-direction:column;gap:10px}
 .suggest-mini .item{
-  border:1.5px solid var(--line);border-radius:var(--radius);padding:12px 14px;background:#fff;
+  border:1.5px solid var(--line);border-radius:var(--radius);padding:12px 14px;background:var(--panel);
   border-inline-start:3px solid var(--copper);
 }
 .suggest-mini .item strong{display:block;margin-bottom:4px}
@@ -234,7 +242,7 @@ body.is-client .home-bar{
 }
 .product-cards{display:none;flex-direction:column;gap:10px}
 .product-card{
-  border:1.5px solid var(--line);border-radius:10px;padding:14px;background:#fff;
+  border:1.5px solid var(--line);border-radius:10px;padding:14px;background:var(--panel);
   display:flex;flex-direction:column;gap:8px
 }
 .product-card .meta-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
@@ -251,7 +259,7 @@ body.is-client .home-bar{
 .home-bar a.btn-primary{white-space:nowrap}
 .browse-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
 .browse-card{
-  background:#fff;border:1.5px solid var(--line);border-radius:var(--radius);padding:14px;
+  background:var(--panel);border:1.5px solid var(--line);border-radius:var(--radius);padding:14px;
   display:flex;flex-direction:column;gap:6px;text-align:start;transition:border-color .15s,transform .15s;
 }
 .browse-card:hover{border-color:var(--harbor);transform:translateY(-2px)}
@@ -297,10 +305,12 @@ body.is-client .home-bar{
 .crumb{color:var(--muted);font-size:.8rem;margin-top:4px}
 .crumb span{color:var(--copper)}
 .top-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.lang-btn,.clock{
+.lang-btn,.theme-btn,.clock{
   border:1.5px solid var(--line);background:var(--panel);border-radius:var(--radius);
-  padding:9px 12px;font-size:.82rem;font-weight:700;cursor:pointer;color:var(--ink);
+  padding:9px 12px;font-size:.82rem;font-weight:700;cursor:pointer;color:var(--ink);min-width:3.2rem;
 }
+.theme-btn:hover{border-color:rgba(196,92,38,.45);color:var(--copper)}
+.theme-btn[aria-pressed="true"]{border-color:rgba(42,111,122,.45);color:var(--harbor)}
 .clock{cursor:default;color:var(--muted);font-weight:600}
 .page{display:none}
 .page.active{display:block;animation:rise .35s ease}
@@ -362,7 +372,7 @@ body.is-client .home-bar{
 .cart-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .empty{
   color:var(--muted);text-align:center;padding:36px 18px;
-  border:1.5px dashed var(--line);border-radius:var(--radius);background:rgba(247,249,252,.65);
+  border:1.5px dashed var(--line);border-radius:var(--radius);background:var(--ghost-bg);
 }
 .empty strong{display:block;color:var(--navy);margin-bottom:8px;font-size:1.02rem}
 .empty .empty-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:16px}
@@ -442,6 +452,7 @@ body.is-client .home-bar{
   <div class="login-card">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
       <div class="logo" data-ar-html='را<em>سخ</em>' data-en-html='Ra<em>seekh</em>'>را<em>سخ</em></div>
+      <button class="theme-btn" type="button" data-theme-toggle data-ar="ليلي" data-en="Night" aria-pressed="true" aria-label="تفعيل النظام الليلي">ليلي</button>
       <button class="lang-btn" id="loginLangBtn" type="button">EN</button>
     </div>
     <p class="sub" data-ar="سجّل كعميل لمتابعة الطلبات والاقتراحات. التعديل مخصص لحساب الإدارة فقط." data-en="Sign in as a client to follow requests and suggestions. Editing is admin-only.">سجّل كعميل لمتابعة الطلبات والاقتراحات. التعديل مخصص لحساب الإدارة فقط.</p>
@@ -549,6 +560,7 @@ body.is-client .home-bar{
     </div>
     <div class="top-actions" style="justify-content:flex-end;margin-bottom:8px">
       <div class="clock" id="dashClock">—</div>
+      <button class="theme-btn" type="button" data-theme-toggle data-ar="ليلي" data-en="Night" aria-pressed="true" aria-label="تفعيل النظام الليلي">ليلي</button>
       <button class="lang-btn" id="dashLangBtn" type="button">EN</button>
       <button class="btn btn-ghost client-only" id="viewTermsBtn" type="button" data-ar="الشروط" data-en="Terms">الشروط</button>
       <a class="btn btn-ghost" href="/" data-ar="الصفحة الرئيسية" data-en="Home">الصفحة الرئيسية</a>
@@ -1493,6 +1505,7 @@ body.is-client .home-bar{
     });
     document.getElementById('loginLangBtn').textContent = lang === 'ar' ? 'EN' : 'AR';
     document.getElementById('dashLangBtn').textContent = lang === 'ar' ? 'EN' : 'AR';
+    if (window.RaseekhTheme && RaseekhTheme.apply) RaseekhTheme.apply(RaseekhTheme.get());
     if (isDemo) {
       document.getElementById('dashUserStatus').textContent = t('وضع تجريبي', 'Demo mode');
     }
@@ -2651,7 +2664,7 @@ body.is-client .home-bar{
           <div style="color:var(--muted);font-size:.78rem;margin-top:4px">${new Date(r.at).toLocaleString(currentLang === 'ar' ? 'ar-SA' : 'en-US')}</div>
         </div>
         <div style="display:flex;flex-direction:column;gap:6px;min-width:140px">
-          <select data-status-for="${escapeHtml(r.id)}" data-prev-status="${escapeHtml(r.status || 'new')}" style="padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:#fff">
+          <select data-status-for="${escapeHtml(r.id)}" data-prev-status="${escapeHtml(r.status || 'new')}" style="padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--ink)">
             <option value="new" ${r.status === 'new' ? 'selected' : ''}>${escapeHtml(t('جديد','New'))}</option>
             <option value="in_progress" ${r.status === 'in_progress' ? 'selected' : ''}>${escapeHtml(t('قيد المعالجة','In progress'))}</option>
             <option value="done" ${r.status === 'done' ? 'selected' : ''}>${escapeHtml(t('مكتمل','Done'))}</option>
