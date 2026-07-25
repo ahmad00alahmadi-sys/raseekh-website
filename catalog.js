@@ -847,6 +847,28 @@
     return fetch(url, opts).finally(() => clearTimeout(timer));
   }
 
+  function withTimeout(promise, ms, fallback) {
+    let settled = false;
+    return new Promise((resolve) => {
+      const timer = setTimeout(() => {
+        if (settled) return;
+        settled = true;
+        resolve(fallback);
+      }, ms || 12000);
+      Promise.resolve(promise).then((value) => {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timer);
+        resolve(value);
+      }).catch(() => {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timer);
+        resolve(fallback);
+      });
+    });
+  }
+
   function notifyRequestWebhook(row) {
     try {
       const url = resolveWebhookUrl();
@@ -1046,75 +1068,75 @@
 
   const REQUEST_TYPE_META = {
     maintenance: {
-      ar: 'صيانة مواقع',
+      ar: 'صيانة المواقع الإلكترونية',
       en: 'Website maintenance',
-      summary_ar: 'متابعة دورية لموقعكم الحالي بدون إعادة بناء.',
-      summary_en: 'Ongoing care for your current site — no rebuild required.',
-      features_ar: ['تحديثات وإصلاح أعطال', 'تحسين السرعة والأداء', 'متابعة أمان ونسخ احتياطي', 'عرض شهري حسب حجم الموقع'],
-      features_en: ['Updates and bug fixes', 'Speed and performance tuning', 'Security checks and backups', 'Monthly quote by site size']
+      summary_ar: 'متابعة دورية لموقعكم الحالي دون الحاجة إلى إعادة بنائه.',
+      summary_en: 'Ongoing care for your current website without requiring a rebuild.',
+      features_ar: ['تحديثات وإصلاح الأعطال', 'تحسين السرعة والأداء', 'متابعة الأمان والنسخ الاحتياطي', 'عرض شهري بحسب حجم الموقع'],
+      features_en: ['Updates and fault resolution', 'Speed and performance improvements', 'Security monitoring and backups', 'Monthly quote by website size']
     },
     'web-dev': {
-      ar: 'تطوير مواقع',
+      ar: 'تطوير المواقع الإلكترونية',
       en: 'Website development',
-      summary_ar: 'موقع جديد جاهز للتشغيل بالعربية والإنجليزية.',
-      summary_en: 'A new AR/EN site ready to launch.',
-      features_ar: ['مواقع شركات ومتاجر', 'تصميم متجاوب للجوال', 'نماذج تواصل وربط أساسي', 'التسعير حسب نطاق الصفحات'],
-      features_en: ['Company and store sites', 'Mobile-responsive layout', 'Contact forms and basic wiring', 'Priced by page scope']
+      summary_ar: 'تطوير موقع جديد جاهز للتشغيل بالعربية والإنجليزية.',
+      summary_en: 'A new Arabic/English website ready to launch.',
+      features_ar: ['مواقع الشركات والمتاجر', 'تصميم متوافق مع الجوال', 'نماذج تواصل وربط أساسي', 'التسعير بحسب نطاق الصفحات'],
+      features_en: ['Company and store websites', 'Mobile-responsive design', 'Contact forms and basic integrations', 'Priced by page scope']
     },
     programming: {
-      ar: 'خدمات البرمجة / تعديل كود',
+      ar: 'خدمات البرمجة وتعديل الكود',
       en: 'Programming / code changes',
-      summary_ar: 'تعديل عملي على مشروعكم الحالي بعد مراجعة الكود.',
-      summary_en: 'Practical changes on your current project after a code review.',
-      features_ar: ['إصلاح أخطاء وإضافة مزايا', 'تحسين أداء الكود', 'مراجعة المشروع قبل التنفيذ', 'نطاق تسليم واضح'],
-      features_en: ['Bug fixes and new features', 'Code performance improvements', 'Review before implementation', 'Clear delivery scope']
+      summary_ar: 'تعديلات عملية على مشروعكم الحالي بعد مراجعة الكود.',
+      summary_en: 'Practical changes to your current project after a code review.',
+      features_ar: ['إصلاح الأخطاء وإضافة المزايا', 'تحسين أداء الكود', 'مراجعة المشروع قبل التنفيذ', 'نطاق تسليم واضح'],
+      features_en: ['Bug fixes and feature additions', 'Code performance improvements', 'Project review before implementation', 'Clear delivery scope']
     },
     inventory: {
-      ar: 'تطبيق مخزون',
-      en: 'Inventory app',
-      summary_ar: 'تطبيق لإدارة المنتجات والكميات والحركات حسب نشاطكم.',
-      summary_en: 'Software for products, quantities, and stock movements.',
-      features_ar: ['منتجات وكميات وحركات مخزون', 'تنبيهات نقص المخزون', 'تقارير مبسطة للتشغيل', 'مخصص لسير عمل منشأتكم'],
-      features_en: ['Products, quantities, and movements', 'Low-stock alerts', 'Simple ops reports', 'Scoped to your workflow']
+      ar: 'تطبيق إدارة المخزون',
+      en: 'Inventory management app',
+      summary_ar: 'تطبيق لإدارة المنتجات والكميات والحركات بما يلائم نشاط منشأتكم.',
+      summary_en: 'Software for products, quantities, and stock movements suited to your operations.',
+      features_ar: ['إدارة المنتجات والكميات وحركات المخزون', 'تنبيهات نقص المخزون', 'تقارير تشغيلية مبسّطة', 'مخصّص لسير عمل منشأتكم'],
+      features_en: ['Products, quantities, and stock movements', 'Low-stock alerts', 'Simplified operational reports', 'Scoped to your workflow']
     },
     business: {
-      ar: 'نسخة للمؤسسات',
+      ar: 'نسخة المؤسسات',
       en: 'Institution edition',
-      summary_ar: 'باقة للمؤسسات والمنشآت: تشغيل ومخزون وصلاحيات حسب الهيكل.',
-      summary_en: 'Institution edition: ops, inventory, and roles by structure.',
-      features_ar: ['موقع أو نظام تشغيلي', 'مخزون وصلاحيات أقسام', 'تقارير للإدارة', 'عرض سعر بعد فهم نشاط المؤسسة'],
-      features_en: ['Site or operations system', 'Inventory and department roles', 'Management reports', 'Quote after we understand the organization']
+      summary_ar: 'باقة للمؤسسات والمنشآت: تشغيل ومخزون وصلاحيات وفق الهيكل التنظيمي.',
+      summary_en: 'Institution edition: operations, inventory, and roles by organizational structure.',
+      features_ar: ['موقع أو نظام تشغيلي', 'مخزون وصلاحيات للأقسام', 'تقارير للإدارة', 'عرض سعر بعد فهم نشاط المؤسسة'],
+      features_en: ['Website or operational system', 'Inventory and department roles', 'Management reports', 'Quote after understanding the organization']
     },
     systems: {
-      ar: 'برمجة أنظمة ولوحات',
+      ar: 'برمجة الأنظمة ولوحات التحكم',
       en: 'Systems & dashboards',
       summary_ar: 'نظام إدارة ولوحة متابعة بصلاحيات واضحة.',
-      summary_en: 'Management system and dashboard with clear roles.',
-      features_ar: ['إدارة وعملاء وتقارير', 'صلاحيات مستخدمين', 'لوحات متابعة يومية', 'يبنى حسب نشاطكم'],
-      features_en: ['Ops, CRM, and reports', 'User permissions', 'Daily monitoring dashboards', 'Built around your activity']
+      summary_en: 'A management system and monitoring dashboard with clear roles.',
+      features_ar: ['إدارة وعملاء وتقارير', 'صلاحيات المستخدمين', 'لوحات متابعة يومية', 'يُبنى بحسب نشاطكم'],
+      features_en: ['Operations, CRM, and reports', 'User permissions', 'Daily monitoring dashboards', 'Built around your activity']
     },
     api: {
-      ar: 'ربط API وأنظمة',
+      ar: 'ربط واجهات البرمجة والأنظمة',
       en: 'API & integrations',
       summary_ar: 'ربط الدفع والرسائل والأنظمة الخارجية بمشروعكم.',
-      summary_en: 'Connect payments, messaging, and external systems.',
-      features_ar: ['دفع ورسائل وإشعارات', 'مزامنة بيانات بين الأنظمة', 'معالجة أخطاء وإعادة محاولة', 'التسعير حسب عدد الربط والتعقيد'],
-      features_en: ['Payments, messaging, and alerts', 'Data sync between systems', 'Error handling and retries', 'Priced by integration complexity']
+      summary_en: 'Connect payments, messaging, and external systems to your project.',
+      features_ar: ['الدفع والرسائل والإشعارات', 'مزامنة البيانات بين الأنظمة', 'معالجة الأخطاء وإعادة المحاولة', 'التسعير بحسب عدد الربط ومستوى التعقيد'],
+      features_en: ['Payments, messaging, and alerts', 'Data sync between systems', 'Error handling and retries', 'Priced by integration count and complexity']
     },
     system: {
-      ar: 'نظام كامل',
+      ar: 'نظام متكامل',
       en: 'Complete system',
-      summary_ar: 'بناء نظام متكامل من الدراسة حتى التشغيل.',
-      summary_en: 'Full system from discovery through go-live.',
-      features_ar: ['تحليل احتياج ونطاق واضح', 'تطوير على مراحل', 'اختبار وتسليم تشغيلي', 'عقد ومتطلبات متفق عليها'],
-      features_en: ['Discovery and clear scope', 'Phased development', 'Testing and operational handoff', 'Agreed contract and requirements']
+      summary_ar: 'بناء نظام متكامل من مرحلة الدراسة حتى التشغيل.',
+      summary_en: 'A full system from discovery through go-live.',
+      features_ar: ['تحليل الاحتياج وتحديد نطاق واضح', 'تطوير على مراحل', 'اختبار وتسليم تشغيلي', 'عقد ومتطلبات متفق عليها'],
+      features_en: ['Needs analysis and clear scope', 'Phased development', 'Testing and operational handover', 'Agreed contract and requirements']
     },
     hardware: {
       ar: 'أجهزة (الرياض فقط)',
       en: 'Hardware (Riyadh only)',
-      summary_ar: 'شاشات وتخزين وملحقات — متوفر حالياً داخل الرياض.',
-      summary_en: 'Monitors, storage, and accessories — Riyadh only for now.',
-      features_ar: ['شاشات وتخزين وملحقات', 'عرض حسب التوفر', 'توصيل داخل الرياض فقط', 'ليس بديلاً عن الخدمات البرمجية'],
+      summary_ar: 'شاشات وتخزين وملحقات — متوفرة حالياً داخل الرياض.',
+      summary_en: 'Monitors, storage, and accessories — currently available inside Riyadh.',
+      features_ar: ['شاشات وتخزين وملحقات', 'عرض بحسب التوفر', 'توصيل داخل الرياض فقط', 'ليست بديلاً عن الخدمات البرمجية'],
       features_en: ['Monitors, storage, and accessories', 'Quote by availability', 'Delivery inside Riyadh only', 'Not a substitute for software services']
     }
   };
@@ -1568,7 +1590,7 @@
         statusOnly: true
       };
     }
-    await syncPublicNotifyFromCloud().catch(() => {});
+    await withTimeout(syncPublicNotifyFromCloud().catch(() => {}), 8000, null);
     const email = await notifyAdminEmail(row);
     const webhook = await notifyRequestWebhook(row);
     // Assume cloud will succeed so the first INSERT embeds final delivery marks (anon cannot UPDATE later).
@@ -1582,7 +1604,7 @@
       row.deliveryStatus = settledHope.pendingNotify ? 'pending_notify' : 'local';
     }
     row.updatedAt = new Date().toISOString();
-    const cloud = await pushRequestToCloud(row);
+    const cloud = await withTimeout(pushRequestToCloud(row), 8000, false);
     const settled = settleDeliveryChannels(cloud, email, webhook);
     try {
       const list = getSharedRequests();
