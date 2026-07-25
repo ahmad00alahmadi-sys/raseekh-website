@@ -1894,7 +1894,8 @@ body.pay-paused .pay-public-entry{display:none!important}
 <script src="/auth.js"></script>
 <script>
 (function(){
-  /* Flip to true when the new public checkout is ready. */
+  /* Flip to true when the new public checkout is ready.
+     Also restore MOYASAR_PUBLISHABLE_KEY (or the new gateway key) before enabling. */
   const PUBLIC_PAY_ENABLED = false;
   const DASHBOARD_URL = '/dashboard/';
   /* Publishable key left blank while public checkout is paused (payment path will change). */
