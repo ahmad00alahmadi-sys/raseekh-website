@@ -2025,19 +2025,30 @@ body.is-admin .client-only{display:none!important}
   if (acceptTermsBtn) {
     acceptTermsBtn.addEventListener('click', async () => {
       if (!currentUser || !Terms) return;
-      Terms.acceptTerms(currentUser);
-      if (Terms.syncAcceptance) {
-        try { await Terms.syncAcceptance(currentUser); } catch (_) {}
+      if (acceptTermsBtn.dataset.submitting === '1') return;
+      acceptTermsBtn.dataset.submitting = '1';
+      acceptTermsBtn.disabled = true;
+      acceptTermsBtn.setAttribute('aria-busy', 'true');
+      try {
+        Terms.acceptTerms(currentUser);
+        if (Terms.syncAcceptance) {
+          try { await Terms.syncAcceptance(currentUser); } catch (_) {}
+        }
+        termsGateMode = 'view';
+        const gate = document.getElementById('termsGate');
+        if (gate) {
+          gate.classList.remove('open');
+          gate.setAttribute('aria-hidden', 'true');
+        }
+        setTermsBodyLock(false);
+        setTermsBlocked(false);
+        showToast(t('تم قبول الشروط', 'Terms accepted'));
+        switchPage(resolveDashPageFromLocation() || 'overview');
+      } finally {
+        acceptTermsBtn.dataset.submitting = '0';
+        acceptTermsBtn.disabled = false;
+        acceptTermsBtn.removeAttribute('aria-busy');
       }
-      termsGateMode = 'view';
-      const gate = document.getElementById('termsGate');
-      if (gate) {
-        gate.classList.remove('open');
-        gate.setAttribute('aria-hidden', 'true');
-      }
-      setTermsBodyLock(false);
-      setTermsBlocked(false);
-      showToast(t('تم قبول الشروط', 'Terms accepted'));
     });
   }
   const termsGateCloseBtn = document.getElementById('termsGateCloseBtn');
@@ -2533,6 +2544,10 @@ body.is-admin .client-only{display:none!important}
   let pendingClientRequest = null;
 
   function openRequestConfirm(draft){
+    if (isDemo) {
+      showToast(t('الوضع التجريبي لا يرسل طلبات حقيقية', 'Demo mode does not send real requests'));
+      return;
+    }
     pendingClientRequest = draft;
     document.getElementById('requestConfirmTitle').textContent = draft.summary || draft.title || '';
     const phoneEl = document.getElementById('requestConfirmPhone');
@@ -2572,6 +2587,10 @@ body.is-admin .client-only{display:none!important}
   });
   document.getElementById('requestConfirmForm').addEventListener('submit', async (e) => {
     e.preventDefault();
+    if (isDemo) {
+      showToast(t('الوضع التجريبي لا يرسل طلبات حقيقية', 'Demo mode does not send real requests'));
+      return;
+    }
     if (!pendingClientRequest || requestConfirmBusy) return;
     if (!navigator.onLine) {
       showToast(t('أنتم غير متصلين — أعيدوا الإرسال بعد عودة الشبكة', 'You are offline — send again when back online'));
@@ -3261,10 +3280,12 @@ body.is-admin .client-only{display:none!important}
   document.getElementById('exportSalesBtn').addEventListener('click', () => {
     if (!requireAdmin('exportSales')) return;
     if (!sales.length) { showToast(t('لا توجد مدفوعات للتصدير','No payments to export')); return; }
-    const rows = [['id','date','method','source','name','note','items','total']];
-    sales.forEach(s => rows.push([s.id, s.at, s.method, s.source || '', s.name || '', (s.note || '').replace(/,/g,';'), s.items, s.total]));
-    const csv = rows.map(r => r.join(',')).join('\n');
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const header = ['id','date','method','source','name','note','items','total'];
+    const lines = [header.join(',')].concat(sales.map((s) => {
+      const cells = [s.id, s.at, s.method, s.source || '', s.name || '', s.note || '', s.items, s.total];
+      return cells.map((v) => `"${String(v == null ? '' : v).replace(/"/g, '""')}"`).join(',');
+    }));
+    const blob = new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
     a.download = 'raseekh-payments.csv';
@@ -3381,37 +3402,50 @@ body.is-admin .client-only{display:none!important}
   if (testNotifyEmailBtn) {
     testNotifyEmailBtn.addEventListener('click', async () => {
       if (!requireAdmin('testNotifyEmail')) return;
+      if (testNotifyEmailBtn.dataset.submitting === '1') return;
       const email = (document.getElementById('storeNotifyEmail').value || '').trim().toLowerCase();
       if (!email) {
         document.getElementById('storeMsg').style.color = 'var(--danger)';
         document.getElementById('storeMsg').textContent = t('اكتب بريد وصول الطلبات أولاً', 'Enter a notify email first');
         return;
       }
+      testNotifyEmailBtn.dataset.submitting = '1';
+      testNotifyEmailBtn.disabled = true;
+      testNotifyEmailBtn.setAttribute('aria-busy', 'true');
       store.notifyEmail = email;
-      saveStore();
       document.getElementById('storeMsg').style.color = 'var(--muted)';
       document.getElementById('storeMsg').textContent = t('جاري إرسال طلب تجريبي...', 'Sending test request...');
-      const sample = {
-        id: 'test-' + Date.now().toString(36),
-        at: new Date().toISOString(),
-        name: t('طلب تجريبي', 'Test request'),
-        phone: store.phone || '',
-        email: email,
-        company: store.name || 'راسخ',
-        title: t('اختبار وصول الطلبات', 'Request delivery test'),
-        message: t('هذا اختبار من لوحة راسخ — إذا وصلك فالبريد يعمل.', 'This is a Raseekh dashboard test — if you got it, email delivery works.'),
-        type: 'site',
-        source: 'admin-test',
-        status: 'new'
-      };
-      const result = Catalog && Catalog.notifyAdminEmail
-        ? await Catalog.notifyAdminEmail(sample, email)
-        : { ok: false };
-      document.getElementById('storeMsg').style.color = result && result.ok ? 'var(--ok)' : 'var(--danger)';
-      document.getElementById('storeMsg').textContent = result && result.ok
-        ? t('تم الإرسال — افحص البريد (والبريد المزعج). أول مرة تحتاج تفعيل FormSubmit.', 'Sent — check inbox (and spam). First time needs FormSubmit activation.')
-        : t('تعذّر الإرسال — تأكد من البريد أو جرّب لاحقاً', 'Send failed — check the email or try later');
-      renderDeliveryStatus();
+      try {
+        try {
+          const published = saveStore({ forceCloud: true, awaitCloud: true });
+          if (published && typeof published.then === 'function') await published;
+        } catch (_) {}
+        const sample = {
+          id: 'test-' + Date.now().toString(36),
+          at: new Date().toISOString(),
+          name: t('طلب تجريبي', 'Test request'),
+          phone: store.phone || '',
+          email: email,
+          company: store.name || 'راسخ',
+          title: t('اختبار وصول الطلبات', 'Request delivery test'),
+          message: t('هذا اختبار من لوحة راسخ — إذا وصلك فالبريد يعمل.', 'This is a Raseekh dashboard test — if you got it, email delivery works.'),
+          type: 'site',
+          source: 'admin-test',
+          status: 'new'
+        };
+        const result = Catalog && Catalog.notifyAdminEmail
+          ? await Catalog.notifyAdminEmail(sample, email)
+          : { ok: false };
+        document.getElementById('storeMsg').style.color = result && result.ok ? 'var(--ok)' : 'var(--danger)';
+        document.getElementById('storeMsg').textContent = result && result.ok
+          ? t('تم الإرسال — افحص البريد (والبريد المزعج). أول مرة تحتاج تفعيل FormSubmit.', 'Sent — check inbox (and spam). First time needs FormSubmit activation.')
+          : t('تعذّر الإرسال — تأكد من البريد أو جرّب لاحقاً', 'Send failed — check the email or try later');
+        renderDeliveryStatus();
+      } finally {
+        testNotifyEmailBtn.dataset.submitting = '0';
+        testNotifyEmailBtn.disabled = false;
+        testNotifyEmailBtn.removeAttribute('aria-busy');
+      }
     });
   }
   const refreshDeliveryStatusBtn = document.getElementById('refreshDeliveryStatusBtn');

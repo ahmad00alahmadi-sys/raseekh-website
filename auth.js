@@ -329,13 +329,24 @@
 
   async function completePasswordReset(newPassword) {
     if (supabaseClient) {
+      let session = null;
       try {
         const { data } = await supabaseClient.auth.getSession();
-        if (data?.session) {
-          const { error } = await supabaseClient.auth.updateUser({ password: newPassword });
-          if (!error) return { provider: 'supabase' };
-        }
+        session = data && data.session ? data.session : null;
       } catch (_) {}
+      if (session) {
+        try {
+          const { error } = await supabaseClient.auth.updateUser({ password: newPassword });
+          if (error) {
+            if (isNetworkAuthError(error)) throw new Error('NETWORK');
+            throw error;
+          }
+          return { provider: 'supabase' };
+        } catch (err) {
+          if (String(err && err.message) === 'NETWORK' || isNetworkAuthError(err)) throw new Error('NETWORK');
+          throw err;
+        }
+      }
     }
     const email = sessionStorage.getItem('raseekh_reset_email') || getLocalSession()?.user?.email;
     if (!email) throw new Error('NOT_FOUND');

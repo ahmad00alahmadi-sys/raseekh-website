@@ -961,6 +961,10 @@
     const existing = list.find((x) => x.fingerprint && x.fingerprint === row.fingerprint);
     if (existing) {
       // Retry delivery for double-submit / refresh within the idempotency window.
+      // Reuse an in-flight promise so parallel clicks do not send duplicate emails.
+      if (existing.deliveryPromise && typeof existing.deliveryPromise.then === 'function') {
+        return existing;
+      }
       existing.deliveryPromise = deliverSharedRequest(existing);
       return existing;
     }
@@ -972,6 +976,29 @@
   }
 
   async function deliverSharedRequest(row) {
+    // Status sync retries: cloud already notified — update row only, do not re-email.
+    if (row && row.deliveryStatus === 'delivered' && row.syncPending) {
+      const cloud = await pushRequestToCloud(row, { allowUpdate: true });
+      try {
+        const list = getSharedRequests();
+        const idx = list.findIndex((r) => r && row && r.id === row.id);
+        if (idx >= 0) {
+          if (cloud) delete list[idx].syncPending;
+          else list[idx].syncPending = true;
+          saveSharedRequests(list);
+        }
+      } catch (_) {}
+      return {
+        cloud: !!cloud,
+        email: false,
+        webhook: false,
+        emailDetail: null,
+        pendingNotify: false,
+        delivered: true,
+        accepted: true,
+        statusOnly: true
+      };
+    }
     await syncPublicNotifyFromCloud().catch(() => {});
     const cloud = await pushRequestToCloud(row);
     const email = await notifyAdminEmail(row);
@@ -1007,7 +1034,14 @@
     const list = getSharedRequests();
     const pending = list.filter((r) => r && (r.syncPending || r.deliveryStatus === 'local' || r.deliveryStatus === 'pending_notify'));
     for (const row of pending.slice(0, 20)) {
-      try { await deliverSharedRequest(row); } catch (_) {}
+      try {
+        if (row.deliveryPromise && typeof row.deliveryPromise.then === 'function') {
+          await row.deliveryPromise;
+          continue;
+        }
+        row.deliveryPromise = deliverSharedRequest(row);
+        await row.deliveryPromise;
+      } catch (_) {}
     }
     return getSharedRequests();
   }

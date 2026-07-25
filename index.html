@@ -1479,24 +1479,45 @@ body.terms-locked,body.auth-locked{overflow:hidden}
     }
   }
 
-  document.getElementById('clientProductsGrid').addEventListener('click', (e) => {
+  document.getElementById('clientProductsGrid').addEventListener('click', async (e) => {
     const btn = e.target.closest('[data-request-product]');
     if (!btn || !Catalog) return;
+    if (btn.getAttribute('aria-busy') === 'true') return;
     const p = clientProducts.find((x) => x.id === btn.dataset.requestProduct);
     if (!p) return;
     const name = Catalog.label(p, currentLang, 'name', 'name_en');
-    submitCatalogQuote({
-      type: typeForProduct(p),
-      message: t(
-        'أرغب بطلب عرض سعر لـ: ' + name + ' — ' + (Catalog.formatPrice ? Catalog.formatPrice(p, 'ar') : 'حسب الطلب'),
-        'I would like a quote for: ' + name + ' — ' + (Catalog.formatPrice ? Catalog.formatPrice(p, 'en') : 'on request')
-      )
-    });
+    const prev = btn.textContent;
+    btn.setAttribute('aria-busy', 'true');
+    btn.disabled = true;
+    btn.textContent = t('جاري الإرسال...', 'Sending...');
+    try {
+      const result = await submitCatalogQuote({
+        type: typeForProduct(p),
+        message: t(
+          'أرغب بطلب عرض سعر لـ: ' + name + ' — ' + (Catalog.formatPrice ? Catalog.formatPrice(p, 'ar') : 'حسب الطلب'),
+          'I would like a quote for: ' + name + ' — ' + (Catalog.formatPrice ? Catalog.formatPrice(p, 'en') : 'on request')
+        )
+      });
+      if (result && result.ok) {
+        btn.textContent = t('تم الإرسال', 'Sent');
+        setTimeout(() => { btn.textContent = prev; applyLang(currentLang); }, 1800);
+      } else {
+        btn.textContent = prev;
+        applyLang(currentLang);
+      }
+    } catch (_) {
+      btn.textContent = prev;
+      applyLang(currentLang);
+    } finally {
+      btn.removeAttribute('aria-busy');
+      btn.disabled = false;
+    }
   });
 
-  document.getElementById('clientSuggestionsGrid').addEventListener('click', (e) => {
+  document.getElementById('clientSuggestionsGrid').addEventListener('click', async (e) => {
     const btn = e.target.closest('[data-request-suggestion]');
     if (!btn || !Catalog) return;
+    if (btn.getAttribute('aria-busy') === 'true') return;
     const s = clientSuggestions.find((x) => x.id === btn.dataset.requestSuggestion);
     if (!s) return;
     const title = Catalog.label(s, currentLang, 'title', 'title_en');
@@ -1520,13 +1541,32 @@ body.terms-locked,body.auth-locked{overflow:hidden}
     });
     const titleBlob = ((s.title || '') + ' ' + (s.title_en || '') + ' ' + (s.badge || '') + ' ' + (s.badge_en || '')).toLowerCase();
     if (/شركات|company|business|منشآت/.test(titleBlob)) reqType = 'business';
-    submitCatalogQuote({
-      type: reqType,
-      message: t(
-        'أرغب بطلب عرض سعر للاقتراح: ' + title + '\nيشمل: ' + items.join('، ') + '\n' + priceText,
-        'I would like a quote for suggestion: ' + title + '\nIncludes: ' + items.join(', ') + '\n' + priceText
-      )
-    });
+    const prev = btn.textContent;
+    btn.setAttribute('aria-busy', 'true');
+    btn.disabled = true;
+    btn.textContent = t('جاري الإرسال...', 'Sending...');
+    try {
+      const result = await submitCatalogQuote({
+        type: reqType,
+        message: t(
+          'أرغب بطلب عرض سعر للاقتراح: ' + title + '\nيشمل: ' + items.join('، ') + '\n' + priceText,
+          'I would like a quote for suggestion: ' + title + '\nIncludes: ' + items.join(', ') + '\n' + priceText
+        )
+      });
+      if (result && result.ok) {
+        btn.textContent = t('تم الإرسال', 'Sent');
+        setTimeout(() => { btn.textContent = prev; applyLang(currentLang); }, 1800);
+      } else {
+        btn.textContent = prev;
+        applyLang(currentLang);
+      }
+    } catch (_) {
+      btn.textContent = prev;
+      applyLang(currentLang);
+    } finally {
+      btn.removeAttribute('aria-busy');
+      btn.disabled = false;
+    }
   });
 
   document.getElementById('langToggle').addEventListener('click', () => applyLang(currentLang === 'ar' ? 'en' : 'ar'));
@@ -1577,6 +1617,10 @@ body.terms-locked,body.auth-locked{overflow:hidden}
     setNavOpen(!navLinks.classList.contains('open'));
   });
   navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => setNavOpen(false)));
+  const accountBtn = document.getElementById('accountBtn');
+  if (accountBtn) accountBtn.addEventListener('click', () => setNavOpen(false));
+  const langToggle = document.getElementById('langToggle');
+  if (langToggle) langToggle.addEventListener('click', () => setNavOpen(false));
   document.addEventListener('click', (e) => {
     if (!navLinks.classList.contains('open')) return;
     if (e.target.closest('#navLinks') || e.target.closest('#navToggle')) return;
@@ -1986,6 +2030,9 @@ body.terms-locked,body.auth-locked{overflow:hidden}
       const resetResult = await Auth.completePasswordReset(document.getElementById('resetPassword').value);
       msg.style.color = 'var(--ok)';
       msg.textContent = t('تم تحديث كلمة المرور', 'Password updated');
+      try {
+        if (location.hash === '#reset') history.replaceState(null, '', location.pathname + location.search);
+      } catch (_) {}
       const sessionInfo = await Auth.getSession();
       if (sessionInfo && sessionInfo.user) {
         authProvider = sessionInfo.provider || resetResult.provider || null;
@@ -2094,24 +2141,25 @@ body.terms-locked,body.auth-locked{overflow:hidden}
       }
       const delivered = !!(delivery && (delivery.delivered || delivery.cloud));
       const pending = !!(delivery && delivery.pendingNotify);
-      // Guests only succeed when delivery reaches cloud/email/webhook; local-only is invisible to admin.
-      const ok = loggedInUser ? !!saved : !!(saved && (delivered || pending));
-      result.style.color = ok ? 'var(--ok)' : 'var(--danger)';
+      // Guests only succeed when delivery reaches cloud/email/webhook — pendingNotify alone is not enough.
+      const ok = loggedInUser ? !!saved : !!(saved && delivered);
+      const softPending = !!(saved && !ok && !loggedInUser && pending);
+      result.style.color = ok ? 'var(--ok)' : (softPending ? 'var(--muted)' : 'var(--danger)');
       result.classList.remove('ok-pulse');
       void result.offsetWidth;
       if (ok) result.classList.add('ok-pulse');
       const successActions = document.getElementById('contactSuccessActions');
       result.textContent = !saved
         ? t('تعذّر إيصال الطلب الآن. حاولوا مرة أخرى أو تواصلوا لاحقاً.', 'Could not deliver the request now. Please try again later.')
-        : (!ok
-          ? t('تعذّر إيصال الطلب الآن. أبقوا النموذج وحاولوا مرة أخرى أو أنشئوا حساباً.', 'Could not deliver the request now. Keep the form and retry, or create an account.')
-          : (delivered
+        : (ok
+          ? (delivered
             ? (loggedInUser
               ? t('✓ تم إرسال طلبكم إلى راسخ', '✓ Request sent to Raseekh')
               : t('✓ تم إرسال طلبكم إلى راسخ — سنراجع ونرد', '✓ Request sent to Raseekh — we will review and reply'))
-            : (pending
-              ? t('✓ استلمنا طلبكم — فعلوا إشعار البريد من الإدارة إن لزم', '✓ Request received — admin may still need to activate email notify')
-              : t('✓ تم حفظ الطلب — تابعوه من حسابكم', '✓ Request saved — track it in your account'))));
+            : t('✓ تم حفظ الطلب — تابعوه من حسابكم', '✓ Request saved — track it in your account'))
+          : (softPending
+            ? t('استلمنا الطلب محلياً — فعلوا إشعار البريد من الإدارة أو أنشئوا حساباً ثم أعيدوا الإرسال.', 'Request saved locally — admin must activate email notify, or create an account and resend.')
+            : t('تعذّر إيصال الطلب الآن. أبقوا النموذج وحاولوا مرة أخرى أو أنشئوا حساباً.', 'Could not deliver the request now. Keep the form and retry, or create an account.')));
       if (successActions) {
         if (ok) {
           successActions.style.display = 'flex';
