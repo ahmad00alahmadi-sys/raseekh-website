@@ -5,8 +5,8 @@
   const ADMIN_PRODUCTS_KEY = 'raseekh_admin_products_v1';
   const VERSION_KEY = 'raseekh_catalog_version';
   const SUGGESTIONS_VERSION_KEY = 'raseekh_suggestions_version';
-  const CATALOG_VERSION = 7;
-  const SUGGESTIONS_VERSION = 5;
+  const CATALOG_VERSION = 8;
+  const SUGGESTIONS_VERSION = 6;
   const CLIENT_REQUESTS_KEY = 'raseekh_all_client_requests_v1';
   const PAYMENTS_KEY = 'raseekh_admin_sales_v1';
 
@@ -65,8 +65,8 @@
     {
       id: 'p8', name: 'أنظمة ولوحات تحكم', name_en: 'Systems & dashboards',
       category: 'أنظمة', category_en: 'Systems',
-      desc: 'أنظمة إدارة ومخزون وعملاء حسب نشاطكم — عرض سعر بعد تحديد المتطلبات.',
-      desc_en: 'Management, inventory, and CRM systems — quote after requirements.',
+      desc: 'أنظمة إدارة وعملاء وتقارير حسب نشاطكم — عرض سعر بعد تحديد المتطلبات.',
+      desc_en: 'Management, CRM, and reporting systems — quote after requirements.',
       price: 0, priceMode: 'quote', stock: 99, kind: 'service', client: true, region: 'online'
     },
     {
@@ -81,6 +81,13 @@
       category: 'أنظمة', category_en: 'Systems',
       desc: 'بناء نظام متكامل من الدراسة إلى التشغيل — عقد واضح ونطاق متفق عليه.',
       desc_en: 'Full system from discovery to go-live — clear scope and agreement.',
+      price: 0, priceMode: 'quote', stock: 99, kind: 'service', client: true, region: 'online'
+    },
+    {
+      id: 'p11', name: 'تطبيق مخزون', name_en: 'Inventory app',
+      category: 'برمجة', category_en: 'Programming',
+      desc: 'تطبيق برمجي لإدارة المخزون والمنتجات والكميات والحركات — حسب نشاطكم ومتطلباتكم.',
+      desc_en: 'Custom software for inventory, products, quantities, and stock movements — scoped to your workflow.',
       price: 0, priceMode: 'quote', stock: 99, kind: 'service', client: true, region: 'online'
     }
   ];
@@ -125,6 +132,16 @@
       productIds: ['p7', 'p9'],
       badge: 'إلكتروني',
       badge_en: 'Digital'
+    },
+    {
+      id: 'sg6',
+      title: 'تطبيق مخزون وتشغيل',
+      title_en: 'Inventory & ops app',
+      desc: 'تطبيق مخزون + لوحة تقارير — مناسب للمحلات والمستودعات الصغيرة والمتوسطة.',
+      desc_en: 'Inventory app + reporting dashboard — for shops and small/mid warehouses.',
+      productIds: ['p11', 'p8'],
+      badge: 'مخزون',
+      badge_en: 'Inventory'
     }
   ];
 
@@ -616,6 +633,7 @@
       maintenance: { ar: 'صيانة مواقع', en: 'Website maintenance' },
       'web-dev': { ar: 'تطوير مواقع', en: 'Website development' },
       programming: { ar: 'خدمات البرمجة', en: 'Programming' },
+      inventory: { ar: 'تطبيق مخزون', en: 'Inventory app' },
       systems: { ar: 'أنظمة ولوحات', en: 'Systems & dashboards' },
       api: { ar: 'ربط API', en: 'API & integrations' },
       system: { ar: 'نظام كامل', en: 'Complete system' },
@@ -630,7 +648,7 @@
   const PRODUCT_REQUEST_TYPES = {
     p1: 'hardware', p2: 'hardware', p3: 'hardware', p4: 'hardware',
     p5: 'maintenance', p6: 'web-dev', p7: 'programming',
-    p8: 'systems', p9: 'api', p10: 'system'
+    p8: 'systems', p9: 'api', p10: 'system', p11: 'inventory'
   };
 
   function requestTypeForProduct(product) {
@@ -640,6 +658,7 @@
     if (product.kind === 'product' || product.region === 'riyadh') return 'hardware';
     if (cat.includes('maintenance') || cat.includes('صيانة')) return 'maintenance';
     if (cat.includes('website development') || cat.includes('تطوير مواقع') || cat.includes('web-dev')) return 'web-dev';
+    if (cat.includes('inventory') || cat.includes('مخزون') || cat.includes('stock')) return 'inventory';
     if (cat.includes('api') || cat.includes('ربط')) return 'api';
     if (cat.includes('dashboard') || cat.includes('systems') || cat.includes('أنظمة') || cat.includes('لوحات')) return 'systems';
     if (cat.includes('system') || cat.includes('نظام')) return 'system';
@@ -652,6 +671,7 @@
       { value: 'maintenance', ar: 'صيانة مواقع', en: 'Website maintenance' },
       { value: 'web-dev', ar: 'تطوير مواقع', en: 'Website development' },
       { value: 'programming', ar: 'خدمات البرمجة / تعديل كود', en: 'Programming / code changes' },
+      { value: 'inventory', ar: 'تطبيق مخزون', en: 'Inventory app' },
       { value: 'systems', ar: 'برمجة أنظمة ولوحات', en: 'Systems & dashboards' },
       { value: 'api', ar: 'ربط API وأنظمة', en: 'API & integrations' },
       { value: 'system', ar: 'نظام كامل', en: 'Complete system' },

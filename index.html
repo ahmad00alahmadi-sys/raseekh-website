@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>راسخ — صيانة وبرمجة وأنظمة تشغيل</title>
 <meta name="description" content="راسخ في السعودية: صيانة مواقع، خدمات برمجة، وتطوير أنظمة ولوحات تحكم — من الطلب حتى التشغيل.">
-<meta name="keywords" content="راسخ, خدمات برمجة, تطوير مواقع, صيانة مواقع, أنظمة ولوحات تحكم, برمجة سعودية, Raseekh, website development Saudi, custom systems">
+<meta name="keywords" content="راسخ, خدمات برمجة, تطوير مواقع, صيانة مواقع, تطبيق مخزون, أنظمة ولوحات تحكم, برمجة سعودية, Raseekh, inventory app, website development Saudi, custom systems">
 <meta property="og:title" content="راسخ — خدمات رقمية وأنظمة">
 <meta property="og:description" content="صيانة مواقع، برمجة، وأنظمة كاملة — بواجهة عربية وإنجليزية ومتابعة من حساب العميل.">
 <meta name="theme-color" content="#10233A">
@@ -53,7 +53,7 @@
       "alternateName": "Raseekh",
       "url": "https://raseekh.com/",
       "areaServed": "SA",
-      "serviceType": ["Website maintenance", "Custom programming", "Business systems"],
+      "serviceType": ["Website maintenance", "Custom programming", "Inventory applications", "Business systems"],
       "provider": { "@id": "https://raseekh.com/#org" },
       "availableLanguage": ["ar", "en"]
     },
@@ -392,11 +392,13 @@ section{padding:100px 0;position:relative;z-index:1}
 .panel h2{font-size:1.45rem;margin-bottom:10px}
 .panel > p{color:var(--muted);margin-bottom:20px}
 .form{display:flex;flex-direction:column;gap:12px}
-.form input,.form select,.form textarea{
+.form input:not([type="checkbox"]):not([type="radio"]),
+.form select,.form textarea{
   width:100%;padding:13px 14px;border:1.5px solid var(--line);border-radius:var(--radius);
   background:#fff;color:var(--ink);
 }
-.form input:focus,.form select:focus,.form textarea:focus{outline:2px solid rgba(42,111,122,.28);border-color:var(--harbor)}
+.form input:not([type="checkbox"]):not([type="radio"]):focus,
+.form select:focus,.form textarea:focus{outline:2px solid rgba(42,111,122,.28);border-color:var(--harbor)}
 .form textarea{min-height:110px;resize:vertical}
 .msg{min-height:18px;font-size:.88rem;font-weight:600}
 .locked{text-align:center;padding:28px 12px;display:flex;flex-direction:column;align-items:center;gap:12px}
@@ -431,8 +433,17 @@ section{padding:100px 0;position:relative;z-index:1}
 .tab.active{background:var(--navy);color:#F4F7FA}
 .panel-auth{display:none}.panel-auth.active{display:block}
 .panel-auth h3{font-size:1.25rem;margin-bottom:14px}
-.check{display:flex;gap:8px;align-items:flex-start;font-size:.82rem;color:var(--muted)}
-.check input{margin-top:4px}.check a{color:var(--harbor);text-decoration:underline}
+.check{
+  display:flex;flex-direction:row;align-items:flex-start;gap:10px;width:100%;
+  margin:2px 0 4px;font-size:.88rem;line-height:1.55;color:var(--muted);cursor:pointer;
+}
+.check input[type="checkbox"]{
+  width:18px;height:18px;min-width:18px;max-width:18px;margin:3px 0 0;padding:0;
+  flex-shrink:0;accent-color:var(--copper);cursor:pointer;border-radius:3px;
+}
+.check-text{flex:1;min-width:0;text-align:start}
+.check a{color:var(--harbor);font-weight:700;text-decoration:underline;text-underline-offset:2px}
+.check a:hover{color:var(--copper)}
 
 .site-note{border-top:1.5px solid var(--line);padding:16px 18px;text-align:center;font-size:.9rem;font-weight:600;color:var(--muted);position:relative;z-index:1}
 footer{border-top:1.5px solid var(--line);padding:48px 0 36px;text-align:center;color:var(--muted);font-size:.92rem;position:relative;z-index:1}
@@ -602,9 +613,13 @@ body.terms-locked{overflow:hidden}
           <input type="email" id="registerEmail" required data-ar-placeholder="البريد الإلكتروني" data-en-placeholder="Email" placeholder="البريد الإلكتروني">
           <input type="tel" id="registerPhone" data-ar-placeholder="رقم الجوال (اختياري)" data-en-placeholder="Phone (optional)" placeholder="رقم الجوال (اختياري)">
           <input type="password" id="registerPassword" minlength="6" required data-ar-placeholder="كلمة المرور (6 أحرف على الأقل)" data-en-placeholder="Password (min 6 chars)" placeholder="كلمة المرور (6 أحرف على الأقل)">
-          <label class="check">
+          <label class="check" for="registerTermsCheck">
             <input type="checkbox" id="registerTermsCheck" required>
-            <span><span data-ar="أوافق على" data-en="I agree to the">أوافق على</span> <a href="/terms/" id="registerTermsLink" data-ar="الشروط والأحكام" data-en="Terms">الشروط والأحكام</a></span>
+            <span class="check-text">
+              <span data-ar="أوافق على " data-en="I agree to the ">أوافق على </span>
+              <a href="/terms/" id="registerTermsLink" data-ar="الشروط والأحكام" data-en="Terms & Conditions">الشروط والأحكام</a>
+              <span data-ar=" لاستخدام حساب العميل وطلب الخدمات." data-en=" for using the client account and requesting services."> لاستخدام حساب العميل وطلب الخدمات.</span>
+            </span>
           </label>
           <button class="btn btn-primary" type="submit" data-ar="إنشاء الحساب" data-en="Create account">إنشاء الحساب</button>
         </form>
@@ -644,6 +659,7 @@ body.terms-locked{overflow:hidden}
           <option value="maintenance" data-ar="صيانة مواقع" data-en="Website maintenance">صيانة مواقع</option>
           <option value="web-dev" data-ar="تطوير مواقع" data-en="Website development">تطوير مواقع</option>
           <option value="programming" data-ar="برمجة / تعديل كود" data-en="Programming / code changes" selected>برمجة / تعديل كود</option>
+          <option value="inventory" data-ar="تطبيق مخزون" data-en="Inventory app">تطبيق مخزون</option>
           <option value="systems" data-ar="أنظمة ولوحات" data-en="Systems & dashboards">أنظمة ولوحات</option>
           <option value="api" data-ar="ربط API" data-en="API & integrations">ربط API</option>
           <option value="system" data-ar="نظام كامل" data-en="Complete system">نظام كامل</option>
@@ -699,7 +715,7 @@ body.terms-locked{overflow:hidden}
     <div class="section-head reveal">
       <div class="eyebrow" data-ar="خدمات البرمجة" data-en="Programming services">خدمات البرمجة</div>
       <h2 data-ar="برمجة عملية حسب طلبكم" data-en="Practical coding to your request">برمجة عملية حسب طلبكم</h2>
-      <p data-ar="مواقع، تعديلات، أنظمة، وربط تقني — بسطرين واضحين لكل خدمة." data-en="Sites, edits, systems, and integrations — two clear lines each.">مواقع، تعديلات، أنظمة، وربط تقني — بسطرين واضحين لكل خدمة.</p>
+      <p data-ar="مواقع، تعديلات، تطبيقات مخزون، أنظمة، وربط تقني — بسطرين واضحين لكل خدمة." data-en="Sites, edits, inventory apps, systems, and integrations — two clear lines each.">مواقع، تعديلات، تطبيقات مخزون، أنظمة، وربط تقني — بسطرين واضحين لكل خدمة.</p>
     </div>
     <div class="services-grid four reveal stagger">
       <article class="service-block">
@@ -711,8 +727,12 @@ body.terms-locked{overflow:hidden}
         <p data-ar="إصلاح أخطاء وإضافة مزايا على مشروعكم الحالي." data-en="Bug fixes and new features on your existing project.">إصلاح أخطاء وإضافة مزايا على مشروعكم الحالي.</p>
       </article>
       <article class="service-block">
+        <h3 data-ar="تطبيق مخزون" data-en="Inventory app">تطبيق مخزون</h3>
+        <p data-ar="إدارة منتجات وكميات وحركات مخزون حسب نشاطكم." data-en="Products, quantities, and stock movements for your workflow.">إدارة منتجات وكميات وحركات مخزون حسب نشاطكم.</p>
+      </article>
+      <article class="service-block">
         <h3 data-ar="أنظمة ولوحات" data-en="Systems & dashboards">أنظمة ولوحات</h3>
-        <p data-ar="إدارة، مخزون، وعملاء مع صلاحيات وتقارير." data-en="Ops, inventory, and CRM with roles and reports.">إدارة، مخزون، وعملاء مع صلاحيات وتقارير.</p>
+        <p data-ar="إدارة وعملاء وتقارير مع صلاحيات واضحة." data-en="Ops, CRM, and reports with clear roles.">إدارة وعملاء وتقارير مع صلاحيات واضحة.</p>
       </article>
       <article class="service-block">
         <h3 data-ar="ربط API" data-en="API integrations">ربط API</h3>
@@ -984,6 +1004,7 @@ body.terms-locked{overflow:hidden}
             <option value="maintenance" data-ar="صيانة مواقع" data-en="Website maintenance">صيانة مواقع</option>
             <option value="web-dev" data-ar="تطوير مواقع" data-en="Website development">تطوير مواقع</option>
             <option value="programming" data-ar="خدمات البرمجة / تعديل كود" data-en="Programming / code changes">خدمات البرمجة / تعديل كود</option>
+            <option value="inventory" data-ar="تطبيق مخزون" data-en="Inventory app">تطبيق مخزون</option>
             <option value="systems" data-ar="برمجة أنظمة ولوحات" data-en="Systems & dashboards">برمجة أنظمة ولوحات</option>
             <option value="api" data-ar="ربط API وأنظمة" data-en="API & integrations">ربط API وأنظمة</option>
             <option value="system" data-ar="نظام كامل" data-en="Complete system">نظام كامل</option>
@@ -1355,7 +1376,7 @@ body.terms-locked{overflow:hidden}
     const params = new URLSearchParams(location.search);
     const type = params.get('type');
     const msg = params.get('msg') || params.get('message');
-    const allowed = ['maintenance','web-dev','programming','systems','api','system','hardware','electronics'];
+    const allowed = ['maintenance','web-dev','programming','inventory','systems','api','system','hardware','electronics'];
     if (!type && !msg) return;
     let normalized = type === 'electronics' ? 'hardware' : type;
     if (!allowed.includes(normalized)) normalized = 'programming';
@@ -1633,6 +1654,13 @@ body.terms-locked{overflow:hidden}
     e.preventDefault();
     const msg = document.getElementById('registerMsg');
     if (!Auth) { msg.style.color = 'var(--danger)'; msg.textContent = t('تعذّر تحميل نظام الحسابات', 'Auth system failed to load'); return; }
+    const termsCheck = document.getElementById('registerTermsCheck');
+    if (termsCheck && !termsCheck.checked) {
+      msg.style.color = 'var(--danger)';
+      msg.textContent = t('يلزم الموافقة على الشروط والأحكام أولاً', 'Please accept the Terms & Conditions first');
+      termsCheck.focus();
+      return;
+    }
     msg.style.color = 'var(--muted)'; msg.textContent = t('جاري إنشاء الحساب...', 'Creating account...');
     try {
       const result = await Auth.signUp({
