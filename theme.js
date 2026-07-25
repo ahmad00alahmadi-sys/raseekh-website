@@ -1,10 +1,12 @@
-/* Raseekh theme: white (default) + soft classic. */
+/* Raseekh theme: white/light (default) + dark. */
 (function (global) {
   const KEY = 'raseekh_theme';
   const DEFAULT = 'white';
 
   function normalize(theme) {
-    return theme === 'soft' ? 'soft' : 'white';
+    if (theme === 'dark') return 'dark';
+    // migrate old soft preference → white
+    return 'white';
   }
 
   function get() {
@@ -13,9 +15,10 @@
   }
 
   function labelFor(theme, lang) {
-    const isWhite = theme === 'white';
-    if (lang === 'en') return isWhite ? 'Soft' : 'White';
-    return isWhite ? 'ناعم' : 'أبيض';
+    // Button shows the mode you can switch TO
+    const toDark = theme === 'white';
+    if (lang === 'en') return toDark ? 'Dark' : 'White';
+    return toDark ? 'داكن' : 'أبيض';
   }
 
   function syncToggleButtons(theme) {
@@ -23,10 +26,10 @@
     document.querySelectorAll('[data-theme-toggle]').forEach((btn) => {
       const isWhite = theme === 'white';
       btn.setAttribute('aria-pressed', isWhite ? 'true' : 'false');
-      const ar = isWhite ? 'وضع ناعم' : 'وضع أبيض';
-      const en = isWhite ? 'Soft mode' : 'White mode';
-      btn.setAttribute('data-ar', ar);
-      btn.setAttribute('data-en', en);
+      const ar = isWhite ? 'الوضع الداكن' : 'الوضع الأبيض';
+      const en = isWhite ? 'Dark mode' : 'White mode';
+      btn.setAttribute('data-ar', labelFor(theme, 'ar'));
+      btn.setAttribute('data-en', labelFor(theme, 'en'));
       btn.setAttribute('data-ar-aria', ar);
       btn.setAttribute('data-en-aria', en);
       btn.setAttribute('aria-label', lang === 'en' ? en : ar);
@@ -40,7 +43,7 @@
     document.documentElement.setAttribute('data-theme', next);
     try { localStorage.setItem(KEY, next); } catch (_) {}
     const meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.setAttribute('content', next === 'white' ? '#ffffff' : '#E8EDF2');
+    if (meta) meta.setAttribute('content', next === 'white' ? '#ffffff' : '#0F1720');
     syncToggleButtons(next);
     try {
       document.dispatchEvent(new CustomEvent('raseekh:theme', { detail: { theme: next } }));
@@ -49,7 +52,7 @@
   }
 
   function toggle() {
-    return apply(get() === 'white' ? 'soft' : 'white');
+    return apply(get() === 'white' ? 'dark' : 'white');
   }
 
   function bind() {
@@ -66,7 +69,6 @@
 
   global.RaseekhTheme = { KEY: KEY, get: get, apply: apply, toggle: toggle, bind: bind };
 
-  // Apply ASAP if DOM already has root.
   try { apply(get()); } catch (_) {}
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bind);
   else bind();

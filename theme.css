@@ -1,4 +1,4 @@
-/* Raseekh theme tokens: white (default) + soft classic */
+/* Raseekh theme tokens: white/light (default) + dark */
 :root,
 html[data-theme="white"]{
   --ink:#10233A;
@@ -20,16 +20,30 @@ html[data-theme="white"]{
   --forest:var(--navy);
   --leaf:var(--harbor);
   --brass:var(--copper);
+  --on-dark:#F4F7FA;
   color-scheme:light;
 }
-html[data-theme="soft"]{
-  --bg:#E8EDF2;
-  --panel:#F7F9FC;
-  --mist:#D5DEE8;
-  --line:#B8C4D1;
-  --shadow:0 18px 40px -28px rgba(16,35,58,.45);
-  --header-bg:rgba(232,237,242,.88);
-  --surface-tint:#F0F4F8;
+html[data-theme="dark"]{
+  --ink:#E6EEF6;
+  --navy:#B8C9DA;
+  --harbor:#4FA8B4;
+  --copper:#E07A45;
+  --sand:#E8A05A;
+  --bg:#0F1720;
+  --panel:#161F2A;
+  --mist:#1C2734;
+  --line:#2A3645;
+  --muted:#9AA8B7;
+  --danger:#F97066;
+  --ok:#3DDC97;
+  --shadow:0 18px 40px -24px rgba(0,0,0,.65);
+  --header-bg:rgba(15,23,32,.92);
+  --surface-tint:#121A24;
+  --forest:var(--navy);
+  --leaf:var(--harbor);
+  --brass:var(--copper);
+  --on-dark:#F4F7FA;
+  color-scheme:dark;
 }
 html[data-theme="white"] body::before{
   background:
@@ -38,13 +52,18 @@ html[data-theme="white"] body::before{
     linear-gradient(180deg,#FFFFFF 0%, var(--surface-tint) 55%, #FFFFFF 100%) !important;
 }
 html[data-theme="white"] body::after{opacity:.1 !important}
-html[data-theme="soft"] body::before{
+html[data-theme="dark"] body::before{
   background:
-    radial-gradient(ellipse 80% 50% at 100% -10%, rgba(196,92,38,.14), transparent 55%),
-    radial-gradient(ellipse 70% 45% at -10% 20%, rgba(42,111,122,.14), transparent 50%),
-    linear-gradient(165deg,#DCE4EC 0%, var(--bg) 42%, var(--surface-tint) 100%) !important;
+    radial-gradient(ellipse 70% 45% at 100% 0%, rgba(224,122,69,.12), transparent 55%),
+    radial-gradient(ellipse 60% 40% at 0% 10%, rgba(79,168,180,.10), transparent 50%),
+    linear-gradient(180deg,#0B1219 0%, var(--bg) 45%, var(--surface-tint) 100%) !important;
 }
-html[data-theme="soft"] body::after{opacity:.18 !important}
+html[data-theme="dark"] body::after{
+  opacity:.12 !important;
+  background-image:
+    linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px) !important;
+}
 .theme-btn{
   border:1.5px solid var(--line);
   background:var(--panel);
@@ -60,4 +79,40 @@ html[data-theme="soft"] body::after{opacity:.18 !important}
 .theme-btn[aria-pressed="true"]{
   border-color:rgba(42,111,122,.45);
   color:var(--harbor);
+}
+html[data-theme="dark"] .theme-btn[aria-pressed="true"]{
+  border-color:rgba(79,168,180,.55);
+  color:var(--harbor);
+}
+
+/* Hardcoded light surfaces that need dark overrides */
+html[data-theme="dark"] input,
+html[data-theme="dark"] textarea,
+html[data-theme="dark"] select,
+html[data-theme="dark"] .field input,
+html[data-theme="dark"] .field textarea,
+html[data-theme="dark"] .field select{
+  background:var(--panel) !important;
+  color:var(--ink) !important;
+  border-color:var(--line) !important;
+}
+html[data-theme="dark"] .btn-ghost:hover{
+  background:var(--mist) !important;
+}
+html[data-theme="dark"] .service-block:hover,
+html[data-theme="dark"] .card:hover{
+  background:var(--mist) !important;
+}
+html[data-theme="dark"] .browser-chrome,
+html[data-theme="dark"] .tour-panel,
+html[data-theme="dark"] .suggest-card,
+html[data-theme="dark"] .faq details,
+html[data-theme="dark"] .panel,
+html[data-theme="dark"] .login-card{
+  background:var(--panel);
+}
+html[data-theme="dark"] .logo{color:var(--ink)}
+html[data-theme="dark"] header,
+html[data-theme="dark"] .site-header{
+  background:var(--header-bg);
 }
