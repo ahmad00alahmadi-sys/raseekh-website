@@ -1411,20 +1411,35 @@
     return String(value || '').trim().toLowerCase().replace(/\s+/g, ' ');
   }
 
+  function simpleFingerprintHash(str) {
+    let h = 2166136261;
+    const s = String(str || '');
+    for (let i = 0; i < s.length; i++) {
+      h ^= s.charCodeAt(i);
+      h = Math.imul(h, 16777619);
+    }
+    return (h >>> 0).toString(36);
+  }
+
   function requestContentFingerprint(row) {
+    const msg = normalizeFingerprintPart(row && row.message);
+    // Keep under RLS insert cap (fingerprint <= 200) even for long quote messages.
+    const msgPart = msg.length > 96
+      ? (msg.slice(0, 72) + '#' + msg.length + '#' + simpleFingerprintHash(msg))
+      : msg;
     return [
       'req',
       normalizeFingerprintPart(row && row.type),
       normalizeFingerprintPart((row && (row.userId || row.email || row.phone)) || ''),
-      normalizeFingerprintPart(row && row.company),
-      normalizeFingerprintPart(row && row.message)
-    ].join(':');
+      normalizeFingerprintPart(row && row.company).slice(0, 40),
+      msgPart
+    ].join(':').slice(0, 180);
   }
 
   function requestFingerprint(row) {
     // Bucket keeps DB unique windows short; local dedupe matches content without the bucket.
     const bucket = Math.floor(Date.now() / (5 * 60 * 1000));
-    return [requestContentFingerprint(row), bucket].join(':');
+    return [requestContentFingerprint(row), bucket].join(':').slice(0, 200);
   }
 
   function findExistingSharedRequest(list, row) {
