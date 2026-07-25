@@ -1,6 +1,6 @@
 /* Lightweight offline shell for Raseekh marketing site */
-const CACHE = 'raseekh-shell-v49';
-const ASSETS = ['/', '/index.html', '/catalog.js', '/auth.js', '/terms.js', '/activity.js', '/terms/', '/terms/index.html', '/dashboard/', '/dashboard/index.html', '/manifest.webmanifest', '/icon.svg', '/icon-192.png', '/icon-512.png', '/icon-512-maskable.png'];
+const CACHE = 'raseekh-shell-v50';
+const ASSETS = ['/', '/index.html', '/catalog.js', '/auth.js', '/terms.js', '/activity.js', '/terms/', '/terms/index.html', '/privacy/', '/privacy/index.html', '/dashboard/', '/dashboard/index.html', '/manifest.webmanifest', '/icon.svg', '/icon-192.png', '/icon-512.png', '/icon-512-maskable.png'];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(ASSETS)).then(() => self.skipWaiting()));
@@ -24,6 +24,7 @@ function offlineShellFor(url) {
   const path = (url && url.pathname) || '/';
   if (path.indexOf('/dashboard') === 0) return '/dashboard/index.html';
   if (path.indexOf('/terms') === 0) return '/terms/index.html';
+  if (path.indexOf('/privacy') === 0) return '/privacy/index.html';
   return '/index.html';
 }
 
