@@ -566,23 +566,37 @@
     }
   }
 
+  function normalizeWhatsAppDigits(raw) {
+    let digits = String(raw || '').replace(/\D+/g, '');
+    if (!digits) return '';
+    if (digits.indexOf('00') === 0) digits = digits.slice(2);
+    if (digits.length === 10 && digits.charAt(0) === '5') digits = '966' + digits;
+    if (digits.length === 9 && digits.charAt(0) === '5') digits = '966' + digits;
+    if (digits.length === 11 && digits.indexOf('05') === 0) digits = '966' + digits.slice(1);
+    if (digits.length < 10 || digits.length > 15) return '';
+    return digits;
+  }
+
   function publishPublicNotify(settings, opts) {
     const webhookUrl = String((settings && settings.webhookUrl) || '').trim();
     const notifyEmail = String((settings && settings.notifyEmail) || '').trim().toLowerCase();
     const notifyOnLogin = settings && settings.notifyOnLogin === false ? false : true;
+    const whatsappRaw = String((settings && (settings.whatsapp || settings.phone)) || '').trim();
     const cfg = {
       webhookUrl: webhookUrl || '',
       notifyEmail: notifyEmail || '',
-      notifyOnLogin: notifyOnLogin
+      notifyOnLogin: notifyOnLogin,
+      whatsapp: whatsappRaw || ''
     };
     const existing = readObject(PUBLIC_NOTIFY_KEY);
     // Avoid wiping a published cloud/local config with an empty accidental publish.
     if (!opts || !opts.allowEmpty) {
       if (!cfg.notifyEmail && existing.notifyEmail) cfg.notifyEmail = String(existing.notifyEmail).toLowerCase();
       if (!cfg.webhookUrl && existing.webhookUrl) cfg.webhookUrl = String(existing.webhookUrl);
+      if (!cfg.whatsapp && existing.whatsapp) cfg.whatsapp = String(existing.whatsapp);
     }
     writeJson(PUBLIC_NOTIFY_KEY, cfg);
-    const shouldPush = !!(cfg.notifyEmail || cfg.webhookUrl || (opts && opts.forceCloud) || (opts && opts.allowEmpty));
+    const shouldPush = !!(cfg.notifyEmail || cfg.webhookUrl || cfg.whatsapp || (opts && opts.forceCloud) || (opts && opts.allowEmpty));
     if (!shouldPush) return opts && opts.awaitCloud ? Promise.resolve({ cfg, cloud: false }) : cfg;
     if (opts && opts.awaitCloud) {
       return pushPublicNotifyToCloud(cfg, { allowEmpty: !!(opts && opts.allowEmpty) })
@@ -596,14 +610,15 @@
     const sb = getSupabase();
     if (!sb || !cfg) return false;
     const allowEmpty = !!(opts && opts.allowEmpty);
-    if (!cfg.notifyEmail && !cfg.webhookUrl && !allowEmpty) return false;
+    if (!cfg.notifyEmail && !cfg.webhookUrl && !cfg.whatsapp && !allowEmpty) return false;
     try {
       const { error } = await sb.from('site_settings').upsert({
         key: 'public_notify',
         value: {
           notifyEmail: cfg.notifyEmail || '',
           webhookUrl: cfg.webhookUrl || '',
-          notifyOnLogin: cfg.notifyOnLogin !== false
+          notifyOnLogin: cfg.notifyOnLogin !== false,
+          whatsapp: cfg.whatsapp || ''
         },
         updated_at: new Date().toISOString()
       }, { onConflict: 'key' });
@@ -626,11 +641,13 @@
       const value = data.value && typeof data.value === 'object' ? data.value : {};
       const cloudEmail = String(value.notifyEmail || '').trim().toLowerCase();
       const cloudWebhook = String(value.webhookUrl || '').trim();
+      const cloudWhatsapp = String(value.whatsapp || value.phone || '').trim();
       const cloudHasNotifyOnLogin = Object.prototype.hasOwnProperty.call(value, 'notifyOnLogin');
       const local = readObject(PUBLIC_NOTIFY_KEY);
       const merged = {
         notifyEmail: cloudEmail || String(local.notifyEmail || '').trim().toLowerCase(),
         webhookUrl: cloudWebhook || String(local.webhookUrl || '').trim(),
+        whatsapp: cloudWhatsapp || String(local.whatsapp || '').trim(),
         // Prefer cloud flag when cloud row exists; don't let stale local false suppress it.
         notifyOnLogin: cloudHasNotifyOnLogin
           ? value.notifyOnLogin !== false
@@ -641,6 +658,18 @@
     } catch (_) {
       return readObject(PUBLIC_NOTIFY_KEY);
     }
+  }
+
+  function resolvePublicWhatsApp() {
+    const fromWindow = typeof global !== 'undefined' && global.RASEEKH_WHATSAPP
+      ? String(global.RASEEKH_WHATSAPP).trim()
+      : '';
+    const publicCfg = readObject(PUBLIC_NOTIFY_KEY);
+    const store = readObject('raseekh_admin_store_v1');
+    const raw = fromWindow || String(publicCfg.whatsapp || store.phone || '').trim();
+    const digits = normalizeWhatsAppDigits(raw);
+    if (!digits) return null;
+    return { digits: digits, href: 'https://wa.me/' + digits };
   }
 
   function resolveWebhookUrl() {
@@ -1630,6 +1659,8 @@
     syncPublicNotifyFromCloud,
     resolveWebhookUrl,
     resolveNotifyEmail,
+    resolvePublicWhatsApp,
+    normalizeWhatsAppDigits,
     getDeliveryStatus,
     probeCloudRequests,
     probePublicNotifyCloud,

@@ -577,6 +577,7 @@ body.is-admin .client-only{display:none!important}
           <div style="display:flex;gap:8px;flex-wrap:wrap">
             <button class="btn btn-primary" type="button" data-goto="activity" data-ar="فتح الزوار والدخول" data-en="Open visitors & logins">فتح الزوار والدخول</button>
             <button class="btn btn-ghost" type="button" data-goto="products" data-ar="إدارة الخدمات" data-en="Manage services">إدارة الخدمات</button>
+            <button class="btn btn-ghost" type="button" data-goto="voices" data-ar="آراء وهمية" data-en="Fake voices">آراء وهمية</button>
             <button class="btn btn-ghost" type="button" data-goto="leads" data-ar="فتح الطلبات" data-en="Open requests">فتح الطلبات</button>
           </div>
         </div>
@@ -912,9 +913,10 @@ body.is-admin .client-only{display:none!important}
           <label class="field"><span data-ar="اسم الشركة" data-en="Company name">اسم الشركة</span>
             <input type="text" id="storeName" data-ar-placeholder="اسم الشركة" data-en-placeholder="Company name" placeholder="اسم الشركة">
           </label>
-          <label class="field"><span data-ar="هاتف التواصل" data-en="Contact phone">هاتف التواصل</span>
-            <input type="text" id="storePhone" data-ar-placeholder="هاتف التواصل" data-en-placeholder="Contact phone" placeholder="هاتف التواصل">
+          <label class="field"><span data-ar="هاتف / واتساب عام (اختياري)" data-en="Public phone / WhatsApp (optional)">هاتف / واتساب عام (اختياري)</span>
+            <input type="text" id="storePhone" data-ar-placeholder="05xxxxxxxx أو 9665..." data-en-placeholder="05xxxxxxxx or 9665..." placeholder="05xxxxxxxx أو 9665...">
           </label>
+          <p style="color:var(--muted);font-size:.82rem;margin-top:-6px" data-ar="إن وُجد رقم صالح يظهر زر واتساب ثابت في الموقع العام بعد الحفظ والمزامنة." data-en="If a valid number is set, a fixed WhatsApp button appears on the public site after save and sync.">إن وُجد رقم صالح يظهر زر واتساب ثابت في الموقع العام بعد الحفظ والمزامنة.</p>
           <label class="field"><span data-ar="بريد وصول الطلبات" data-en="Request notify email">بريد وصول الطلبات</span>
             <input type="email" id="storeNotifyEmail" data-ar-placeholder="you@example.com" data-en-placeholder="you@example.com" placeholder="you@example.com" autocomplete="email">
           </label>

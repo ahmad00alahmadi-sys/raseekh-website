@@ -2,6 +2,10 @@ User-agent: *
 Allow: /
 Allow: /blog/
 Allow: /industries/
+Allow: /features/
+Allow: /help/
+Allow: /security/
+Allow: /updates/
 Allow: /privacy/
 Allow: /terms/
 Disallow: /dashboard/
