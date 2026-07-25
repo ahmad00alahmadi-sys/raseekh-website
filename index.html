@@ -1764,6 +1764,9 @@ body.terms-locked,body.auth-locked{overflow:hidden}
     } else if (!delivery) {
       ar = 'الدفع نجح عند البوابة لكن تعذّر تسجيل العربون محلياً — احتفظوا برقم العملية وتواصلوا مع راسخ.';
       en = 'Gateway payment succeeded but the deposit was not recorded here — keep the payment id and contact Raseekh.';
+    } else if (delivery.orphanProcessed) {
+      ar = 'هذه العملية عولجت مسبقاً هنا — إن لم تظهر لدى الإدارة أرسلوا رقم العملية لراسخ.';
+      en = 'This payment was already handled here — if admin has no record, send Raseekh the payment id.';
     } else if (delivery.delivered) {
       ar = 'تم تسجيل العربون وسيتواصل معكم الفريق خلال يوم عمل.';
       en = 'Deposit recorded — our team will contact you within one business day.';
@@ -1854,19 +1857,31 @@ body.terms-locked,body.auth-locked{overflow:hidden}
       } catch (_) {}
       return true;
     }
-    // Processed mark without a local row (cleared storage / other tab) — still a paid return, not expired.
-    if (wasProcessedPay(paymentId)) {
-      setPaySuccessCopy({ delivered: true, cloud: true, duplicate: true });
-      showPayStep(payStatusSuccess);
-      try {
-        const url = new URL(location.href);
-        ['status', 'id', 'payment_id', 'amount', 'message', 'pay'].forEach((k) => url.searchParams.delete(k));
-        history.replaceState(null, '', url.pathname + url.search + '#pay');
-      } catch (_) {}
-      return true;
-    }
-
     if (!pendingPay || !(Number(pendingPay.amount) > 0)) {
+      // Processed mark without pending session: try cloud recovery; never claim full delivery blindly.
+      if (wasProcessedPay(paymentId)) {
+        setPaySuccessCopy({ recording: true });
+        showPayStep(payStatusSuccess);
+        let delivery = { orphanProcessed: true, delivered: false, cloud: false, duplicate: true };
+        try {
+          if (Catalog.syncPaymentsFromCloud) await Catalog.syncPaymentsFromCloud();
+          existing = findExisting();
+          if (existing) {
+            if (existing.deliveryStatus === 'delivered') {
+              delivery = { delivered: true, cloud: true, duplicate: true };
+            } else if (Catalog.deliverPaymentRecord) {
+              delivery = await Catalog.deliverPaymentRecord(existing);
+            }
+          }
+        } catch (_) {}
+        setPaySuccessCopy(delivery);
+        try {
+          const url = new URL(location.href);
+          ['status', 'id', 'payment_id', 'amount', 'message', 'pay'].forEach((k) => url.searchParams.delete(k));
+          history.replaceState(null, '', url.pathname + url.search + '#pay');
+        } catch (_) {}
+        return true;
+      }
       try { sessionStorage.removeItem('raseekh_pending_pay'); } catch (_) {}
       showPayStep(payStatusFailed);
       const failBox = document.getElementById('payStatusFailed');
@@ -1880,6 +1895,7 @@ body.terms-locked,body.auth-locked{overflow:hidden}
       }
       return false;
     }
+    // pendingPay exists — recreate/reuse the row even if a processed mark remains (dedupe by paymentId).
     const total = Number(pendingPay.amount);
     if (!(total > 0) || total > 100000) return false;
     // Prefer session amount over query string (query is untrusted / in halalas).
@@ -2138,11 +2154,22 @@ body.terms-locked,body.auth-locked{overflow:hidden}
     Auth.getSession().then(({ user, provider }) => {
       authProvider = provider || null;
       if (user) setPayUnlocked(user, provider);
-      if (location.hash === '#reset') { openModal(); showAuthPanel('reset'); }
+      if (location.hash === '#reset') {
+        let recovery = false;
+        try { recovery = sessionStorage.getItem('raseekh_password_recovery') === '1' || !!sessionStorage.getItem('raseekh_reset_email'); } catch (_) {}
+        if (recovery || provider === 'local') { openModal(); showAuthPanel('reset'); }
+        else { openModal(); showAuthPanel('forgot'); }
+      }
     });
     if (Auth.supabase) {
       Auth.supabase.auth.onAuthStateChange((event, session) => {
-        if (event === 'PASSWORD_RECOVERY' || (event === 'SIGNED_IN' && location.hash === '#reset')) { openModal(); showAuthPanel('reset'); }
+        if (event === 'PASSWORD_RECOVERY') {
+          try { sessionStorage.setItem('raseekh_password_recovery', '1'); } catch (_) {}
+          openModal(); showAuthPanel('reset');
+        } else if (event === 'SIGNED_IN' && location.hash === '#reset') {
+          try { sessionStorage.setItem('raseekh_password_recovery', '1'); } catch (_) {}
+          openModal(); showAuthPanel('reset');
+        }
         if (event === 'SIGNED_OUT') { authProvider = null; setPayUnlocked(null); }
         if (event === 'SIGNED_IN' && session?.user && location.hash !== '#reset') {
           authProvider = 'supabase';
@@ -2432,8 +2459,17 @@ body.terms-locked,body.auth-locked{overflow:hidden}
               ? Catalog.getPaymentRecords().find((p) => p && p.paymentId === paymentId)
               : null;
             if (!existing) {
-              // Already handled elsewhere — do not clear the mark and invent a second row.
-              return { delivered: true, cloud: true, duplicate: true };
+              try {
+                if (Catalog.syncPaymentsFromCloud) await Catalog.syncPaymentsFromCloud();
+              } catch (_) {}
+              const again = Catalog.getPaymentRecords
+                ? Catalog.getPaymentRecords().find((p) => p && p.paymentId === paymentId)
+                : null;
+              if (again) {
+                if (again.deliveryStatus === 'delivered') return { delivered: true, cloud: true, duplicate: true };
+                if (Catalog.deliverPaymentRecord) return await Catalog.deliverPaymentRecord(again);
+              }
+              return { orphanProcessed: true, delivered: false, cloud: false, duplicate: true };
             }
             if (existing.deliveryStatus === 'delivered') {
               return { delivered: true, cloud: true, duplicate: true };

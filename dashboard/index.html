@@ -1130,9 +1130,12 @@ body.is-admin .client-only{display:none!important}
     if (isAdminUser) {
       const before = parseInt(localStorage.getItem('raseekh_catalog_version') || '0', 10) || 0;
       products = Catalog.loadAdminProducts();
-      // After a seed bump, admin cloud session should republish so other devices converge.
-      if (before < (Catalog.CATALOG_VERSION || 0) && authProvider === 'supabase' && Catalog.publishClientCatalog) {
-        Catalog.publishClientCatalog(products, Catalog.getClientSuggestions(), { cloud: true });
+      // After a seed bump, any non-local admin session should republish so other devices converge.
+      // authProvider may be "email" (Supabase app_metadata) — do not require the literal "supabase".
+      const cloudAdmin = !!(authProvider && authProvider !== 'local' && authProvider !== 'demo');
+      if (before < (Catalog.CATALOG_VERSION || 0) && cloudAdmin && Catalog.publishClientCatalog) {
+        const pub = Catalog.publishClientCatalog(products, Catalog.getClientSuggestions(), { cloud: true, awaitCloud: true });
+        if (pub && typeof pub.then === 'function') pub.catch(() => {});
       }
       return;
     }
@@ -1688,7 +1691,12 @@ body.is-admin .client-only{display:none!important}
       currentUser = user;
       isDemo = !!demo;
       isAdminUser = detectAdmin(user, isDemo);
-      authProvider = demo ? 'demo' : (user && user.app_metadata && user.app_metadata.provider) || authProvider || null;
+      // Prefer Auth provider ('supabase'|'local') over app_metadata.provider ('email').
+      authProvider = demo
+        ? 'demo'
+        : (authProvider === 'supabase' || authProvider === 'local'
+          ? authProvider
+          : ((user && user.app_metadata && user.app_metadata.provider) || authProvider || null));
       setDemoFlag(isDemo);
 
       document.getElementById('loginView').classList.add('hidden');

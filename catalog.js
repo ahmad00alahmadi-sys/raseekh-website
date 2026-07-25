@@ -256,10 +256,40 @@
     return mergeProducts(products);
   }
 
+  function mergeSuggestions(existing) {
+    const byId = new Map((existing || []).map((s) => [s && s.id, s]).filter((entry) => entry[0]));
+    DEFAULT_SUGGESTIONS.forEach((seed) => {
+      const cur = byId.get(seed.id);
+      if (!cur) {
+        byId.set(seed.id, Object.assign({}, seed, {
+          productIds: seed.productIds ? seed.productIds.slice() : []
+        }));
+        return;
+      }
+      // Seed adds new packs; preserve admin title/desc/badge/productIds customizations.
+      byId.set(seed.id, Object.assign({}, seed, cur, {
+        title: cur.title || seed.title,
+        title_en: cur.title_en || seed.title_en,
+        desc: cur.desc != null && cur.desc !== '' ? cur.desc : seed.desc,
+        desc_en: cur.desc_en != null && cur.desc_en !== '' ? cur.desc_en : seed.desc_en,
+        badge: cur.badge != null && cur.badge !== '' ? cur.badge : seed.badge,
+        badge_en: cur.badge_en != null && cur.badge_en !== '' ? cur.badge_en : seed.badge_en,
+        productIds: (cur.productIds && cur.productIds.length)
+          ? cur.productIds.slice()
+          : (seed.productIds ? seed.productIds.slice() : [])
+      }));
+    });
+    return Array.from(byId.values());
+  }
+
   function ensureSuggestionsVersion() {
     const current = parseInt(localStorage.getItem(SUGGESTIONS_VERSION_KEY) || '0', 10) || 0;
     if (current < SUGGESTIONS_VERSION) {
-      writeJson(SUGGESTIONS_KEY, cloneList(DEFAULT_SUGGESTIONS));
+      const existing = readJson(SUGGESTIONS_KEY, []);
+      writeJson(
+        SUGGESTIONS_KEY,
+        mergeSuggestions(existing && existing.length ? existing : cloneList(DEFAULT_SUGGESTIONS))
+      );
       localStorage.setItem(SUGGESTIONS_VERSION_KEY, String(SUGGESTIONS_VERSION));
     }
   }
@@ -654,7 +684,14 @@
       const { error: insertErr } = await sb.from('client_requests').insert(payload);
       if (!insertErr) return true;
       const msg = String((insertErr && insertErr.message) || '').toLowerCase();
-      return msg.includes('duplicate') || msg.includes('unique') || insertErr.code === '23505';
+      const isDup = msg.includes('duplicate') || msg.includes('unique') || insertErr.code === '23505';
+      if (!isDup) return false;
+      // Unique/fingerprint collision is only success when THIS id is already stored.
+      try {
+        const { data: byId } = await sb.from('client_requests').select('id').eq('id', row.id).maybeSingle();
+        if (byId && byId.id === row.id) return true;
+      } catch (_) {}
+      return false;
     } catch (_) {
       return false;
     }
@@ -725,7 +762,13 @@
         else {
           const prevTime = new Date(prev.updatedAt || prev.at || 0).getTime();
           const nextTime = new Date(r.updatedAt || r.at || 0).getTime();
-          byId.set(r.id, nextTime >= prevTime ? Object.assign({}, prev, r) : Object.assign({}, r, prev));
+          const merged = nextTime >= prevTime ? Object.assign({}, prev, r) : Object.assign({}, r, prev);
+          // Never let a newer status-only cloud row wipe local email-retry marks.
+          if (prev.deliveryStatus === 'local' || prev.deliveryStatus === 'pending_notify') {
+            merged.deliveryStatus = prev.deliveryStatus;
+            merged.syncPending = true;
+          }
+          byId.set(r.id, merged);
         }
       });
       const merged = Array.from(byId.values()).sort((a, b) => new Date(b.at || 0) - new Date(a.at || 0)).slice(0, 200);
@@ -893,7 +936,17 @@
       const { error: insertErr } = await sb.from('payments').insert(payload);
       if (!insertErr) return true;
       const msg = String((insertErr && insertErr.message) || '').toLowerCase();
-      return msg.includes('duplicate') || msg.includes('unique') || insertErr.code === '23505';
+      const isDup = msg.includes('duplicate') || msg.includes('unique') || insertErr.code === '23505';
+      if (!isDup) return false;
+      try {
+        const { data: byId } = await sb.from('payments').select('id').eq('id', row.id).maybeSingle();
+        if (byId && byId.id === row.id) return true;
+        if (row.paymentId) {
+          const { data: byPid } = await sb.from('payments').select('id,payment_id').eq('payment_id', row.paymentId).maybeSingle();
+          if (byPid && byPid.id === row.id) return true;
+        }
+      } catch (_) {}
+      return false;
     } catch (_) {
       return false;
     }
@@ -1053,16 +1106,34 @@
     return String(value || '').trim().toLowerCase().replace(/\s+/g, ' ');
   }
 
-  function requestFingerprint(row) {
-    const bucket = Math.floor(Date.now() / (5 * 60 * 1000));
+  function requestContentFingerprint(row) {
     return [
       'req',
-      bucket,
       normalizeFingerprintPart(row && row.type),
       normalizeFingerprintPart((row && (row.userId || row.email || row.phone)) || ''),
       normalizeFingerprintPart(row && row.company),
       normalizeFingerprintPart(row && row.message)
     ].join(':');
+  }
+
+  function requestFingerprint(row) {
+    // Bucket keeps DB unique windows short; local dedupe matches content without the bucket.
+    const bucket = Math.floor(Date.now() / (5 * 60 * 1000));
+    return [requestContentFingerprint(row), bucket].join(':');
+  }
+
+  function findExistingSharedRequest(list, row) {
+    if (!row) return null;
+    const content = requestContentFingerprint(row);
+    const windowMs = 60 * 60 * 1000;
+    const now = Date.now();
+    return (list || []).find((x) => {
+      if (!x) return false;
+      if (row.fingerprint && x.fingerprint && x.fingerprint === row.fingerprint) return true;
+      if (requestContentFingerprint(x) !== content) return false;
+      const at = new Date(x.at || 0).getTime();
+      return !!(at && (now - at) < windowMs);
+    }) || null;
   }
 
   function addSharedRequest(payload) {
@@ -1074,7 +1145,7 @@
       source: 'site'
     }, payload || {});
     if (!row.fingerprint) row.fingerprint = requestFingerprint(row);
-    const existing = list.find((x) => x.fingerprint && x.fingerprint === row.fingerprint);
+    const existing = findExistingSharedRequest(list, row);
     if (existing) {
       // Already delivered in this fingerprint window — do not re-email/webhook.
       if (existing.deliveryStatus === 'delivered') {

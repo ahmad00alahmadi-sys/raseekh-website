@@ -333,6 +333,13 @@
   }
 
   async function completePasswordReset(newPassword) {
+    const recovery = (() => {
+      try { return sessionStorage.getItem('raseekh_password_recovery') === '1'; } catch (_) { return false; }
+    })();
+    const resetEmail = (() => {
+      try { return sessionStorage.getItem('raseekh_reset_email') || ''; } catch (_) { return ''; }
+    })();
+
     if (supabaseClient) {
       let session = null;
       try {
@@ -340,23 +347,31 @@
         session = data && data.session ? data.session : null;
       } catch (_) {}
       if (session) {
+        // Only change a cloud password from an email recovery session — not any logged-in JWT on #reset.
+        if (!recovery) throw new Error('RECOVERY_REQUIRED');
         try {
           const { error } = await supabaseClient.auth.updateUser({ password: newPassword });
           if (error) {
             if (isNetworkAuthError(error)) throw new Error('NETWORK');
             throw error;
           }
+          try { sessionStorage.removeItem('raseekh_password_recovery'); } catch (_) {}
           return { provider: 'supabase' };
         } catch (err) {
           if (String(err && err.message) === 'NETWORK' || isNetworkAuthError(err)) throw new Error('NETWORK');
           throw err;
         }
       }
+      // Cloud client is up but there is no recovery session — do not silently reset a local twin.
+      if (!resetEmail) throw new Error('RECOVERY_REQUIRED');
     }
-    const email = sessionStorage.getItem('raseekh_reset_email') || getLocalSession()?.user?.email;
+    const email = resetEmail || (getLocalSession() && getLocalSession().user && getLocalSession().user.email) || '';
     if (!email) throw new Error('NOT_FOUND');
     await localUpdatePassword(email, newPassword);
-    sessionStorage.removeItem('raseekh_reset_email');
+    try {
+      sessionStorage.removeItem('raseekh_reset_email');
+      sessionStorage.removeItem('raseekh_password_recovery');
+    } catch (_) {}
     return { provider: 'local' };
   }
 
@@ -418,6 +433,11 @@
     }
     if (code === 'NOT_FOUND') {
       return ar ? 'الحساب غير موجود' : 'Account not found';
+    }
+    if (code === 'RECOVERY_REQUIRED') {
+      return ar
+        ? 'افتحوا رابط إعادة التعيين من البريد أولاً، ثم عيّنوا كلمة المرور'
+        : 'Open the reset link from your email first, then set a new password';
     }
     if (code === 'NETWORK') {
       return ar ? 'تعذّر الاتصال بالخادم — حاولوا مرة أخرى' : 'Could not reach the server — try again';
