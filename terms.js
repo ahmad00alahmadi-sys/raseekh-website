@@ -101,11 +101,20 @@
     const row = {
       version: TERMS_VERSION,
       at: new Date().toISOString(),
-      email: (user && user.email) || key
+      email: (user && user.email) || key,
+      syncPending: true
     };
     map[key] = row;
     writeAcceptMap(map);
-    pushAcceptance(user, row);
+    // Fire and forget, but keep syncPending until a later authenticated push succeeds.
+    pushAcceptance(user, row).then((ok) => {
+      if (!ok) return;
+      const next = readAcceptMap();
+      if (next[key]) {
+        delete next[key].syncPending;
+        writeAcceptMap(next);
+      }
+    }).catch(() => {});
     return true;
   }
 
@@ -118,17 +127,27 @@
   async function pushAcceptance(user, row) {
     try {
       const sb = global.RaseekhAuth && global.RaseekhAuth.supabase;
-      if (!sb || !user) return;
+      if (!sb || !user) return false;
       const key = userKey(user);
-      if (!key) return;
-      await sb.from('terms_acceptance').upsert({
+      if (!key) return false;
+      // Need an authenticated session for RLS; guest email-confirm accept stays local until login.
+      try {
+        const { data: sess } = await sb.auth.getSession();
+        if (!(sess && sess.session)) return false;
+      } catch (_) {
+        return false;
+      }
+      const { error } = await sb.from('terms_acceptance').upsert({
         user_key: key,
         user_id: user.id || '',
         email: user.email || '',
-        version: row.version || TERMS_VERSION,
-        accepted_at: row.at || new Date().toISOString()
+        version: (row && row.version) || TERMS_VERSION,
+        accepted_at: (row && row.at) || new Date().toISOString()
       }, { onConflict: 'user_key' });
-    } catch (_) {}
+      return !error;
+    } catch (_) {
+      return false;
+    }
   }
 
   async function syncAcceptance(user) {
@@ -152,7 +171,18 @@
         writeAcceptMap(map);
         return true;
       }
-      return hasAccepted(user);
+      // Local acceptance exists for this version but cloud row missing — push after auth.
+      if (hasAccepted(user)) {
+        const map = readAcceptMap();
+        const local = map[key];
+        const ok = await pushAcceptance(user, local || { version: TERMS_VERSION, at: new Date().toISOString() });
+        if (ok && map[key]) {
+          delete map[key].syncPending;
+          writeAcceptMap(map);
+        }
+        return true;
+      }
+      return false;
     } catch (_) {
       return hasAccepted(user);
     }

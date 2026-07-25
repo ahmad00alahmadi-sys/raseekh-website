@@ -66,7 +66,18 @@
     }
     store.users[key] = next;
     writeStore(store);
-    pushCloud(next);
+    pushCloud(next).then((ok) => {
+      const latest = readStore();
+      if (!latest.users[key]) return;
+      if (ok) delete latest.users[key].syncPending;
+      else latest.users[key].syncPending = true;
+      writeStore(latest);
+    }).catch(() => {
+      const latest = readStore();
+      if (!latest.users[key]) return;
+      latest.users[key].syncPending = true;
+      writeStore(latest);
+    });
     // Notify on login intent even when count is debounced (homepage → dashboard).
     if (opts && opts.login) notifyLoginAlert(next);
     return next;
@@ -187,8 +198,8 @@
   async function pushCloud(row) {
     try {
       const sb = global.RaseekhAuth && global.RaseekhAuth.supabase;
-      if (!sb || !row) return;
-      await sb.from('user_activity').upsert({
+      if (!sb || !row) return false;
+      const { error } = await sb.from('user_activity').upsert({
         user_key: String(row.email || row.id || '').toLowerCase(),
         user_id: row.id || '',
         email: row.email || '',
@@ -200,7 +211,10 @@
         login_count: Number(row.loginCount) || 0,
         updated_at: new Date().toISOString()
       }, { onConflict: 'user_key' });
-    } catch (_) {}
+      return !error;
+    } catch (_) {
+      return false;
+    }
   }
 
   function mergeUserRow(prev, incoming) {
@@ -220,6 +234,18 @@
     try {
       const sb = global.RaseekhAuth && global.RaseekhAuth.supabase;
       if (!sb) return getStats();
+      // Retry any local rows that never reached the cloud.
+      const localStore = readStore();
+      const pending = Object.keys(localStore.users || {})
+        .map((k) => localStore.users[k])
+        .filter((u) => u && u.syncPending);
+      for (const row of pending) {
+        const ok = await pushCloud(row);
+        const key = String((row && (row.email || row.id)) || '').toLowerCase();
+        if (ok && key && localStore.users[key]) delete localStore.users[key].syncPending;
+      }
+      if (pending.length) writeStore(localStore);
+
       const { data, error } = await sb.from('user_activity').select('*').limit(500);
       if (error || !Array.isArray(data)) return getStats();
       const store = readStore();
@@ -238,6 +264,7 @@
           lastSeenAt: row.last_seen_at || '',
           loginCount: Number(row.login_count) || 0
         });
+        delete store.users[key].syncPending;
         // Remove id-keyed duplicates after email merge.
         const idKey = String(row.user_id || '').toLowerCase();
         if (idKey && idKey !== key && store.users[idKey]) delete store.users[idKey];
@@ -270,4 +297,10 @@
     listUsers,
     probeCloud
   };
+
+  if (typeof global.addEventListener === 'function') {
+    global.addEventListener('online', () => {
+      syncFromCloud().catch(() => {});
+    });
+  }
 })(typeof window !== 'undefined' ? window : globalThis);

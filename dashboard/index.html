@@ -1123,9 +1123,10 @@ body.is-admin .client-only{display:none!important}
     }
     products = Catalog.getClientProducts();
   }
-  function saveProducts(){
-    if (!requireAdmin('saveProducts')) return;
-    if (Catalog) Catalog.saveAdminProducts(products);
+  function saveProducts(opts){
+    if (!requireAdmin('saveProducts')) return null;
+    if (!Catalog) return null;
+    return Catalog.saveAdminProducts(products, opts);
   }
   function migrateLegacyKey(prefix, targetKey){
     try {
@@ -1420,6 +1421,17 @@ body.is-admin .client-only{display:none!important}
     document.body.classList.remove('is-admin', 'is-client');
     document.getElementById('loginView').classList.remove('hidden');
     document.getElementById('dashboardView').classList.remove('active');
+    // Clear leftover modal/UI state from the previous session.
+    try {
+      ['productModal', 'receiptModal', 'requestConfirmModal'].forEach((id) => {
+        const el = document.getElementById(id);
+        if (el) setModalOpen(el, false);
+      });
+    } catch (_) {}
+    pendingClientRequest = null;
+    editingProductId = null;
+    lastSale = null;
+    cart = [];
   }
 
   const Activity = window.RaseekhActivity;
@@ -1827,6 +1839,8 @@ body.is-admin .client-only{display:none!important}
     if (page === 'settings' && isAdminUser) renderDeliveryStatus();
   }
   window.addEventListener('hashchange', () => {
+    const dashActive = document.getElementById('dashboardView') && document.getElementById('dashboardView').classList.contains('active');
+    if (!currentUser || !dashActive) return;
     const page = resolveDashPageFromLocation();
     if (page) switchPage(page);
   });
@@ -1959,15 +1973,19 @@ body.is-admin .client-only{display:none!important}
 
   const acceptTermsBtn = document.getElementById('acceptTermsBtn');
   if (acceptTermsBtn) {
-    acceptTermsBtn.addEventListener('click', () => {
+    acceptTermsBtn.addEventListener('click', async () => {
       if (!currentUser || !Terms) return;
       Terms.acceptTerms(currentUser);
+      if (Terms.syncAcceptance) {
+        try { await Terms.syncAcceptance(currentUser); } catch (_) {}
+      }
       termsGateMode = 'view';
       const gate = document.getElementById('termsGate');
       if (gate) {
         gate.classList.remove('open');
         gate.setAttribute('aria-hidden', 'true');
       }
+      setTermsBodyLock(false);
       setTermsBlocked(false);
       showToast(t('تم قبول الشروط', 'Terms accepted'));
     });
@@ -2303,7 +2321,7 @@ body.is-admin .client-only{display:none!important}
           <div style="color:var(--muted);font-size:.78rem;margin-top:4px">${new Date(r.at).toLocaleString(currentLang === 'ar' ? 'ar-SA' : 'en-US')}</div>
         </div>
         <div style="display:flex;flex-direction:column;gap:6px;min-width:140px">
-          <select data-status-for="${escapeHtml(r.id)}" style="padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:#fff">
+          <select data-status-for="${escapeHtml(r.id)}" data-prev-status="${escapeHtml(r.status || 'new')}" style="padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:#fff">
             <option value="new" ${r.status === 'new' ? 'selected' : ''}>${escapeHtml(t('جديد','New'))}</option>
             <option value="in_progress" ${r.status === 'in_progress' ? 'selected' : ''}>${escapeHtml(t('قيد المعالجة','In progress'))}</option>
             <option value="done" ${r.status === 'done' ? 'selected' : ''}>${escapeHtml(t('مكتمل','Done'))}</option>
@@ -2399,22 +2417,38 @@ body.is-admin .client-only{display:none!important}
 
   const adminLeadsList = document.getElementById('adminLeadsList');
   if (adminLeadsList) {
-    adminLeadsList.addEventListener('change', (e) => {
+    adminLeadsList.addEventListener('change', async (e) => {
       const sel = e.target.closest('[data-status-for]');
       if (!sel || !requireAdmin('updateRequestStatus')) return;
       const id = sel.getAttribute('data-status-for');
       const status = sel.value;
-      if (Catalog && Catalog.updateSharedRequestStatus) {
-        Catalog.updateSharedRequestStatus(id, status);
-      } else {
-        const idx = clientRequests.findIndex(r => r.id === id);
-        if (idx > -1) {
-          clientRequests[idx].status = status;
-          saveClientRequests();
+      const prev = sel.getAttribute('data-prev-status') || '';
+      sel.disabled = true;
+      let ok = true;
+      try {
+        if (Catalog && Catalog.updateSharedRequestStatus) {
+          const result = await Catalog.updateSharedRequestStatus(id, status);
+          ok = !!(result && result.ok);
+          if (!ok && result && result.previous && result.previous.status) {
+            sel.value = result.previous.status;
+          }
+        } else {
+          const idx = clientRequests.findIndex(r => r.id === id);
+          if (idx > -1) {
+            clientRequests[idx].status = status;
+            saveClientRequests();
+          }
         }
+      } catch (_) {
+        ok = false;
+        if (prev) sel.value = prev;
       }
+      sel.disabled = false;
+      sel.setAttribute('data-prev-status', sel.value);
       loadClientRequests();
-      showToast(t('تم تحديث حالة الطلب', 'Request status updated'));
+      showToast(ok
+        ? t('تم تحديث حالة الطلب', 'Request status updated')
+        : t('حُفظت الحالة محلياً — تعذّرت مزامنة السحابة', 'Status saved locally — cloud sync failed'));
       renderAdminLeads();
       renderOverview();
     });
@@ -2744,9 +2778,10 @@ body.is-admin .client-only{display:none!important}
   document.getElementById('productModalClose').addEventListener('click', () => setModalOpen(document.getElementById('productModal'), false));
   document.getElementById('productModal').addEventListener('click', (e) => { if (e.target.id === 'productModal') setModalOpen(e.currentTarget, false); });
 
-  document.getElementById('productForm').addEventListener('submit', (e) => {
+  document.getElementById('productForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!requireAdmin('saveProductForm')) return;
+    const submitBtn = e.target.querySelector('button[type="submit"]');
     const cat = document.getElementById('pCategory').value.trim() || t('عام','General');
     const catEn = document.getElementById('pCategoryEn').value.trim() || cat;
     const kind = document.getElementById('pKind').value === 'service' ? 'service' : 'product';
@@ -2772,11 +2807,33 @@ body.is-admin .client-only{display:none!important}
     } else {
       products.unshift({ id: uid(), ...payload });
     }
-    saveProducts();
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.setAttribute('aria-busy', 'true');
+      submitBtn.textContent = t('جاري الحفظ...', 'Saving...');
+    }
+    let cloudOk = true;
+    try {
+      const result = saveProducts({ awaitCloud: true, cloud: true });
+      if (result && typeof result.then === 'function') {
+        const published = await result;
+        cloudOk = !!(published && (published.cloud === true || published.cloud === undefined));
+        if (published && published.cloud === false) cloudOk = false;
+      }
+    } catch (_) {
+      cloudOk = false;
+    }
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.removeAttribute('aria-busy');
+      applyLang(currentLang);
+    }
     setModalOpen(document.getElementById('productModal'), false);
     fillCategoryFilter();
     renderAll();
-    showToast(t('تم حفظ الخدمة','Service saved'));
+    showToast(cloudOk
+      ? t('تم حفظ الخدمة','Service saved')
+      : t('حُفظت محلياً — تعذّر نشر الكتالوج للسحابة', 'Saved locally — catalog cloud publish failed'));
   });
 
   function renderPos(){
@@ -3237,9 +3294,20 @@ body.is-admin .client-only{display:none!important}
       if (termsGateMode === 'view') closeTermsGate();
       return;
     }
-    setModalOpen(document.getElementById('productModal'), false);
-    setModalOpen(document.getElementById('receiptModal'), false);
-    closeRequestConfirm();
+    const requestModal = document.getElementById('requestConfirmModal');
+    if (requestModal && requestModal.classList.contains('open')) {
+      closeRequestConfirm();
+      return;
+    }
+    const receiptModal = document.getElementById('receiptModal');
+    if (receiptModal && receiptModal.classList.contains('open')) {
+      setModalOpen(receiptModal, false);
+      return;
+    }
+    const productModal = document.getElementById('productModal');
+    if (productModal && productModal.classList.contains('open')) {
+      setModalOpen(productModal, false);
+    }
   });
 
   (async function init(){

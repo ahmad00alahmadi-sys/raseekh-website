@@ -270,7 +270,9 @@
     writeJson(SUGGESTIONS_KEY, finalSuggestions);
     // Default: push to cloud only on explicit saves — never clobber cloud from a stale admin boot.
     if (opts && opts.cloud) {
-      publishClientCatalogToCloud(clientProducts, finalSuggestions).catch(() => {});
+      const publishPromise = publishClientCatalogToCloud(clientProducts, finalSuggestions);
+      if (opts && opts.awaitCloud) return publishPromise.then((ok) => ({ products: clientProducts, cloud: !!ok }));
+      publishPromise.catch(() => {});
     }
     return clientProducts;
   }
@@ -335,10 +337,14 @@
     return ensured;
   }
 
-  function saveAdminProducts(products) {
+  function saveAdminProducts(products, opts) {
     const list = Array.isArray(products) ? products : [];
     writeJson(ADMIN_PRODUCTS_KEY, list);
-    publishClientCatalog(list, pruneSuggestions(list), { cloud: true });
+    const wantCloud = !(opts && opts.cloud === false);
+    if (wantCloud && opts && opts.awaitCloud) {
+      return publishClientCatalog(list, pruneSuggestions(list), { cloud: true, awaitCloud: true });
+    }
+    publishClientCatalog(list, pruneSuggestions(list), { cloud: wantCloud });
     return list;
   }
 
@@ -975,14 +981,28 @@
     writeJson(CLIENT_REQUESTS_KEY, (list || []).slice(0, 200));
   }
 
-  function updateSharedRequestStatus(id, status) {
+  async function updateSharedRequestStatus(id, status) {
     const list = getSharedRequests();
     const idx = list.findIndex((r) => r.id === id);
-    if (idx < 0) return null;
-    list[idx] = Object.assign({}, list[idx], { status: status || list[idx].status, updatedAt: new Date().toISOString() });
+    if (idx < 0) return { ok: false, row: null };
+    const prev = Object.assign({}, list[idx]);
+    list[idx] = Object.assign({}, list[idx], {
+      status: status || list[idx].status,
+      updatedAt: new Date().toISOString(),
+      syncPending: true
+    });
     saveSharedRequests(list);
-    pushRequestToCloud(list[idx], { allowUpdate: true }).catch(() => {});
-    return list[idx];
+    try {
+      const cloudOk = await pushRequestToCloud(list[idx], { allowUpdate: true });
+      list[idx].syncPending = !cloudOk;
+      if (cloudOk) delete list[idx].syncPending;
+      saveSharedRequests(list);
+      return { ok: !!cloudOk, row: list[idx], previous: prev };
+    } catch (_) {
+      list[idx].syncPending = true;
+      saveSharedRequests(list);
+      return { ok: false, row: list[idx], previous: prev };
+    }
   }
 
   async function publishClientCatalogToCloud(products, suggestions) {
