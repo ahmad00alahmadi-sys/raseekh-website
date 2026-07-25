@@ -436,7 +436,7 @@ body.lang-en .footer-brand{font-family:'Space Grotesk',sans-serif}
     <div class="section-head reveal">
       <div class="eyebrow" data-ar="المنتجات والخدمات" data-en="Products & services">المنتجات والخدمات</div>
       <h2 data-ar="اختر منتجاً أو خدمة واطلبها مباشرة" data-en="Choose a product or service and request it">اختر منتجاً أو خدمة واطلبها مباشرة</h2>
-      <p data-ar="أجهزة، صيانة مواقع، وخدمات برمجة بأسعار واضحة — جاهزة للطلب." data-en="Devices, website maintenance, and programming services with clear prices — ready to request.">أجهزة، صيانة مواقع، وخدمات برمجة بأسعار واضحة — جاهزة للطلب.</p>
+      <p data-ar="أجهزة، صيانة مواقع، وخدمات برمجة — اطلب عرض سعر حقيقي حسب احتياجكم." data-en="Devices, website maintenance, and programming — request a real quote for your needs.">أجهزة، صيانة مواقع، وخدمات برمجة — اطلب عرض سعر حقيقي حسب احتياجكم.</p>
     </div>
     <div class="products-grid reveal" id="clientProductsGrid"></div>
   </div>
@@ -447,7 +447,7 @@ body.lang-en .footer-brand{font-family:'Space Grotesk',sans-serif}
     <div class="section-head reveal">
       <div class="eyebrow" data-ar="الاقتراحات" data-en="Suggestions">الاقتراحات</div>
       <h2 data-ar="اقتراحات جاهزة للعميل" data-en="Ready suggestions for clients">اقتراحات جاهزة للعميل</h2>
-      <p data-ar="باقات مقترحة تجمع منتجات وخدمات برمجة — يطلبها العميل مباشرة." data-en="Suggested packages combining products and programming services — clients can request them directly.">باقات مقترحة تجمع منتجات وخدمات برمجة — يطلبها العميل مباشرة.</p>
+      <p data-ar="باقات مقترحة — نراجع احتياجكم ثم نرسل عرض سعر حقيقي، بدون أرقام وهمية." data-en="Suggested packages — we review your needs then send a real quote, no placeholder prices.">باقات مقترحة — نراجع احتياجكم ثم نرسل عرض سعر حقيقي، بدون أرقام وهمية.</p>
     </div>
     <div class="suggest-grid reveal" id="clientSuggestionsGrid"></div>
   </div>
@@ -680,8 +680,8 @@ body.lang-en .footer-brand{font-family:'Space Grotesk',sans-serif}
             <h3>${escapeHtml(name)}</h3>
             <p>${escapeHtml(desc)}</p>
             <div class="meta">${escapeHtml(status)}</div>
-            <div class="price">${escapeHtml(Catalog.money(p.price, currentLang))}</div>
-            <button type="button" class="btn btn-ghost" data-request-product="${escapeHtml(p.id)}">${escapeHtml(t('اطلب هذا','Request this'))}</button>
+            <div class="price">${escapeHtml(Catalog.formatPrice ? Catalog.formatPrice(p, currentLang) : t('حسب الطلب','Quote on request'))}</div>
+            <button type="button" class="btn btn-ghost" data-request-product="${escapeHtml(p.id)}">${escapeHtml(t('اطلب عرض سعر','Request a quote'))}</button>
           </article>
         `;
       }).join('');
@@ -692,15 +692,17 @@ body.lang-en .footer-brand{font-family:'Space Grotesk',sans-serif}
       const desc = Catalog.label(s, currentLang, 'desc', 'desc_en');
       const badge = Catalog.label(s, currentLang, 'badge', 'badge_en');
       const items = Catalog.suggestionItems(s, clientProducts, currentLang);
-      const total = Catalog.suggestionTotal(s, clientProducts);
+      const priceText = Catalog.suggestionPriceLabel
+        ? Catalog.suggestionPriceLabel(s, clientProducts, currentLang)
+        : t('عرض سعر بعد المراجعة', 'Custom quote after review');
       return `
         <article class="suggest-card">
           <span class="badge">${escapeHtml(badge)}</span>
           <h3>${escapeHtml(title)}</h3>
           <p>${escapeHtml(desc)}</p>
           <div class="items">${escapeHtml(items.join(currentLang === 'ar' ? ' • ' : ' • '))}</div>
-          <div class="total">${escapeHtml(t('الإجمالي التقريبي','Approx. total') + ': ' + Catalog.money(total, currentLang))}</div>
-          <button type="button" class="btn btn-primary" data-request-suggestion="${escapeHtml(s.id)}">${escapeHtml(t('اطلب هذا الاقتراح','Request this suggestion'))}</button>
+          <div class="total">${escapeHtml(priceText)}</div>
+          <button type="button" class="btn btn-primary" data-request-suggestion="${escapeHtml(s.id)}">${escapeHtml(t('اطلب عرض سعر','Request a quote'))}</button>
         </article>
       `;
     }).join('');
@@ -715,8 +717,8 @@ body.lang-en .footer-brand{font-family:'Space Grotesk',sans-serif}
     requestFromCatalog({
       type: typeForProduct(p),
       message: t(
-        'أرغب بطلب: ' + name + ' — السعر ' + Catalog.money(p.price, 'ar'),
-        'I would like to request: ' + name + ' — price ' + Catalog.money(p.price, 'en')
+        'أرغب بطلب عرض سعر لـ: ' + name + ' — ' + (Catalog.formatPrice ? Catalog.formatPrice(p, 'ar') : 'حسب الطلب'),
+        'I would like a quote for: ' + name + ' — ' + (Catalog.formatPrice ? Catalog.formatPrice(p, 'en') : 'on request')
       )
     });
   });
@@ -728,12 +730,14 @@ body.lang-en .footer-brand{font-family:'Space Grotesk',sans-serif}
     if (!s) return;
     const title = Catalog.label(s, currentLang, 'title', 'title_en');
     const items = Catalog.suggestionItems(s, clientProducts, currentLang);
-    const total = Catalog.suggestionTotal(s, clientProducts);
+    const priceText = Catalog.suggestionPriceLabel
+      ? Catalog.suggestionPriceLabel(s, clientProducts, currentLang)
+      : t('عرض سعر بعد المراجعة', 'Custom quote after review');
     requestFromCatalog({
       type: 'programming',
       message: t(
-        'أرغب بطلب الاقتراح: ' + title + '\nيشمل: ' + items.join('، ') + '\nالإجمالي التقريبي: ' + Catalog.money(total, 'ar'),
-        'I would like to request suggestion: ' + title + '\nIncludes: ' + items.join(', ') + '\nApprox. total: ' + Catalog.money(total, 'en')
+        'أرغب بطلب عرض سعر للاقتراح: ' + title + '\nيشمل: ' + items.join('، ') + '\n' + priceText,
+        'I would like a quote for suggestion: ' + title + '\nIncludes: ' + items.join(', ') + '\n' + priceText
       )
     });
   });

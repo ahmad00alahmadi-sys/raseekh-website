@@ -95,6 +95,12 @@ a{color:inherit;text-decoration:none}
 .role-pill.admin{background:rgba(196,92,38,.18);color:#8A3E14}
 body.is-client .admin-only{display:none!important}
 body.is-admin .client-only{display:none!important}
+.home-bar{
+  display:flex;gap:8px;align-items:center;justify-content:space-between;
+  margin-bottom:14px;padding:12px 14px;background:var(--panel);border:1.5px solid var(--line);
+  border-radius:var(--radius);border-inline-start:4px solid var(--copper);
+}
+.home-bar a.btn-primary{white-space:nowrap}
 .browse-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
 .browse-card{
   background:#fff;border:1.5px solid var(--line);border-radius:var(--radius);padding:14px;
@@ -247,9 +253,11 @@ body.is-admin .client-only{display:none!important}
   #dashboardView.active{display:flex;flex-direction:column}
   .sidebar{position:relative;height:auto;border-inline-end:none;border-bottom:1px solid rgba(255,255,255,.12)}
   .side-nav{flex-direction:row;overflow-x:auto}
-  .side-foot,.side-logo{display:none}
+  .side-foot{display:none}
+  .side-logo{display:flex!important;align-items:center;justify-content:space-between;border-bottom:none;margin-bottom:0;padding-bottom:0}
   .nav-item{white-space:nowrap}
   .main{padding:18px}
+  .home-bar{display:flex!important}
   .stats{grid-template-columns:1fr 1fr}
   .grid-2,.pos-layout{grid-template-columns:1fr}
   .pos-catalog{grid-template-columns:repeat(2,1fr)}
@@ -315,7 +323,7 @@ body.is-admin .client-only{display:none!important}
 <div id="dashboardView">
   <aside class="sidebar">
     <div class="side-logo">
-      <div class="logo" data-ar-html='را<em>سخ</em>' data-en-html='Ra<em>seekh</em>'>را<em>سخ</em></div>
+      <a class="logo" href="/" data-ar-html='را<em>سخ</em>' data-en-html='Ra<em>seekh</em>'>را<em>سخ</em></a>
     </div>
     <nav class="side-nav">
       <button class="nav-item active" data-page="overview"><span class="ico">◈</span><span data-ar="نظرة عامة" data-en="Overview">نظرة عامة</span></button>
@@ -342,10 +350,17 @@ body.is-admin .client-only{display:none!important}
   </aside>
 
   <main class="main">
+    <div class="home-bar">
+      <div>
+        <strong data-ar="حساب راسخ" data-en="Raseekh account">حساب راسخ</strong>
+        <div style="color:var(--muted);font-size:.82rem" data-ar="يمكنك الرجوع للموقع في أي وقت" data-en="You can return to the website anytime">يمكنك الرجوع للموقع في أي وقت</div>
+      </div>
+      <a class="btn btn-primary" href="/" data-ar="← الصفحة الرئيسية" data-en="← Home page">← الصفحة الرئيسية</a>
+    </div>
     <div class="top-actions" style="justify-content:flex-end;margin-bottom:8px">
       <div class="clock" id="dashClock">—</div>
       <button class="lang-btn" id="dashLangBtn" type="button">EN</button>
-      <a class="btn btn-ghost" href="/" data-ar="الموقع" data-en="Website">الموقع</a>
+      <a class="btn btn-ghost" href="/" data-ar="الصفحة الرئيسية" data-en="Home">الصفحة الرئيسية</a>
     </div>
 
     <div class="page active" id="page-overview">
@@ -418,8 +433,9 @@ body.is-admin .client-only{display:none!important}
           <h1 data-ar="الكتالوج" data-en="Catalog">الكتالوج</h1>
           <div class="crumb">راسخ <span>/</span> <span data-ar="عرض فقط" data-en="View only">عرض فقط</span></div>
         </div>
+        <a class="btn btn-ghost" href="/" data-ar="← الرئيسية" data-en="← Home">← الرئيسية</a>
       </div>
-      <div class="client-note" data-ar="عرض فقط — لا يمكنك تعديل الأسعار أو المخزون من حساب العميل." data-en="View only — clients cannot edit prices or stock.">عرض فقط — لا يمكنك تعديل الأسعار أو المخزون من حساب العميل.</div>
+      <div class="client-note" data-ar="الأسعار تظهر «حسب الطلب» حتى نراجع احتياجكم ونرسل عرض سعر حقيقي. التعديل للإدارة فقط." data-en="Prices show as quote-on-request until we review your needs and send a real quote. Editing is admin-only.">الأسعار تظهر «حسب الطلب» حتى نراجع احتياجكم ونرسل عرض سعر حقيقي. التعديل للإدارة فقط.</div>
       <div class="panel">
         <input type="search" id="clientCatalogSearch" style="margin-bottom:14px;padding:12px 14px;width:100%;border:1px solid var(--line);border-radius:10px" data-ar-placeholder="ابحث..." data-en-placeholder="Search..." placeholder="ابحث...">
         <div class="browse-grid" id="clientCatalogGrid"></div>
@@ -444,6 +460,7 @@ body.is-admin .client-only{display:none!important}
           <h1 data-ar="طلباتي" data-en="My requests">طلباتي</h1>
           <div class="crumb">راسخ <span>/</span> <span data-ar="متابعة" data-en="Tracking">متابعة</span></div>
         </div>
+        <a class="btn btn-primary" href="/" data-ar="← الصفحة الرئيسية" data-en="← Home page">← الصفحة الرئيسية</a>
       </div>
       <div class="panel">
         <h3 data-ar="الطلبات المرسلة" data-en="Submitted requests">الطلبات المرسلة</h3>
@@ -592,7 +609,11 @@ body.is-admin .client-only{display:none!important}
         <option value="product" data-ar="منتج" data-en="Product">منتج</option>
         <option value="service" data-ar="خدمة" data-en="Service">خدمة</option>
       </select>
-      <input type="number" id="pPrice" min="0" step="0.01" required data-ar-placeholder="السعر" data-en-placeholder="Price" placeholder="السعر">
+      <label class="check" style="align-items:center;gap:8px;margin:0">
+        <input type="checkbox" id="pQuote" checked>
+        <span data-ar="سعر حسب الطلب (بدون رقم ثابت)" data-en="Quote on request (no fixed price)">سعر حسب الطلب (بدون رقم ثابت)</span>
+      </label>
+      <input type="number" id="pPrice" min="0" step="0.01" data-ar-placeholder="السعر الثابت (إن وجد)" data-en-placeholder="Fixed price (if any)" placeholder="السعر الثابت (إن وجد)">
       <input type="number" id="pStock" min="0" step="1" required data-ar-placeholder="المخزون" data-en-placeholder="Stock" placeholder="المخزون">
       <button class="btn btn-primary" type="submit" data-ar="حفظ المنتج" data-en="Save product">حفظ المنتج</button>
     </form>
@@ -656,6 +677,11 @@ body.is-admin .client-only{display:none!important}
   function t(ar, en){ return currentLang === 'ar' ? ar : en; }
   function uid(){ return 'id-' + Date.now() + '-' + Math.random().toString(36).slice(2,7); }
   function money(n){ return (Number(n) || 0).toFixed(2) + ' SAR'; }
+  function priceLabel(p){
+    if (Catalog && Catalog.formatPrice) return Catalog.formatPrice(p, currentLang === 'en' ? 'en' : 'ar');
+    if (!p || !(Number(p.price) > 0) || p.priceMode === 'quote') return t('حسب الطلب', 'Quote on request');
+    return money(p.price);
+  }
   function productLabel(p){ return currentLang === 'en' && p.name_en ? p.name_en : p.name; }
   function categoryLabel(p){
     if (!p) return '';
@@ -1091,11 +1117,13 @@ body.is-admin .client-only{display:none!important}
       suggestBox.innerHTML = suggestions.map((s) => {
         const titleText = Catalog.label(s, currentLang, 'title', 'title_en');
         const items = Catalog.suggestionItems(s, products, currentLang).join(currentLang === 'ar' ? '، ' : ', ');
-        const totalAmt = Catalog.suggestionTotal(s, products);
+        const priceText = Catalog.suggestionPriceLabel
+          ? Catalog.suggestionPriceLabel(s, products, currentLang === 'en' ? 'en' : 'ar')
+          : t('عرض سعر بعد المراجعة', 'Custom quote after review');
         const action = isAdminUser
           ? ''
-          : `<button class="btn btn-primary" style="margin-top:8px;padding:8px 12px;font-size:.82rem" data-client-suggest="${escapeHtml(s.id)}">${escapeHtml(t('اطلب الاقتراح','Request suggestion'))}</button>`;
-        return `<div class="item"><strong>${escapeHtml(titleText)}</strong><span>${escapeHtml(items)}</span><div style="margin-top:6px;font-weight:700;color:var(--forest)">${escapeHtml(money(totalAmt))}</div>${action}</div>`;
+          : `<button class="btn btn-primary" style="margin-top:8px;padding:8px 12px;font-size:.82rem" data-client-suggest="${escapeHtml(s.id)}">${escapeHtml(t('اطلب عرض سعر','Request a quote'))}</button>`;
+        return `<div class="item"><strong>${escapeHtml(titleText)}</strong><span>${escapeHtml(items)}</span><div style="margin-top:6px;font-weight:700;color:var(--forest)">${escapeHtml(priceText)}</div>${action}</div>`;
       }).join('');
     }
   }
@@ -1117,8 +1145,8 @@ body.is-admin .client-only{display:none!important}
         <div style="color:var(--brass);font-size:.75rem;font-weight:700">${escapeHtml(categoryLabel(p))}</div>
         <h4>${escapeHtml(productLabel(p))}</h4>
         <p>${escapeHtml((currentLang === 'en' && p.desc_en) ? p.desc_en : (p.desc || t('متاح للطلب','Available to order')))}</p>
-        <div class="price">${money(p.price)}</div>
-        <button type="button" class="btn btn-ghost" style="margin-top:6px" data-client-product="${escapeHtml(p.id)}">${escapeHtml(t('اطلب هذا','Request this'))}</button>
+        <div class="price">${escapeHtml(priceLabel(p))}</div>
+        <button type="button" class="btn btn-ghost" style="margin-top:6px" data-client-product="${escapeHtml(p.id)}">${escapeHtml(t('اطلب عرض سعر','Request a quote'))}</button>
       </article>
     `).join('');
   }
@@ -1131,13 +1159,15 @@ body.is-admin .client-only{display:none!important}
       const titleText = Catalog.label(s, currentLang, 'title', 'title_en');
       const desc = Catalog.label(s, currentLang, 'desc', 'desc_en');
       const items = Catalog.suggestionItems(s, products, currentLang).join(currentLang === 'ar' ? '، ' : ', ');
-      const totalAmt = Catalog.suggestionTotal(s, products);
+      const priceText = Catalog.suggestionPriceLabel
+        ? Catalog.suggestionPriceLabel(s, products, currentLang === 'en' ? 'en' : 'ar')
+        : t('عرض سعر بعد المراجعة', 'Custom quote after review');
       return `<div class="item">
         <strong>${escapeHtml(titleText)}</strong>
         <span>${escapeHtml(desc)}</span>
         <span>${escapeHtml(items)}</span>
-        <div style="margin-top:6px;font-weight:700;color:var(--forest)">${escapeHtml(money(totalAmt))}</div>
-        <button class="btn btn-primary" style="margin-top:8px;padding:8px 12px;font-size:.82rem" data-client-suggest="${escapeHtml(s.id)}">${escapeHtml(t('اطلب هذا الاقتراح','Request this suggestion'))}</button>
+        <div style="margin-top:6px;font-weight:700;color:var(--forest)">${escapeHtml(priceText)}</div>
+        <button class="btn btn-primary" style="margin-top:8px;padding:8px 12px;font-size:.82rem" data-client-suggest="${escapeHtml(s.id)}">${escapeHtml(t('اطلب عرض سعر','Request a quote'))}</button>
       </div>`;
     }).join('');
   }
@@ -1254,11 +1284,12 @@ body.is-admin .client-only{display:none!important}
     addClientRequest({
       type: 'product',
       title: productLabel(p),
-      message: t('طلب منتج/خدمة: ', 'Product/service request: ') + productLabel(p) + ' — ' + money(p.price),
+      message: t('طلب عرض سعر لـ: ', 'Quote request for: ') + productLabel(p) + ' — ' + priceLabel(p),
       productId: p.id,
-      price: p.price
+      priceMode: p.priceMode || 'quote',
+      price: Number(p.price) || 0
     });
-    showToast(t('تم إرسال طلبك', 'Your request was sent'));
+    showToast(t('تم إرسال طلب عرض السعر', 'Quote request sent'));
     renderAll();
     switchPage('requests');
   }
@@ -1270,15 +1301,18 @@ body.is-admin .client-only{display:none!important}
     if (!s) return;
     const titleText = Catalog.label(s, currentLang, 'title', 'title_en');
     const items = Catalog.suggestionItems(s, products, currentLang);
-    const totalAmt = Catalog.suggestionTotal(s, products);
+    const priceText = Catalog.suggestionPriceLabel
+      ? Catalog.suggestionPriceLabel(s, products, currentLang === 'en' ? 'en' : 'ar')
+      : t('عرض سعر بعد المراجعة', 'Custom quote after review');
     addClientRequest({
       type: 'suggestion',
       title: titleText,
-      message: t('طلب اقتراح: ', 'Suggestion request: ') + titleText + '\n' + items.join(currentLang === 'ar' ? '، ' : ', ') + '\n' + money(totalAmt),
+      message: t('طلب عرض سعر للاقتراح: ', 'Quote request for suggestion: ') + titleText + '\n' + items.join(currentLang === 'ar' ? '، ' : ', ') + '\n' + priceText,
       suggestionId: s.id,
-      price: totalAmt
+      priceMode: 'quote',
+      price: 0
     });
-    showToast(t('تم إرسال طلب الاقتراح', 'Suggestion request sent'));
+    showToast(t('تم إرسال طلب عرض السعر', 'Quote request sent'));
     renderAll();
     switchPage('requests');
   }
@@ -1323,8 +1357,8 @@ body.is-admin .client-only{display:none!important}
       <tr>
         <td><strong>${escapeHtml(productLabel(p))}</strong></td>
         <td>${escapeHtml(categoryLabel(p))}</td>
-        <td>${money(p.price)}</td>
-        <td>${p.stock}</td>
+        <td>${escapeHtml(priceLabel(p))}</td>
+        <td>${p.kind === 'service' ? '—' : p.stock}</td>
         <td><span class="badge ${p.kind !== 'service' && p.stock <= 5 ? 'low' : ''}">${
           p.kind === 'service'
             ? t('خدمة','Service')
@@ -1377,15 +1411,25 @@ body.is-admin .client-only{display:none!important}
       document.getElementById('pDesc').value = p.desc || '';
       document.getElementById('pDescEn').value = p.desc_en || '';
       document.getElementById('pKind').value = p.kind === 'service' ? 'service' : 'product';
-      document.getElementById('pPrice').value = p.price;
+      const quote = Catalog && Catalog.isQuote ? Catalog.isQuote(p) : !(Number(p.price) > 0);
+      document.getElementById('pQuote').checked = quote;
+      document.getElementById('pPrice').value = quote ? '' : p.price;
+      document.getElementById('pPrice').disabled = quote;
       document.getElementById('pStock').value = p.stock;
     } else {
       title.textContent = t('منتج جديد','New product');
       document.getElementById('productForm').reset();
       document.getElementById('pKind').value = 'product';
+      document.getElementById('pQuote').checked = true;
+      document.getElementById('pPrice').disabled = true;
     }
     modal.classList.add('open');
   }
+  document.getElementById('pQuote').addEventListener('change', () => {
+    const quote = document.getElementById('pQuote').checked;
+    document.getElementById('pPrice').disabled = quote;
+    if (quote) document.getElementById('pPrice').value = '';
+  });
   document.getElementById('addProductBtn').addEventListener('click', () => {
     if (!requireAdmin('addProduct')) return;
     openProductModal(null);
@@ -1399,6 +1443,8 @@ body.is-admin .client-only{display:none!important}
     const cat = document.getElementById('pCategory').value.trim() || t('عام','General');
     const catEn = document.getElementById('pCategoryEn').value.trim() || cat;
     const kind = document.getElementById('pKind').value === 'service' ? 'service' : 'product';
+    const quote = document.getElementById('pQuote').checked;
+    const fixedPrice = parseFloat(document.getElementById('pPrice').value) || 0;
     const payload = {
       name: document.getElementById('pName').value.trim(),
       name_en: document.getElementById('pNameEn').value.trim(),
@@ -1406,7 +1452,8 @@ body.is-admin .client-only{display:none!important}
       category_en: catEn,
       desc: document.getElementById('pDesc').value.trim(),
       desc_en: document.getElementById('pDescEn').value.trim(),
-      price: parseFloat(document.getElementById('pPrice').value) || 0,
+      price: quote ? 0 : fixedPrice,
+      priceMode: quote || !(fixedPrice > 0) ? 'quote' : 'fixed',
       stock: parseInt(document.getElementById('pStock').value, 10) || 0,
       kind: kind,
       client: true
@@ -1432,16 +1479,17 @@ body.is-admin .client-only{display:none!important}
     const list = products.filter(p => {
       const blob = (p.name + ' ' + (p.name_en || '')).toLowerCase();
       const catOk = cat === 'all' || categoryLabel(p) === cat;
-      return p.stock > 0 && catOk && (!q || blob.includes(q));
+      const sellable = p.priceMode === 'fixed' && Number(p.price) > 0 && p.stock > 0;
+      return sellable && catOk && (!q || blob.includes(q));
     });
     if (!list.length) {
-      catalog.innerHTML = `<div class="empty" style="grid-column:1/-1">${t('لا توجد منتجات متاحة','No available products')}</div>`;
+      catalog.innerHTML = `<div class="empty" style="grid-column:1/-1">${t('لا توجد منتجات بسعر ثابت للبيع المباشر — حدّد سعراً من إدارة المنتجات','No fixed-price items for direct sale — set a price in product management')}</div>`;
     } else {
       catalog.innerHTML = list.map(p => `
         <button type="button" class="pos-item" data-add="${p.id}">
           <div class="cat">${escapeHtml(categoryLabel(p))}</div>
           <h4>${escapeHtml(productLabel(p))}</h4>
-          <div class="price">${money(p.price)}</div>
+          <div class="price">${escapeHtml(priceLabel(p))}</div>
           <div class="stock">${t('المتبقي','Left')}: ${p.stock}</div>
         </button>
       `).join('');
@@ -1458,6 +1506,10 @@ body.is-admin .client-only{display:none!important}
   function addToCart(id){
     const p = products.find(x => x.id === id);
     if (!p || p.stock <= 0) return;
+    if (Catalog && Catalog.isQuote && Catalog.isQuote(p)) {
+      showToast(t('هذا البند بسعر حسب الطلب — عيّن سعراً ثابتاً أولاً', 'This item is quote-only — set a fixed price first'));
+      return;
+    }
     const line = cart.find(c => c.id === id);
     const qty = line ? line.qty + 1 : 1;
     if (qty > p.stock) { showToast(t('المخزون غير كافٍ','Not enough stock')); return; }

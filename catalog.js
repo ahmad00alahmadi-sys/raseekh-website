@@ -1,132 +1,125 @@
-/* Shared Raseekh catalog: products for clients + ready suggestions. */
+/* Shared Raseekh catalog: real offerings with quote-based pricing by default. */
 (function (global) {
   const PUBLIC_KEY = 'raseekh_client_catalog_v1';
   const SUGGESTIONS_KEY = 'raseekh_client_suggestions_v1';
   const ADMIN_PRODUCTS_KEY = 'raseekh_admin_products_v1';
   const VERSION_KEY = 'raseekh_catalog_version';
   const SUGGESTIONS_VERSION_KEY = 'raseekh_suggestions_version';
-  const CATALOG_VERSION = 4;
-  const SUGGESTIONS_VERSION = 2;
+  const CATALOG_VERSION = 5;
+  const SUGGESTIONS_VERSION = 3;
   const CLIENT_REQUESTS_KEY = 'raseekh_all_client_requests_v1';
 
   const DEFAULT_PRODUCTS = [
     {
-      id: 'p1', name: 'لابتوب أعمال', name_en: 'Business laptop',
+      id: 'p1', name: 'أجهزة لابتوب للأعمال', name_en: 'Business laptops',
       category: 'أجهزة', category_en: 'Devices',
-      desc: 'جهاز مناسب للإدارة والبرمجة والعمل اليومي.',
-      desc_en: 'Suitable for admin, development, and daily work.',
-      price: 3200, stock: 8, kind: 'product', client: true
+      desc: 'توريد أجهزة لابتوب حسب مواصفات عملكم — السعر بعد تحديد المواصفات.',
+      desc_en: 'Business laptops supplied to your specs — price after requirements.',
+      price: 0, priceMode: 'quote', stock: 99, kind: 'product', client: true
     },
     {
-      id: 'p2', name: 'طابعة فواتير', name_en: 'Receipt printer',
+      id: 'p2', name: 'طابعات وأجهزة نقاط بيع', name_en: 'Printers & POS hardware',
       category: 'أجهزة', category_en: 'Devices',
-      desc: 'طابعة فواتير للمحلات ونقاط البيع.',
-      desc_en: 'Receipt printer for stores and sales desks.',
-      price: 450, stock: 15, kind: 'product', client: true
+      desc: 'طابعات فواتير وتجهيزات كاشير للمحلات — عرض سعر حسب الكمية والنوع.',
+      desc_en: 'Receipt printers and till hardware — quote by model and quantity.',
+      price: 0, priceMode: 'quote', stock: 99, kind: 'product', client: true
     },
     {
-      id: 'p3', name: 'راوتر مكتبي', name_en: 'Office router',
+      id: 'p3', name: 'شبكات وراوترات مكتبية', name_en: 'Office networking gear',
       category: 'شبكات', category_en: 'Networking',
-      desc: 'راوتر مستقر للمكاتب والفروع.',
-      desc_en: 'Stable router for offices and branches.',
-      price: 380, stock: 20, kind: 'product', client: true
+      desc: 'تجهيز شبكة مستقرة للمكاتب والفروع بعد معاينة الاحتياج.',
+      desc_en: 'Stable networking for offices and branches after assessing needs.',
+      price: 0, priceMode: 'quote', stock: 99, kind: 'product', client: true
     },
     {
-      id: 'p4', name: 'شاشة مكتبية', name_en: 'Monitor',
+      id: 'p4', name: 'شاشات واكسسوارات تقنية', name_en: 'Monitors & tech accessories',
       category: 'اكسسوارات', category_en: 'Accessories',
-      desc: 'شاشة واضحة للعمل المكتبي والتصميم.',
-      desc_en: 'Clear display for office and design work.',
-      price: 720, stock: 12, kind: 'product', client: true
+      desc: 'شاشات، تخزين، وكابلات وتجهيزات مكتبية — حسب المتوفر والطلب.',
+      desc_en: 'Monitors, storage, cables, and office gear — based on availability.',
+      price: 0, priceMode: 'quote', stock: 99, kind: 'product', client: true
     },
     {
-      id: 'p5', name: 'وحدة تخزين SSD', name_en: 'SSD drive',
-      category: 'اكسسوارات', category_en: 'Accessories',
-      desc: 'تخزين سريع لتحسين أداء الأجهزة.',
-      desc_en: 'Fast storage to improve device performance.',
-      price: 260, stock: 30, kind: 'product', client: true
-    },
-    {
-      id: 'p6', name: 'صيانة موقع شهرية', name_en: 'Monthly site maintenance',
+      id: 'p5', name: 'صيانة مواقع إلكترونية', name_en: 'Website maintenance',
       category: 'خدمات', category_en: 'Services',
-      desc: 'تحديثات، إصلاح أعطال، ومتابعة أمان الموقع شهرياً.',
-      desc_en: 'Monthly updates, fixes, and site security follow-up.',
-      price: 500, stock: 99, kind: 'service', client: true
+      desc: 'تحديثات، إصلاح أعطال، تحسين سرعة، ومتابعة أمان — عرض شهري حسب حجم الموقع.',
+      desc_en: 'Updates, fixes, speed, and security — monthly quote by site size.',
+      price: 0, priceMode: 'quote', stock: 99, kind: 'service', client: true
     },
     {
-      id: 'p7', name: 'تطوير موقع إلكتروني', name_en: 'Website development',
+      id: 'p6', name: 'تطوير مواقع إلكترونية', name_en: 'Website development',
       category: 'برمجة', category_en: 'Programming',
-      desc: 'تصميم وبرمجة موقع شركة أو متجر عربي/إنجليزي.',
-      desc_en: 'Design and build a company or store website in AR/EN.',
-      price: 2500, stock: 99, kind: 'service', client: true
+      desc: 'تصميم وبرمجة مواقع شركات ومتاجر ولوحات عربية/إنجليزية — السعر حسب النطاق.',
+      desc_en: 'Company sites, stores, and dashboards in AR/EN — priced by scope.',
+      price: 0, priceMode: 'quote', stock: 99, kind: 'service', client: true
     },
     {
-      id: 'p8', name: 'تعديل وتحسين برمجة', name_en: 'Code modification',
+      id: 'p7', name: 'تعديل وتحسين البرمجة', name_en: 'Code modification & improvement',
       category: 'برمجة', category_en: 'Programming',
-      desc: 'إصلاح أخطاء، إضافة مزايا، وتحسين أداء مشروعكم الحالي.',
-      desc_en: 'Bug fixes, new features, and performance upgrades for your project.',
-      price: 350, stock: 99, kind: 'service', client: true
+      desc: 'إصلاح أخطاء، إضافة مزايا، وتحسين أداء مشروعكم الحالي بعد مراجعة الكود.',
+      desc_en: 'Bug fixes, features, and performance after reviewing your codebase.',
+      price: 0, priceMode: 'quote', stock: 99, kind: 'service', client: true
     },
     {
-      id: 'p9', name: 'برمجة نظام ولوحة تحكم', name_en: 'System & dashboard build',
+      id: 'p8', name: 'برمجة أنظمة ولوحات تحكم', name_en: 'Systems & dashboards',
       category: 'برمجة', category_en: 'Programming',
-      desc: 'نظام إدارة مخصص مع لوحة تحكم وصلاحيات.',
-      desc_en: 'Custom management system with dashboard and roles.',
-      price: 4500, stock: 99, kind: 'service', client: true
+      desc: 'أنظمة إدارة ومخزون وعملاء حسب نشاطكم — عرض سعر بعد تحديد المتطلبات.',
+      desc_en: 'Management, inventory, and CRM systems — quote after requirements.',
+      price: 0, priceMode: 'quote', stock: 99, kind: 'service', client: true
     },
     {
-      id: 'p10', name: 'ربط API وأنظمة', name_en: 'API & integrations',
+      id: 'p9', name: 'ربط API وأنظمة خارجية', name_en: 'API & integrations',
       category: 'برمجة', category_en: 'Programming',
-      desc: 'ربط الدفع والرسائل والأنظمة الخارجية.',
-      desc_en: 'Connect payments, messaging, and external systems.',
-      price: 1200, stock: 99, kind: 'service', client: true
+      desc: 'ربط الدفع والرسائل والأنظمة الخارجية بمشروعكم — حسب عدد الربط والتعقيد.',
+      desc_en: 'Payments, messaging, and external systems — by integration complexity.',
+      price: 0, priceMode: 'quote', stock: 99, kind: 'service', client: true
     },
     {
-      id: 'p11', name: 'نظام مخصص كامل', name_en: 'Complete custom system',
+      id: 'p10', name: 'نظام مخصص كامل', name_en: 'Complete custom system',
       category: 'خدمات', category_en: 'Services',
-      desc: 'بناء نظام متكامل من البداية حتى التشغيل.',
-      desc_en: 'Build a complete system from start to go-live.',
-      price: 5000, stock: 99, kind: 'service', client: true
+      desc: 'بناء نظام متكامل من الدراسة إلى التشغيل — عقد واضح ونطاق متفق عليه.',
+      desc_en: 'Full system from discovery to go-live — clear scope and agreement.',
+      price: 0, priceMode: 'quote', stock: 99, kind: 'service', client: true
     }
   ];
 
   const DEFAULT_SUGGESTIONS = [
     {
       id: 'sg1',
-      title: 'باقة مكتب جاهز',
-      title_en: 'Ready office package',
-      desc: 'لابتوب + شاشة + راوتر — تجهيز سريع لمكتب جديد.',
-      desc_en: 'Laptop + monitor + router — quick setup for a new office.',
-      productIds: ['p1', 'p4', 'p3'],
-      badge: 'موصى به',
-      badge_en: 'Recommended'
+      title: 'تجهيز مكتب تقني',
+      title_en: 'Office tech setup',
+      desc: 'أجهزة + شبكات + اكسسوارات — نحدد المواصفات ثم نرسل عرض سعر حقيقي.',
+      desc_en: 'Devices + networking + accessories — we confirm specs then send a real quote.',
+      productIds: ['p1', 'p3', 'p4'],
+      badge: 'للمكاتب',
+      badge_en: 'For offices'
     },
     {
       id: 'sg2',
-      title: 'اقتراح صيانة وبرمجة',
-      title_en: 'Maintenance + programming plan',
-      desc: 'صيانة شهرية + تعديل برمجة لإبقاء موقعكم يعمل بسلاسة.',
-      desc_en: 'Monthly maintenance plus code updates to keep your site smooth.',
-      productIds: ['p6', 'p8'],
-      badge: 'للعملاء الحاليين',
-      badge_en: 'For existing clients'
+      title: 'صيانة وتطوير موقع',
+      title_en: 'Site care & development',
+      desc: 'صيانة مستمرة مع تعديلات برمجية حسب احتياج موقعكم الحالي.',
+      desc_en: 'Ongoing maintenance plus code changes for your current site.',
+      productIds: ['p5', 'p7'],
+      badge: 'للمواقع الحالية',
+      badge_en: 'For existing sites'
     },
     {
       id: 'sg3',
-      title: 'اقتراح إطلاق موقع جديد',
-      title_en: 'New website launch plan',
-      desc: 'تطوير موقع + ربط API + صيانة شهرية بعد الإطلاق.',
-      desc_en: 'Website build + API integration + monthly care after launch.',
-      productIds: ['p7', 'p10', 'p6'],
+      title: 'إطلاق موقع جديد',
+      title_en: 'New website launch',
+      desc: 'تطوير موقع + ربط تقني + صيانة بعد الإطلاق — عرض مفصل بعد الاجتماع.',
+      desc_en: 'Website build + integrations + post-launch care — detailed quote after a call.',
+      productIds: ['p6', 'p9', 'p5'],
       badge: 'الأكثر طلباً',
       badge_en: 'Most requested'
     },
     {
       id: 'sg4',
-      title: 'اقتراح نظام متكامل',
-      title_en: 'Complete system proposal',
-      desc: 'نظام مخصص + لوحة تحكم + ربط أنظمة خارجية.',
-      desc_en: 'Custom system + dashboard + external integrations.',
-      productIds: ['p11', 'p9', 'p10'],
+      title: 'نظام تشغيلي متكامل',
+      title_en: 'Complete operating system',
+      desc: 'نظام مخصص + لوحة تحكم + ربط خارجي — نبدأ بتحليل احتياجكم ثم التسعير.',
+      desc_en: 'Custom system + dashboard + integrations — discovery first, then pricing.',
+      productIds: ['p10', 'p8', 'p9'],
       badge: 'للمنشآت',
       badge_en: 'For businesses'
     }
@@ -153,6 +146,13 @@
     localStorage.setItem(key, JSON.stringify(value));
   }
 
+  function isQuote(item) {
+    if (!item) return true;
+    if (item.priceMode === 'fixed' && Number(item.price) > 0) return false;
+    if (item.priceMode === 'quote') return true;
+    return !(Number(item.price) > 0);
+  }
+
   function mergeProducts(existing) {
     const byId = new Map((existing || []).map((p) => [p.id, p]));
     DEFAULT_PRODUCTS.forEach((seed) => {
@@ -170,6 +170,7 @@
         desc_en: seed.desc_en,
         kind: seed.kind,
         client: cur.client !== false,
+        priceMode: cur.priceMode || seed.priceMode || 'quote',
         price: typeof cur.price === 'number' ? cur.price : seed.price,
         stock: typeof cur.stock === 'number' ? cur.stock : seed.stock
       }));
@@ -181,7 +182,7 @@
     const current = parseInt(localStorage.getItem(VERSION_KEY) || '0', 10) || 0;
     if (current < CATALOG_VERSION) {
       const seedIds = new Set(DEFAULT_PRODUCTS.map((p) => p.id));
-      const custom = (products || []).filter((p) => p && !seedIds.has(p.id));
+      const custom = (products || []).filter((p) => p && !seedIds.has(p.id) && !/^p\d+$/.test(p.id));
       localStorage.setItem(VERSION_KEY, String(CATALOG_VERSION));
       return cloneList(DEFAULT_PRODUCTS).concat(custom);
     }
@@ -219,6 +220,7 @@
         desc: p.desc || '',
         desc_en: p.desc_en || '',
         price: Number(p.price) || 0,
+        priceMode: isQuote(p) ? 'quote' : 'fixed',
         stock: Number(p.stock) || 0,
         kind: p.kind || 'product',
         client: true
@@ -232,6 +234,10 @@
   }
 
   function getClientProducts() {
+    const current = parseInt(localStorage.getItem(VERSION_KEY) || '0', 10) || 0;
+    if (current < CATALOG_VERSION) {
+      return loadAdminProducts().filter((p) => p && p.client !== false);
+    }
     const stored = readJson(PUBLIC_KEY, null);
     if (stored && stored.length) return stored;
     const admin = readJson(ADMIN_PRODUCTS_KEY, null);
@@ -311,6 +317,21 @@
     return lang === 'en' ? value + ' SAR' : value + ' ر.س';
   }
 
+  function formatPrice(item, lang) {
+    if (isQuote(item)) return lang === 'en' ? 'Quote on request' : 'حسب الطلب';
+    return money(item.price, lang);
+  }
+
+  function suggestionPriceLabel(suggestion, products, lang) {
+    const map = new Map((products || []).map((p) => [p.id, p]));
+    const items = (suggestion.productIds || []).map((id) => map.get(id)).filter(Boolean);
+    if (!items.length || items.some(isQuote)) {
+      return lang === 'en' ? 'Custom quote after review' : 'عرض سعر بعد المراجعة';
+    }
+    const total = items.reduce((sum, p) => sum + (Number(p.price) || 0), 0);
+    return (lang === 'en' ? 'Approx. total: ' : 'الإجمالي التقريبي: ') + money(total, lang);
+  }
+
   function label(item, lang, arKey, enKey) {
     if (!item) return '';
     if (lang === 'en' && item[enKey]) return item[enKey];
@@ -321,7 +342,8 @@
     const map = new Map((products || []).map((p) => [p.id, p]));
     return (suggestion.productIds || []).reduce((sum, id) => {
       const p = map.get(id);
-      return sum + (p ? Number(p.price) || 0 : 0);
+      if (!p || isQuote(p)) return sum;
+      return sum + (Number(p.price) || 0);
     }, 0);
   }
 
@@ -348,6 +370,9 @@
     saveSharedRequests,
     updateSharedRequestStatus,
     money,
+    formatPrice,
+    suggestionPriceLabel,
+    isQuote,
     label,
     suggestionTotal,
     suggestionItems
