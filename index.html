@@ -1,585 +1,493 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" id="htmlRoot">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>راسخ — تطوير أنظمة إدارة مخصصة</title>
-<meta name="description" content="راسخ لتطوير أنظمة إدارة مخصصة — أنظمة مخزون، عملاء، وحجوزات مصمّمة خصيصاً لتنمو مع أعمالكم.">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23181310'/%3E%3Ctext x='50' y='68' font-size='55' text-anchor='middle' fill='%23C9A24B' font-family='sans-serif'%3Eر%3C/text%3E%3C/svg%3E">
-<meta property="og:title" content="راسخ — تطوير أنظمة إدارة مخصصة">
-<meta property="og:description" content="أنظمة مخزون، عملاء، وحجوزات مصمّمة خصيصاً لتنمو مع أعمالكم.">
-<meta property="og:type" content="website">
+<title>راسخ — أنظمة نقاط البيع والمنتجات</title>
+<meta name="description" content="راسخ — أنظمة نقاط بيع، إدارة منتجات، ومخزون مصمّمة لتنمو مع أعمالكم.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%230A4D3C'/%3E%3Ctext x='50' y='68' font-size='52' text-anchor='middle' fill='%23F2F6F4' font-family='sans-serif'%3Eر%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@500;700;800&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@600;700;800&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Syne:wght@600;700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.moyasar.com/mpf/1.12/moyasar.css">
 <script src="https://cdn.moyasar.com/mpf/1.12/moyasar.js"></script>
 <style>
-  :root{
-    --ink:#181310;
-    --panel:#231C17;
-    --panel-2:#2C231C;
-    --line:#40342A;
-    --copper:#C9A24B;
-    --teal:#7C9473;
-    --text:#F2ECE1;
-    --muted:#A99A85;
-  }
-  *{margin:0;padding:0;box-sizing:border-box;}
-  html{scroll-behavior:smooth;}
-  body{
-    background:var(--ink);
-    color:var(--text);
-    font-family:'IBM Plex Sans Arabic', sans-serif;
-    line-height:1.7;
-    overflow-x:hidden;
-  }
-  body::before{
-    content:"";
-    position:fixed; inset:0;
-    background-image:
-      linear-gradient(var(--line) 1px, transparent 1px),
-      linear-gradient(90deg, var(--line) 1px, transparent 1px);
-    background-size:48px 48px;
-    opacity:0.12;
-    pointer-events:none;
-    z-index:0;
-  }
-  .wrap{max-width:1120px;margin:0 auto;padding:0 24px;position:relative;z-index:1;}
-  h1,h2,h3{font-family:'Noto Kufi Arabic', sans-serif;}
-  .mono{font-family:'IBM Plex Mono', monospace; letter-spacing:0.02em;}
-  a{color:inherit;text-decoration:none;}
+:root{
+  --ink:#0F1F1A;
+  --forest:#0A4D3C;
+  --leaf:#1F8A6A;
+  --brass:#A67C1A;
+  --bg:#F2F6F4;
+  --panel:#FFFFFF;
+  --mist:#DCE8E1;
+  --line:#C5D4CB;
+  --muted:#5A6F64;
+  --danger:#B42318;
+  --ok:#0E7A4B;
+  --shadow:0 24px 60px -28px rgba(15,31,26,.35);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:'IBM Plex Sans Arabic',sans-serif;
+  line-height:1.7;
+  overflow-x:hidden;
+}
+body.lang-en{font-family:'DM Sans',sans-serif}
+body::before{
+  content:"";
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 80% 50% at 10% -10%, rgba(31,138,106,.22), transparent 55%),
+    radial-gradient(ellipse 60% 40% at 100% 20%, rgba(166,124,26,.14), transparent 50%),
+    linear-gradient(180deg, #E8F1EC 0%, var(--bg) 40%, #EEF3F0 100%);
+}
+body::after{
+  content:"";
+  position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.35;
+  background-image:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%230A4D3C' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+.wrap{max-width:1180px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
+h1,h2,h3,.logo{font-family:'Noto Kufi Arabic',sans-serif}
+body.lang-en h1,body.lang-en h2,body.lang-en h3,body.lang-en .logo{font-family:'Syne',sans-serif}
+a{color:inherit;text-decoration:none}
+button,input,select,textarea{font:inherit}
 
-  /* NAV */
-  header{
-    position:sticky; top:0; z-index:50;
-    background:rgba(15,27,43,0.85);
-    backdrop-filter:blur(10px);
-    border-bottom:1px solid var(--line);
-  }
-  nav{display:flex;align-items:center;justify-content:space-between;padding:18px 24px;max-width:1120px;margin:0 auto;}
-  .logo{font-family:'Noto Kufi Arabic',sans-serif;font-weight:700;font-size:22px;color:var(--text);}
-  .logo span{color:var(--copper);}
-  .nav-links{display:flex;gap:32px;font-size:15px;color:var(--muted);}
-  .nav-links a:hover{color:var(--teal);}
-  .nav-cta{
-    background:var(--copper); color:var(--ink); font-weight:600;
-    padding:10px 20px; border-radius:6px; font-size:14px;
-    white-space:nowrap;
-  }
-  .nav-toggle{display:none; flex-direction:column; gap:5px; cursor:pointer; background:none; border:none;}
-  .nav-toggle span{width:24px;height:2px;background:var(--text);display:block;}
+/* NAV */
+header{
+  position:sticky;top:0;z-index:80;
+  background:rgba(242,246,244,.86);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid rgba(197,212,203,.7);
+}
+nav{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:16px;padding:16px 0;max-width:1180px;margin:0 auto;
+}
+.logo{font-weight:800;font-size:1.55rem;letter-spacing:-.02em;color:var(--ink)}
+.logo em{font-style:normal;color:var(--forest)}
+.nav-links{display:flex;align-items:center;gap:26px;color:var(--muted);font-size:.95rem;font-weight:500}
+.nav-links a:hover{color:var(--forest)}
+.nav-actions{display:flex;align-items:center;gap:10px}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  border:none;border-radius:10px;padding:12px 20px;cursor:pointer;
+  font-weight:700;font-size:.92rem;transition:transform .2s,background .2s,border-color .2s,color .2s;
+}
+.btn:hover{transform:translateY(-1px)}
+.btn-primary{background:var(--forest);color:#F5FBF8}
+.btn-primary:hover{background:#083D30}
+.btn-ghost{
+  background:transparent;border:1px solid var(--line);color:var(--ink);padding:10px 16px;
+}
+.btn-ghost:hover{border-color:var(--forest);color:var(--forest)}
+.btn-brass{background:var(--brass);color:#fff}
+.lang-btn{
+  min-width:48px;padding:10px 12px;border-radius:10px;border:1px solid var(--line);
+  background:var(--panel);color:var(--ink);font-weight:700;cursor:pointer;font-size:.8rem;
+}
+.nav-toggle{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:6px}
+.nav-toggle span{width:22px;height:2px;background:var(--ink);display:block}
 
-  /* HERO */
-  .hero{padding:100px 0 80px; position:relative;}
-  .eyebrow{
-    display:inline-flex; align-items:center; gap:8px;
-    font-family:'IBM Plex Mono',monospace; font-size:13px; color:var(--teal);
-    border:1px solid var(--line); padding:6px 14px; border-radius:100px;
-    margin-bottom:28px;
-  }
-  .eyebrow::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--teal);}
-  .hero h1{
-    font-size:clamp(34px,5.5vw,58px); font-weight:800; line-height:1.25;
-    max-width:800px; margin-bottom:22px;
-  }
-  .hero h1 em{font-style:normal; color:var(--copper);}
-  .hero p{font-size:18px; color:var(--muted); max-width:560px; margin-bottom:36px;}
-  .btn-row{display:flex; gap:16px; flex-wrap:wrap; margin-bottom:80px;}
-  .btn-primary{
-    background:var(--copper); color:var(--ink); font-weight:700;
-    padding:15px 30px; border-radius:8px; font-size:15px;
-    box-shadow:0 8px 24px -8px rgba(198,139,76,0.5);
-  }
-  .btn-secondary{
-    border:1px solid var(--line); color:var(--text);
-    padding:15px 30px; border-radius:8px; font-size:15px;
-  }
-  .btn-secondary:hover{border-color:var(--teal); color:var(--teal);}
+/* HERO */
+.hero{
+  min-height:calc(100vh - 74px);
+  display:grid;align-items:end;
+  position:relative;overflow:hidden;
+}
+.hero-visual{
+  position:absolute;inset:0;z-index:0;
+  background:
+    linear-gradient(120deg, rgba(15,31,26,.78) 0%, rgba(10,77,60,.55) 45%, rgba(15,31,26,.25) 100%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1600 900' preserveAspectRatio='xMidYMid slice'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%230A4D3C'/%3E%3Cstop offset='100%25' stop-color='%231F8A6A'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='1600' height='900' fill='url(%23g)'/%3E%3Cg opacity='.18' fill='%23fff'%3E%3Crect x='980' y='180' width='420' height='520' rx='28'/%3E%3Crect x='1020' y='240' width='340' height='40' rx='8'/%3E%3Crect x='1020' y='310' width='150' height='90' rx='12'/%3E%3Crect x='1190' y='310' width='150' height='90' rx='12'/%3E%3Crect x='1020' y='420' width='150' height='90' rx='12'/%3E%3Crect x='1190' y='420' width='150' height='90' rx='12'/%3E%3Crect x='1020' y='560' width='340' height='70' rx='12'/%3E%3C/g%3E%3Ccircle cx='320' cy='620' r='180' fill='%23A67C1A' opacity='.25'/%3E%3C/svg%3E") center/cover no-repeat;
+}
+.hero-content{
+  position:relative;z-index:1;padding:88px 0 72px;color:#F4Faf7;max-width:720px;
+  animation:rise .8s ease both;
+}
+@keyframes rise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+.brand-mark{
+  font-size:clamp(3.2rem,8vw,5.8rem);font-weight:800;line-height:1;margin-bottom:18px;
+  letter-spacing:-.03em;
+}
+.brand-mark span{color:#D4B45A}
+.hero h1{
+  font-size:clamp(1.45rem,3.2vw,2.15rem);font-weight:700;line-height:1.35;
+  margin-bottom:16px;max-width:34ch;
+}
+.hero p{font-size:1.05rem;color:rgba(242,246,244,.86);max-width:46ch;margin-bottom:28px}
+.hero-ctas{display:flex;flex-wrap:wrap;gap:12px}
+.hero .btn-primary{background:#F2F6F4;color:var(--forest)}
+.hero .btn-primary:hover{background:#fff}
+.hero .btn-ghost{border-color:rgba(242,246,244,.45);color:#F2F6F4}
+.hero .btn-ghost:hover{border-color:#fff;color:#fff}
 
-  /* BEDROCK — عنصر الطبقات الراسخة */
-  .bedrock{
-    position:relative; background:var(--panel);
-    border:1px solid var(--line); border-radius:16px;
-    padding:44px 36px 28px; overflow:hidden;
-    display:flex; flex-direction:column;
-  }
-  .bedrock-labels{
-    display:flex; justify-content:space-between; align-items:flex-start;
-    margin-bottom:28px; position:relative; z-index:2;
-  }
-  .bedrock-labels .bl-item{font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--muted);}
-  .bedrock-labels .bl-item b{display:block; color:var(--text); font-size:15px; font-family:'IBM Plex Sans Arabic',sans-serif; font-weight:600; margin-top:4px;}
-  .strata{position:relative; height:180px;}
-  .stratum{
-    position:absolute; right:0; left:0; border-radius:3px;
-    background:var(--panel-2); border:1px solid var(--line);
-    display:flex; align-items:center; padding:0 18px;
-    font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--muted);
-    opacity:0; transform:translateY(14px);
-    animation:settle 0.7s ease forwards;
-  }
-  .stratum.s1{top:0; height:38px; animation-delay:0.1s;}
-  .stratum.s2{top:46px; height:38px; animation-delay:0.28s;}
-  .stratum.s3{top:92px; height:38px; animation-delay:0.46s; background:var(--panel-2);}
-  .stratum.s4{
-    top:138px; height:42px; animation-delay:0.64s;
-    background:var(--copper); border-color:var(--copper); color:var(--ink);
-    font-weight:600; justify-content:center; letter-spacing:0.04em;
-  }
-  @keyframes settle{to{opacity:1; transform:translateY(0);}}
-  .root-line{
-    position:absolute; bottom:0; right:50%; width:2px; height:0;
-    background:var(--teal); animation:grow-root 1s ease 0.9s forwards;
-  }
-  @keyframes grow-root{to{height:34px;}}
+/* SECTIONS */
+section{padding:88px 0;position:relative;z-index:1}
+.section-head{max-width:560px;margin-bottom:40px}
+.eyebrow{
+  display:inline-block;font-size:.78rem;font-weight:700;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--leaf);margin-bottom:12px;
+}
+.section-head h2{font-size:clamp(1.7rem,3.4vw,2.4rem);line-height:1.25;margin-bottom:12px}
+.section-head p{color:var(--muted);font-size:1.02rem}
 
-  /* SECTION shared */
-  section{padding:90px 0; position:relative;}
-  .section-head{max-width:600px; margin-bottom:56px;}
-  .section-head .eyebrow{margin-bottom:18px;}
-  .section-head h2{font-size:clamp(28px,4vw,38px); font-weight:800; margin-bottom:14px;}
-  .section-head p{color:var(--muted); font-size:16px;}
+/* PRODUCTS */
+.products-rail{
+  display:grid;grid-template-columns:1.15fr .85fr;gap:28px;align-items:stretch;
+}
+.product-feature{
+  background:linear-gradient(145deg,var(--forest),#0E6B52);
+  color:#F4FAF7;border-radius:0;padding:42px 36px;min-height:380px;
+  display:flex;flex-direction:column;justify-content:flex-end;
+  position:relative;overflow:hidden;box-shadow:var(--shadow);
+  animation:rise .9s .1s ease both;
+}
+.product-feature::before{
+  content:"";position:absolute;inset:auto -20% -40% 40%;height:280px;
+  background:radial-gradient(circle,rgba(212,180,90,.35),transparent 70%);
+}
+.product-feature h3{font-size:1.7rem;margin:10px 0 12px;position:relative}
+.product-feature p{color:rgba(244,250,247,.85);max-width:36ch;position:relative}
+.product-list{display:flex;flex-direction:column;gap:14px}
+.product-row{
+  background:var(--panel);border:1px solid var(--line);padding:22px 22px;
+  display:grid;grid-template-columns:auto 1fr auto;gap:16px;align-items:center;
+  transition:border-color .2s,transform .2s;
+}
+.product-row:hover{border-color:var(--leaf);transform:translateX(-3px)}
+body.lang-en .product-row:hover{transform:translateX(3px)}
+.product-code{
+  font-size:.72rem;font-weight:700;letter-spacing:.06em;color:var(--brass);
+  border:1px solid var(--line);padding:8px 10px;background:var(--mist);
+}
+.product-row h3{font-size:1.05rem;margin-bottom:4px}
+.product-row p{color:var(--muted);font-size:.9rem}
+.product-price{font-weight:700;color:var(--forest);white-space:nowrap}
 
-  /* SERVICES */
-  .services-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:24px;}
-  .service-card{
-    background:var(--panel); border:1px solid var(--line); border-radius:14px;
-    padding:32px 26px; transition:border-color 0.25s, transform 0.25s;
-  }
-  .service-card:hover{border-color:var(--teal); transform:translateY(-4px);}
-  .service-tag{
-    font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--copper);
-    display:block; margin-bottom:18px;
-  }
-  .service-card h3{font-size:20px; margin-bottom:12px; font-weight:700;}
-  .service-card p{color:var(--muted); font-size:15px;}
+/* POS */
+.pos-split{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
+.pos-screen{
+  background:var(--ink);border-radius:18px;padding:18px;box-shadow:var(--shadow);
+  animation:floatY 5s ease-in-out infinite;
+}
+@keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.pos-screen-inner{
+  background:linear-gradient(180deg,#16352C,#0F241C);border-radius:12px;padding:18px;color:#E8F5EF;
+  min-height:320px;display:grid;grid-template-rows:auto 1fr auto;gap:14px;
+}
+.pos-bar{display:flex;justify-content:space-between;align-items:center;font-size:.78rem;color:#9BB8AC}
+.pos-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.pos-tile{
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);
+  border-radius:10px;padding:14px 10px;text-align:center;font-size:.78rem;
+}
+.pos-tile strong{display:block;font-size:.95rem;margin-bottom:4px;color:#F2F6F4}
+.pos-total{
+  display:flex;justify-content:space-between;align-items:center;
+  background:rgba(31,138,106,.25);border:1px solid rgba(31,138,106,.4);
+  border-radius:10px;padding:12px 14px;font-weight:700;
+}
+.pos-points{display:flex;flex-direction:column;gap:18px;margin-top:8px}
+.pos-point{display:grid;grid-template-columns:42px 1fr;gap:14px;align-items:start}
+.pos-num{
+  width:42px;height:42px;border-radius:12px;background:var(--mist);color:var(--forest);
+  display:flex;align-items:center;justify-content:center;font-weight:800;
+}
+.pos-point h3{font-size:1.05rem;margin-bottom:4px}
+.pos-point p{color:var(--muted);font-size:.92rem}
 
-  /* PROCESS */
-  .process-list{display:flex; flex-direction:column;}
-  .process-item{
-    display:grid; grid-template-columns:80px 1fr; gap:24px;
-    padding:28px 0; border-bottom:1px solid var(--line);
-  }
-  .process-item:first-child{border-top:1px solid var(--line);}
-  .process-num{font-family:'IBM Plex Mono',monospace; font-size:14px; color:var(--teal);}
-  .process-item h3{font-size:19px; margin-bottom:8px; font-weight:700;}
-  .process-item p{color:var(--muted); font-size:15px; max-width:560px;}
+/* PROCESS */
+.process{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.process-item{padding:28px 22px;border-inline-end:1px solid var(--line)}
+.process-item:last-child{border-inline-end:none}
+.process-item .num{color:var(--brass);font-weight:800;font-size:.85rem;margin-bottom:12px}
+.process-item h3{font-size:1.05rem;margin-bottom:8px}
+.process-item p{color:var(--muted);font-size:.9rem}
 
-  /* TEAM */
-  .team-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:24px;}
-  .team-card{
-    background:var(--panel-2); border:1px solid var(--line); border-radius:14px;
-    padding:30px 24px;
-  }
-  .team-icon{
-    width:44px;height:44px;border-radius:10px;background:var(--ink);
-    display:flex;align-items:center;justify-content:center;
-    color:var(--teal); font-family:'IBM Plex Mono',monospace; font-size:13px;
-    margin-bottom:18px; border:1px solid var(--line);
-  }
-  .team-card h3{font-size:17px; margin-bottom:8px;}
-  .team-card p{color:var(--muted); font-size:14px;}
+/* PAY + CONTACT */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.panel{
+  background:var(--panel);border:1px solid var(--line);padding:32px;box-shadow:0 10px 30px -24px rgba(15,31,26,.35);
+}
+.panel h2{font-size:1.45rem;margin-bottom:10px}
+.panel > p{color:var(--muted);margin-bottom:20px}
+.form{display:flex;flex-direction:column;gap:12px}
+.form input,.form select,.form textarea{
+  width:100%;padding:13px 14px;border:1px solid var(--line);border-radius:10px;
+  background:#FBFCFA;color:var(--ink);
+}
+.form input:focus,.form select:focus,.form textarea:focus{
+  outline:2px solid rgba(31,138,106,.35);border-color:var(--leaf);
+}
+.form textarea{min-height:100px;resize:vertical}
+.msg{min-height:18px;font-size:.88rem;font-weight:600}
+.locked{
+  text-align:center;padding:28px 12px;display:flex;flex-direction:column;align-items:center;gap:12px;
+}
+.locked p{color:var(--muted);max-width:36ch}
+.pay-amount{display:flex;align-items:center;gap:10px}
+.pay-amount span{color:var(--brass);font-weight:700;white-space:nowrap}
+.pay-summary{
+  display:flex;justify-content:space-between;align-items:center;
+  background:var(--mist);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:14px;
+}
+.pay-summary b{color:var(--forest)}
+.pay-step{display:none}
+.pay-step.active{display:block}
+.pay-status{display:none;text-align:center;padding:28px 10px}
+.pay-status.active{display:block}
+.linkish{background:none;border:none;color:var(--muted);text-decoration:underline;cursor:pointer;font-size:.85rem;padding:0}
 
-  /* CONTACT */
-  .contact-box{
-    background:var(--panel); border:1px solid var(--line); border-radius:18px;
-    padding:56px 40px; display:grid; grid-template-columns:1fr 1fr; gap:48px;
-  }
-  .contact-box h2{font-size:30px; margin-bottom:14px; font-weight:800;}
-  .contact-box p{color:var(--muted); margin-bottom:26px;}
-  .contact-info{display:flex; flex-direction:column; gap:14px; font-size:15px;}
-  .contact-info .mono{color:var(--teal);}
-  form{display:flex; flex-direction:column; gap:14px;}
-  input,select,textarea{
-    background:var(--ink); border:1px solid var(--line); color:var(--text);
-    padding:13px 16px; border-radius:8px; font-family:inherit; font-size:14px;
-  }
-  input:focus,select:focus,textarea:focus{outline:2px solid var(--teal); border-color:transparent;}
-  textarea{resize:vertical; min-height:90px;}
-  .submit-btn{
-    background:var(--copper); color:var(--ink); font-weight:700;
-    padding:14px; border:none; border-radius:8px; cursor:pointer; font-size:15px;
-    font-family:inherit;
-  }
+/* MODAL */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(15,31,26,.55);backdrop-filter:blur(5px);
+  z-index:200;display:none;align-items:center;justify-content:center;padding:20px;
+}
+.modal-overlay.open{display:flex}
+.modal{
+  background:var(--panel);border:1px solid var(--line);border-radius:16px;
+  width:100%;max-width:420px;padding:28px;position:relative;box-shadow:var(--shadow);
+  animation:rise .35s ease;
+}
+.modal-close{
+  position:absolute;top:14px;inset-inline-start:14px;border:none;background:none;
+  font-size:1.3rem;color:var(--muted);cursor:pointer;line-height:1;
+}
+.tabs{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-bottom:18px}
+.tab{
+  flex:1;border:none;background:var(--bg);color:var(--muted);padding:11px;cursor:pointer;font-weight:700;
+}
+.tab.active{background:var(--forest);color:#F5FBF8}
+.panel-auth{display:none}
+.panel-auth.active{display:block}
+.panel-auth h3{font-size:1.25rem;margin-bottom:14px}
+.check{display:flex;gap:8px;align-items:flex-start;font-size:.82rem;color:var(--muted)}
+.check input{margin-top:4px}
+.check a{color:var(--forest);text-decoration:underline}
 
-  footer{
-    border-top:1px solid var(--line); padding:32px 0; text-align:center;
-    color:var(--muted); font-size:14px;
-  }
+footer{
+  border-top:1px solid var(--line);padding:28px 0 40px;text-align:center;
+  color:var(--muted);font-size:.9rem;position:relative;z-index:1;
+}
+.footer-links{display:flex;gap:16px;justify-content:center;margin-top:10px;flex-wrap:wrap}
+.footer-links a{text-decoration:underline}
+.beta{
+  background:var(--ink);color:#D7E8DF;padding:12px 18px;text-align:center;font-size:.85rem;
+  position:relative;z-index:1;
+}
+.beta b{color:#D4B45A}
 
-  @media (max-width:860px){
-    .nav-links{display:none;}
-    .nav-toggle{display:flex;}
-    .services-grid, .team-grid{grid-template-columns:1fr;}
-    .contact-box{grid-template-columns:1fr; padding:36px 24px;}
-    .process-item{grid-template-columns:50px 1fr;}
+@media (max-width:900px){
+  .nav-links{
+    display:none;position:absolute;top:66px;inset-inline:16px;flex-direction:column;
+    background:var(--panel);border:1px solid var(--line);padding:16px;border-radius:12px;
+    box-shadow:var(--shadow);align-items:stretch;gap:14px;
   }
-  @media (prefers-reduced-motion:reduce){
-    .diagram-path{animation:none; stroke-dashoffset:0;}
-    .service-card{transition:none;}
-  }
-
-  /* ACCOUNT BUTTON */
-  .nav-account{
-    background:transparent; border:1px solid var(--line); color:var(--text);
-    font-weight:600; padding:9px 18px; border-radius:6px; font-size:14px;
-    cursor:pointer; font-family:inherit; white-space:nowrap;
-  }
-  .nav-account:hover{border-color:var(--teal); color:var(--teal);}
-
-  /* AUTH MODAL */
-  .modal-overlay{
-    position:fixed; inset:0; background:rgba(15,27,43,0.75);
-    backdrop-filter:blur(4px); z-index:200; display:none;
-    align-items:center; justify-content:center; padding:20px;
-  }
-  .modal-overlay.open{display:flex;}
-  .modal-box{
-    background:var(--panel); border:1px solid var(--line); border-radius:16px;
-    padding:36px 32px; width:100%; max-width:400px; position:relative;
-  }
-  .modal-close{
-    position:absolute; top:16px; left:16px; background:none; border:none;
-    color:var(--muted); font-size:20px; cursor:pointer; line-height:1;
-  }
-  .modal-close:hover{color:var(--text);}
-  .modal-tabs{display:flex; margin-bottom:24px; border:1px solid var(--line); border-radius:8px; overflow:hidden;}
-  .modal-tab-btn{
-    flex:1; padding:11px; background:var(--ink); color:var(--muted); border:none;
-    cursor:pointer; font-size:14px; font-weight:600; font-family:inherit; transition:all 0.2s;
-  }
-  .modal-tab-btn.active{background:var(--copper); color:var(--ink);}
-  .modal-panel{display:none;}
-  .modal-panel.active{display:block;}
-  .modal-panel h3{font-size:20px; margin-bottom:18px; font-weight:700;}
-  .modal-panel form{gap:12px;}
-  .forgot-link{
-    background:none; border:none; color:var(--muted); font-size:12.5px;
-    cursor:pointer; font-family:inherit; text-decoration:underline;
-    display:block; margin-top:12px; padding:0;
-  }
-  .forgot-link:hover{color:var(--copper);}
-  .modal-msg{margin-top:12px; font-size:13.5px; font-weight:600; min-height:18px;}
-  .account-panel{display:none; flex-direction:column; gap:14px; align-items:center; text-align:center;}
-  .account-panel.active{display:flex;}
-  .account-panel .avatar{
-    width:56px; height:56px; border-radius:50%; background:var(--copper);
-    color:var(--ink); display:flex; align-items:center; justify-content:center;
-    font-weight:700; font-size:22px; font-family:'Noto Kufi Arabic',sans-serif;
-  }
-  .account-panel .acc-name{font-size:17px; font-weight:700;}
-  .account-panel .acc-email{color:var(--muted); font-size:13.5px;}
-  .logout-btn{
-    background:transparent; border:1px solid var(--line); color:var(--text);
-    padding:10px 22px; border-radius:8px; cursor:pointer; font-family:inherit; font-size:14px;
-  }
-  .logout-btn:hover{border-color:#f87171; color:#f87171;}
-
-  /* ENGLISH TYPE MODE */
-  body.lang-en{font-family:'Inter', sans-serif;}
-  body.lang-en h1, body.lang-en h2, body.lang-en h3{font-family:'Cormorant Garamond', serif;}
-  body.lang-en .logo{font-family:'Cormorant Garamond', serif; letter-spacing:0.01em;}
-  body.lang-en .account-panel .avatar{font-family:'Cormorant Garamond', serif;}
-
-  /* LANGUAGE TOGGLE */
-  .lang-toggle{
-    background:transparent; border:1px solid var(--line); color:var(--muted);
-    font-family:'IBM Plex Mono',monospace; font-size:12.5px; font-weight:500;
-    padding:8px 14px; border-radius:6px; cursor:pointer; white-space:nowrap;
-    letter-spacing:0.03em;
-  }
-  .lang-toggle:hover{border-color:var(--copper); color:var(--copper);}
-
-  /* PAYMENT SECTION */
-  .pay-box{
-    background:var(--panel); border:1px solid var(--line); border-radius:18px;
-    padding:48px 40px; max-width:520px; margin:0 auto;
-  }
-  .pay-box .pay-step{display:flex; flex-direction:column; gap:14px;}
-  .pay-box label{font-size:13px; color:var(--muted); font-family:'IBM Plex Mono',monospace; margin-bottom:-6px;}
-  .pay-amount-row{display:flex; align-items:center; gap:10px;}
-  .pay-amount-row input{flex:1;}
-  .pay-currency{
-    font-family:'IBM Plex Mono',monospace; color:var(--copper); font-weight:600;
-    font-size:14px; white-space:nowrap;
-  }
-  .pay-continue-btn{
-    background:var(--copper); color:var(--ink); font-weight:700;
-    padding:14px; border:none; border-radius:8px; cursor:pointer; font-size:15px;
-    font-family:inherit; margin-top:8px;
-  }
-  .pay-continue-btn:hover{background:#DCB05F;}
-  .pay-back-btn{
-    background:transparent; border:none; color:var(--muted); cursor:pointer;
-    font-family:inherit; font-size:13px; text-decoration:underline; align-self:flex-start;
-    padding:0; margin-bottom:6px;
-  }
-  .pay-back-btn:hover{color:var(--teal);}
-  #paymentFormStep{display:none;}
-  #paymentFormStep.active{display:block;}
-  .pay-summary{
-    background:var(--panel-2); border:1px solid var(--line); border-radius:10px;
-    padding:14px 18px; margin-bottom:20px; font-size:14px; display:flex;
-    justify-content:space-between; align-items:center;
-  }
-  .pay-summary .amount{color:var(--copper); font-weight:700; font-family:'IBM Plex Mono',monospace; font-size:17px;}
-  .pay-status{
-    text-align:center; padding:40px 20px; display:none; flex-direction:column;
-    align-items:center; gap:14px;
-  }
-  .pay-status.active{display:flex;}
-  .pay-status .pay-icon{font-size:44px;}
-  .pay-status h3{font-size:20px;}
-  .pay-status p{color:var(--muted); font-size:14.5px; max-width:380px;}
-  .pay-note{
-    font-size:12.5px; color:var(--muted); margin-top:20px; text-align:center; line-height:1.6;
-  }
-  .pay-locked{
-    background:var(--panel); border:1px solid var(--line); border-radius:18px;
-    max-width:520px; margin:0 auto; padding:48px 32px; text-align:center;
-    display:flex; flex-direction:column; align-items:center; gap:14px;
-  }
-  .pay-locked .pay-icon{font-size:36px;}
-  .pay-locked p{color:var(--muted); font-size:14.5px; max-width:380px;}
-
-  /* شريط تحت التجربة */
-  .beta-banner{
-    background:#3A2E1A; border-top:1px solid var(--line); border-bottom:1px solid var(--line);
-    padding:14px 24px; display:flex; align-items:center; justify-content:center;
-    gap:12px; flex-wrap:wrap; text-align:center;
-  }
-  .beta-banner span:not(.beta-badge){font-size:13px; color:#D9C9A3;}
-  .beta-badge{
-    background:var(--copper); color:var(--ink); font-weight:700; font-size:11px;
-    padding:3px 10px; border-radius:5px; letter-spacing:0.05em;
-  }
-
-  /* الشروط والأحكام */
-  .terms-content h3{
-    font-family:'Noto Kufi Arabic',sans-serif; font-size:16px; margin:26px 0 8px;
-    color:var(--copper);
-  }
-  .terms-content h3:first-child{margin-top:0;}
-  .terms-content p{color:var(--muted); font-size:14.5px; line-height:1.9;}
-  .footer-links{
-    display:flex; gap:18px; justify-content:center; margin-top:10px; flex-wrap:wrap;
-  }
-  .footer-links a{color:var(--muted); font-size:13px; text-decoration:underline;}
-  .footer-links a:hover{color:var(--copper);}
-  .checkbox-row{
-    display:flex; align-items:flex-start; gap:8px; font-size:12.5px; color:var(--muted);
-    line-height:1.6; margin-top:2px;
-  }
-  .checkbox-row input{width:auto; margin:2px 0 0; flex-shrink:0;}
-  .checkbox-row a{color:var(--copper); text-decoration:underline;}
+  .nav-links.open{display:flex}
+  .nav-toggle{display:flex}
+  .products-rail,.pos-split,.two-col{grid-template-columns:1fr}
+  .process{grid-template-columns:1fr 1fr}
+  .process-item{border-bottom:1px solid var(--line)}
+  .hero{min-height:auto}
+  .hero-content{padding:72px 0 56px}
+}
+@media (max-width:560px){
+  .process{grid-template-columns:1fr}
+  .product-row{grid-template-columns:1fr;gap:8px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
 </style>
 </head>
 <body>
 
 <header>
   <nav class="wrap">
-    <div class="logo" data-ar-html='را<span>سخ</span>' data-en-html='Ra<span>seekh</span>'>را<span>سخ</span></div>
-    <div class="nav-links">
-      <a href="#services" data-ar="خدماتنا" data-en="Services">خدماتنا</a>
-      <a href="#process" data-ar="منهجية العمل" data-en="Our Process">منهجية العمل</a>
-      <a href="#team" data-ar="فريق العمل" data-en="Our Team">فريق العمل</a>
-      <a href="#contact" data-ar="تواصل معنا" data-en="Contact">تواصل معنا</a>
+    <a class="logo" href="#" data-ar-html='را<em>سخ</em>' data-en-html='Ra<em>seekh</em>'>را<em>سخ</em></a>
+    <div class="nav-links" id="navLinks">
+      <a href="#products" data-ar="المنتجات" data-en="Products">المنتجات</a>
+      <a href="#pos" data-ar="نقاط البيع" data-en="POS">نقاط البيع</a>
+      <a href="#process" data-ar="كيف نعمل" data-en="How we work">كيف نعمل</a>
+      <a href="#pay" data-ar="الدفع" data-en="Pay">الدفع</a>
+      <a href="#contact" data-ar="تواصل" data-en="Contact">تواصل</a>
     </div>
-    <button class="nav-account" id="accountBtn" type="button" data-ar="حساب العميل" data-en="Client Account">حساب العميل</button>
-    <button class="lang-toggle" id="langToggle" type="button">EN</button>
-    <button class="nav-toggle" aria-label="فتح القائمة" id="navToggle">
-      <span></span><span></span><span></span>
-    </button>
+    <div class="nav-actions">
+      <button class="lang-btn" id="langToggle" type="button">EN</button>
+      <button class="btn btn-ghost" id="accountBtn" type="button" data-ar="تسجيل الدخول" data-en="Log in">تسجيل الدخول</button>
+      <a class="btn btn-primary" href="dashboard/" data-ar="لوحة التحكم" data-en="Dashboard">لوحة التحكم</a>
+      <button class="nav-toggle" id="navToggle" aria-label="menu" type="button"><span></span><span></span><span></span></button>
+    </div>
   </nav>
 </header>
 
-<!-- نافذة تسجيل الدخول / إنشاء حساب / معلومات الحساب -->
+<!-- Auth Modal -->
 <div class="modal-overlay" id="authModal">
-  <div class="modal-box">
-    <button class="modal-close" id="modalCloseBtn" aria-label="إغلاق">✕</button>
-
+  <div class="modal">
+    <button class="modal-close" id="modalCloseBtn" type="button" aria-label="close">×</button>
     <div id="authTabs">
-      <div class="modal-tabs">
-        <button type="button" class="modal-tab-btn active" id="modalLoginTabBtn" data-ar="تسجيل دخول" data-en="Login">تسجيل دخول</button>
-        <button type="button" class="modal-tab-btn" id="modalRegisterTabBtn" data-ar="إنشاء حساب" data-en="Sign Up">إنشاء حساب</button>
+      <div class="tabs" id="modalTabsBar">
+        <button type="button" class="tab active" id="modalLoginTabBtn" data-ar="دخول" data-en="Login">دخول</button>
+        <button type="button" class="tab" id="modalRegisterTabBtn" data-ar="حساب جديد" data-en="Sign up">حساب جديد</button>
       </div>
 
-      <div class="modal-panel active" id="modalLoginPanel">
-        <h3 data-ar="تسجيل دخول" data-en="Login">تسجيل دخول</h3>
-        <form id="loginForm">
-          <input type="email" id="loginEmail" placeholder="البريد الإلكتروني" data-ar-placeholder="البريد الإلكتروني" data-en-placeholder="Email" required>
-          <input type="password" id="loginPassword" placeholder="كلمة المرور" data-ar-placeholder="كلمة المرور" data-en-placeholder="Password" required>
-          <button type="submit" class="submit-btn" data-ar="دخول" data-en="Log In">دخول</button>
+      <div class="panel-auth active" id="modalLoginPanel">
+        <h3 data-ar="تسجيل الدخول" data-en="Sign in to your account">تسجيل الدخول</h3>
+        <form class="form" id="loginForm">
+          <input type="email" id="loginEmail" required data-ar-placeholder="البريد الإلكتروني" data-en-placeholder="Email" placeholder="البريد الإلكتروني">
+          <input type="password" id="loginPassword" required data-ar-placeholder="كلمة المرور" data-en-placeholder="Password" placeholder="كلمة المرور">
+          <button class="btn btn-primary" type="submit" data-ar="دخول إلى النظام" data-en="Enter system">دخول إلى النظام</button>
         </form>
-        <button type="button" class="forgot-link" id="forgotPasswordLink" data-ar="نسيت كلمة المرور؟" data-en="Forgot password?">نسيت كلمة المرور؟</button>
-        <div class="modal-msg" id="loginMsg"></div>
+        <button type="button" class="linkish" id="forgotPasswordLink" style="margin-top:12px" data-ar="نسيت كلمة المرور؟" data-en="Forgot password?">نسيت كلمة المرور؟</button>
+        <div class="msg" id="loginMsg"></div>
       </div>
 
-      <div class="modal-panel" id="modalRegisterPanel">
-        <h3 data-ar="إنشاء حساب جديد" data-en="Create New Account">إنشاء حساب جديد</h3>
-        <form id="registerForm">
-          <input type="text" id="registerName" placeholder="الاسم الكامل" data-ar-placeholder="الاسم الكامل" data-en-placeholder="Full Name" required>
-          <input type="email" id="registerEmail" placeholder="البريد الإلكتروني" data-ar-placeholder="البريد الإلكتروني" data-en-placeholder="Email" required>
-          <input type="tel" id="registerPhone" placeholder="رقم الجوال (اختياري)" data-ar-placeholder="رقم الجوال (اختياري)" data-en-placeholder="Phone (optional)">
-          <input type="password" id="registerPassword" placeholder="كلمة المرور (6 أحرف على الأقل)" data-ar-placeholder="كلمة المرور (6 أحرف على الأقل)" data-en-placeholder="Password (min 6 characters)" minlength="6" required>
-          <label class="checkbox-row">
+      <div class="panel-auth" id="modalRegisterPanel">
+        <h3 data-ar="إنشاء حساب عميل" data-en="Create client account">إنشاء حساب عميل</h3>
+        <form class="form" id="registerForm">
+          <input type="text" id="registerName" required data-ar-placeholder="الاسم الكامل" data-en-placeholder="Full name" placeholder="الاسم الكامل">
+          <input type="email" id="registerEmail" required data-ar-placeholder="البريد الإلكتروني" data-en-placeholder="Email" placeholder="البريد الإلكتروني">
+          <input type="tel" id="registerPhone" data-ar-placeholder="رقم الجوال (اختياري)" data-en-placeholder="Phone (optional)" placeholder="رقم الجوال (اختياري)">
+          <input type="password" id="registerPassword" minlength="6" required data-ar-placeholder="كلمة المرور (6 أحرف على الأقل)" data-en-placeholder="Password (min 6 chars)" placeholder="كلمة المرور (6 أحرف على الأقل)">
+          <label class="check">
             <input type="checkbox" id="registerTermsCheck" required>
-            <span>
-              <span data-ar="أوافق على" data-en="I agree to the">أوافق على</span>
-              <a href="#terms" data-ar="الشروط والأحكام" data-en="Terms & Conditions">الشروط والأحكام</a>
-            </span>
+            <span><span data-ar="أوافق على" data-en="I agree to the">أوافق على</span> <a href="#terms" data-ar="الشروط والأحكام" data-en="Terms">الشروط والأحكام</a></span>
           </label>
-          <button type="submit" class="submit-btn" data-ar="إنشاء الحساب" data-en="Create Account">إنشاء الحساب</button>
+          <button class="btn btn-primary" type="submit" data-ar="إنشاء الحساب" data-en="Create account">إنشاء الحساب</button>
         </form>
-        <div class="modal-msg" id="registerMsg"></div>
+        <div class="msg" id="registerMsg"></div>
       </div>
 
-      <!-- طلب رابط إعادة تعيين كلمة المرور -->
-      <div class="modal-panel" id="modalForgotPanel">
-        <h3 data-ar="إعادة تعيين كلمة المرور" data-en="Reset Password">إعادة تعيين كلمة المرور</h3>
-        <p class="pay-note" style="text-align:right; margin-bottom:16px;" data-ar="أدخل بريدك الإلكتروني وسنرسل لك رابطاً لإعادة تعيين كلمة المرور." data-en="Enter your email and we'll send you a password reset link.">أدخل بريدك الإلكتروني وسنرسل لك رابطاً لإعادة تعيين كلمة المرور.</p>
-        <form id="forgotForm">
-          <input type="email" id="forgotEmail" placeholder="البريد الإلكتروني" data-ar-placeholder="البريد الإلكتروني" data-en-placeholder="Email" required>
-          <button type="submit" class="submit-btn" data-ar="إرسال رابط إعادة التعيين" data-en="Send Reset Link">إرسال رابط إعادة التعيين</button>
+      <div class="panel-auth" id="modalForgotPanel">
+        <h3 data-ar="إعادة تعيين كلمة المرور" data-en="Reset password">إعادة تعيين كلمة المرور</h3>
+        <p style="color:var(--muted);font-size:.9rem;margin-bottom:12px" data-ar="أدخل بريدك وسنرسل رابط إعادة التعيين." data-en="Enter your email and we'll send a reset link.">أدخل بريدك وسنرسل رابط إعادة التعيين.</p>
+        <form class="form" id="forgotForm">
+          <input type="email" id="forgotEmail" required data-ar-placeholder="البريد الإلكتروني" data-en-placeholder="Email" placeholder="البريد الإلكتروني">
+          <button class="btn btn-primary" type="submit" data-ar="إرسال الرابط" data-en="Send link">إرسال الرابط</button>
         </form>
-        <button type="button" class="forgot-link" id="backToLoginLink" data-ar="← رجوع لتسجيل الدخول" data-en="← Back to login">← رجوع لتسجيل الدخول</button>
-        <div class="modal-msg" id="forgotMsg"></div>
+        <button type="button" class="linkish" id="backToLoginLink" style="margin-top:12px" data-ar="رجوع لتسجيل الدخول" data-en="Back to login">رجوع لتسجيل الدخول</button>
+        <div class="msg" id="forgotMsg"></div>
       </div>
 
-      <!-- تعيين كلمة مرور جديدة (يظهر تلقائياً من رابط الإيميل) -->
-      <div class="modal-panel" id="modalResetPanel">
-        <h3 data-ar="تعيين كلمة مرور جديدة" data-en="Set New Password">تعيين كلمة مرور جديدة</h3>
-        <form id="resetForm">
-          <input type="password" id="resetPassword" placeholder="كلمة المرور الجديدة (6 أحرف على الأقل)" data-ar-placeholder="كلمة المرور الجديدة (6 أحرف على الأقل)" data-en-placeholder="New password (min 6 characters)" minlength="6" required>
-          <button type="submit" class="submit-btn" data-ar="حفظ كلمة المرور" data-en="Save Password">حفظ كلمة المرور</button>
+      <div class="panel-auth" id="modalResetPanel">
+        <h3 data-ar="كلمة مرور جديدة" data-en="New password">كلمة مرور جديدة</h3>
+        <form class="form" id="resetForm">
+          <input type="password" id="resetPassword" minlength="6" required data-ar-placeholder="كلمة المرور الجديدة" data-en-placeholder="New password" placeholder="كلمة المرور الجديدة">
+          <button class="btn btn-primary" type="submit" data-ar="حفظ" data-en="Save">حفظ</button>
         </form>
-        <div class="modal-msg" id="resetMsg"></div>
+        <div class="msg" id="resetMsg"></div>
       </div>
-    </div>
-
-    <div class="account-panel" id="accountPanel">
-      <div class="avatar" id="accountAvatar">؟</div>
-      <div class="acc-name" id="accountName"></div>
-      <div class="acc-email" id="accountEmail"></div>
-      <button class="logout-btn" id="logoutBtn" data-ar="تسجيل الخروج" data-en="Log Out">تسجيل الخروج</button>
     </div>
   </div>
 </div>
 
 <section class="hero">
-  <div class="wrap">
-    <span class="eyebrow mono" data-ar="RSKH / أنظمة مصمّمة للاستمرارية" data-en="RSKH / Systems built to last">RSKH / أنظمة مصمّمة للاستمرارية</span>
-    <h1 data-ar-html='لا نبني أنظمة تحتاج إلى تغيير كل عام، بل أنظمة <em>راسخة</em> تنمو مع نمو منشأتكم' data-en-html='We don&rsquo;t build systems you&rsquo;ll replace next year &mdash; we build systems <em>rooted</em> deep enough to grow with your business'>لا نبني أنظمة تحتاج إلى تغيير كل عام، بل أنظمة <em>راسخة</em> تنمو مع نمو منشأتكم</h1>
-    <p data-ar="نصمم ونطوّر أنظمة إدارة مخصصة — للمخزون، والعملاء، والحجوزات — على أساس متين يستوعب نمو شركتكم، من خلال فريق متكامل يجمع بين هندسة البرمجيات وأنظمة المعلومات والشبكات." data-en="We design and build custom management systems — inventory, customers, bookings — on a foundation solid enough to carry your company's growth, by a team spanning software engineering, information systems, and networks.">نصمم ونطوّر أنظمة إدارة مخصصة — للمخزون، والعملاء، والحجوزات — على أساس متين يستوعب نمو شركتكم، من خلال فريق متكامل يجمع بين هندسة البرمجيات وأنظمة المعلومات والشبكات.</p>
-    <div class="btn-row">
-      <a href="#contact" class="btn-primary" data-ar="طلب استشارة مجانية" data-en="Book a Free Consultation">طلب استشارة مجانية</a>
-      <a href="#services" class="btn-secondary" data-ar="عرض خدماتنا" data-en="View Our Services">عرض خدماتنا</a>
+  <div class="hero-visual" aria-hidden="true"></div>
+  <div class="wrap hero-content">
+    <div class="brand-mark" data-ar-html='را<span>سخ</span>' data-en-html='Ra<span>seekh</span>'>را<span>سخ</span></div>
+    <h1 data-ar="أنظمة نقاط بيع ومنتجات تثبت أعمالكم وتنمو معها" data-en="POS and product systems that ground your business and grow with it">أنظمة نقاط بيع ومنتجات تثبت أعمالكم وتنمو معها</h1>
+    <p data-ar="نبني لكم واجهة شركة واضحة، كاشير سريع، وإدارة منتجات ومخزون — عربي وإنجليزي — في نظام واحد." data-en="We build a clear company front, fast checkout, and product inventory — Arabic and English — in one system.">نبني لكم واجهة شركة واضحة، كاشير سريع، وإدارة منتجات ومخزون — عربي وإنجليزي — في نظام واحد.</p>
+    <div class="hero-ctas">
+      <a class="btn btn-primary" href="dashboard/" data-ar="دخول نقطة البيع" data-en="Open POS">دخول نقطة البيع</a>
+      <a class="btn btn-ghost" href="#products" data-ar="استعرض المنتجات" data-en="Browse products">استعرض المنتجات</a>
     </div>
+  </div>
+</section>
 
-    <div class="bedrock">
-      <div class="bedrock-labels">
-        <div class="bl-item">RSKH-01<b data-ar="يُبنى على أساس متين" data-en="Built on a foundation">يُبنى على أساس متين</b></div>
-        <div class="bl-item" style="text-align:left"><span data-ar="طبقة تلو أخرى" data-en="Layer by layer">طبقة تلو أخرى</span><b data-ar="لا دفعة واحدة" data-en="Not all at once">لا دفعة واحدة</b></div>
-      </div>
-      <div class="strata">
-        <div class="root-line"></div>
-        <div class="stratum s1" data-ar="الواجهة التي يستخدمها فريقكم يومياً" data-en="The interface your team uses every day">الواجهة التي يستخدمها فريقكم يومياً</div>
-        <div class="stratum s2" data-ar="المنطق البرمجي الذي يُشغّل أعمالكم" data-en="The logic that runs your business">المنطق البرمجي الذي يُشغّل أعمالكم</div>
-        <div class="stratum s3" data-ar="قاعدة البيانات التي تحفظ جميع المعلومات بأمان" data-en="The database that keeps everything safe">قاعدة البيانات التي تحفظ جميع المعلومات بأمان</div>
-        <div class="stratum s4" data-ar="الأساس الراسخ" data-en="The Bedrock">الأساس الراسخ</div>
+<section id="products">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow" data-ar="المنتجات" data-en="Products">المنتجات</div>
+      <h2 data-ar="حلول جاهزة لتشغيل منشأتكم" data-en="Ready systems to run your business">حلول جاهزة لتشغيل منشأتكم</h2>
+      <p data-ar="من الكاشير إلى المخزون — منتجات مصمّمة لواجهة واحدة وتجربة فردية لعلامتكم." data-en="From checkout to inventory — products designed as one interface with a distinct brand feel.">من الكاشير إلى المخزون — منتجات مصمّمة لواجهة واحدة وتجربة فردية لعلامتكم.</p>
+    </div>
+    <div class="products-rail">
+      <article class="product-feature">
+        <div class="eyebrow" style="color:#D4B45A" data-ar="الأساسي" data-en="Core">الأساسي</div>
+        <h3 data-ar="نظام نقاط البيع راسخ POS" data-en="Raseekh POS System">نظام نقاط البيع راسخ POS</h3>
+        <p data-ar="كاشير سريع، فواتير فورية، إدارة منتجات وأصناف، وتقارير مبيعات يومية — يعمل على الجوال والكمبيوتر." data-en="Fast checkout, instant receipts, product catalog, and daily sales reports — on phone and desktop.">كاشير سريع، فواتير فورية، إدارة منتجات وأصناف، وتقارير مبيعات يومية — يعمل على الجوال والكمبيوتر.</p>
+        <div style="margin-top:22px;position:relative">
+          <a class="btn btn-brass" href="dashboard/" data-ar="جرّب نقطة البيع" data-en="Try the POS">جرّب نقطة البيع</a>
+        </div>
+      </article>
+      <div class="product-list">
+        <article class="product-row">
+          <span class="product-code">RSKH-01</span>
+          <div>
+            <h3 data-ar="إدارة المنتجات والمخزون" data-en="Products & Inventory">إدارة المنتجات والمخزون</h3>
+            <p data-ar="إضافة أصناف، أسعار، كميات، وتنبيهات نقص المخزون." data-en="Add items, prices, stock levels, and low-stock alerts.">إضافة أصناف، أسعار، كميات، وتنبيهات نقص المخزون.</p>
+          </div>
+          <div class="product-price" data-ar="مخصص" data-en="Custom">مخصص</div>
+        </article>
+        <article class="product-row">
+          <span class="product-code">RSKH-02</span>
+          <div>
+            <h3 data-ar="نظام العملاء والفواتير" data-en="Customers & Invoices">نظام العملاء والفواتير</h3>
+            <p data-ar="سجل عملاء، سجل مبيعات، ومتابعة المستحقات." data-en="Customer records, sales history, and due payments.">سجل عملاء، سجل مبيعات، ومتابعة المستحقات.</p>
+          </div>
+          <div class="product-price" data-ar="مخصص" data-en="Custom">مخصص</div>
+        </article>
+        <article class="product-row">
+          <span class="product-code">RSKH-03</span>
+          <div>
+            <h3 data-ar="واجهة الشركة ثنائية اللغة" data-en="Bilingual Company Site">واجهة الشركة ثنائية اللغة</h3>
+            <p data-ar="موقع تعريفي عربي / إنجليزي مربوط بحسابات العملاء." data-en="Arabic/English company site linked to client accounts.">موقع تعريفي عربي / إنجليزي مربوط بحسابات العملاء.</p>
+          </div>
+          <div class="product-price" data-ar="مخصص" data-en="Custom">مخصص</div>
+        </article>
       </div>
     </div>
   </div>
 </section>
 
-<section id="services">
-  <div class="wrap">
-    <div class="section-head">
-      <span class="eyebrow" data-ar="خدماتنا" data-en="Services">خدماتنا</span>
-      <h2 data-ar="أنظمة نصمّمها وفق احتياجاتكم" data-en="Systems built around your needs">أنظمة نصمّمها وفق احتياجاتكم</h2>
-      <p data-ar="لا نقدّم قوالب جاهزة؛ فكل نظام يُصمَّم خصيصاً ليلائم طبيعة أعمالكم منذ البداية." data-en="We don't sell off-the-shelf templates. Every system is designed to fit your business from day one.">لا نقدّم قوالب جاهزة؛ فكل نظام يُصمَّم خصيصاً ليلائم طبيعة أعمالكم منذ البداية.</p>
-    </div>
-    <div class="services-grid">
-      <div class="service-card">
-        <span class="service-tag">SYS-01</span>
-        <h3 data-ar="نظام المخزون والمبيعات" data-en="Inventory & Sales System">نظام المخزون والمبيعات</h3>
-        <p data-ar="متابعة الكميات والفواتير والتقارير في الوقت الفعلي، دون الحاجة إلى دفاتر أو ملفات إكسل متفرقة." data-en="Track stock, invoices, and reports in real time — no more scattered notebooks or spreadsheets.">متابعة الكميات والفواتير والتقارير في الوقت الفعلي، دون الحاجة إلى دفاتر أو ملفات إكسل متفرقة.</p>
+<section id="pos">
+  <div class="wrap pos-split">
+    <div>
+      <div class="section-head" style="margin-bottom:24px">
+        <div class="eyebrow" data-ar="نقاط البيع" data-en="Point of Sale">نقاط البيع</div>
+        <h2 data-ar="كاشير بسيط يسرّع البيع ويضبط المخزون" data-en="A simple till that speeds sales and keeps stock accurate">كاشير بسيط يسرّع البيع ويضبط المخزون</h2>
+        <p data-ar="بعد تسجيل الدخول تنتقل مباشرة إلى لوحة التحكم ونقطة البيع — بدون تعقيد." data-en="After login you go straight to the dashboard and POS — no friction.">بعد تسجيل الدخول تنتقل مباشرة إلى لوحة التحكم ونقطة البيع — بدون تعقيد.</p>
       </div>
-      <div class="service-card">
-        <span class="service-tag">SYS-02</span>
-        <h3 data-ar="نظام إدارة العملاء" data-en="Customer Management System">نظام إدارة العملاء</h3>
-        <p data-ar="تنظيم بيانات العملاء، ومتابعة التواصل والمبيعات، في مكان واحد يتيح لفريقكم بأكمله الاطلاع عليها." data-en="Keep customer data, communication, and sales in one place your whole team can see.">تنظيم بيانات العملاء، ومتابعة التواصل والمبيعات، في مكان واحد يتيح لفريقكم بأكمله الاطلاع عليها.</p>
-      </div>
-      <div class="service-card">
-        <span class="service-tag">SYS-03</span>
-        <h3 data-ar="نظام الحجوزات" data-en="Booking System">نظام الحجوزات</h3>
-        <p data-ar="جدولة المواعيد والحجوزات عبر الإنترنت دون تعارض، مع إرسال تذكيرات تلقائية للعملاء." data-en="Schedule appointments and bookings online without conflicts, with automatic reminders for customers.">جدولة المواعيد والحجوزات عبر الإنترنت دون تعارض، مع إرسال تذكيرات تلقائية للعملاء.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section id="pay">
-  <div class="wrap">
-    <div class="section-head">
-      <span class="eyebrow" data-ar="الدفع الإلكتروني" data-en="Pay Now">الدفع الإلكتروني</span>
-      <h2 data-ar="سداد عربون أو دفعة مقدّمة" data-en="Pay a Deposit or Down Payment">سداد عربون أو دفعة مقدّمة</h2>
-      <p data-ar="يُرجى تحديد المبلغ المتفق عليه، ثم السداد مباشرة عبر مدى أو البطاقات البنكية أو Apple Pay." data-en="Enter the agreed amount and pay directly with mada, cards, or Apple Pay.">يُرجى تحديد المبلغ المتفق عليه، ثم السداد مباشرة عبر مدى أو البطاقات البنكية أو Apple Pay.</p>
-    </div>
-
-    <div class="pay-locked" id="payLockedMessage">
-      <div class="pay-icon">🔒</div>
-      <h3 data-ar="سجّل دخولك أولاً" data-en="Please log in first">سجّل دخولك أولاً</h3>
-      <p data-ar="خيار الدفع متاح للعملاء المسجّلين فقط. يُرجى تسجيل الدخول أو إنشاء حساب للمتابعة." data-en="Payment is available to registered clients only. Please log in or create an account to continue.">خيار الدفع متاح للعملاء المسجّلين فقط. يُرجى تسجيل الدخول أو إنشاء حساب للمتابعة.</p>
-      <button type="button" class="pay-continue-btn" id="payLoginBtn" style="width:auto; padding:12px 28px;" data-ar="تسجيل الدخول" data-en="Log In">تسجيل الدخول</button>
-    </div>
-
-    <div class="pay-box" id="payBoxContent" style="display:none">
-      <!-- خطوة إدخال البيانات -->
-      <div class="pay-step active" id="payDetailsStep">
-        <label data-ar="الاسم الكامل" data-en="Full Name">الاسم الكامل</label>
-        <input type="text" id="payName" data-ar-placeholder="يُرجى إدخال الاسم الكامل" data-en-placeholder="Your name" placeholder="يُرجى إدخال الاسم الكامل">
-
-        <label data-ar="المبلغ المطلوب دفعه" data-en="Amount to Pay">المبلغ المطلوب دفعه</label>
-        <div class="pay-amount-row">
-          <input type="number" id="payAmount" min="1" step="0.01" placeholder="0.00">
-          <span class="pay-currency">SAR ﷼</span>
+      <div class="pos-points">
+        <div class="pos-point">
+          <div class="pos-num">01</div>
+          <div>
+            <h3 data-ar="بيع بضغطة" data-en="Tap to sell">بيع بضغطة</h3>
+            <p data-ar="اختر المنتج، حدّد الكمية، وأتمم الدفع نقداً أو بطاقة." data-en="Pick a product, set quantity, and take cash or card.">اختر المنتج، حدّد الكمية، وأتمم الدفع نقداً أو بطاقة.</p>
+          </div>
         </div>
-
-        <label data-ar="ملاحظة (اختياري)" data-en="Note (optional)">ملاحظة (اختياري)</label>
-        <input type="text" id="payNote" data-ar-placeholder="مثال: عربون نظام إدارة المخزون" data-en-placeholder="e.g. Deposit for inventory system" placeholder="مثال: عربون نظام إدارة المخزون">
-
-        <button type="button" class="pay-continue-btn" id="payContinueBtn" data-ar="المتابعة إلى الدفع" data-en="Continue to Payment">المتابعة إلى الدفع</button>
-        <div class="modal-msg" id="payValidationMsg"></div>
-      </div>
-
-      <!-- خطوة نموذج الدفع -->
-      <div id="paymentFormStep">
-        <button type="button" class="pay-back-btn" id="payBackBtn" data-ar="← الرجوع لتعديل المبلغ" data-en="← Back and edit amount">← الرجوع لتعديل المبلغ</button>
-        <div class="pay-summary">
-          <span data-ar="المبلغ المطلوب" data-en="Amount due">المبلغ المطلوب</span>
-          <span class="amount" id="paySummaryAmount">0.00 SAR</span>
+        <div class="pos-point">
+          <div class="pos-num">02</div>
+          <div>
+            <h3 data-ar="منتجات حية" data-en="Live catalog">منتجات حية</h3>
+            <p data-ar="حدّث الأسعار والكميات وتنعكس فوراً على شاشة الكاشير." data-en="Update prices and stock — they sync instantly to the till.">حدّث الأسعار والكميات وتنعكس فوراً على شاشة الكاشير.</p>
+          </div>
         </div>
-        <div id="mysr-form"></div>
+        <div class="pos-point">
+          <div class="pos-num">03</div>
+          <div>
+            <h3 data-ar="عربي وإنجليزي" data-en="Arabic & English">عربي وإنجليزي</h3>
+            <p data-ar="بدّل لغة الواجهة في ثانية لفريقك أو عملائك." data-en="Switch the whole interface language in a second.">بدّل لغة الواجهة في ثانية لفريقك أو عملائك.</p>
+          </div>
+        </div>
       </div>
-
-      <!-- حالة النجاح -->
-      <div class="pay-status" id="payStatusSuccess">
-        <div class="pay-icon">✅</div>
-        <h3 data-ar="تم استلام الدفعة بنجاح" data-en="Payment received successfully">تم استلام الدفعة بنجاح</h3>
-        <p data-ar="نشكر لكم ثقتكم، وسيتواصل معكم فريقنا لتأكيد التفاصيل خلال يوم عمل واحد." data-en="Thank you! Our team will reach out to confirm the details within one business day.">نشكر لكم ثقتكم، وسيتواصل معكم فريقنا لتأكيد التفاصيل خلال يوم عمل واحد.</p>
+    </div>
+    <div class="pos-screen" aria-hidden="true">
+      <div class="pos-screen-inner">
+        <div class="pos-bar"><span>RASEEKH POS</span><span id="posClockDemo">--:--</span></div>
+        <div class="pos-grid">
+          <div class="pos-tile"><strong data-ar="قهوة" data-en="Coffee">قهوة</strong>12 SAR</div>
+          <div class="pos-tile"><strong data-ar="ماء" data-en="Water">ماء</strong>3 SAR</div>
+          <div class="pos-tile"><strong data-ar="ساندويتش" data-en="Sandwich">ساندويتش</strong>18 SAR</div>
+          <div class="pos-tile"><strong data-ar="عصير" data-en="Juice">عصير</strong>10 SAR</div>
+          <div class="pos-tile"><strong data-ar="حلويات" data-en="Dessert">حلويات</strong>15 SAR</div>
+          <div class="pos-tile"><strong data-ar="وجبة" data-en="Meal">وجبة</strong>28 SAR</div>
+        </div>
+        <div class="pos-total"><span data-ar="الإجمالي" data-en="Total">الإجمالي</span><span>58.00 SAR</span></div>
       </div>
-
-      <!-- حالة الفشل -->
-      <div class="pay-status" id="payStatusFailed">
-        <div class="pay-icon">❌</div>
-        <h3 data-ar="لم تتم عملية الدفع" data-en="Payment was not completed">لم تتم عملية الدفع</h3>
-        <p data-ar="حدث خطأ أثناء معالجة عملية الدفع، أو تم إلغاؤها. يمكنكم المحاولة مرة أخرى." data-en="Something went wrong or the payment was cancelled. You can try again.">حدث خطأ أثناء معالجة عملية الدفع، أو تم إلغاؤها. يمكنكم المحاولة مرة أخرى.</p>
-        <button type="button" class="pay-continue-btn" id="payRetryBtn" data-ar="إعادة المحاولة" data-en="Try Again" style="width:auto; padding:12px 28px;">إعادة المحاولة</button>
-      </div>
-
-      <p class="pay-note" data-ar="تُعالَج عملية الدفع بشكل آمن عبر بوابة Moyasar المرخّصة من مؤسسة النقد السعودي (ساما)." data-en="Payments are securely processed via Moyasar, licensed by the Saudi Central Bank (SAMA).">تُعالَج عملية الدفع بشكل آمن عبر بوابة Moyasar المرخّصة من مؤسسة النقد السعودي (ساما).</p>
     </div>
   </div>
 </section>
@@ -587,533 +495,410 @@
 <section id="process">
   <div class="wrap">
     <div class="section-head">
-      <span class="eyebrow" data-ar="منهجية العمل" data-en="Our Process">منهجية العمل</span>
-      <h2 data-ar="من الفكرة إلى التشغيل، في أربع خطوات" data-en="From idea to launch, in four steps">من الفكرة إلى التشغيل، في أربع خطوات</h2>
+      <div class="eyebrow" data-ar="المنهجية" data-en="Process">المنهجية</div>
+      <h2 data-ar="من الفكرة إلى التشغيل" data-en="From idea to go-live">من الفكرة إلى التشغيل</h2>
     </div>
-    <div class="process-list">
+    <div class="process">
       <div class="process-item">
-        <span class="process-num mono">01</span>
-        <div><h3 data-ar="فهم طبيعة العمل" data-en="We Understand Your Business">فهم طبيعة العمل</h3><p data-ar="جلسة قصيرة نتعرّف من خلالها على احتياجاتكم الفعلية، دون استخدام مصطلحات تقنية معقدة." data-en="A short session to understand what you actually need — no complicated tech jargon.">جلسة قصيرة نتعرّف من خلالها على احتياجاتكم الفعلية، دون استخدام مصطلحات تقنية معقدة.</p></div>
-      </div>
-      <div class="process-item">
-        <span class="process-num mono">02</span>
-        <div><h3 data-ar="تصميم النظام" data-en="We Design the System">تصميم النظام</h3><p data-ar="إعداد مخطط واضح لكل شاشة ووظيفة قبل البدء في كتابة أي سطر من الكود." data-en="A clear blueprint for every screen and function before we write a single line of code.">إعداد مخطط واضح لكل شاشة ووظيفة قبل البدء في كتابة أي سطر من الكود.</p></div>
+        <div class="num">01</div>
+        <h3 data-ar="نفهم نشاطكم" data-en="Understand">نفهم نشاطكم</h3>
+        <p data-ar="جلسة قصيرة لاحتياجكم الفعلي دون تعقيد تقني." data-en="A short session on what you actually need.">جلسة قصيرة لاحتياجكم الفعلي دون تعقيد تقني.</p>
       </div>
       <div class="process-item">
-        <span class="process-num mono">03</span>
-        <div><h3 data-ar="البرمجة والتطوير" data-en="We Build & Develop">البرمجة والتطوير</h3><p data-ar="يبني فريقنا النظام على مراحل، بحيث تتابعون تقدّم العمل خطوة بخطوة." data-en="Our team builds the system in stages, so you see progress every step of the way.">يبني فريقنا النظام على مراحل، بحيث تتابعون تقدّم العمل خطوة بخطوة.</p></div>
+        <div class="num">02</div>
+        <h3 data-ar="نصمّم الواجهة" data-en="Design">نصمّم الواجهة</h3>
+        <p data-ar="واجهة فردية لعلامتكم مع منتجات ونقطة بيع." data-en="A distinct brand UI with products and POS.">واجهة فردية لعلامتكم مع منتجات ونقطة بيع.</p>
       </div>
       <div class="process-item">
-        <span class="process-num mono">04</span>
-        <div><h3 data-ar="التسليم والدعم" data-en="We Deliver & Support">التسليم والدعم</h3><p data-ar="تشغيل كامل للنظام، مع ضمان دعم فني لمدة 30 يوماً بعد التسليم." data-en="Full rollout of your system, with a 30-day support guarantee after delivery.">تشغيل كامل للنظام، مع ضمان دعم فني لمدة 30 يوماً بعد التسليم.</p></div>
+        <div class="num">03</div>
+        <h3 data-ar="نبني النظام" data-en="Build">نبني النظام</h3>
+        <p data-ar="تطوير على مراحل مع متابعة واضحة للتقدم." data-en="Staged build with clear progress.">تطوير على مراحل مع متابعة واضحة للتقدم.</p>
       </div>
-    </div>
-  </div>
-</section>
-
-<section id="team">
-  <div class="wrap">
-    <div class="section-head">
-      <span class="eyebrow" data-ar="فريق العمل" data-en="Our Team">فريق العمل</span>
-      <h2 data-ar="فريق متكامل من ثلاثة تخصصات" data-en="A team built from three disciplines">فريق متكامل من ثلاثة تخصصات</h2>
-      <p data-ar="لا نعتمد على تخصص واحد؛ فكل نظام يمر بثلاث زوايا نظر مختلفة لضمان جودته." data-en="We don't rely on a single skill set. Every system passes through three different perspectives.">لا نعتمد على تخصص واحد؛ فكل نظام يمر بثلاث زوايا نظر مختلفة لضمان جودته.</p>
-    </div>
-    <div class="team-grid">
-      <div class="team-card">
-        <div class="team-icon mono">CIS</div>
-        <h3 data-ar="أنظمة المعلومات" data-en="Information Systems">أنظمة المعلومات</h3>
-        <p data-ar="يُعنى بفهم كيفية إدارة بيانات شركتكم وترجمتها إلى نظام يخدم أعمالكم فعلياً." data-en="Understands how your company's data is managed and translates it into a system that actually serves your business.">يُعنى بفهم كيفية إدارة بيانات شركتكم وترجمتها إلى نظام يخدم أعمالكم فعلياً.</p>
-      </div>
-      <div class="team-card">
-        <div class="team-icon mono">SE</div>
-        <h3 data-ar="هندسة البرمجيات" data-en="Software Engineering">هندسة البرمجيات</h3>
-        <p data-ar="يتولّى بناء الأنظمة باحترافية وجودة عالية، على أسس برمجية سليمة تدوم." data-en="Builds systems with professional craftsmanship, on solid code that lasts.">يتولّى بناء الأنظمة باحترافية وجودة عالية، على أسس برمجية سليمة تدوم.</p>
-      </div>
-      <div class="team-card">
-        <div class="team-icon mono">NET</div>
-        <h3 data-ar="الشبكات والبنية التقنية" data-en="Networks & Infrastructure">الشبكات والبنية التقنية</h3>
-        <p data-ar="يتولّى تجهيز البيئة التقنية التي يعمل عليها نظامكم بأمان واستقرار." data-en="Sets up the technical environment your system runs on, safely and reliably.">يتولّى تجهيز البيئة التقنية التي يعمل عليها نظامكم بأمان واستقرار.</p>
+      <div class="process-item">
+        <div class="num">04</div>
+        <h3 data-ar="نشغّل وندعم" data-en="Support">نشغّل وندعم</h3>
+        <p data-ar="تشغيل كامل مع دعم فني بعد التسليم." data-en="Full launch with post-delivery support.">تشغيل كامل مع دعم فني بعد التسليم.</p>
       </div>
     </div>
   </div>
 </section>
 
-<section id="contact">
-  <div class="wrap">
-    <div class="contact-box">
-      <div>
-        <h2 data-ar="هل أنتم مستعدون للبدء؟" data-en="Ready to start?">هل أنتم مستعدون للبدء؟</h2>
-        <p data-ar="يُرجى تعبئة البيانات، وسيتواصل معكم فريقنا خلال يوم عمل واحد." data-en="Fill in your details and our team will reach out within one business day.">يُرجى تعبئة البيانات، وسيتواصل معكم فريقنا خلال يوم عمل واحد.</p>
-        <div class="contact-info">
-          <div><span class="mono" data-ar="واتساب:" data-en="WhatsApp:">واتساب:</span> XXX-XXX-XXXX</div>
-          <div><span class="mono" data-ar="البريد الإلكتروني:" data-en="Email:">البريد الإلكتروني:</span> hello@raseekh.example</div>
+<section id="pay">
+  <div class="wrap two-col">
+    <div class="panel">
+      <h2 data-ar="سداد عربون أو دفعة" data-en="Pay a deposit">سداد عربون أو دفعة</h2>
+      <p data-ar="للعملاء المسجّلين — عبر مدى / بطاقة / Apple Pay." data-en="For registered clients — mada / card / Apple Pay.">للعملاء المسجّلين — عبر مدى / بطاقة / Apple Pay.</p>
+
+      <div class="locked" id="payLockedMessage">
+        <h3 data-ar="سجّل دخولك أولاً" data-en="Please log in first">سجّل دخولك أولاً</h3>
+        <p data-ar="الدفع متاح بعد تسجيل الدخول أو إنشاء حساب." data-en="Payment unlocks after you sign in or create an account.">الدفع متاح بعد تسجيل الدخول أو إنشاء حساب.</p>
+        <button type="button" class="btn btn-primary" id="payLoginBtn" data-ar="تسجيل الدخول" data-en="Log in">تسجيل الدخول</button>
+      </div>
+
+      <div id="payBoxContent" style="display:none">
+        <div class="pay-step active" id="payDetailsStep">
+          <form class="form" onsubmit="return false">
+            <input type="text" id="payName" data-ar-placeholder="الاسم الكامل" data-en-placeholder="Full name" placeholder="الاسم الكامل">
+            <div class="pay-amount">
+              <input type="number" id="payAmount" min="1" step="0.01" placeholder="0.00">
+              <span>SAR</span>
+            </div>
+            <input type="text" id="payNote" data-ar-placeholder="ملاحظة (اختياري)" data-en-placeholder="Note (optional)" placeholder="ملاحظة (اختياري)">
+            <button type="button" class="btn btn-primary" id="payContinueBtn" data-ar="المتابعة للدفع" data-en="Continue to pay">المتابعة للدفع</button>
+            <div class="msg" id="payValidationMsg"></div>
+          </form>
+        </div>
+        <div class="pay-step" id="paymentFormStep">
+          <button type="button" class="linkish" id="payBackBtn" data-ar="← تعديل المبلغ" data-en="← Edit amount">← تعديل المبلغ</button>
+          <div class="pay-summary"><span data-ar="المبلغ" data-en="Amount">المبلغ</span><b id="paySummaryAmount">0.00 SAR</b></div>
+          <div id="mysr-form"></div>
+        </div>
+        <div class="pay-status" id="payStatusSuccess">
+          <h3 data-ar="تم استلام الدفعة" data-en="Payment received">تم استلام الدفعة</h3>
+          <p data-ar="سيتواصل معكم الفريق خلال يوم عمل." data-en="Our team will contact you within one business day.">سيتواصل معكم الفريق خلال يوم عمل.</p>
+        </div>
+        <div class="pay-status" id="payStatusFailed">
+          <h3 data-ar="لم تتم العملية" data-en="Payment failed">لم تتم العملية</h3>
+          <p data-ar="حاول مرة أخرى أو تواصل معنا." data-en="Try again or contact us.">حاول مرة أخرى أو تواصل معنا.</p>
+          <button type="button" class="btn btn-primary" id="payRetryBtn" data-ar="إعادة المحاولة" data-en="Retry">إعادة المحاولة</button>
         </div>
       </div>
-      <form onsubmit="event.preventDefault(); alert(currentLang === 'ar' ? 'تم إرسال طلبكم بنجاح، وسيتواصل معكم فريقنا في أقرب وقت.' : 'Your request has been sent — we will be in touch soon!');">
-        <input type="text" data-ar-placeholder="الاسم الكامل" data-en-placeholder="Full Name" placeholder="الاسم الكامل" required>
-        <input type="text" data-ar-placeholder="اسم الشركة أو المنشأة" data-en-placeholder="Company / Business Name" placeholder="اسم الشركة أو المنشأة">
-        <select>
-          <option data-ar="نوع النظام المطلوب" data-en="System Type Needed">نوع النظام المطلوب</option>
-          <option data-ar="نظام مخزون ومبيعات" data-en="Inventory & Sales System">نظام مخزون ومبيعات</option>
-          <option data-ar="نظام إدارة عملاء" data-en="Customer Management System">نظام إدارة عملاء</option>
-          <option data-ar="نظام حجوزات" data-en="Booking System">نظام حجوزات</option>
-          <option data-ar="نظام آخر" data-en="Something Else">نظام آخر</option>
+    </div>
+
+    <div class="panel" id="contact">
+      <h2 data-ar="تواصل مع راسخ" data-en="Contact Raseekh">تواصل مع راسخ</h2>
+      <p data-ar="صف احتياجكم وسنعود إليكم خلال يوم عمل." data-en="Tell us what you need — we reply within a business day.">صف احتياجكم وسنعود إليكم خلال يوم عمل.</p>
+      <form class="form" id="contactForm">
+        <input type="text" required data-ar-placeholder="الاسم الكامل" data-en-placeholder="Full name" placeholder="الاسم الكامل" id="contactName">
+        <input type="text" data-ar-placeholder="اسم الشركة" data-en-placeholder="Company name" placeholder="اسم الشركة" id="contactCompany">
+        <select id="contactType">
+          <option value="pos" data-ar="نقطة بيع POS" data-en="POS system">نقطة بيع POS</option>
+          <option value="products" data-ar="إدارة منتجات" data-en="Product management">إدارة منتجات</option>
+          <option value="inventory" data-ar="مخزون ومبيعات" data-en="Inventory & sales">مخزون ومبيعات</option>
+          <option value="other" data-ar="طلب آخر" data-en="Something else">طلب آخر</option>
         </select>
-        <textarea data-ar-placeholder="يُرجى وصف احتياجكم باختصار" data-en-placeholder="Briefly describe what you need" placeholder="يُرجى وصف احتياجكم باختصار"></textarea>
-        <button type="submit" class="submit-btn" data-ar="إرسال الطلب" data-en="Submit Request">إرسال الطلب</button>
+        <textarea required data-ar-placeholder="صف احتياجكم باختصار" data-en-placeholder="Briefly describe your need" placeholder="صف احتياجكم باختصار" id="contactMsg"></textarea>
+        <button class="btn btn-primary" type="submit" data-ar="إرسال الطلب" data-en="Send request">إرسال الطلب</button>
+        <div class="msg" id="contactResult"></div>
       </form>
     </div>
   </div>
 </section>
 
 <section id="terms">
-  <div class="wrap" style="max-width:760px;">
-    <div class="section-head" style="margin-bottom:32px;">
-      <span class="eyebrow" data-ar="الشروط والأحكام" data-en="Terms & Conditions">الشروط والأحكام</span>
+  <div class="wrap" style="max-width:760px">
+    <div class="section-head">
+      <div class="eyebrow" data-ar="الشروط" data-en="Terms">الشروط</div>
       <h2 data-ar="الشروط والأحكام" data-en="Terms & Conditions">الشروط والأحكام</h2>
     </div>
-    <div class="terms-content">
-      <h3 data-ar="١. طبيعة الخدمة" data-en="1. Nature of Service">١. طبيعة الخدمة</h3>
-      <p data-ar="تقدّم راسخ خدمات تصميم وتطوير أنظمة إدارة مخصصة (مخزون، عملاء، حجوزات) للمنشآت والأفراد، وفق ما يتم الاتفاق عليه مع كل عميل بشكل منفصل." data-en="Raseekh provides design and development services for custom management systems (inventory, customers, bookings) for businesses and individuals, as agreed separately with each client.">تقدّم راسخ خدمات تصميم وتطوير أنظمة إدارة مخصصة (مخزون، عملاء، حجوزات) للمنشآت والأفراد، وفق ما يتم الاتفاق عليه مع كل عميل بشكل منفصل.</p>
-
-      <h3 data-ar="٢. الحسابات والتسجيل" data-en="2. Accounts & Registration">٢. الحسابات والتسجيل</h3>
-      <p data-ar="عند إنشاء حساب، يتعهّد العميل بتقديم معلومات صحيحة ودقيقة، ويكون مسؤولاً عن سرية بيانات دخوله وعن أي نشاط يتم من خلال حسابه." data-en="When creating an account, the client undertakes to provide accurate information, and is responsible for the confidentiality of their login credentials and any activity under their account.">عند إنشاء حساب، يتعهّد العميل بتقديم معلومات صحيحة ودقيقة، ويكون مسؤولاً عن سرية بيانات دخوله وعن أي نشاط يتم من خلال حسابه.</p>
-
-      <h3 data-ar="٣. الدفع والمبالغ المسدَّدة" data-en="3. Payments">٣. الدفع والمبالغ المسدَّدة</h3>
-      <p data-ar="تتم عمليات الدفع عبر بوابة دفع خارجية مرخّصة (Moyasar). المبالغ المدفوعة كعربون أو دفعة مقدّمة غير قابلة للاسترداد إلا وفق ما يتم الاتفاق عليه كتابياً بين الطرفين." data-en="Payments are processed via a licensed external payment gateway (Moyasar). Deposits or advance payments are non-refundable except as agreed in writing between both parties.">تتم عمليات الدفع عبر بوابة دفع خارجية مرخّصة (Moyasar). المبالغ المدفوعة كعربون أو دفعة مقدّمة غير قابلة للاسترداد إلا وفق ما يتم الاتفاق عليه كتابياً بين الطرفين.</p>
-
-      <h3 data-ar="٤. حماية البيانات" data-en="4. Data Protection">٤. حماية البيانات</h3>
-      <p data-ar="نلتزم بحماية بيانات العملاء المسجَّلة لدينا، ولا نشاركها مع أي طرف ثالث إلا في حدود ما يخدم تقديم الخدمة (مثل بوابة الدفع)، أو ما يقتضيه النظام." data-en="We are committed to protecting client data on file, and do not share it with third parties except as necessary to provide the service (such as the payment gateway), or as required by law.">نلتزم بحماية بيانات العملاء المسجَّلة لدينا، ولا نشاركها مع أي طرف ثالث إلا في حدود ما يخدم تقديم الخدمة (مثل بوابة الدفع)، أو ما يقتضيه النظام.</p>
-
-      <h3 data-ar="٥. التعديلات على الخدمة" data-en="5. Changes to the Service">٥. التعديلات على الخدمة</h3>
-      <p data-ar="الموقع لا يزال تحت التجربة، وقد تطرأ تعديلات على مزاياه أو محتواه دون إشعار مسبق." data-en="This website is still under testing, and its features or content may change without prior notice.">الموقع لا يزال تحت التجربة، وقد تطرأ تعديلات على مزاياه أو محتواه دون إشعار مسبق.</p>
-
-      <h3 data-ar="٦. التواصل" data-en="6. Contact">٦. التواصل</h3>
-      <p data-ar="لأي استفسار بخصوص هذه الشروط، يمكن التواصل معنا عبر البيانات الموجودة في قسم «تواصل معنا»." data-en="For any inquiries about these terms, please contact us via the details in the 'Contact Us' section.">لأي استفسار بخصوص هذه الشروط، يمكن التواصل معنا عبر البيانات الموجودة في قسم «تواصل معنا».</p>
-
-      <p class="pay-note" style="text-align:right; margin-top:28px;" data-ar="* هذه الشروط نموذجية عامة، ويُنصح بمراجعتها من مختص قانوني لتخصيصها لنشاطكم قبل الاعتماد النهائي." data-en="* These are general template terms — we recommend legal review before final adoption.">* هذه الشروط نموذجية عامة، ويُنصح بمراجعتها من مختص قانوني لتخصيصها لنشاطكم قبل الاعتماد النهائي.</p>
+    <div style="color:var(--muted);font-size:.95rem;display:flex;flex-direction:column;gap:14px">
+      <p data-ar="تقدّم راسخ أنظمة نقاط بيع وإدارة منتجات ومخزون مخصصة وفق الاتفاق مع كل عميل." data-en="Application of Raseekh POS, product, and inventory systems is per agreement with each client.">تقدّم راسخ أنظمة نقاط بيع وإدارة منتجات ومخزون مخصصة وفق الاتفاق مع كل عميل.</p>
+      <p data-ar="العميل مسؤول عن سرية بيانات الدخول. الدفع عبر Moyasar. البيانات لا تُشارك إلا لخدمة التشغيل أو ما يقتضيه النظام." data-en="Clients are responsible for login confidentiality. Payments via Moyasar. Data is shared only to operate the service or as required by law.">العميل مسؤول عن سرية بيانات الدخول. الدفع عبر Moyasar. البيانات لا تُشارك إلا لخدمة التشغيل أو ما يقتضيه النظام.</p>
     </div>
   </div>
 </section>
 
-<div class="beta-banner">
-  <span class="beta-badge mono">BETA</span>
-  <span data-ar="هذا الموقع لا يزال تحت التجربة، وقد تحدث بعض الأخطاء أو التغييرات مؤقتاً." data-en="This website is still under testing — some errors or temporary changes may occur.">هذا الموقع لا يزال تحت التجربة، وقد تحدث بعض الأخطاء أو التغييرات مؤقتاً.</span>
-</div>
+<div class="beta"><b>BETA</b> — <span data-ar="الموقع تحت التطوير وقد تتغيّر بعض المزايا مؤقتاً." data-en="Site is under active development; some features may change.">الموقع تحت التطوير وقد تتغيّر بعض المزايا مؤقتاً.</span></div>
 
 <footer>
-  <div class="wrap" data-ar="راسخ — تطوير أنظمة إدارة مخصصة © 2026" data-en="Raseekh — Custom Management Systems © 2026">راسخ — تطوير أنظمة إدارة مخصصة © 2026</div>
+  <div class="wrap" data-ar="راسخ — أنظمة نقاط البيع والمنتجات © 2026" data-en="Raseekh — POS & Product Systems © 2026">راسخ — أنظمة نقاط البيع والمنتجات © 2026</div>
   <div class="footer-links">
-    <a href="#terms" data-ar="الشروط والأحكام" data-en="Terms & Conditions">الشروط والأحكام</a>
+    <a href="#terms" data-ar="الشروط والأحكام" data-en="Terms">الشروط والأحكام</a>
+    <a href="dashboard/" data-ar="لوحة التحكم" data-en="Dashboard">لوحة التحكم</a>
   </div>
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
-  document.getElementById('navToggle').addEventListener('click', function(){
-    const links = document.querySelector('.nav-links');
-    const visible = links.style.display === 'flex';
-    links.style.display = visible ? 'none' : 'flex';
-    links.style.flexDirection = 'column';
-    links.style.position = 'absolute';
-    links.style.top = '64px';
-    links.style.right = '24px';
-    links.style.background = '#16233A';
-    links.style.border = '1px solid #2A3B58';
-    links.style.borderRadius = '10px';
-    links.style.padding = '16px 24px';
-    links.style.gap = '14px';
-  });
-
-  /* ==================== إعداد Supabase ==================== */
+(function(){
   const SUPABASE_URL = 'https://dupdkohciluepwrfuhod.supabase.co';
   const SUPABASE_ANON_KEY = 'sb_publishable_UVbMT7eplHHBNdZbOpLssw_UUEYTxFA';
+  const DASHBOARD_URL = 'dashboard/';
+  const MOYASAR_PUBLISHABLE_KEY = 'pk_live_U94Vg5e2kjJY557CU8qjnxv83shQJx6o125RrRey';
+
   let supabaseClient = null;
   try {
-    if (window.supabase) {
-      supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    } else {
-      console.warn('تعذّر تحميل مكتبة Supabase — ميزة الحسابات معطّلة مؤقتاً.');
-    }
-  } catch (e) {
-    console.warn('خطأ بتهيئة Supabase:', e);
-  }
+    if (window.supabase) supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  } catch (e) { console.warn(e); }
 
-  /* ==================== عناصر النافذة ==================== */
-  const authModal = document.getElementById('authModal');
-  const accountBtn = document.getElementById('accountBtn');
-  const modalCloseBtn = document.getElementById('modalCloseBtn');
-  const authTabs = document.getElementById('authTabs');
-  const accountPanel = document.getElementById('accountPanel');
-
-  const modalLoginTabBtn = document.getElementById('modalLoginTabBtn');
-  const modalRegisterTabBtn = document.getElementById('modalRegisterTabBtn');
-  const modalLoginPanel = document.getElementById('modalLoginPanel');
-  const modalRegisterPanel = document.getElementById('modalRegisterPanel');
-  const modalForgotPanel = document.getElementById('modalForgotPanel');
-  const modalResetPanel = document.getElementById('modalResetPanel');
-  const modalTabsBar = document.querySelector('.modal-tabs');
-
-  const loginForm = document.getElementById('loginForm');
-  const registerForm = document.getElementById('registerForm');
-  const forgotForm = document.getElementById('forgotForm');
-  const resetForm = document.getElementById('resetForm');
-  const loginMsg = document.getElementById('loginMsg');
-  const registerMsg = document.getElementById('registerMsg');
-  const forgotMsg = document.getElementById('forgotMsg');
-  const resetMsg = document.getElementById('resetMsg');
-  const forgotPasswordLink = document.getElementById('forgotPasswordLink');
-  const backToLoginLink = document.getElementById('backToLoginLink');
-
-  const accountAvatar = document.getElementById('accountAvatar');
-  const accountName = document.getElementById('accountName');
-  const accountEmail = document.getElementById('accountEmail');
-  const logoutBtn = document.getElementById('logoutBtn');
-
-  function openModal(){ authModal.classList.add('open'); }
-  function closeModal(){
-    authModal.classList.remove('open');
-    loginMsg.textContent=''; registerMsg.textContent=''; forgotMsg.textContent=''; resetMsg.textContent='';
-    if (!accountPanel.classList.contains('active')) {
-      modalLoginTabBtn.classList.add('active'); modalRegisterTabBtn.classList.remove('active');
-      showAuthPanel(modalLoginPanel);
-    }
-  }
-
-  accountBtn.addEventListener('click', openModal);
-  modalCloseBtn.addEventListener('click', closeModal);
-  authModal.addEventListener('click', function(e){ if (e.target === authModal) closeModal(); });
-
-  function showAuthPanel(panel){
-    [modalLoginPanel, modalRegisterPanel, modalForgotPanel, modalResetPanel].forEach(function(p){
-      p.classList.remove('active');
-    });
-    panel.classList.add('active');
-    // شريط التبويبات (دخول/تسجيل) يظهر بس بهاتين الحالتين
-    modalTabsBar.style.display = (panel === modalLoginPanel || panel === modalRegisterPanel) ? 'flex' : 'none';
-  }
-
-  modalLoginTabBtn.addEventListener('click', function(){
-    modalLoginTabBtn.classList.add('active'); modalRegisterTabBtn.classList.remove('active');
-    showAuthPanel(modalLoginPanel);
-  });
-  modalRegisterTabBtn.addEventListener('click', function(){
-    modalRegisterTabBtn.classList.add('active'); modalLoginTabBtn.classList.remove('active');
-    showAuthPanel(modalRegisterPanel);
-  });
-
-  forgotPasswordLink.addEventListener('click', function(){
-    showAuthPanel(modalForgotPanel);
-  });
-  backToLoginLink.addEventListener('click', function(){
-    modalLoginTabBtn.classList.add('active'); modalRegisterTabBtn.classList.remove('active');
-    showAuthPanel(modalLoginPanel);
-  });
-
-  /* ==================== طلب رابط إعادة تعيين كلمة المرور ==================== */
-  forgotForm.addEventListener('submit', async function(e){
-    e.preventDefault();
-
-    if (!supabaseClient) {
-      forgotMsg.style.color = '#f87171';
-      forgotMsg.textContent = currentLang === 'ar' ? 'تعذّر الاتصال بخدمة الحسابات، يُرجى تحديث الصفحة.' : 'Could not connect to the accounts service, please refresh the page.';
-      return;
-    }
-
-    const email = document.getElementById('forgotEmail').value.trim();
-    forgotMsg.style.color = '#93A0B4';
-    forgotMsg.textContent = currentLang === 'ar' ? 'جاري إرسال الرابط...' : 'Sending link...';
-
-    const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
-      redirectTo: window.location.origin + window.location.pathname
-    });
-
-    if (error) {
-      forgotMsg.style.color = '#f87171';
-      forgotMsg.textContent = currentLang === 'ar' ? 'حدث خطأ، يُرجى المحاولة مرة أخرى.' : 'Something went wrong, please try again.';
-      return;
-    }
-
-    forgotMsg.style.color = '#4FD1C5';
-    forgotMsg.textContent = currentLang === 'ar'
-      ? '📩 تم إرسال رابط إعادة التعيين إلى بريدكم الإلكتروني.'
-      : '📩 A password reset link has been sent to your email.';
-    forgotForm.reset();
-  });
-
-  /* ==================== تعيين كلمة مرور جديدة (من رابط الإيميل) ==================== */
-  resetForm.addEventListener('submit', async function(e){
-    e.preventDefault();
-
-    if (!supabaseClient) return;
-
-    const newPassword = document.getElementById('resetPassword').value;
-    resetMsg.style.color = '#93A0B4';
-    resetMsg.textContent = currentLang === 'ar' ? 'جاري الحفظ...' : 'Saving...';
-
-    const { error } = await supabaseClient.auth.updateUser({ password: newPassword });
-
-    if (error) {
-      resetMsg.style.color = '#f87171';
-      resetMsg.textContent = currentLang === 'ar' ? 'تعذّر حفظ كلمة المرور، حاول مرة أخرى.' : 'Could not save the password, please try again.';
-      return;
-    }
-
-    resetMsg.style.color = '#4FD1C5';
-    resetMsg.textContent = currentLang === 'ar' ? '✅ تم تحديث كلمة المرور بنجاح.' : '✅ Password updated successfully.';
-    resetForm.reset();
-  });
-
-  /* الاستماع لحالة "استرجاع كلمة المرور" القادمة من رابط الإيميل */
-  if (supabaseClient) {
-    supabaseClient.auth.onAuthStateChange(function(event, session){
-      if (event === 'PASSWORD_RECOVERY') {
-        openModal();
-        modalTabsBar.style.display = 'none';
-        showAuthPanel(modalResetPanel);
-      }
-    });
-  }
-
-  /* ==================== إنشاء حساب ==================== */
-  registerForm.addEventListener('submit', async function(e){
-    e.preventDefault();
-
-    if (!supabaseClient) {
-      registerMsg.style.color = '#f87171';
-      registerMsg.textContent = currentLang === 'ar' ? 'تعذّر الاتصال بخدمة الحسابات، يُرجى تحديث الصفحة.' : 'Could not connect to the accounts service, please refresh the page.';
-      return;
-    }
-
-    const name = document.getElementById('registerName').value.trim();
-    const email = document.getElementById('registerEmail').value.trim();
-    const phone = document.getElementById('registerPhone').value.trim();
-    const password = document.getElementById('registerPassword').value;
-
-    registerMsg.style.color = '#93A0B4';
-    registerMsg.textContent = 'جاري إنشاء الحساب...';
-
-    const { data, error } = await supabaseClient.auth.signUp({
-      email: email,
-      password: password,
-      options: { data: { full_name: name, phone: phone } }
-    });
-
-    if (error) {
-      registerMsg.style.color = '#f87171';
-      registerMsg.textContent = 'خطأ: ' + (error.message.includes('already registered') ? 'هذا البريد مسجل مسبقاً' : error.message);
-      return;
-    }
-
-    // حفظ بيانات إضافية بجدول profiles (يشتغل تلقائياً بعد تفعيل RLS المناسب)
-    if (data.user) {
-      await supabaseClient.from('profiles').upsert({
-        id: data.user.id, full_name: name, phone: phone, email: email
-      });
-    }
-
-    registerMsg.style.color = '#4FD1C5';
-    registerMsg.textContent = data.session ? '🎉 تم إنشاء الحساب وتسجيل الدخول بنجاح!' : '🎉 تم إنشاء الحساب! يُرجى تفعيله عبر البريد الإلكتروني.';
-    registerForm.reset();
-
-    if (data.session) {
-      setTimeout(() => showAccount(data.user), 900);
-    }
-  });
-
-  /* ==================== تسجيل الدخول ==================== */
-  loginForm.addEventListener('submit', async function(e){
-    e.preventDefault();
-
-    if (!supabaseClient) {
-      loginMsg.style.color = '#f87171';
-      loginMsg.textContent = currentLang === 'ar' ? 'تعذّر الاتصال بخدمة الحسابات، يُرجى تحديث الصفحة.' : 'Could not connect to the accounts service, please refresh the page.';
-      return;
-    }
-
-    const email = document.getElementById('loginEmail').value.trim();
-    const password = document.getElementById('loginPassword').value;
-
-    loginMsg.style.color = '#93A0B4';
-    loginMsg.textContent = 'جاري تسجيل الدخول...';
-
-    const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
-
-    if (error) {
-      loginMsg.style.color = '#f87171';
-      loginMsg.textContent = 'خطأ: البريد الإلكتروني أو كلمة المرور غير صحيحة';
-      return;
-    }
-
-    loginMsg.style.color = '#4FD1C5';
-    loginMsg.textContent = '🎉 تم تسجيل الدخول بنجاح!';
-    loginForm.reset();
-    setTimeout(() => showAccount(data.user), 600);
-  });
-
-  /* ==================== تسجيل الخروج ==================== */
-  logoutBtn.addEventListener('click', async function(){
-    if (supabaseClient) await supabaseClient.auth.signOut();
-    location.reload();
-  });
-
-  /* ==================== عرض حالة الحساب المسجّل ==================== */
-  function showAccount(user){
-    // تسجيل الدخول ناجح — ننتقل مباشرة إلى لوحة تحكم العميل
-    window.location.href = '/dashboard/';
-  }
-
-  document.getElementById('payLoginBtn').addEventListener('click', openModal);
-
-  /* التحقق من وجود جلسة مسجّلة عند تحميل الصفحة */
-  if (supabaseClient) {
-    supabaseClient.auth.getSession().then(({ data: { session } }) => {
-      if (session && session.user) showAccount(session.user);
-    });
-  }
-
-  /* ==================== تبديل اللغة (عربي / English) ==================== */
   let currentLang = localStorage.getItem('raseekh_lang') || 'ar';
+  let loggedInUser = null;
+
+  const authModal = document.getElementById('authModal');
+  const modalTabsBar = document.getElementById('modalTabsBar');
+  const panels = {
+    login: document.getElementById('modalLoginPanel'),
+    register: document.getElementById('modalRegisterPanel'),
+    forgot: document.getElementById('modalForgotPanel'),
+    reset: document.getElementById('modalResetPanel')
+  };
+
+  function t(ar, en){ return currentLang === 'ar' ? ar : en; }
 
   function applyLang(lang){
     currentLang = lang;
     localStorage.setItem('raseekh_lang', lang);
-
-    document.documentElement.setAttribute('lang', lang === 'ar' ? 'ar' : 'en');
-    document.documentElement.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+    document.documentElement.lang = lang;
+    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
     document.body.classList.toggle('lang-en', lang === 'en');
-
-    // نصوص عادية
-    document.querySelectorAll('[data-ar]').forEach(function(el){
-      const val = lang === 'ar' ? el.getAttribute('data-ar') : el.getAttribute('data-en');
-      if (val !== null) el.textContent = val;
+    document.querySelectorAll('[data-ar]').forEach(el => {
+      const v = lang === 'ar' ? el.getAttribute('data-ar') : el.getAttribute('data-en');
+      if (v !== null) el.textContent = v;
     });
-
-    // نصوص فيها وسوم HTML (مثل <em>)
-    document.querySelectorAll('[data-ar-html]').forEach(function(el){
-      const val = lang === 'ar' ? el.getAttribute('data-ar-html') : el.getAttribute('data-en-html');
-      if (val !== null) el.innerHTML = val;
+    document.querySelectorAll('[data-ar-html]').forEach(el => {
+      const v = lang === 'ar' ? el.getAttribute('data-ar-html') : el.getAttribute('data-en-html');
+      if (v !== null) el.innerHTML = v;
     });
-
-    // Placeholders
-    document.querySelectorAll('[data-ar-placeholder]').forEach(function(el){
-      const val = lang === 'ar' ? el.getAttribute('data-ar-placeholder') : el.getAttribute('data-en-placeholder');
-      if (val !== null) el.setAttribute('placeholder', val);
+    document.querySelectorAll('[data-ar-placeholder]').forEach(el => {
+      const v = lang === 'ar' ? el.getAttribute('data-ar-placeholder') : el.getAttribute('data-en-placeholder');
+      if (v !== null) el.setAttribute('placeholder', v);
     });
-
-    // إذا ما فيه مستخدم مسجل دخول، رجّع نص زر الحساب لوضعه الافتراضي
-    if (!accountPanel.classList.contains('active')) {
-      accountBtn.textContent = lang === 'ar' ? 'حساب العميل' : 'Client Account';
+    document.getElementById('langToggle').textContent = lang === 'ar' ? 'EN' : 'AR';
+    document.title = lang === 'ar' ? 'راسخ — أنظمة نقاط البيع والمنتجات' : 'Raseekh — POS & Product Systems';
+    if (loggedInUser) {
+      document.getElementById('accountBtn').textContent = t('حسابي', 'My account');
     }
-
-    langToggle.textContent = lang === 'ar' ? 'EN' : 'AR';
   }
 
-  const langToggle = document.getElementById('langToggle');
-  langToggle.addEventListener('click', function(){
-    applyLang(currentLang === 'ar' ? 'en' : 'ar');
-  });
-
+  document.getElementById('langToggle').addEventListener('click', () => applyLang(currentLang === 'ar' ? 'en' : 'ar'));
   applyLang(currentLang);
 
-  /* ==================== نظام الدفع (Moyasar) ==================== */
-  const MOYASAR_PUBLISHABLE_KEY = 'pk_live_U94Vg5e2kjJY557CU8qjnxv83shQJx6o125RrRey';
+  document.getElementById('navToggle').addEventListener('click', () => {
+    document.getElementById('navLinks').classList.toggle('open');
+  });
+  document.getElementById('navLinks').querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => document.getElementById('navLinks').classList.remove('open'));
+  });
 
+  function openModal(){ authModal.classList.add('open'); }
+  function closeModal(){
+    authModal.classList.remove('open');
+    ['loginMsg','registerMsg','forgotMsg','resetMsg'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = ''; });
+  }
+  function showAuthPanel(name){
+    Object.values(panels).forEach(p => p.classList.remove('active'));
+    panels[name].classList.add('active');
+    modalTabsBar.style.display = (name === 'login' || name === 'register') ? 'flex' : 'none';
+    if (name === 'login') {
+      document.getElementById('modalLoginTabBtn').classList.add('active');
+      document.getElementById('modalRegisterTabBtn').classList.remove('active');
+    }
+    if (name === 'register') {
+      document.getElementById('modalRegisterTabBtn').classList.add('active');
+      document.getElementById('modalLoginTabBtn').classList.remove('active');
+    }
+  }
+
+  document.getElementById('accountBtn').addEventListener('click', () => {
+    if (loggedInUser) { window.location.href = DASHBOARD_URL; return; }
+    showAuthPanel('login'); openModal();
+  });
+  document.getElementById('modalCloseBtn').addEventListener('click', closeModal);
+  authModal.addEventListener('click', e => { if (e.target === authModal) closeModal(); });
+  document.getElementById('modalLoginTabBtn').addEventListener('click', () => showAuthPanel('login'));
+  document.getElementById('modalRegisterTabBtn').addEventListener('click', () => showAuthPanel('register'));
+  document.getElementById('forgotPasswordLink').addEventListener('click', () => showAuthPanel('forgot'));
+  document.getElementById('backToLoginLink').addEventListener('click', () => showAuthPanel('login'));
+  document.getElementById('payLoginBtn').addEventListener('click', () => { showAuthPanel('login'); openModal(); });
+
+  function goDashboard(){ window.location.href = DASHBOARD_URL; }
+
+  function setPayUnlocked(user){
+    loggedInUser = user || null;
+    const locked = document.getElementById('payLockedMessage');
+    const box = document.getElementById('payBoxContent');
+    if (user) {
+      locked.style.display = 'none';
+      box.style.display = 'block';
+      document.getElementById('accountBtn').textContent = t('حسابي', 'My account');
+      if (user.user_metadata?.full_name) {
+        document.getElementById('payName').value = user.user_metadata.full_name;
+      }
+    } else {
+      locked.style.display = 'flex';
+      box.style.display = 'none';
+      document.getElementById('accountBtn').textContent = t('تسجيل الدخول', 'Log in');
+    }
+  }
+
+  document.getElementById('loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const msg = document.getElementById('loginMsg');
+    if (!supabaseClient) {
+      msg.style.color = 'var(--danger)';
+      msg.textContent = t('تعذّر الاتصال بخدمة الحسابات', 'Could not connect to accounts service');
+      return;
+    }
+    msg.style.color = 'var(--muted)';
+    msg.textContent = t('جاري تسجيل الدخول...', 'Signing in...');
+    const email = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value;
+    const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+    if (error) {
+      msg.style.color = 'var(--danger)';
+      msg.textContent = t('البريد أو كلمة المرور غير صحيحة', 'Incorrect email or password');
+      return;
+    }
+    msg.style.color = 'var(--ok)';
+    msg.textContent = t('تم الدخول — جاري التحويل...', 'Signed in — redirecting...');
+    setPayUnlocked(data.user);
+    setTimeout(goDashboard, 500);
+  });
+
+  document.getElementById('registerForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const msg = document.getElementById('registerMsg');
+    if (!supabaseClient) {
+      msg.style.color = 'var(--danger)';
+      msg.textContent = t('تعذّر الاتصال بخدمة الحسابات', 'Could not connect to accounts service');
+      return;
+    }
+    const name = document.getElementById('registerName').value.trim();
+    const email = document.getElementById('registerEmail').value.trim();
+    const phone = document.getElementById('registerPhone').value.trim();
+    const password = document.getElementById('registerPassword').value;
+    msg.style.color = 'var(--muted)';
+    msg.textContent = t('جاري إنشاء الحساب...', 'Creating account...');
+    const { data, error } = await supabaseClient.auth.signUp({
+      email, password, options: { data: { full_name: name, phone } }
+    });
+    if (error) {
+      msg.style.color = 'var(--danger)';
+      msg.textContent = error.message.includes('already registered')
+        ? t('هذا البريد مسجّل مسبقاً', 'Email already registered')
+        : error.message;
+      return;
+    }
+    if (data.user) {
+      try {
+        await supabaseClient.from('profiles').upsert({ id: data.user.id, full_name: name, phone, email });
+      } catch (_) {}
+    }
+    if (data.session) {
+      msg.style.color = 'var(--ok)';
+      msg.textContent = t('تم إنشاء الحساب — جاري التحويل...', 'Account created — redirecting...');
+      setPayUnlocked(data.user);
+      setTimeout(goDashboard, 600);
+    } else {
+      msg.style.color = 'var(--ok)';
+      msg.textContent = t('تم إنشاء الحساب — فعّله من بريدك ثم سجّل الدخول', 'Account created — verify email then sign in');
+    }
+  });
+
+  document.getElementById('forgotForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const msg = document.getElementById('forgotMsg');
+    if (!supabaseClient) return;
+    msg.textContent = t('جاري الإرسال...', 'Sending...');
+    const email = document.getElementById('forgotEmail').value.trim();
+    const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.origin + window.location.pathname
+    });
+    msg.style.color = error ? 'var(--danger)' : 'var(--ok)';
+    msg.textContent = error
+      ? t('حدث خطأ، حاول مرة أخرى', 'Something went wrong')
+      : t('تم إرسال رابط إعادة التعيين', 'Reset link sent');
+  });
+
+  document.getElementById('resetForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const msg = document.getElementById('resetMsg');
+    if (!supabaseClient) return;
+    const password = document.getElementById('resetPassword').value;
+    const { error } = await supabaseClient.auth.updateUser({ password });
+    msg.style.color = error ? 'var(--danger)' : 'var(--ok)';
+    msg.textContent = error
+      ? t('تعذّر الحفظ', 'Could not save')
+      : t('تم تحديث كلمة المرور', 'Password updated');
+  });
+
+  if (supabaseClient) {
+    supabaseClient.auth.onAuthStateChange((event, session) => {
+      if (event === 'PASSWORD_RECOVERY') { openModal(); showAuthPanel('reset'); }
+      if (event === 'SIGNED_OUT') setPayUnlocked(null);
+    });
+    supabaseClient.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user) setPayUnlocked(session.user);
+    });
+  }
+
+  document.getElementById('contactForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const result = document.getElementById('contactResult');
+    const payload = {
+      name: document.getElementById('contactName').value.trim(),
+      company: document.getElementById('contactCompany').value.trim(),
+      type: document.getElementById('contactType').value,
+      message: document.getElementById('contactMsg').value.trim(),
+      at: new Date().toISOString()
+    };
+    try {
+      const prev = JSON.parse(localStorage.getItem('raseekh_contact_leads') || '[]');
+      prev.unshift(payload);
+      localStorage.setItem('raseekh_contact_leads', JSON.stringify(prev.slice(0, 50)));
+    } catch (_) {}
+    result.style.color = 'var(--ok)';
+    result.textContent = t('تم إرسال طلبكم بنجاح', 'Your request was sent successfully');
+    e.target.reset();
+  });
+
+  /* Moyasar */
   const payDetailsStep = document.getElementById('payDetailsStep');
   const paymentFormStep = document.getElementById('paymentFormStep');
   const payStatusSuccess = document.getElementById('payStatusSuccess');
   const payStatusFailed = document.getElementById('payStatusFailed');
-  const payContinueBtn = document.getElementById('payContinueBtn');
-  const payBackBtn = document.getElementById('payBackBtn');
-  const payRetryBtn = document.getElementById('payRetryBtn');
-  const payAmountInput = document.getElementById('payAmount');
-  const payNameInput = document.getElementById('payName');
-  const payNoteInput = document.getElementById('payNote');
-  const payValidationMsg = document.getElementById('payValidationMsg');
-  const paySummaryAmount = document.getElementById('paySummaryAmount');
 
   function showPayStep(step){
-    [payDetailsStep, paymentFormStep, payStatusSuccess, payStatusFailed].forEach(function(el){
-      el.classList.remove('active');
-    });
+    [payDetailsStep, paymentFormStep, payStatusSuccess, payStatusFailed].forEach(el => el.classList.remove('active'));
     step.classList.add('active');
   }
 
-  payContinueBtn.addEventListener('click', function(){
-    const amount = parseFloat(payAmountInput.value);
-    const name = payNameInput.value.trim();
-
-    if (!name) {
-      payValidationMsg.style.color = '#f87171';
-      payValidationMsg.textContent = currentLang === 'ar' ? 'الرجاء كتابة الاسم' : 'Please enter your name';
-      return;
-    }
-    if (!amount || amount < 1) {
-      payValidationMsg.style.color = '#f87171';
-      payValidationMsg.textContent = currentLang === 'ar' ? 'الرجاء إدخال مبلغ صحيح (1 ريال على الأقل)' : 'Please enter a valid amount (minimum 1 SAR)';
-      return;
-    }
-    payValidationMsg.textContent = '';
-
+  document.getElementById('payContinueBtn').addEventListener('click', () => {
+    const amount = parseFloat(document.getElementById('payAmount').value);
+    const name = document.getElementById('payName').value.trim();
+    const msg = document.getElementById('payValidationMsg');
+    if (!name) { msg.style.color = 'var(--danger)'; msg.textContent = t('الرجاء كتابة الاسم', 'Please enter your name'); return; }
+    if (!amount || amount < 1) { msg.style.color = 'var(--danger)'; msg.textContent = t('أدخل مبلغاً صحيحاً', 'Enter a valid amount'); return; }
+    msg.textContent = '';
     if (typeof Moyasar === 'undefined') {
-      payValidationMsg.style.color = '#f87171';
-      payValidationMsg.textContent = currentLang === 'ar' ? 'تعذّر تحميل بوابة الدفع، يُرجى التحقق من الاتصال بالإنترنت وتحديث الصفحة.' : 'Could not load the payment gateway, check your connection and refresh the page.';
+      msg.style.color = 'var(--danger)';
+      msg.textContent = t('تعذّر تحميل بوابة الدفع', 'Payment gateway failed to load');
       return;
     }
-
-    const amountHalalas = Math.round(amount * 100);
-    paySummaryAmount.textContent = amount.toFixed(2) + ' SAR';
-
-    // تفريغ نموذج الدفع القديم إن وجد (لإعادة الإنشاء بمبلغ جديد)
-    const mysrContainer = document.getElementById('mysr-form');
-    mysrContainer.innerHTML = '';
-
-    const note = payNoteInput.value.trim();
-    const description = (note ? note + ' — ' : '') + name;
-
+    document.getElementById('paySummaryAmount').textContent = amount.toFixed(2) + ' SAR';
+    document.getElementById('mysr-form').innerHTML = '';
+    const note = document.getElementById('payNote').value.trim();
     Moyasar.init({
-      element: '.mysr-form, #mysr-form',
-      amount: amountHalalas,
+      element: '#mysr-form',
+      amount: Math.round(amount * 100),
       currency: 'SAR',
-      description: description,
+      description: (note ? note + ' — ' : '') + name,
       publishable_api_key: MOYASAR_PUBLISHABLE_KEY,
       callback_url: window.location.origin + window.location.pathname + '#pay',
       methods: ['creditcard', 'applepay'],
       on_completed: function(payment){
-        // ينفذ هذا عند نجاح أو فشل الدفع داخل نفس الصفحة (بدون تحويل)
-        if (payment && payment.status === 'paid') {
-          showPayStep(payStatusSuccess);
-        } else {
-          showPayStep(payStatusFailed);
-        }
+        showPayStep(payment && payment.status === 'paid' ? payStatusSuccess : payStatusFailed);
         return true;
       }
     });
-
     showPayStep(paymentFormStep);
   });
+  document.getElementById('payBackBtn').addEventListener('click', () => showPayStep(payDetailsStep));
+  document.getElementById('payRetryBtn').addEventListener('click', () => showPayStep(payDetailsStep));
 
-  payBackBtn.addEventListener('click', function(){
-    showPayStep(payDetailsStep);
-  });
-
-  payRetryBtn.addEventListener('click', function(){
-    showPayStep(payDetailsStep);
-  });
-
-  /* التحقق من رجوع Moyasar بعد الدفع عبر الرابط (id و status بالـ query string) */
   (function checkPaymentReturn(){
-    const params = new URLSearchParams(window.location.search);
-    const status = params.get('status');
-    if (status === 'paid') {
-      showPayStep(payStatusSuccess);
-      document.getElementById('pay').scrollIntoView();
-    } else if (status === 'failed') {
-      showPayStep(payStatusFailed);
-      document.getElementById('pay').scrollIntoView();
-    }
+    const status = new URLSearchParams(window.location.search).get('status');
+    if (status === 'paid') { document.getElementById('payBoxContent').style.display = 'block'; document.getElementById('payLockedMessage').style.display = 'none'; showPayStep(payStatusSuccess); document.getElementById('pay').scrollIntoView(); }
+    if (status === 'failed') { document.getElementById('payBoxContent').style.display = 'block'; document.getElementById('payLockedMessage').style.display = 'none'; showPayStep(payStatusFailed); document.getElementById('pay').scrollIntoView(); }
   })();
-</script>
 
+  function tickPosClock(){
+    const el = document.getElementById('posClockDemo');
+    if (el) el.textContent = new Date().toLocaleTimeString(currentLang === 'ar' ? 'ar-SA' : 'en-US', { hour: '2-digit', minute: '2-digit' });
+  }
+  tickPosClock();
+  setInterval(tickPosClock, 30000);
+})();
+</script>
 </body>
 </html>

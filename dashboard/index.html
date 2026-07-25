@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" id="htmlRoot">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title id="pageTitle">لوحة التحكم — راسخ</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%230A4D3C'/%3E%3Ctext x='50' y='68' font-size='52' text-anchor='middle' fill='%23F2F6F4' font-family='sans-serif'%3Eر%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@600;700;800&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Syne:wght@600;700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<style>
+:root{
+  --ink:#0F1F1A;--forest:#0A4D3C;--leaf:#1F8A6A;--brass:#A67C1A;
+  --bg:#F2F6F4;--panel:#FFFFFF;--mist:#DCE8E1;--line:#C5D4CB;
+  --muted:#5A6F64;--danger:#B42318;--ok:#0E7A4B;
+  --shadow:0 20px 50px -28px rgba(15,31,26,.35);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{min-height:100%}
+body{
+  background:var(--bg);color:var(--ink);
+  font-family:'IBM Plex Sans Arabic',sans-serif;line-height:1.65;
+}
+body.lang-en{font-family:'DM Sans',sans-serif}
+body::before{
+  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 70% 40% at 0% 0%, rgba(31,138,106,.16), transparent 50%),
+    linear-gradient(180deg,#E8F1EC,var(--bg));
+}
+h1,h2,h3,.logo{font-family:'Noto Kufi Arabic',sans-serif}
+body.lang-en h1,body.lang-en h2,body.lang-en h3,body.lang-en .logo{font-family:'Syne',sans-serif}
+button,input,select,textarea{font:inherit}
+a{color:inherit;text-decoration:none}
+.hidden{display:none!important}
+
+/* LOGIN */
+#loginView{
+  position:relative;z-index:2;min-height:100vh;display:grid;place-items:center;padding:24px;
+}
+.login-card{
+  width:100%;max-width:420px;background:var(--panel);border:1px solid var(--line);
+  border-radius:18px;padding:32px;box-shadow:var(--shadow);animation:rise .45s ease;
+}
+@keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.login-card .logo{font-size:1.8rem;font-weight:800;margin-bottom:6px}
+.login-card .logo em{font-style:normal;color:var(--forest)}
+.login-card .sub{color:var(--muted);margin-bottom:22px;font-size:.95rem}
+.form{display:flex;flex-direction:column;gap:12px}
+.form input,.form select,.form textarea{
+  width:100%;padding:13px 14px;border:1px solid var(--line);border-radius:10px;background:#FBFCFA;
+}
+.form input:focus,.form select:focus,.form textarea:focus{outline:2px solid rgba(31,138,106,.3);border-color:var(--leaf)}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  border:none;border-radius:10px;padding:12px 18px;cursor:pointer;font-weight:700;
+  transition:transform .15s,background .15s;
+}
+.btn:hover{transform:translateY(-1px)}
+.btn-primary{background:var(--forest);color:#F5FBF8}
+.btn-primary:hover{background:#083D30}
+.btn-ghost{background:transparent;border:1px solid var(--line);color:var(--ink)}
+.btn-brass{background:var(--brass);color:#fff}
+.btn-danger{background:#FCE8E6;color:var(--danger);border:1px solid #F3C1BB}
+.msg{min-height:18px;font-size:.88rem;font-weight:600}
+.login-actions{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+.tabs{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-bottom:16px}
+.tab{flex:1;border:none;background:var(--bg);color:var(--muted);padding:11px;cursor:pointer;font-weight:700}
+.tab.active{background:var(--forest);color:#F5FBF8}
+.auth-panel{display:none}
+.auth-panel.active{display:block}
+
+/* DASHBOARD SHELL */
+#dashboardView{
+  display:none;position:relative;z-index:1;min-height:100vh;
+  grid-template-columns:250px 1fr;
+}
+#dashboardView.active{display:grid}
+.sidebar{
+  background:var(--panel);border-inline-end:1px solid var(--line);
+  padding:22px 14px;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;
+}
+.side-logo{padding:4px 10px 18px;border-bottom:1px solid var(--line);margin-bottom:14px}
+.side-logo .logo{font-size:1.35rem;font-weight:800}
+.side-logo .logo em{font-style:normal;color:var(--forest)}
+.side-nav{display:flex;flex-direction:column;gap:4px;flex:1}
+.nav-item{
+  display:flex;align-items:center;gap:10px;width:100%;text-align:start;
+  padding:12px 12px;border-radius:10px;border:1px solid transparent;
+  background:none;color:var(--muted);cursor:pointer;font-size:.93rem;
+}
+.nav-item:hover{background:var(--mist);color:var(--ink)}
+.nav-item.active{background:var(--mist);color:var(--forest);border-color:var(--line);font-weight:700}
+.nav-item .ico{width:22px;text-align:center;font-size:.85rem;opacity:.8}
+.side-foot{border-top:1px solid var(--line);padding-top:14px;margin-top:10px}
+.user-row{display:flex;gap:10px;align-items:center;padding:8px;margin-bottom:10px}
+.avatar{
+  width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--forest),var(--leaf));
+  color:#fff;display:grid;place-items:center;font-weight:800;flex-shrink:0;
+}
+.user-email{font-size:.82rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:150px}
+.user-status{font-size:.72rem;color:var(--ok)}
+.main{padding:28px 32px;min-width:0}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:24px;flex-wrap:wrap}
+.topbar h1{font-size:1.55rem}
+.crumb{color:var(--muted);font-size:.8rem;margin-top:4px}
+.crumb span{color:var(--forest)}
+.top-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.lang-btn,.clock{
+  border:1px solid var(--line);background:var(--panel);border-radius:10px;
+  padding:9px 12px;font-size:.82rem;font-weight:700;cursor:pointer;color:var(--ink);
+}
+.clock{cursor:default;color:var(--muted);font-weight:600}
+.page{display:none}
+.page.active{display:block;animation:rise .35s ease}
+
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
+.stat{
+  background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px;
+}
+.stat .label{color:var(--muted);font-size:.85rem;margin-bottom:8px}
+.stat .value{font-size:1.8rem;font-weight:800;color:var(--forest)}
+.stat .hint{font-size:.78rem;color:var(--muted);margin-top:6px}
+
+.panel{
+  background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px;margin-bottom:18px;
+}
+.panel h3{font-size:1.05rem;margin-bottom:14px}
+.grid-2{display:grid;grid-template-columns:1.2fr .8fr;gap:16px}
+
+/* PRODUCTS */
+.toolbar{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:14px;flex-wrap:wrap}
+.product-table{width:100%;border-collapse:collapse}
+.product-table th,.product-table td{padding:12px 10px;border-bottom:1px solid var(--line);text-align:start;font-size:.92rem}
+.product-table th{color:var(--muted);font-size:.78rem;font-weight:600}
+.badge{
+  display:inline-flex;padding:4px 10px;border-radius:999px;font-size:.75rem;font-weight:700;
+  background:var(--mist);color:var(--forest);
+}
+.badge.low{background:#FCE8E6;color:var(--danger)}
+.row-actions{display:flex;gap:6px}
+
+/* POS */
+.pos-layout{display:grid;grid-template-columns:1.4fr .9fr;gap:16px;align-items:start}
+.pos-catalog{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.pos-item{
+  background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 12px;
+  text-align:center;cursor:pointer;transition:border-color .15s,transform .15s;
+}
+.pos-item:hover{border-color:var(--leaf);transform:translateY(-2px)}
+.pos-item h4{font-size:.95rem;margin-bottom:4px}
+.pos-item .price{color:var(--forest);font-weight:700}
+.pos-item .stock{font-size:.75rem;color:var(--muted);margin-top:4px}
+.cart{
+  background:var(--ink);color:#E8F5EF;border-radius:16px;padding:18px;
+  position:sticky;top:16px;min-height:420px;display:flex;flex-direction:column;
+}
+.cart h3{margin-bottom:12px;color:#F2F6F4}
+.cart-lines{flex:1;overflow:auto;display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
+.cart-line{
+  display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;
+  background:rgba(255,255,255,.06);border-radius:10px;padding:10px;
+  font-size:.88rem;
+}
+.qty-ctrl{display:flex;gap:6px;align-items:center}
+.qty-ctrl button{
+  width:26px;height:26px;border-radius:7px;border:1px solid rgba(255,255,255,.15);
+  background:rgba(255,255,255,.08);color:#fff;cursor:pointer;
+}
+.cart-total{
+  display:flex;justify-content:space-between;align-items:center;
+  background:rgba(31,138,106,.28);border:1px solid rgba(31,138,106,.4);
+  border-radius:10px;padding:12px;font-weight:800;margin-bottom:10px;
+}
+.cart-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.empty{color:var(--muted);text-align:center;padding:36px 12px}
+
+/* SALES */
+.sale-row{
+  display:flex;justify-content:space-between;gap:12px;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);font-size:.92rem;
+}
+.sale-row:last-child{border-bottom:none}
+
+/* MODAL */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(15,31,26,.5);backdrop-filter:blur(4px);
+  z-index:100;display:none;align-items:center;justify-content:center;padding:18px;
+}
+.modal-overlay.open{display:flex}
+.modal{
+  background:var(--panel);border:1px solid var(--line);border-radius:16px;
+  width:100%;max-width:460px;padding:24px;position:relative;box-shadow:var(--shadow);
+}
+.modal-close{position:absolute;top:12px;inset-inline-start:12px;border:none;background:none;font-size:1.3rem;cursor:pointer;color:var(--muted)}
+.toast{
+  position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:var(--ink);color:#F2F6F4;padding:12px 18px;border-radius:10px;z-index:200;
+  opacity:0;pointer-events:none;transition:.3s;font-size:.9rem;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media (max-width:960px){
+  #dashboardView.active{display:flex;flex-direction:column}
+  .sidebar{position:relative;height:auto;border-inline-end:none;border-bottom:1px solid var(--line)}
+  .side-nav{flex-direction:row;overflow-x:auto}
+  .side-foot{display:none}
+  .side-logo{display:none}
+  .nav-item{white-space:nowrap}
+  .main{padding:18px}
+  .stats{grid-template-columns:1fr 1fr}
+  .grid-2,.pos-layout{grid-template-columns:1fr}
+  .pos-catalog{grid-template-columns:repeat(2,1fr)}
+  .cart{position:relative;top:0}
+}
+@media (max-width:520px){
+  .stats{grid-template-columns:1fr}
+  .pos-catalog{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN VIEW -->
+<div id="loginView">
+  <div class="login-card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <div class="logo" data-ar-html='را<em>سخ</em>' data-en-html='Ra<em>seekh</em>'>را<em>سخ</em></div>
+      <button class="lang-btn" id="loginLangBtn" type="button">EN</button>
+    </div>
+    <p class="sub" data-ar="سجّل دخولك للوصول إلى نقطة البيع والمنتجات" data-en="Sign in to access POS and products">سجّل دخولك للوصول إلى نقطة البيع والمنتجات</p>
+
+    <div class="tabs">
+      <button type="button" class="tab active" id="loginTabBtn" data-ar="دخول" data-en="Login">دخول</button>
+      <button type="button" class="tab" id="registerTabBtn" data-ar="حساب جديد" data-en="Sign up">حساب جديد</button>
+    </div>
+
+    <div class="auth-panel active" id="loginPanel">
+      <form class="form" id="dashLoginForm">
+        <input type="email" id="dashLoginEmail" required data-ar-placeholder="البريد الإلكتروني" data-en-placeholder="Email" placeholder="البريد الإلكتروني">
+        <input type="password" id="dashLoginPassword" required data-ar-placeholder="كلمة المرور" data-en-placeholder="Password" placeholder="كلمة المرور">
+        <button class="btn btn-primary" type="submit" data-ar="دخول إلى النظام" data-en="Enter system">دخول إلى النظام</button>
+      </form>
+      <div class="msg" id="dashLoginMsg"></div>
+    </div>
+
+    <div class="auth-panel" id="registerPanel">
+      <form class="form" id="dashRegisterForm">
+        <input type="text" id="dashRegisterName" required data-ar-placeholder="الاسم الكامل" data-en-placeholder="Full name" placeholder="الاسم الكامل">
+        <input type="email" id="dashRegisterEmail" required data-ar-placeholder="البريد الإلكتروني" data-en-placeholder="Email" placeholder="البريد الإلكتروني">
+        <input type="password" id="dashRegisterPassword" minlength="6" required data-ar-placeholder="كلمة المرور (6+)" data-en-placeholder="Password (6+)" placeholder="كلمة المرور (6+)">
+        <button class="btn btn-primary" type="submit" data-ar="إنشاء حساب" data-en="Create account">إنشاء حساب</button>
+      </form>
+      <div class="msg" id="dashRegisterMsg"></div>
+    </div>
+
+    <div class="login-actions">
+      <a class="btn btn-ghost" href="../" data-ar="← الموقع الرئيسي" data-en="← Main site">← الموقع الرئيسي</a>
+    </div>
+  </div>
+</div>
+
+<!-- DASHBOARD VIEW -->
+<div id="dashboardView">
+  <aside class="sidebar">
+    <div class="side-logo">
+      <div class="logo" data-ar-html='را<em>سخ</em>' data-en-html='Ra<em>seekh</em>'>را<em>سخ</em></div>
+    </div>
+    <nav class="side-nav">
+      <button class="nav-item active" data-page="overview"><span class="ico">◈</span><span data-ar="نظرة عامة" data-en="Overview">نظرة عامة</span></button>
+      <button class="nav-item" data-page="pos"><span class="ico">▣</span><span data-ar="نقطة البيع" data-en="POS">نقطة البيع</span></button>
+      <button class="nav-item" data-page="products"><span class="ico">▤</span><span data-ar="المنتجات" data-en="Products">المنتجات</span></button>
+      <button class="nav-item" data-page="sales"><span class="ico">฿</span><span data-ar="المبيعات" data-en="Sales">المبيعات</span></button>
+      <button class="nav-item" data-page="settings"><span class="ico">⚙</span><span data-ar="الإعدادات" data-en="Settings">الإعدادات</span></button>
+    </nav>
+    <div class="side-foot">
+      <div class="user-row">
+        <div class="avatar" id="dashAvatar">?</div>
+        <div>
+          <div class="user-email" id="dashUserLabel">—</div>
+          <div class="user-status" data-ar="متصل" data-en="Online">متصل</div>
+        </div>
+      </div>
+      <button class="btn btn-ghost" style="width:100%" id="logoutBtn" data-ar="تسجيل الخروج" data-en="Log out">تسجيل الخروج</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="top-actions" style="justify-content:flex-end;margin-bottom:8px">
+      <div class="clock" id="dashClock">—</div>
+      <button class="lang-btn" id="dashLangBtn" type="button">EN</button>
+      <a class="btn btn-ghost" href="../" data-ar="الموقع" data-en="Website">الموقع</a>
+    </div>
+
+    <!-- OVERVIEW -->
+    <div class="page active" id="page-overview">
+      <div class="topbar">
+        <div>
+          <h1 data-ar="أهلاً بعودتك" data-en="Welcome back">أهلاً بعودتك</h1>
+          <div class="crumb">راسخ <span>/</span> <span data-ar="نظرة عامة" data-en="Overview">نظرة عامة</span></div>
+        </div>
+        <button class="btn btn-primary" data-goto="pos" data-ar="فتح نقطة البيع" data-en="Open POS">فتح نقطة البيع</button>
+      </div>
+      <div class="stats">
+        <div class="stat"><div class="label" data-ar="المنتجات" data-en="Products">المنتجات</div><div class="value" id="statProducts">0</div><div class="hint" data-ar="في الكتالوج" data-en="in catalog">في الكتالوج</div></div>
+        <div class="stat"><div class="label" data-ar="مبيعات اليوم" data-en="Today sales">مبيعات اليوم</div><div class="value" id="statToday">0</div><div class="hint">SAR</div></div>
+        <div class="stat"><div class="label" data-ar="عدد الفواتير" data-en="Receipts">عدد الفواتير</div><div class="value" id="statReceipts">0</div><div class="hint" data-ar="اليوم" data-en="today">اليوم</div></div>
+        <div class="stat"><div class="label" data-ar="مخزون منخفض" data-en="Low stock">مخزون منخفض</div><div class="value" id="statLow">0</div><div class="hint" data-ar="يحتاج تزويد" data-en="needs restock">يحتاج تزويد</div></div>
+      </div>
+      <div class="grid-2">
+        <div class="panel">
+          <h3 data-ar="آخر المبيعات" data-en="Recent sales">آخر المبيعات</h3>
+          <div id="recentSales"></div>
+        </div>
+        <div class="panel">
+          <h3 data-ar="اختصارات" data-en="Shortcuts">اختصارات</h3>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <button class="btn btn-primary" data-goto="pos" data-ar="بدء بيع جديد" data-en="Start a sale">بدء بيع جديد</button>
+            <button class="btn btn-ghost" data-goto="products" data-ar="إدارة المنتجات" data-en="Manage products">إدارة المنتجات</button>
+            <button class="btn btn-ghost" data-goto="sales" data-ar="سجل المبيعات" data-en="Sales history">سجل المبيعات</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- POS -->
+    <div class="page" id="page-pos">
+      <div class="topbar">
+        <div>
+          <h1 data-ar="نقطة البيع" data-en="Point of Sale">نقطة البيع</h1>
+          <div class="crumb">راسخ <span>/</span> POS</div>
+        </div>
+        <button class="btn btn-ghost" id="clearCartBtn" data-ar="تفريغ السلة" data-en="Clear cart">تفريغ السلة</button>
+      </div>
+      <div class="pos-layout">
+        <div>
+          <input type="search" id="posSearch" class="form" style="margin-bottom:12px;padding:12px 14px;width:100%;border:1px solid var(--line);border-radius:10px" data-ar-placeholder="ابحث عن منتج..." data-en-placeholder="Search products..." placeholder="ابحث عن منتج...">
+          <div class="pos-catalog" id="posCatalog"></div>
+        </div>
+        <aside class="cart">
+          <h3 data-ar="السلة" data-en="Cart">السلة</h3>
+          <div class="cart-lines" id="cartLines"></div>
+          <div class="cart-total"><span data-ar="الإجمالي" data-en="Total">الإجمالي</span><span id="cartTotal">0.00 SAR</span></div>
+          <div class="cart-actions">
+            <button class="btn btn-ghost" id="payCashBtn" style="border-color:rgba(255,255,255,.2);color:#fff" data-ar="نقداً" data-en="Cash">نقداً</button>
+            <button class="btn btn-brass" id="payCardBtn" data-ar="بطاقة" data-en="Card">بطاقة</button>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <!-- PRODUCTS -->
+    <div class="page" id="page-products">
+      <div class="topbar">
+        <div>
+          <h1 data-ar="المنتجات" data-en="Products">المنتجات</h1>
+          <div class="crumb">راسخ <span>/</span> <span data-ar="المنتجات" data-en="Products">المنتجات</span></div>
+        </div>
+        <button class="btn btn-primary" id="addProductBtn" data-ar="+ منتج جديد" data-en="+ New product">+ منتج جديد</button>
+      </div>
+      <div class="panel">
+        <div class="toolbar">
+          <h3 data-ar="كتالوج المنتجات" data-en="Product catalog">كتالوج المنتجات</h3>
+          <input type="search" id="productSearch" style="padding:10px 12px;border:1px solid var(--line);border-radius:10px;min-width:200px" data-ar-placeholder="بحث..." data-en-placeholder="Search..." placeholder="بحث...">
+        </div>
+        <div style="overflow-x:auto">
+          <table class="product-table">
+            <thead>
+              <tr>
+                <th data-ar="الاسم" data-en="Name">الاسم</th>
+                <th data-ar="السعر" data-en="Price">السعر</th>
+                <th data-ar="المخزون" data-en="Stock">المخزون</th>
+                <th data-ar="الحالة" data-en="Status">الحالة</th>
+                <th data-ar="إجراءات" data-en="Actions">إجراءات</th>
+              </tr>
+            </thead>
+            <tbody id="productsBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- SALES -->
+    <div class="page" id="page-sales">
+      <div class="topbar">
+        <div>
+          <h1 data-ar="المبيعات" data-en="Sales">المبيعات</h1>
+          <div class="crumb">راسخ <span>/</span> <span data-ar="المبيعات" data-en="Sales">المبيعات</span></div>
+        </div>
+      </div>
+      <div class="panel">
+        <h3 data-ar="سجل الفواتير" data-en="Receipt history">سجل الفواتير</h3>
+        <div id="salesList"></div>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="page" id="page-settings">
+      <div class="topbar">
+        <div>
+          <h1 data-ar="الإعدادات" data-en="Settings">الإعدادات</h1>
+          <div class="crumb">راسخ <span>/</span> <span data-ar="الإعدادات" data-en="Settings">الإعدادات</span></div>
+        </div>
+      </div>
+      <div class="panel">
+        <h3 data-ar="بيانات الحساب" data-en="Account details">بيانات الحساب</h3>
+        <form class="form" id="settingsForm" style="max-width:480px">
+          <input type="email" id="settingsEmail" disabled>
+          <input type="text" id="settingsName" data-ar-placeholder="اسم العرض" data-en-placeholder="Display name" placeholder="اسم العرض">
+          <input type="password" id="settingsPassword" data-ar-placeholder="كلمة مرور جديدة (اختياري)" data-en-placeholder="New password (optional)" placeholder="كلمة مرور جديدة (اختياري)">
+          <button class="btn btn-primary" type="submit" style="width:fit-content" data-ar="حفظ التغييرات" data-en="Save changes">حفظ التغييرات</button>
+        </form>
+        <div class="msg" id="settingsMsg"></div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div class="modal-overlay" id="productModal">
+  <div class="modal">
+    <button class="modal-close" id="productModalClose" type="button">×</button>
+    <h2 id="productModalTitle" style="margin-bottom:14px" data-ar="منتج جديد" data-en="New product">منتج جديد</h2>
+    <form class="form" id="productForm">
+      <input type="text" id="pName" required data-ar-placeholder="اسم المنتج" data-en-placeholder="Product name" placeholder="اسم المنتج">
+      <input type="text" id="pNameEn" data-ar-placeholder="الاسم بالإنجليزية (اختياري)" data-en-placeholder="English name (optional)" placeholder="الاسم بالإنجليزية (اختياري)">
+      <input type="number" id="pPrice" min="0" step="0.01" required data-ar-placeholder="السعر" data-en-placeholder="Price" placeholder="السعر">
+      <input type="number" id="pStock" min="0" step="1" required data-ar-placeholder="المخزون" data-en-placeholder="Stock" placeholder="المخزون">
+      <button class="btn btn-primary" type="submit" data-ar="حفظ المنتج" data-en="Save product">حفظ المنتج</button>
+    </form>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  const SUPABASE_URL = 'https://dupdkohciluepwrfuhod.supabase.co';
+  const SUPABASE_ANON_KEY = 'sb_publishable_UVbMT7eplHHBNdZbOpLssw_UUEYTxFA';
+
+  let supabaseClient = null;
+  try {
+    if (window.supabase) supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  } catch (e) { console.warn(e); }
+
+  let currentLang = localStorage.getItem('raseekh_lang') || 'ar';
+  let currentUser = null;
+  let products = [];
+  let sales = [];
+  let cart = [];
+  let editingProductId = null;
+  let toastTimer;
+
+  const DEFAULT_PRODUCTS = [
+    { id: 'p1', name: 'قهوة', name_en: 'Coffee', price: 12, stock: 40 },
+    { id: 'p2', name: 'ماء', name_en: 'Water', price: 3, stock: 80 },
+    { id: 'p3', name: 'ساندويتش', name_en: 'Sandwich', price: 18, stock: 25 },
+    { id: 'p4', name: 'عصير', name_en: 'Juice', price: 10, stock: 30 },
+    { id: 'p5', name: 'حلويات', name_en: 'Dessert', price: 15, stock: 18 },
+    { id: 'p6', name: 'وجبة', name_en: 'Meal', price: 28, stock: 12 }
+  ];
+
+  function t(ar, en){ return currentLang === 'ar' ? ar : en; }
+  function uid(){ return 'id-' + Date.now() + '-' + Math.random().toString(36).slice(2,7); }
+  function money(n){ return (Number(n) || 0).toFixed(2) + ' SAR'; }
+  function productLabel(p){ return currentLang === 'en' && p.name_en ? p.name_en : p.name; }
+
+  function showToast(msg){
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.classList.remove('show'), 2800);
+  }
+
+  function storageKey(base){
+    return 'raseekh_' + base + '_' + (currentUser?.id || 'guest');
+  }
+
+  function loadProducts(){
+    try {
+      const raw = localStorage.getItem(storageKey('products'));
+      products = raw ? JSON.parse(raw) : DEFAULT_PRODUCTS.map(p => ({ ...p }));
+    } catch (_) {
+      products = DEFAULT_PRODUCTS.map(p => ({ ...p }));
+    }
+  }
+
+  function saveProducts(){
+    localStorage.setItem(storageKey('products'), JSON.stringify(products));
+  }
+
+  function loadSales(){
+    try { sales = JSON.parse(localStorage.getItem(storageKey('sales')) || '[]'); }
+    catch (_) { sales = []; }
+  }
+
+  function saveSales(){
+    localStorage.setItem(storageKey('sales'), JSON.stringify(sales));
+  }
+
+  function applyLang(lang){
+    currentLang = lang;
+    localStorage.setItem('raseekh_lang', lang);
+    document.documentElement.lang = lang;
+    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+    document.body.classList.toggle('lang-en', lang === 'en');
+    document.querySelectorAll('[data-ar]').forEach(el => {
+      const v = lang === 'ar' ? el.getAttribute('data-ar') : el.getAttribute('data-en');
+      if (v !== null) el.textContent = v;
+    });
+    document.querySelectorAll('[data-ar-html]').forEach(el => {
+      const v = lang === 'ar' ? el.getAttribute('data-ar-html') : el.getAttribute('data-en-html');
+      if (v !== null) el.innerHTML = v;
+    });
+    document.querySelectorAll('[data-ar-placeholder]').forEach(el => {
+      const v = lang === 'ar' ? el.getAttribute('data-ar-placeholder') : el.getAttribute('data-en-placeholder');
+      if (v !== null) el.setAttribute('placeholder', v);
+    });
+    document.getElementById('loginLangBtn').textContent = lang === 'ar' ? 'EN' : 'AR';
+    document.getElementById('dashLangBtn').textContent = lang === 'ar' ? 'EN' : 'AR';
+    document.getElementById('pageTitle').textContent = lang === 'ar' ? 'لوحة التحكم — راسخ' : 'Dashboard — Raseekh';
+    renderAll();
+  }
+
+  document.getElementById('loginLangBtn').addEventListener('click', () => applyLang(currentLang === 'ar' ? 'en' : 'ar'));
+  document.getElementById('dashLangBtn').addEventListener('click', () => applyLang(currentLang === 'ar' ? 'en' : 'ar'));
+
+  function showLogin(){
+    document.getElementById('loginView').classList.remove('hidden');
+    document.getElementById('dashboardView').classList.remove('active');
+  }
+
+  function showDashboard(user){
+    currentUser = user;
+    document.getElementById('loginView').classList.add('hidden');
+    document.getElementById('dashboardView').classList.add('active');
+
+    const name = user?.user_metadata?.full_name || user?.user_metadata?.display_name || '';
+    const email = user?.email || '';
+    document.getElementById('dashUserLabel').textContent = name || email || '—';
+    document.getElementById('dashAvatar').textContent = (name || email || '?').trim().charAt(0).toUpperCase();
+    document.getElementById('settingsEmail').value = email;
+    document.getElementById('settingsName').value = name;
+
+    loadProducts();
+    loadSales();
+    cart = [];
+    applyLang(currentLang);
+    startClock();
+    switchPage('overview');
+  }
+
+  function switchPage(page){
+    document.querySelectorAll('.nav-item').forEach(b => b.classList.toggle('active', b.dataset.page === page));
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    const target = document.getElementById('page-' + page);
+    if (target) target.classList.add('active');
+    if (page === 'pos') renderPos();
+    if (page === 'products') renderProducts();
+    if (page === 'sales') renderSales();
+    if (page === 'overview') renderOverview();
+  }
+
+  document.querySelectorAll('.nav-item').forEach(btn => {
+    btn.addEventListener('click', () => switchPage(btn.dataset.page));
+  });
+  document.querySelectorAll('[data-goto]').forEach(el => {
+    el.addEventListener('click', () => switchPage(el.dataset.goto));
+  });
+
+  function startClock(){
+    const tick = () => {
+      const el = document.getElementById('dashClock');
+      if (el) el.textContent = new Date().toLocaleString(currentLang === 'ar' ? 'ar-SA' : 'en-US');
+    };
+    tick();
+    clearInterval(window._raseekhClock);
+    window._raseekhClock = setInterval(tick, 1000);
+  }
+
+  /* AUTH */
+  document.getElementById('loginTabBtn').addEventListener('click', () => {
+    document.getElementById('loginTabBtn').classList.add('active');
+    document.getElementById('registerTabBtn').classList.remove('active');
+    document.getElementById('loginPanel').classList.add('active');
+    document.getElementById('registerPanel').classList.remove('active');
+  });
+  document.getElementById('registerTabBtn').addEventListener('click', () => {
+    document.getElementById('registerTabBtn').classList.add('active');
+    document.getElementById('loginTabBtn').classList.remove('active');
+    document.getElementById('registerPanel').classList.add('active');
+    document.getElementById('loginPanel').classList.remove('active');
+  });
+
+  document.getElementById('dashLoginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const msg = document.getElementById('dashLoginMsg');
+    if (!supabaseClient) {
+      msg.style.color = 'var(--danger)';
+      msg.textContent = t('تعذّر الاتصال بخدمة الحسابات', 'Accounts service unavailable');
+      return;
+    }
+    msg.style.color = 'var(--muted)';
+    msg.textContent = t('جاري الدخول...', 'Signing in...');
+    const email = document.getElementById('dashLoginEmail').value.trim();
+    const password = document.getElementById('dashLoginPassword').value;
+    const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+    if (error) {
+      msg.style.color = 'var(--danger)';
+      msg.textContent = t('بيانات الدخول غير صحيحة', 'Invalid credentials');
+      return;
+    }
+    msg.style.color = 'var(--ok)';
+    msg.textContent = t('تم الدخول بنجاح', 'Signed in');
+    showDashboard(data.user);
+  });
+
+  document.getElementById('dashRegisterForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const msg = document.getElementById('dashRegisterMsg');
+    if (!supabaseClient) {
+      msg.style.color = 'var(--danger)';
+      msg.textContent = t('تعذّر الاتصال بخدمة الحسابات', 'Accounts service unavailable');
+      return;
+    }
+    const name = document.getElementById('dashRegisterName').value.trim();
+    const email = document.getElementById('dashRegisterEmail').value.trim();
+    const password = document.getElementById('dashRegisterPassword').value;
+    msg.style.color = 'var(--muted)';
+    msg.textContent = t('جاري إنشاء الحساب...', 'Creating account...');
+    const { data, error } = await supabaseClient.auth.signUp({
+      email, password, options: { data: { full_name: name } }
+    });
+    if (error) {
+      msg.style.color = 'var(--danger)';
+      msg.textContent = error.message.includes('already registered')
+        ? t('البريد مسجّل مسبقاً', 'Email already registered')
+        : error.message;
+      return;
+    }
+    if (data.session?.user) {
+      showDashboard(data.user);
+    } else {
+      msg.style.color = 'var(--ok)';
+      msg.textContent = t('تم الإنشاء — فعّل البريد ثم سجّل الدخول', 'Created — verify email then sign in');
+    }
+  });
+
+  document.getElementById('logoutBtn').addEventListener('click', async () => {
+    if (supabaseClient) await supabaseClient.auth.signOut();
+    currentUser = null;
+    showLogin();
+  });
+
+  /* RENDER */
+  function renderAll(){
+    if (!currentUser) return;
+    renderOverview();
+    renderProducts();
+    renderPos();
+    renderSales();
+  }
+
+  function todaySales(){
+    const day = new Date().toDateString();
+    return sales.filter(s => new Date(s.at).toDateString() === day);
+  }
+
+  function renderOverview(){
+    const todays = todaySales();
+    const total = todays.reduce((s, x) => s + (x.total || 0), 0);
+    document.getElementById('statProducts').textContent = products.length;
+    document.getElementById('statToday').textContent = total.toFixed(0);
+    document.getElementById('statReceipts').textContent = todays.length;
+    document.getElementById('statLow').textContent = products.filter(p => p.stock <= 5).length;
+
+    const holder = document.getElementById('recentSales');
+    const recent = sales.slice(0, 5);
+    if (!recent.length) {
+      holder.innerHTML = `<div class="empty">${t('لا توجد مبيعات بعد — ابدأ من نقطة البيع','No sales yet — start from POS')}</div>`;
+      return;
+    }
+    holder.innerHTML = recent.map(s => `
+      <div class="sale-row">
+        <div>
+          <div>${s.method === 'card' ? t('بطاقة','Card') : t('نقداً','Cash')} · ${s.items} ${t('صنف','items')}</div>
+          <div style="color:var(--muted);font-size:.78rem">${new Date(s.at).toLocaleString(currentLang === 'ar' ? 'ar-SA' : 'en-US')}</div>
+        </div>
+        <strong>${money(s.total)}</strong>
+      </div>
+    `).join('');
+  }
+
+  function renderProducts(){
+    const q = (document.getElementById('productSearch').value || '').trim().toLowerCase();
+    const list = products.filter(p => {
+      const blob = (p.name + ' ' + (p.name_en || '')).toLowerCase();
+      return !q || blob.includes(q);
+    });
+    const body = document.getElementById('productsBody');
+    if (!list.length) {
+      body.innerHTML = `<tr><td colspan="5" class="empty">${t('لا توجد منتجات','No products')}</td></tr>`;
+      return;
+    }
+    body.innerHTML = list.map(p => `
+      <tr>
+        <td><strong>${escapeHtml(productLabel(p))}</strong></td>
+        <td>${money(p.price)}</td>
+        <td>${p.stock}</td>
+        <td><span class="badge ${p.stock <= 5 ? 'low' : ''}">${p.stock <= 5 ? t('منخفض','Low') : t('متوفر','In stock')}</span></td>
+        <td>
+          <div class="row-actions">
+            <button class="btn btn-ghost" style="padding:6px 10px" data-edit="${p.id}">✎</button>
+            <button class="btn btn-danger" style="padding:6px 10px" data-del="${p.id}">×</button>
+          </div>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  function escapeHtml(str){
+    const d = document.createElement('div');
+    d.textContent = str == null ? '' : String(str);
+    return d.innerHTML;
+  }
+
+  document.getElementById('productSearch').addEventListener('input', renderProducts);
+  document.getElementById('productsBody').addEventListener('click', (e) => {
+    const edit = e.target.closest('[data-edit]');
+    const del = e.target.closest('[data-del]');
+    if (edit) openProductModal(edit.dataset.edit);
+    if (del) {
+      if (!confirm(t('حذف هذا المنتج؟','Delete this product?'))) return;
+      products = products.filter(p => p.id !== del.dataset.del);
+      saveProducts();
+      renderAll();
+      showToast(t('تم الحذف','Deleted'));
+    }
+  });
+
+  function openProductModal(id){
+    editingProductId = id || null;
+    const modal = document.getElementById('productModal');
+    const title = document.getElementById('productModalTitle');
+    if (id) {
+      const p = products.find(x => x.id === id);
+      if (!p) return;
+      title.textContent = t('تعديل منتج','Edit product');
+      document.getElementById('pName').value = p.name;
+      document.getElementById('pNameEn').value = p.name_en || '';
+      document.getElementById('pPrice').value = p.price;
+      document.getElementById('pStock').value = p.stock;
+    } else {
+      title.textContent = t('منتج جديد','New product');
+      document.getElementById('productForm').reset();
+    }
+    modal.classList.add('open');
+  }
+
+  document.getElementById('addProductBtn').addEventListener('click', () => openProductModal(null));
+  document.getElementById('productModalClose').addEventListener('click', () => document.getElementById('productModal').classList.remove('open'));
+  document.getElementById('productModal').addEventListener('click', (e) => {
+    if (e.target.id === 'productModal') e.currentTarget.classList.remove('open');
+  });
+
+  document.getElementById('productForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const payload = {
+      name: document.getElementById('pName').value.trim(),
+      name_en: document.getElementById('pNameEn').value.trim(),
+      price: parseFloat(document.getElementById('pPrice').value) || 0,
+      stock: parseInt(document.getElementById('pStock').value, 10) || 0
+    };
+    if (editingProductId) {
+      const idx = products.findIndex(p => p.id === editingProductId);
+      if (idx > -1) products[idx] = { ...products[idx], ...payload };
+    } else {
+      products.unshift({ id: uid(), ...payload });
+    }
+    saveProducts();
+    document.getElementById('productModal').classList.remove('open');
+    renderAll();
+    showToast(t('تم حفظ المنتج','Product saved'));
+  });
+
+  /* POS */
+  function renderPos(){
+    const q = (document.getElementById('posSearch').value || '').trim().toLowerCase();
+    const catalog = document.getElementById('posCatalog');
+    const list = products.filter(p => {
+      const blob = (p.name + ' ' + (p.name_en || '')).toLowerCase();
+      return p.stock > 0 && (!q || blob.includes(q));
+    });
+    if (!list.length) {
+      catalog.innerHTML = `<div class="empty" style="grid-column:1/-1">${t('لا توجد منتجات متاحة','No available products')}</div>`;
+    } else {
+      catalog.innerHTML = list.map(p => `
+        <button type="button" class="pos-item" data-add="${p.id}">
+          <h4>${escapeHtml(productLabel(p))}</h4>
+          <div class="price">${money(p.price)}</div>
+          <div class="stock">${t('المتبقي','Left')}: ${p.stock}</div>
+        </button>
+      `).join('');
+    }
+    renderCart();
+  }
+
+  document.getElementById('posSearch').addEventListener('input', renderPos);
+  document.getElementById('posCatalog').addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-add]');
+    if (!btn) return;
+    addToCart(btn.dataset.add);
+  });
+
+  function addToCart(id){
+    const p = products.find(x => x.id === id);
+    if (!p || p.stock <= 0) return;
+    const line = cart.find(c => c.id === id);
+    const qty = line ? line.qty + 1 : 1;
+    if (qty > p.stock) {
+      showToast(t('المخزون غير كافٍ','Not enough stock'));
+      return;
+    }
+    if (line) line.qty = qty;
+    else cart.push({ id: p.id, name: p.name, name_en: p.name_en, price: p.price, qty: 1 });
+    renderCart();
+  }
+
+  function renderCart(){
+    const holder = document.getElementById('cartLines');
+    if (!cart.length) {
+      holder.innerHTML = `<div class="empty" style="color:#9BB8AC">${t('السلة فارغة','Cart is empty')}</div>`;
+      document.getElementById('cartTotal').textContent = money(0);
+      return;
+    }
+    holder.innerHTML = cart.map(line => `
+      <div class="cart-line">
+        <div>
+          <div>${escapeHtml(productLabel(line))}</div>
+          <div style="opacity:.7;font-size:.75rem">${money(line.price)}</div>
+        </div>
+        <div class="qty-ctrl">
+          <button type="button" data-dec="${line.id}">−</button>
+          <span>${line.qty}</span>
+          <button type="button" data-inc="${line.id}">+</button>
+        </div>
+        <strong>${money(line.price * line.qty)}</strong>
+      </div>
+    `).join('');
+    const total = cart.reduce((s, l) => s + l.price * l.qty, 0);
+    document.getElementById('cartTotal').textContent = money(total);
+  }
+
+  document.getElementById('cartLines').addEventListener('click', (e) => {
+    const inc = e.target.closest('[data-inc]');
+    const dec = e.target.closest('[data-dec]');
+    if (inc) {
+      const p = products.find(x => x.id === inc.dataset.inc);
+      const line = cart.find(c => c.id === inc.dataset.inc);
+      if (line && p && line.qty < p.stock) { line.qty++; renderCart(); }
+      else showToast(t('المخزون غير كافٍ','Not enough stock'));
+    }
+    if (dec) {
+      const line = cart.find(c => c.id === dec.dataset.dec);
+      if (!line) return;
+      line.qty--;
+      if (line.qty <= 0) cart = cart.filter(c => c.id !== line.id);
+      renderCart();
+    }
+  });
+
+  document.getElementById('clearCartBtn').addEventListener('click', () => {
+    cart = [];
+    renderCart();
+  });
+
+  function checkout(method){
+    if (!cart.length) {
+      showToast(t('السلة فارغة','Cart is empty'));
+      return;
+    }
+    for (const line of cart) {
+      const p = products.find(x => x.id === line.id);
+      if (!p || p.stock < line.qty) {
+        showToast(t('تعذّر إتمام البيع — تحقق من المخزون','Sale failed — check stock'));
+        return;
+      }
+    }
+    cart.forEach(line => {
+      const p = products.find(x => x.id === line.id);
+      if (p) p.stock -= line.qty;
+    });
+    const total = cart.reduce((s, l) => s + l.price * l.qty, 0);
+    const items = cart.reduce((s, l) => s + l.qty, 0);
+    sales.unshift({
+      id: uid(),
+      at: new Date().toISOString(),
+      method,
+      total,
+      items,
+      lines: cart.map(l => ({ ...l }))
+    });
+    cart = [];
+    saveProducts();
+    saveSales();
+    renderAll();
+    showToast(method === 'card'
+      ? t('تم البيع بالبطاقة','Card sale completed')
+      : t('تم البيع نقداً','Cash sale completed'));
+  }
+
+  document.getElementById('payCashBtn').addEventListener('click', () => checkout('cash'));
+  document.getElementById('payCardBtn').addEventListener('click', () => checkout('card'));
+
+  function renderSales(){
+    const holder = document.getElementById('salesList');
+    if (!sales.length) {
+      holder.innerHTML = `<div class="empty">${t('لا يوجد سجل مبيعات بعد','No sales history yet')}</div>`;
+      return;
+    }
+    holder.innerHTML = sales.map(s => `
+      <div class="sale-row">
+        <div>
+          <div><strong>#${String(s.id).slice(-6)}</strong> · ${s.method === 'card' ? t('بطاقة','Card') : t('نقداً','Cash')}</div>
+          <div style="color:var(--muted);font-size:.78rem">${new Date(s.at).toLocaleString(currentLang === 'ar' ? 'ar-SA' : 'en-US')} · ${s.items} ${t('صنف','items')}</div>
+        </div>
+        <strong>${money(s.total)}</strong>
+      </div>
+    `).join('');
+  }
+
+  document.getElementById('settingsForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const msg = document.getElementById('settingsMsg');
+    if (!supabaseClient) return;
+    const name = document.getElementById('settingsName').value.trim();
+    const pass = document.getElementById('settingsPassword').value;
+    try {
+      const updates = {};
+      if (pass) updates.password = pass;
+      if (name) updates.data = { full_name: name, display_name: name };
+      if (Object.keys(updates).length) {
+        const { error } = await supabaseClient.auth.updateUser(updates);
+        if (error) throw error;
+      }
+      document.getElementById('dashUserLabel').textContent = name || currentUser.email;
+      document.getElementById('settingsPassword').value = '';
+      msg.style.color = 'var(--ok)';
+      msg.textContent = t('تم الحفظ','Saved');
+    } catch (err) {
+      msg.style.color = 'var(--danger)';
+      msg.textContent = err.message || t('تعذّر الحفظ','Could not save');
+    }
+  });
+
+  /* SESSION BOOT */
+  applyLang(currentLang);
+
+  (async function init(){
+    if (!supabaseClient) {
+      showLogin();
+      document.getElementById('dashLoginMsg').textContent = t('تعذّر تحميل خدمة الحسابات','Accounts service failed to load');
+      return;
+    }
+    try {
+      const { data } = await supabaseClient.auth.getSession();
+      if (data?.session?.user) showDashboard(data.session.user);
+      else showLogin();
+    } catch (_) {
+      showLogin();
+    }
+    supabaseClient.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_OUT') showLogin();
+      if (event === 'SIGNED_IN' && session?.user && !currentUser) showDashboard(session.user);
+    });
+  })();
+})();
+</script>
+</body>
+</html>
