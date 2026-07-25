@@ -5,94 +5,86 @@
   const ADMIN_PRODUCTS_KEY = 'raseekh_admin_products_v1';
   const VERSION_KEY = 'raseekh_catalog_version';
   const SUGGESTIONS_VERSION_KEY = 'raseekh_suggestions_version';
-  const CATALOG_VERSION = 5;
-  const SUGGESTIONS_VERSION = 3;
+  const CATALOG_VERSION = 6;
+  const SUGGESTIONS_VERSION = 4;
   const CLIENT_REQUESTS_KEY = 'raseekh_all_client_requests_v1';
 
+  // Hardware (p1–p4) stays admin-only for now: physical supply is Riyadh-only.
+  // Clients currently see digital/electronic services only.
   const DEFAULT_PRODUCTS = [
     {
       id: 'p1', name: 'أجهزة لابتوب للأعمال', name_en: 'Business laptops',
       category: 'أجهزة', category_en: 'Devices',
-      desc: 'توريد أجهزة لابتوب حسب مواصفات عملكم — السعر بعد تحديد المواصفات.',
-      desc_en: 'Business laptops supplied to your specs — price after requirements.',
-      price: 0, priceMode: 'quote', stock: 99, kind: 'product', client: true
+      desc: 'توريد أجهزة لابتوب حسب مواصفات عملكم — متاح حالياً داخل الرياض فقط.',
+      desc_en: 'Business laptops to your specs — currently available in Riyadh only.',
+      price: 0, priceMode: 'quote', stock: 99, kind: 'product', client: false, region: 'riyadh'
     },
     {
       id: 'p2', name: 'طابعات وأجهزة نقاط بيع', name_en: 'Printers & POS hardware',
       category: 'أجهزة', category_en: 'Devices',
-      desc: 'طابعات فواتير وتجهيزات كاشير للمحلات — عرض سعر حسب الكمية والنوع.',
-      desc_en: 'Receipt printers and till hardware — quote by model and quantity.',
-      price: 0, priceMode: 'quote', stock: 99, kind: 'product', client: true
+      desc: 'طابعات فواتير وتجهيزات كاشير — متاح حالياً داخل الرياض فقط.',
+      desc_en: 'Receipt printers and till hardware — currently available in Riyadh only.',
+      price: 0, priceMode: 'quote', stock: 99, kind: 'product', client: false, region: 'riyadh'
     },
     {
       id: 'p3', name: 'شبكات وراوترات مكتبية', name_en: 'Office networking gear',
       category: 'شبكات', category_en: 'Networking',
-      desc: 'تجهيز شبكة مستقرة للمكاتب والفروع بعد معاينة الاحتياج.',
-      desc_en: 'Stable networking for offices and branches after assessing needs.',
-      price: 0, priceMode: 'quote', stock: 99, kind: 'product', client: true
+      desc: 'تجهيز شبكة للمكاتب والفروع — متاح حالياً داخل الرياض فقط.',
+      desc_en: 'Office/branch networking setup — currently available in Riyadh only.',
+      price: 0, priceMode: 'quote', stock: 99, kind: 'product', client: false, region: 'riyadh'
     },
     {
       id: 'p4', name: 'شاشات واكسسوارات تقنية', name_en: 'Monitors & tech accessories',
       category: 'اكسسوارات', category_en: 'Accessories',
-      desc: 'شاشات، تخزين، وكابلات وتجهيزات مكتبية — حسب المتوفر والطلب.',
-      desc_en: 'Monitors, storage, cables, and office gear — based on availability.',
-      price: 0, priceMode: 'quote', stock: 99, kind: 'product', client: true
+      desc: 'شاشات وتخزين وكابلات — متاح حالياً داخل الرياض فقط.',
+      desc_en: 'Monitors, storage, and cables — currently available in Riyadh only.',
+      price: 0, priceMode: 'quote', stock: 99, kind: 'product', client: false, region: 'riyadh'
     },
     {
       id: 'p5', name: 'صيانة مواقع إلكترونية', name_en: 'Website maintenance',
       category: 'خدمات', category_en: 'Services',
       desc: 'تحديثات، إصلاح أعطال، تحسين سرعة، ومتابعة أمان — عرض شهري حسب حجم الموقع.',
       desc_en: 'Updates, fixes, speed, and security — monthly quote by site size.',
-      price: 0, priceMode: 'quote', stock: 99, kind: 'service', client: true
+      price: 0, priceMode: 'quote', stock: 99, kind: 'service', client: true, region: 'online'
     },
     {
       id: 'p6', name: 'تطوير مواقع إلكترونية', name_en: 'Website development',
       category: 'برمجة', category_en: 'Programming',
       desc: 'تصميم وبرمجة مواقع شركات ومتاجر ولوحات عربية/إنجليزية — السعر حسب النطاق.',
       desc_en: 'Company sites, stores, and dashboards in AR/EN — priced by scope.',
-      price: 0, priceMode: 'quote', stock: 99, kind: 'service', client: true
+      price: 0, priceMode: 'quote', stock: 99, kind: 'service', client: true, region: 'online'
     },
     {
       id: 'p7', name: 'تعديل وتحسين البرمجة', name_en: 'Code modification & improvement',
       category: 'برمجة', category_en: 'Programming',
       desc: 'إصلاح أخطاء، إضافة مزايا، وتحسين أداء مشروعكم الحالي بعد مراجعة الكود.',
       desc_en: 'Bug fixes, features, and performance after reviewing your codebase.',
-      price: 0, priceMode: 'quote', stock: 99, kind: 'service', client: true
+      price: 0, priceMode: 'quote', stock: 99, kind: 'service', client: true, region: 'online'
     },
     {
       id: 'p8', name: 'برمجة أنظمة ولوحات تحكم', name_en: 'Systems & dashboards',
       category: 'برمجة', category_en: 'Programming',
       desc: 'أنظمة إدارة ومخزون وعملاء حسب نشاطكم — عرض سعر بعد تحديد المتطلبات.',
       desc_en: 'Management, inventory, and CRM systems — quote after requirements.',
-      price: 0, priceMode: 'quote', stock: 99, kind: 'service', client: true
+      price: 0, priceMode: 'quote', stock: 99, kind: 'service', client: true, region: 'online'
     },
     {
       id: 'p9', name: 'ربط API وأنظمة خارجية', name_en: 'API & integrations',
       category: 'برمجة', category_en: 'Programming',
       desc: 'ربط الدفع والرسائل والأنظمة الخارجية بمشروعكم — حسب عدد الربط والتعقيد.',
       desc_en: 'Payments, messaging, and external systems — by integration complexity.',
-      price: 0, priceMode: 'quote', stock: 99, kind: 'service', client: true
+      price: 0, priceMode: 'quote', stock: 99, kind: 'service', client: true, region: 'online'
     },
     {
       id: 'p10', name: 'نظام مخصص كامل', name_en: 'Complete custom system',
       category: 'خدمات', category_en: 'Services',
       desc: 'بناء نظام متكامل من الدراسة إلى التشغيل — عقد واضح ونطاق متفق عليه.',
       desc_en: 'Full system from discovery to go-live — clear scope and agreement.',
-      price: 0, priceMode: 'quote', stock: 99, kind: 'service', client: true
+      price: 0, priceMode: 'quote', stock: 99, kind: 'service', client: true, region: 'online'
     }
   ];
 
   const DEFAULT_SUGGESTIONS = [
-    {
-      id: 'sg1',
-      title: 'تجهيز مكتب تقني',
-      title_en: 'Office tech setup',
-      desc: 'أجهزة + شبكات + اكسسوارات — نحدد المواصفات ثم نرسل عرض سعر حقيقي.',
-      desc_en: 'Devices + networking + accessories — we confirm specs then send a real quote.',
-      productIds: ['p1', 'p3', 'p4'],
-      badge: 'للمكاتب',
-      badge_en: 'For offices'
-    },
     {
       id: 'sg2',
       title: 'صيانة وتطوير موقع',
@@ -122,6 +114,16 @@
       productIds: ['p10', 'p8', 'p9'],
       badge: 'للمنشآت',
       badge_en: 'For businesses'
+    },
+    {
+      id: 'sg5',
+      title: 'باقة برمجة سريعة',
+      title_en: 'Quick coding package',
+      desc: 'تعديل برمجة + ربط بسيط — مناسبة لطلب إلكتروني واضح بدون أجهزة.',
+      desc_en: 'Code change + light integration — for a clear digital request, no hardware.',
+      productIds: ['p7', 'p9'],
+      badge: 'إلكتروني',
+      badge_en: 'Digital'
     }
   ];
 
@@ -169,7 +171,9 @@
         desc: seed.desc,
         desc_en: seed.desc_en,
         kind: seed.kind,
-        client: cur.client !== false,
+        region: seed.region || cur.region || '',
+        // Seed visibility wins for default catalog items (keeps hardware hidden from clients)
+        client: seed.client === false ? false : (cur.client !== false),
         priceMode: cur.priceMode || seed.priceMode || 'quote',
         price: typeof cur.price === 'number' ? cur.price : seed.price,
         stock: typeof cur.stock === 'number' ? cur.stock : seed.stock
@@ -239,10 +243,10 @@
       return loadAdminProducts().filter((p) => p && p.client !== false);
     }
     const stored = readJson(PUBLIC_KEY, null);
-    if (stored && stored.length) return stored;
+    if (stored && stored.length) return stored.filter((p) => p && p.client !== false);
     const admin = readJson(ADMIN_PRODUCTS_KEY, null);
     if (admin && admin.length) return admin.filter((p) => p && p.client !== false);
-    return cloneList(DEFAULT_PRODUCTS);
+    return cloneList(DEFAULT_PRODUCTS).filter((p) => p && p.client !== false);
   }
 
   function getClientSuggestions() {
