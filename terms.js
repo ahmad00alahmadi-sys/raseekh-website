@@ -3,6 +3,7 @@
   const TERMS_VERSION = '2026-07-25-v7';
   const ACCEPT_KEY = 'raseekh_terms_accepted_v1';
   const PURCHASE_SESSION_KEY = 'raseekh_purchase_terms_session_v1';
+  const AUTH_SESSION_KEY = 'raseekh_auth_terms_session_v1';
 
   function hasPurchaseAcceptedSession() {
     try {
@@ -18,6 +19,54 @@
       else sessionStorage.removeItem(PURCHASE_SESSION_KEY);
     } catch (_) {}
     return !!on;
+  }
+
+  function hasAuthAcceptedSession() {
+    try {
+      return sessionStorage.getItem(AUTH_SESSION_KEY) === TERMS_VERSION;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  function setAuthAcceptedSession(on) {
+    try {
+      if (on) sessionStorage.setItem(AUTH_SESSION_KEY, TERMS_VERSION);
+      else sessionStorage.removeItem(AUTH_SESSION_KEY);
+    } catch (_) {}
+    return !!on;
+  }
+
+  function shortTermsHtml() {
+    return `
+      <div class="terms-doc">
+        <div class="terms-doc-head">
+          <div class="eyebrow" data-ar="ملخص" data-en="Summary">ملخص</div>
+          <h2 data-ar="ملخص سريع للشروط" data-en="Quick terms summary">ملخص سريع للشروط</h2>
+          <p data-ar="هذا ملخص غير بديل عن الشروط الكاملة. بالنقر للموافقة أو إرسال طلب، توافقون على الشروط الكاملة." data-en="This summary does not replace the full terms. By accepting or sending a request, you agree to the full terms.">هذا ملخص غير بديل عن الشروط الكاملة. بالنقر للموافقة أو إرسال طلب، توافقون على الشروط الكاملة.</p>
+          <div class="terms-updated" data-ar="آخر تحديث: يوليو 2026" data-en="Last updated: July 2026">آخر تحديث: يوليو 2026</div>
+        </div>
+        <div class="terms-list">
+          <article class="terms-item">
+            <h3 data-ar="1) الحساب" data-en="1) Account">1) الحساب</h3>
+            <p data-ar="بيانات صحيحة، حماية كلمة المرور، واستخدام مقبول فقط." data-en="Accurate details, protect your password, and acceptable use only.">بيانات صحيحة، حماية كلمة المرور، واستخدام مقبول فقط.</p>
+          </article>
+          <article class="terms-item">
+            <h3 data-ar="2) الطلب والشراء" data-en="2) Requests & purchase">2) الطلب والشراء</h3>
+            <p data-ar="إرسال الطلب موافقة على شروط الشراء. القبول النهائي عبر عرض مكتوب. السداد الإلكتروني العام قد يكون متوقفاً مؤقتاً." data-en="Sending a request accepts purchase terms. Final acceptance is via written quote. Public online checkout may be paused.">إرسال الطلب موافقة على شروط الشراء. القبول النهائي عبر عرض مكتوب. السداد الإلكتروني العام قد يكون متوقفاً مؤقتاً.</p>
+          </article>
+          <article class="terms-item">
+            <h3 data-ar="3) الخصوصية" data-en="3) Privacy">3) الخصوصية</h3>
+            <p data-ar="لا نبيع بياناتكم. نستخدمها للرد وتنفيذ الخدمة وفق سياسة الخصوصية." data-en="We do not sell your data. We use it to reply and deliver the service under the Privacy Policy.">لا نبيع بياناتكم. نستخدمها للرد وتنفيذ الخدمة وفق سياسة الخصوصية.</p>
+          </article>
+          <p style="margin-top:14px;font-size:.9rem;color:var(--muted)">
+            <a href="/terms/" data-ar="الشروط الكاملة" data-en="Full terms">الشروط الكاملة</a>
+            <span aria-hidden="true"> · </span>
+            <a href="/privacy/" data-ar="سياسة الخصوصية" data-en="Privacy policy">سياسة الخصوصية</a>
+          </p>
+        </div>
+      </div>
+    `;
   }
 
   function termsHtml() {
@@ -428,6 +477,11 @@
     el.innerHTML = purchaseTermsHtml();
   }
 
+  function renderShortInto(el) {
+    if (!el) return;
+    el.innerHTML = shortTermsHtml();
+  }
+
   function renderPrivacyInto(el) {
     if (!el) return;
     el.innerHTML = privacyHtml();
@@ -461,6 +515,10 @@
     syncAcceptance,
     hasPurchaseAcceptedSession,
     setPurchaseAcceptedSession,
+    hasAuthAcceptedSession,
+    setAuthAcceptedSession,
+    shortTermsHtml,
+    renderShortInto,
     probeCloud,
     userKey
   };

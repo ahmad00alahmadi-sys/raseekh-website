@@ -1625,6 +1625,35 @@
     }
   }
 
+  async function updateSharedRequestFields(id, patch) {
+    const list = getSharedRequests();
+    const idx = list.findIndex((r) => r && r.id === id);
+    if (idx < 0) return { ok: false, row: null };
+    const prev = Object.assign({}, list[idx]);
+    const safe = patch && typeof patch === 'object' ? patch : {};
+    const prevDelivery = list[idx].deliveryStatus;
+    list[idx] = Object.assign({}, list[idx], safe, {
+      id: list[idx].id,
+      updatedAt: new Date().toISOString(),
+      syncPending: true,
+      deliveryStatus: (prevDelivery === 'local' || prevDelivery === 'pending_notify')
+        ? prevDelivery
+        : (prevDelivery || 'delivered')
+    });
+    saveSharedRequests(list);
+    try {
+      const cloudOk = await pushRequestToCloud(list[idx], { allowUpdate: true });
+      list[idx].syncPending = !cloudOk;
+      if (cloudOk) delete list[idx].syncPending;
+      saveSharedRequests(list);
+      return { ok: !!cloudOk, row: list[idx], previous: prev };
+    } catch (_) {
+      list[idx].syncPending = true;
+      saveSharedRequests(list);
+      return { ok: false, row: list[idx], previous: prev };
+    }
+  }
+
   async function publishClientCatalogToCloud(products, suggestions) {
     const sb = getSupabase();
     if (!sb) return false;
@@ -1779,6 +1808,7 @@
     getSharedRequests,
     saveSharedRequests,
     updateSharedRequestStatus,
+    updateSharedRequestFields,
     money,
     formatPrice,
     suggestionPriceLabel,

@@ -728,6 +728,11 @@ body.lang-en .footer-brand{font-family:'Space Grotesk',sans-serif}
   transition:opacity .25s ease;
 }
 .mobile-quote-bar .btn{width:100%;box-shadow:0 12px 28px -12px rgba(16,35,58,.55)}
+#maintenanceBanner{
+  display:none;position:sticky;top:0;z-index:120;padding:10px 16px;text-align:center;
+  background:var(--navy);color:#fff;font-size:.9rem;font-weight:700;
+}
+#maintenanceBanner.show{display:block}
 .terms-overlay{
   position:fixed;inset:0;z-index:220;display:none;align-items:center;justify-content:center;
   padding:18px;background:rgba(16,35,58,.72);backdrop-filter:blur(8px);
@@ -765,6 +770,12 @@ body.terms-locked,body.auth-locked{overflow:hidden}
   .hero-quote{grid-template-columns:1fr}
   .hero-quote .btn{width:100%}
 }
+@media (max-width:768px){
+  .mobile-quote-bar{display:block}
+  body{padding-bottom:76px}
+  .float-cta .float-quote{display:none!important}
+  .float-cta{bottom:84px}
+}
 @media (max-width:560px){
   .nav-prefs{gap:4px}
   #accountBtn{padding:10px 12px;font-size:.8rem}
@@ -772,10 +783,6 @@ body.terms-locked,body.auth-locked{overflow:hidden}
   .wrap{padding:0 18px}
   .brand-mark{font-size:clamp(3.6rem,18vw,5rem)}
   .hero h1{max-width:100%}
-  .mobile-quote-bar{display:block}
-  body{padding-bottom:76px}
-  .float-cta .float-quote{display:none!important}
-  .float-cta{bottom:84px}
   .now-rail{padding-inline-start:24px}
   .now-item::before{inset-inline-start:-21px;width:10px;height:10px}
   .now-foot .btn{width:100%}
@@ -844,6 +851,7 @@ body.pay-paused .pay-public-entry{display:none!important}
   <button type="button" class="btn btn-primary" id="reloadUpdateBtn" style="margin-inline-start:10px;padding:6px 12px;font-size:.8rem" data-ar="إعادة التحميل" data-en="Reload">إعادة التحميل</button>
   <button type="button" class="btn btn-ghost" id="dismissUpdateBtn" style="margin-inline-start:6px;padding:6px 12px;font-size:.8rem;border-color:rgba(255,255,255,.35);color:#fff" data-ar="لاحقاً" data-en="Later">لاحقاً</button>
 </div>
+<div id="maintenanceBanner" role="status" aria-live="polite" data-ar="الموقع في صيانة مؤقتة — طلبات عرض السعر متوقفة حالياً." data-en="Site under brief maintenance — quote requests are paused for now.">الموقع في صيانة مؤقتة — طلبات عرض السعر متوقفة حالياً.</div>
 
 <header>
   <nav class="wrap">
@@ -972,6 +980,8 @@ body.pay-paused .pay-public-entry{display:none!important}
         <a href="#contact" id="heroOpenFullForm" data-ar="أو افتحوا النموذج الكامل" data-en="Or open the full form">أو افتحوا النموذج الكامل</a>
         <span aria-hidden="true">·</span>
         <a href="#pricing" data-ar="قارنوا الباقات" data-en="Compare plans">قارنوا الباقات</a>
+        <span aria-hidden="true">·</span>
+        <a href="/terms/" id="heroShortTermsLink" data-ar="الشروط" data-en="Terms">الشروط</a>
       </div>
       <div class="trust-strip reveal" aria-label="Trust signals">
         <article><strong data-ar="تقدير أولي" data-en="Quick estimate">تقدير أولي</strong><span data-ar="حاسبة تقريبية قبل إرسال الطلب" data-en="Indicative calculator before you send a request">حاسبة تقريبية قبل إرسال الطلب</span></article>
@@ -1110,6 +1120,7 @@ body.pay-paused .pay-public-entry{display:none!important}
         <a class="btn btn-ghost" href="#contact" data-quote-type="business" data-quote-msg-ar="أرغب بنسخة للمؤسسات — حلول تشغيلية حسب نشاط مؤسستنا." data-quote-msg-en="I want the Institution edition — operational solutions for our organization." data-ar="اطلب نسخة المؤسسات" data-en="Request Institution edition">اطلب نسخة المؤسسات</a>
       </article>
     </div>
+    <p class="hint-inline reveal" id="pricingClarityNote" style="margin-top:16px;margin-bottom:0" data-ar="يشمل العرض المكتوب: النطاق والسعر والمدة. لا يشمل: أعمال خارج النطاق أو تراخيص طرف ثالث ما لم يُذكر." data-en="The written quote covers: scope, price, and timeline. It does not cover: out-of-scope work or third-party licenses unless stated.">يشمل العرض المكتوب: النطاق والسعر والمدة. لا يشمل: أعمال خارج النطاق أو تراخيص طرف ثالث ما لم يُذكر.</p>
     <div class="plan-guide reveal">
       <article class="service-block">
         <h3 data-ar="إذا الطلب صغير أو تعديل محدود" data-en="If the request is small or a limited change">إذا الطلب صغير أو تعديل محدود</h3>
@@ -1330,27 +1341,30 @@ body.pay-paused .pay-public-entry{display:none!important}
 <section class="band-mist" id="cases" style="padding:88px 0">
   <div class="wrap">
     <div class="section-head reveal">
-      <div class="eyebrow" data-ar="نماذج توضيحية" data-en="Illustrative scenarios">نماذج توضيحية</div>
-      <h2 data-ar="سيناريوهات تشغيل نموذجية — ليست شهادات عملاء" data-en="Typical ops scenarios — not client testimonials">سيناريوهات تشغيل نموذجية — ليست شهادات عملاء</h2>
-      <p data-ar="أمثلة افتراضية لتوضيح كيف يبدو الحل حسب القطاع. أي مرجع حقيقي يُذكر فقط بموافقة العميل." data-en="Hypothetical examples to show how a solution may look by sector. Real references are named only with client consent.">أمثلة افتراضية لتوضيح كيف يبدو الحل حسب القطاع. أي مرجع حقيقي يُذكر فقط بموافقة العميل.</p>
+      <div class="eyebrow" data-ar="نتائج تشغيلية نموذجية" data-en="Typical operational outcomes">نتائج تشغيلية نموذجية</div>
+      <h2 data-ar="كيف يبدو التحسّن في التشغيل — ليست شهادات عملاء" data-en="What ops improvement can look like — not client testimonials">كيف يبدو التحسّن في التشغيل — ليست شهادات عملاء</h2>
+      <p data-ar="أمثلة افتراضية مبنية على متطلبات شائعة حسب القطاع — ليست تقييمات حقيقية. أي مرجع حقيقي يُذكر فقط بموافقة العميل." data-en="Hypothetical examples based on common sector needs — not real reviews. Real references are named only with client consent.">أمثلة افتراضية مبنية على متطلبات شائعة حسب القطاع — ليست تقييمات حقيقية. أي مرجع حقيقي يُذكر فقط بموافقة العميل.</p>
     </div>
     <div class="services-grid reveal stagger">
       <article class="service-block">
         <div class="eyebrow" data-ar="مثال · تجزئة" data-en="Example · Retail">مثال · تجزئة</div>
         <h3 data-ar="تنبيهات نقص قبل فراغ الرف" data-en="Low-stock alerts before empty shelves">تنبيهات نقص قبل فراغ الرف</h3>
         <p data-ar="سيناريو نموذجي: فرع يعتمد على جرد يدوي → كميات حسب الفرع + تنبيه نقص + تقرير يومي للإدارة." data-en="Typical scenario: a branch on manual counts → quantities by branch + low-stock alerts + a daily management report.">سيناريو نموذجي: فرع يعتمد على جرد يدوي → كميات حسب الفرع + تنبيه نقص + تقرير يومي للإدارة.</p>
+        <p class="hint-inline" style="margin-top:10px" data-ar="نتيجة متوقعة: تقليل نفاد الأصناف الشائعة عبر تنبيه مبكر بدل الجرد المفاجئ." data-en="Likely outcome: fewer stockouts on common SKUs via earlier alerts instead of surprise counts.">نتيجة متوقعة: تقليل نفاد الأصناف الشائعة عبر تنبيه مبكر بدل الجرد المفاجئ.</p>
         <a class="btn btn-ghost" href="/industries/retail.html" style="margin-top:12px" data-ar="حل التجزئة" data-en="Retail solution">حل التجزئة</a>
       </article>
       <article class="service-block">
         <div class="eyebrow" data-ar="مثال · عيادة" data-en="Example · Clinic">مثال · عيادة</div>
         <h3 data-ar="مواعيد وصلاحيات بدل رسائل متفرقة" data-en="Appointments and roles instead of scattered chats">مواعيد وصلاحيات بدل رسائل متفرقة</h3>
         <p data-ar="سيناريو نموذجي: مواعيد تضيع بين المحادثات → لوحة يومية وأدوار محدودة ومتابعة حالة." data-en="Typical scenario: appointments lost across chats → a daily board, limited roles, and status tracking.">سيناريو نموذجي: مواعيد تضيع بين المحادثات → لوحة يومية وأدوار محدودة ومتابعة حالة.</p>
+        <p class="hint-inline" style="margin-top:10px" data-ar="نتيجة متوقعة: جدول يومي أوضح وتقليل المواعيد المفقودة بين الفريق." data-en="Likely outcome: a clearer daily schedule and fewer missed appointments across the team.">نتيجة متوقعة: جدول يومي أوضح وتقليل المواعيد المفقودة بين الفريق.</p>
         <a class="btn btn-ghost" href="/industries/clinic.html" style="margin-top:12px" data-ar="حل العيادة" data-en="Clinic solution">حل العيادة</a>
       </article>
       <article class="service-block">
         <div class="eyebrow" data-ar="مثال · مقاولات" data-en="Example · Contracting">مثال · مقاولات</div>
         <h3 data-ar="حالة المشروع والمواد في شاشة واحدة" data-en="Project and materials status on one screen">حالة المشروع والمواد في شاشة واحدة</h3>
         <p data-ar="سيناريو نموذجي: متابعة ميدانية عبر رسائل → مشاريع ومواد لكل موقع وتحديث ظاهر للإدارة." data-en="Typical scenario: field follow-up via messages → projects, per-site materials, and updates visible to management.">سيناريو نموذجي: متابعة ميدانية عبر رسائل → مشاريع ومواد لكل موقع وتحديث ظاهر للإدارة.</p>
+        <p class="hint-inline" style="margin-top:10px" data-ar="نتيجة متوقعة: رؤية أسرع لحالة الموقع والمواد دون مطاردة الرسائل." data-en="Likely outcome: faster visibility of site and materials status without chasing chats.">نتيجة متوقعة: رؤية أسرع لحالة الموقع والمواد دون مطاردة الرسائل.</p>
         <a class="btn btn-ghost" href="/industries/contracting.html" style="margin-top:12px" data-ar="حل المقاولات" data-en="Contracting solution">حل المقاولات</a>
       </article>
     </div>
@@ -1809,6 +1823,16 @@ body.pay-paused .pay-public-entry{display:none!important}
               <span>SAR</span>
             </div>
             <input type="text" id="payNote" data-ar-placeholder="ملاحظة (اختياري)" data-en-placeholder="Note (optional)" placeholder="ملاحظة (اختياري)">
+            <!-- Future: purchase terms gate when PUBLIC_PAY_ENABLED — keep scaffolding ready. -->
+            <div id="payPurchaseTermsNote" class="hint-inline" style="display:none" hidden aria-hidden="true" data-ar="بالمتابعة توافقون على شروط الشراء المعمول بها وقت السداد." data-en="By continuing you agree to the purchase terms in effect at checkout.">بالمتابعة توافقون على شروط الشراء المعمول بها وقت السداد.</div>
+            <label class="check" for="payPurchaseTermsCheck" id="payPurchaseTermsLabel" style="display:none" hidden>
+              <input type="checkbox" id="payPurchaseTermsCheck" disabled>
+              <span class="check-text">
+                <span data-ar="أوافق على " data-en="I agree to the ">أوافق على </span>
+                <a href="/terms/#purchase" id="payPurchaseTermsLink" data-ar="شروط شراء المنتجات" data-en="product purchase terms">شروط شراء المنتجات</a>
+                <span data-ar="." data-en=".">.</span>
+              </span>
+            </label>
             <button type="button" class="btn btn-primary" id="payContinueBtn" data-ar="المتابعة للدفع" data-en="Continue to pay">المتابعة للدفع</button>
             <div class="msg" id="payValidationMsg" role="status" aria-live="polite"></div>
           </form>
@@ -1837,6 +1861,7 @@ body.pay-paused .pay-public-entry{display:none!important}
     <div class="panel reveal" id="contact">
       <h2 data-ar="اطلب عرض سعر" data-en="Request a quote">اطلب عرض سعر</h2>
       <p data-ar="نراجع طلبكم ونرد على بريدكم أو جوالكم." data-en="We review your request and reply on your email or phone.">نراجع طلبكم ونرد على بريدكم أو جوالكم.</p>
+      <p class="hint-inline" style="margin-bottom:8px" data-ar="الرد المتوقع عادة خلال يوم عمل." data-en="Typical reply within one business day.">الرد المتوقع عادة خلال يوم عمل.</p>
       <p class="hint-inline" style="margin-bottom:14px" data-ar="ساعات العمل المعتادة: الأحد–الخميس · الرياض / السعودية" data-en="Usual business hours: Sun–Thu · Riyadh / Saudi Arabia">ساعات العمل المعتادة: الأحد–الخميس · الرياض / السعودية</p>
       <form class="form" id="contactForm" novalidate>
         <label class="field"><span data-ar="الاسم الكامل" data-en="Full name">الاسم الكامل</span>
@@ -1879,6 +1904,12 @@ body.pay-paused .pay-public-entry{display:none!important}
         <label class="field"><span data-ar="تفاصيل الطلب" data-en="Request details">تفاصيل الطلب</span>
           <textarea required data-ar-placeholder="صف طلبكم باختصار" data-en-placeholder="Briefly describe your request" placeholder="صف طلبكم باختصار" id="contactMsg"></textarea>
         </label>
+        <p class="hint-inline" id="contactTrustLine" style="margin:0 0 10px">
+          <span data-ar="لا نبيع بياناتكم · نستخدمها للرد على طلبكم فقط · راجعوا " data-en="We do not sell your data · used only to reply to your request · see ">لا نبيع بياناتكم · نستخدمها للرد على طلبكم فقط · راجعوا </span>
+          <a href="/privacy/" data-ar="سياسة الخصوصية" data-en="Privacy Policy">سياسة الخصوصية</a>
+          <span aria-hidden="true"> · </span>
+          <a href="/terms/" id="openShortTermsLink" data-ar="ملخص الشروط" data-en="Terms summary">ملخص الشروط</a>
+        </p>
         <label class="check" for="contactPurchaseTermsCheck">
           <input type="checkbox" id="contactPurchaseTermsCheck" required>
           <span class="check-text">
@@ -1948,6 +1979,7 @@ body.pay-paused .pay-public-entry{display:none!important}
 <script src="/auth.js"></script>
 <script>
 (function(){
+  const MAINTENANCE_MODE = false;
   /* Flip to true when the new public checkout is ready.
      Also restore MOYASAR_PUBLISHABLE_KEY (or the new gateway key) before enabling. */
   const PUBLIC_PAY_ENABLED = false;
@@ -1961,6 +1993,16 @@ body.pay-paused .pay-public-entry{display:none!important}
   let authProvider = null;
   let clientProducts = [];
   let clientSuggestions = [];
+
+  if (MAINTENANCE_MODE) {
+    const banner = document.getElementById('maintenanceBanner');
+    if (banner) banner.classList.add('show');
+    document.body.classList.add('maintenance-on');
+    const heroBtn = document.getElementById('heroQuoteBtn');
+    const contactSubmit = document.querySelector('#contactForm button[type="submit"]');
+    if (heroBtn) { heroBtn.disabled = true; heroBtn.setAttribute('aria-disabled', 'true'); }
+    if (contactSubmit) { contactSubmit.disabled = true; contactSubmit.setAttribute('aria-disabled', 'true'); }
+  }
 
   if (PUBLIC_PAY_ENABLED) {
     document.body.classList.remove('pay-paused');
@@ -2237,6 +2279,136 @@ body.pay-paused .pay-public-entry{display:none!important}
       syncPurchaseTermsChecks(true);
     }
   }
+  function authTermsAccepted(){
+    const TermsApi = window.RaseekhTerms;
+    if (TermsApi && TermsApi.hasAuthAcceptedSession && TermsApi.hasAuthAcceptedSession()) return true;
+    const login = document.getElementById('loginTermsCheck');
+    const reg = document.getElementById('registerTermsCheck');
+    return !!(login && login.checked) || !!(reg && reg.checked);
+  }
+  function syncAuthTermsChecks(checked){
+    const on = !!checked;
+    ['loginTermsCheck', 'registerTermsCheck'].forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) el.checked = on;
+    });
+    const TermsApi = window.RaseekhTerms;
+    if (TermsApi && TermsApi.setAuthAcceptedSession) {
+      if (on) TermsApi.setAuthAcceptedSession(true);
+      else TermsApi.setAuthAcceptedSession(false);
+    }
+  }
+  function restoreAuthTermsChecks(){
+    const TermsApi = window.RaseekhTerms;
+    if (TermsApi && TermsApi.hasAuthAcceptedSession && TermsApi.hasAuthAcceptedSession()) {
+      syncAuthTermsChecks(true);
+    }
+  }
+  function quoteSuccessMessage(){
+    return t(
+      '✓ استلمنا طلبكم. نراجع خلال يوم عمل (أحد–خميس) ونرد على بريدكم أو جوالكم.',
+      '✓ We received your request. We review within one business day (Sun–Thu) and reply on your email or phone.'
+    );
+  }
+  function quoteNextStepsNoteHtml(){
+    return `<p class="hint-inline" id="contactNextStepsNote" style="width:100%;margin:4px 0 0">${escapeHtml(t(
+      'التالي: مراجعة → عرض سعر مكتوب → تنفيذ بعد الموافقة',
+      'Next: review → written quote → build after approval'
+    ))}</p>`;
+  }
+  function clientConfirmMailtoHtml(email, type, message){
+    const to = (email || '').trim();
+    if (!to) return '';
+    const subject = t('تأكيد طلب عرض سعر — راسخ', 'Quote request confirmation — Raseekh');
+    const body = t(
+      `أرسلتُ طلباً إلى راسخ.\nالنوع: ${type || ''}\nالملخص: ${(message || '').slice(0, 280)}\n\n— هذه مسودة تأكيد شخصية من النموذج، وليست إيميلاً آلياً من الخادم.`,
+      `I sent a request to Raseekh.\nType: ${type || ''}\nSummary: ${(message || '').slice(0, 280)}\n\n— Personal confirmation draft from the form, not an automated server email.`
+    );
+    const href = `mailto:${String(to).replace(/[^\w.@+-]/g, '')}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    return `<a class="btn btn-ghost" id="contactSelfMailtoBtn" href="${href}">${escapeHtml(t('فتح مسودة إيميل لنفسي','Open an email draft to myself'))}</a>`;
+  }
+  function simpleFpHash(str){
+    let h = 2166136261;
+    const s = String(str || '');
+    for (let i = 0; i < s.length; i++) {
+      h ^= s.charCodeAt(i);
+      h = Math.imul(h, 16777619);
+    }
+    return (h >>> 0).toString(16);
+  }
+  function quoteFingerprint(email, type, message){
+    return simpleFpHash([String(email || '').trim().toLowerCase(), String(type || ''), String(message || '').trim()].join('|'));
+  }
+  function isDuplicateQuoteRequest(email, type, message){
+    try {
+      const raw = sessionStorage.getItem('raseekh_last_quote_fp_v1');
+      if (!raw) return false;
+      const parsed = JSON.parse(raw);
+      if (!parsed || !parsed.fp || !parsed.at) return false;
+      const fp = quoteFingerprint(email, type, message);
+      if (parsed.fp !== fp) return false;
+      return (Date.now() - Number(parsed.at)) < 3 * 60 * 1000;
+    } catch (_) {
+      return false;
+    }
+  }
+  function storeQuoteFingerprint(email, type, message){
+    try {
+      sessionStorage.setItem('raseekh_last_quote_fp_v1', JSON.stringify({
+        fp: quoteFingerprint(email, type, message),
+        at: Date.now()
+      }));
+    } catch (_) {}
+  }
+  const CONTACT_DRAFT_KEY = 'raseekh_contact_draft_v1';
+  function readContactDraft(){
+    try { return JSON.parse(sessionStorage.getItem(CONTACT_DRAFT_KEY) || 'null'); }
+    catch (_) { return null; }
+  }
+  function clearContactDraft(){
+    try { sessionStorage.removeItem(CONTACT_DRAFT_KEY); } catch (_) {}
+  }
+  function saveContactDraft(){
+    try {
+      const draft = {
+        name: (document.getElementById('contactName') && document.getElementById('contactName').value) || '',
+        email: (document.getElementById('contactEmail') && document.getElementById('contactEmail').value) || '',
+        phone: (document.getElementById('contactPhone') && document.getElementById('contactPhone').value) || '',
+        company: (document.getElementById('contactCompany') && document.getElementById('contactCompany').value) || '',
+        segment: getContactSegment(),
+        type: (document.getElementById('contactType') && document.getElementById('contactType').value) || '',
+        msg: (document.getElementById('contactMsg') && document.getElementById('contactMsg').value) || '',
+        other: (document.getElementById('contactOtherNote') && document.getElementById('contactOtherNote').value) || ''
+      };
+      sessionStorage.setItem(CONTACT_DRAFT_KEY, JSON.stringify(draft));
+    } catch (_) {}
+  }
+  function restoreContactDraft(){
+    const draft = readContactDraft();
+    if (!draft || typeof draft !== 'object') return;
+    const setVal = (id, v) => {
+      const el = document.getElementById(id);
+      if (el && v != null && String(v).length) el.value = String(v);
+    };
+    setVal('contactName', draft.name);
+    setVal('contactEmail', draft.email);
+    setVal('contactPhone', draft.phone);
+    setVal('contactCompany', draft.company);
+    setVal('contactType', draft.type);
+    setVal('contactMsg', draft.msg);
+    setVal('contactOtherNote', draft.other);
+    if (draft.segment) setContactSegment(draft.segment);
+    syncCompanyFieldForSegment(getContactSegment());
+  }
+  function maintenanceBlocksSubmit(resultEl){
+    if (!MAINTENANCE_MODE) return false;
+    const msg = t('الموقع في صيانة مؤقتة — تعذر إرسال الطلب الآن.', 'Site under brief maintenance — cannot send requests right now.');
+    if (resultEl) {
+      resultEl.style.color = 'var(--danger)';
+      resultEl.textContent = msg;
+    }
+    return true;
+  }
   function requirePurchaseTerms(prefer){
     const hero = document.getElementById('heroPurchaseTermsCheck');
     const contact = document.getElementById('contactPurchaseTermsCheck');
@@ -2259,6 +2431,9 @@ body.pay-paused .pay-public-entry{display:none!important}
     const type = opts.type || 'programming';
     const message = (opts.message || '').trim();
     if (!message) return { ok: false, empty: true };
+    if (maintenanceBlocksSubmit(document.getElementById('contactResult'))) {
+      return { ok: false, maintenance: true };
+    }
     if (!purchaseTermsAccepted()) {
       requirePurchaseTerms(opts.focusHero ? 'hero' : 'contact');
       return { ok: false, needPurchaseTerms: true };
@@ -2339,7 +2514,7 @@ body.pay-paused .pay-public-entry{display:none!important}
         resultEl.textContent = !savedOk
           ? t('تعذّر الإرسال — أكملوا النموذج أدناه', 'Could not send — complete the form below')
           : (delivered
-            ? t('✓ تم إرسال طلب عرض السعر', '✓ Quote request sent')
+            ? quoteSuccessMessage()
             : (pending
               ? t('استلمنا الطلب محلياً — جاري تفعيل إشعار الإدارة', 'Request saved locally — admin notify is activating')
               : t('حُفظ الطلب محلياً — تابعوه من حسابكم أو أعيدوا الإرسال', 'Request saved locally — track it in your account or resend')));
@@ -2348,10 +2523,12 @@ body.pay-paused .pay-public-entry{display:none!important}
         successActions.style.display = 'flex';
         successActions.style.gap = '8px';
         successActions.style.flexWrap = 'wrap';
-        successActions.innerHTML = `<a class="btn btn-primary" href="/dashboard/">${escapeHtml(t('متابعة الطلب من حسابي','Track request in my account'))}</a>`;
+        const mailto = ok ? clientConfirmMailtoHtml(email, type, message) : '';
+        successActions.innerHTML = `<a class="btn btn-primary" href="/dashboard/">${escapeHtml(t('متابعة الطلب من حسابي','Track request in my account'))}</a>${mailto}${ok ? quoteNextStepsNoteHtml() : ''}`;
       }
       // Keep draft on soft/local failure so users can resend.
       if (ok) {
+        storeQuoteFingerprint(email, type, message);
         const hq = document.getElementById('heroQuoteMsg');
         if (hq) hq.value = '';
       }
@@ -2379,6 +2556,10 @@ body.pay-paused .pay-public-entry{display:none!important}
     const type = document.getElementById('heroQuoteType').value;
     const message = document.getElementById('heroQuoteMsg').value.trim();
     if (!message) return;
+    if (maintenanceBlocksSubmit(document.getElementById('contactResult'))) {
+      scrollToEl(document.getElementById('contact'), { block: 'start' });
+      return;
+    }
     if (!purchaseTermsAccepted()) {
       requirePurchaseTerms('hero');
       return;
@@ -2464,8 +2645,17 @@ body.pay-paused .pay-public-entry{display:none!important}
   (function mobileQuoteBar(){
     const bar = document.getElementById('mobileQuoteBar');
     const contact = document.getElementById('contact');
+    const floatQuote = document.querySelector('.float-cta .float-quote');
     if (!bar || !contact || !('IntersectionObserver' in window)) return;
     const link = bar.querySelector('a, button');
+    function syncFloatQuoteAria(){
+      if (!floatQuote) return;
+      let barShown = false;
+      try { barShown = window.matchMedia('(max-width:768px)').matches && bar.getAttribute('aria-hidden') !== 'true'; }
+      catch (_) { barShown = false; }
+      if (barShown) floatQuote.setAttribute('aria-hidden', 'true');
+      else floatQuote.removeAttribute('aria-hidden');
+    }
     function setBarVisible(visible){
       bar.style.opacity = visible ? '1' : '0';
       bar.style.pointerEvents = visible ? 'auto' : 'none';
@@ -2474,6 +2664,7 @@ body.pay-paused .pay-public-entry{display:none!important}
         if (visible) link.removeAttribute('tabindex');
         else link.setAttribute('tabindex', '-1');
       }
+      syncFloatQuoteAria();
     }
     const io = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
@@ -2481,6 +2672,10 @@ body.pay-paused .pay-public-entry{display:none!important}
       });
     }, { threshold: 0.2 });
     io.observe(contact);
+    try {
+      window.matchMedia('(max-width:768px)').addEventListener('change', syncFloatQuoteAria);
+    } catch (_) {}
+    syncFloatQuoteAria();
   })();
 
   function typeForProduct(p){
@@ -3229,16 +3424,18 @@ body.pay-paused .pay-public-entry{display:none!important}
     const msg = document.getElementById('loginMsg');
     if (!Auth) { msg.style.color = 'var(--danger)'; msg.textContent = t('تعذّر تحميل نظام الحسابات', 'Auth system failed to load'); return; }
     const loginTerms = document.getElementById('loginTermsCheck');
-    if (loginTerms && !loginTerms.checked) {
+    if (loginTerms && !loginTerms.checked && !authTermsAccepted()) {
       msg.style.color = 'var(--danger)';
       msg.textContent = t('يلزم الموافقة على شروط تسجيل الدخول أولاً', 'Please accept the sign-in terms first');
       loginTerms.focus();
       return;
     }
+    if (loginTerms && loginTerms.checked) syncAuthTermsChecks(true);
     msg.style.color = 'var(--muted)'; msg.textContent = t('جاري تسجيل الدخول...', 'Signing in...');
     try {
       const result = await Auth.signIn({ email: document.getElementById('loginEmail').value.trim(), password: document.getElementById('loginPassword').value });
       authProvider = result.provider || null;
+      if (loginTerms && loginTerms.checked) syncAuthTermsChecks(true);
       const stayForPay = PUBLIC_PAY_ENABLED && (authIntent === 'pay' || location.hash === '#pay');
       msg.style.color = 'var(--ok)';
       msg.textContent = stayForPay
@@ -3256,12 +3453,13 @@ body.pay-paused .pay-public-entry{display:none!important}
     const msg = document.getElementById('registerMsg');
     if (!Auth) { msg.style.color = 'var(--danger)'; msg.textContent = t('تعذّر تحميل نظام الحسابات', 'Auth system failed to load'); return; }
     const termsCheck = document.getElementById('registerTermsCheck');
-    if (termsCheck && !termsCheck.checked) {
+    if (termsCheck && !termsCheck.checked && !authTermsAccepted()) {
       msg.style.color = 'var(--danger)';
       msg.textContent = t('يلزم الموافقة على شروط تسجيل الدخول وإنشاء الحساب أولاً', 'Please accept the sign-in & registration terms first');
       termsCheck.focus();
       return;
     }
+    if (termsCheck && termsCheck.checked) syncAuthTermsChecks(true);
     const registerEmail = document.getElementById('registerEmail').value.trim();
     const registerPhone = document.getElementById('registerPhone').value.trim();
     if (registerPhone && !isUsablePhone(registerPhone)) {
@@ -3278,6 +3476,7 @@ body.pay-paused .pay-public-entry{display:none!important}
         full_name: document.getElementById('registerName').value.trim(),
         phone: registerPhone
       });
+      if (termsCheck && termsCheck.checked) syncAuthTermsChecks(true);
       if (window.RaseekhTerms) {
         if (result && result.user) RaseekhTerms.acceptTerms(result.user);
         else if (RaseekhTerms.acceptTermsByEmail) RaseekhTerms.acceptTermsByEmail(registerEmail);
@@ -3386,6 +3585,7 @@ body.pay-paused .pay-public-entry{display:none!important}
     e.preventDefault();
     if (contactSubmitting) return;
     const result = document.getElementById('contactResult');
+    if (maintenanceBlocksSubmit(result)) return;
     if (!navigator.onLine) {
       result.style.color = 'var(--danger)';
       result.textContent = t('أنتم غير متصلين — أعيدوا الإرسال بعد عودة الشبكة', 'You are offline — send again when back online');
@@ -3451,11 +3651,19 @@ body.pay-paused .pay-public-entry{display:none!important}
       document.getElementById('contactMsg').focus();
       return;
     }
-    const purchaseCheck = document.getElementById('contactPurchaseTermsCheck');
-    if (!purchaseCheck || !purchaseCheck.checked) {
+    if (!purchaseTermsAccepted()) {
       result.style.color = 'var(--danger)';
       result.textContent = t('يلزم الموافقة على شروط شراء المنتجات أولاً', 'Please accept the product purchase terms first');
+      const purchaseCheck = document.getElementById('contactPurchaseTermsCheck');
       if (purchaseCheck) try { purchaseCheck.focus(); } catch (_) {}
+      return;
+    }
+    if (isDuplicateQuoteRequest(email, typeVal, msgVal)) {
+      result.style.color = 'var(--danger)';
+      result.textContent = t(
+        'يبدو أنكم أرسلتم نفس الطلب خلال آخر 3 دقائق — انتظروا قليلاً أو عدّلوا التفاصيل.',
+        'It looks like you sent the same request in the last 3 minutes — wait a bit or change the details.'
+      );
       return;
     }
     syncPurchaseTermsChecks(true);
@@ -3517,9 +3725,7 @@ body.pay-paused .pay-public-entry{display:none!important}
       result.textContent = !saved
         ? t('تعذّر إيصال الطلب الآن. حاولوا مرة أخرى أو تواصلوا لاحقاً.', 'Could not deliver the request now. Please try again later.')
         : (ok
-          ? (loggedInUser
-            ? t('✓ تم إرسال طلبكم إلى راسخ', '✓ Request sent to Raseekh')
-            : t('✓ تم إرسال طلبكم إلى راسخ — سنراجع ونرد', '✓ Request sent to Raseekh — we will review and reply'))
+          ? quoteSuccessMessage()
           : (softPending
             ? t('استلمنا طلبكم — إشعار الإدارة قيد التفعيل. يمكنكم المتابعة من الحساب.', 'We received your request — admin notify is activating. You can track it from your account.')
             : (accountLocal
@@ -3530,12 +3736,15 @@ body.pay-paused .pay-public-entry{display:none!important}
           successActions.style.display = 'flex';
           successActions.style.gap = '8px';
           successActions.style.flexWrap = 'wrap';
+          const mailto = ok ? clientConfirmMailtoHtml(email, typeVal, msgVal) : '';
+          const nextSteps = ok ? quoteNextStepsNoteHtml() : '';
           if (loggedInUser) {
-            successActions.innerHTML = `<a class="btn btn-primary" href="/dashboard/">${escapeHtml(t('متابعة الطلب من حسابي','Track request in my account'))}</a>`;
+            successActions.innerHTML = `<a class="btn btn-primary" href="/dashboard/">${escapeHtml(t('متابعة الطلب من حسابي','Track request in my account'))}</a>${mailto}${nextSteps}`;
           } else {
             successActions.innerHTML = `
               <button type="button" class="btn btn-primary" id="contactCreateAccountBtn">${escapeHtml(t('إنشاء حساب للمتابعة','Create an account to track'))}</button>
-              <a class="btn btn-ghost" href="/dashboard/">${escapeHtml(t('حساب العميل','Client account'))}</a>`;
+              <a class="btn btn-ghost" href="/dashboard/">${escapeHtml(t('حساب العميل','Client account'))}</a>
+              ${mailto}${nextSteps}`;
             const createBtn = document.getElementById('contactCreateAccountBtn');
             if (createBtn) createBtn.addEventListener('click', () => { openAuth('dashboard'); showAuthPanel('register'); });
           }
@@ -3551,6 +3760,8 @@ body.pay-paused .pay-public-entry{display:none!important}
         }
       }
       if (ok) {
+        storeQuoteFingerprint(email, typeVal, msgVal);
+        clearContactDraft();
         e.target.reset();
         setContactSegment('individual');
         syncCompanyFieldForSegment('individual');
@@ -3584,6 +3795,18 @@ body.pay-paused .pay-public-entry{display:none!important}
     }
   });
 
+  (function contactDraftPersistence(){
+    const form = document.getElementById('contactForm');
+    if (!form) return;
+    restoreContactDraft();
+    let timer = null;
+    const schedule = () => {
+      if (timer) clearTimeout(timer);
+      timer = setTimeout(() => { timer = null; saveContactDraft(); }, 400);
+    };
+    form.addEventListener('input', schedule);
+    form.addEventListener('change', schedule);
+  })();
   const payDetailsStep = document.getElementById('payDetailsStep');
   const paymentFormStep = document.getElementById('paymentFormStep');
   const payStatusSuccess = document.getElementById('payStatusSuccess');
@@ -3664,6 +3887,18 @@ body.pay-paused .pay-public-entry{display:none!important}
     if (!name) { msg.style.color = 'var(--danger)'; msg.textContent = t('الرجاء كتابة الاسم', 'Please enter your name'); return; }
     if (!amount || amount < 1) { msg.style.color = 'var(--danger)'; msg.textContent = t('أدخل مبلغاً صحيحاً', 'Enter a valid amount'); return; }
     if (amount > 100000) { msg.style.color = 'var(--danger)'; msg.textContent = t('الحد الأقصى للمبلغ 100,000 ر.س', 'Maximum amount is 100,000 SAR'); return; }
+    const payTermsCheck = document.getElementById('payPurchaseTermsCheck');
+    const TermsApi = window.RaseekhTerms;
+    const purchaseSessionOk = !!(TermsApi && TermsApi.hasPurchaseAcceptedSession && TermsApi.hasPurchaseAcceptedSession());
+    if (payTermsCheck && !(payTermsCheck.checked || purchaseSessionOk)) {
+      msg.style.color = 'var(--danger)';
+      msg.textContent = t('يلزم الموافقة على شروط شراء المنتجات قبل السداد', 'Please accept the product purchase terms before paying');
+      try { payTermsCheck.focus(); } catch (_) {}
+      return;
+    }
+    if (payTermsCheck && payTermsCheck.checked && TermsApi && TermsApi.setPurchaseAcceptedSession) {
+      TermsApi.setPurchaseAcceptedSession(true);
+    }
     if (btn) {
       btn.dataset.submitting = '1';
       btn.disabled = true;
@@ -3877,12 +4112,15 @@ body.pay-paused .pay-public-entry{display:none!important}
   const termsBody = document.getElementById('termsOverlayBody');
   function openTermsOverlay(e, mode){
     if (e) e.preventDefault();
-    const view = mode === 'auth' ? 'auth' : (mode === 'purchase' ? 'purchase' : 'full');
+    const view = mode === 'auth' ? 'auth'
+      : (mode === 'purchase' ? 'purchase'
+        : (mode === 'short' ? 'short' : 'full'));
     if (Terms && termsBody) {
       const ver = (Terms.TERMS_VERSION || '1') + ':' + view;
       if (termsBody.dataset.ready !== ver) {
         if (view === 'auth' && Terms.renderAuthInto) Terms.renderAuthInto(termsBody);
         else if (view === 'purchase' && Terms.renderPurchaseInto) Terms.renderPurchaseInto(termsBody);
+        else if (view === 'short' && Terms.renderShortInto) Terms.renderShortInto(termsBody);
         else Terms.renderInto(termsBody);
         termsBody.dataset.ready = ver;
         applyLang(currentLang);
@@ -3920,6 +4158,12 @@ body.pay-paused .pay-public-entry{display:none!important}
   if (contactPurchaseTermsLink) contactPurchaseTermsLink.addEventListener('click', (e) => openTermsOverlay(e, 'purchase'));
   const heroPurchaseTermsLink = document.getElementById('heroPurchaseTermsLink');
   if (heroPurchaseTermsLink) heroPurchaseTermsLink.addEventListener('click', (e) => openTermsOverlay(e, 'purchase'));
+  const openShortTermsLink = document.getElementById('openShortTermsLink');
+  if (openShortTermsLink) openShortTermsLink.addEventListener('click', (e) => openTermsOverlay(e, 'short'));
+  const heroShortTermsLink = document.getElementById('heroShortTermsLink');
+  if (heroShortTermsLink) heroShortTermsLink.addEventListener('click', (e) => openTermsOverlay(e, 'short'));
+  const payPurchaseTermsLink = document.getElementById('payPurchaseTermsLink');
+  if (payPurchaseTermsLink) payPurchaseTermsLink.addEventListener('click', (e) => openTermsOverlay(e, 'purchase'));
   ['heroPurchaseTermsCheck', 'contactPurchaseTermsCheck'].forEach((id) => {
     const el = document.getElementById(id);
     if (!el) return;
@@ -3928,7 +4172,33 @@ body.pay-paused .pay-public-entry{display:none!important}
       else syncPurchaseTermsChecks(false);
     });
   });
+  ['loginTermsCheck', 'registerTermsCheck'].forEach((id) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('change', () => {
+      if (el.checked) syncAuthTermsChecks(true);
+      else syncAuthTermsChecks(false);
+    });
+  });
   restorePurchaseTermsChecks();
+  restoreAuthTermsChecks();
+  if (PUBLIC_PAY_ENABLED) {
+    const payNote = document.getElementById('payPurchaseTermsNote');
+    const payLabel = document.getElementById('payPurchaseTermsLabel');
+    const payCheck = document.getElementById('payPurchaseTermsCheck');
+    if (payNote) { payNote.hidden = false; payNote.style.display = ''; payNote.removeAttribute('aria-hidden'); }
+    if (payLabel) { payLabel.hidden = false; payLabel.style.display = ''; }
+    if (payCheck) {
+      payCheck.disabled = false;
+      if (window.RaseekhTerms && RaseekhTerms.hasPurchaseAcceptedSession && RaseekhTerms.hasPurchaseAcceptedSession()) {
+        payCheck.checked = true;
+      }
+      payCheck.addEventListener('change', () => {
+        if (payCheck.checked) syncPurchaseTermsChecks(true);
+        else if (window.RaseekhTerms && RaseekhTerms.setPurchaseAcceptedSession) RaseekhTerms.setPurchaseAcceptedSession(false);
+      });
+    }
+  }
   const closeTermsBtn = document.getElementById('closeTermsOverlayBtn');
   if (closeTermsBtn) closeTermsBtn.addEventListener('click', closeTermsOverlay);
   if (termsOverlay) {
