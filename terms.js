@@ -79,7 +79,7 @@
 
   function userKey(user) {
     if (!user) return '';
-    return String(user.id || user.email || '').trim().toLowerCase();
+    return String(user.email || user.id || '').trim().toLowerCase();
   }
 
   function hasAccepted(user) {

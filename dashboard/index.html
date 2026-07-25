@@ -1010,11 +1010,24 @@ body.is-admin .client-only{display:none!important}
   }
 
   async function renderDeliveryStatus(){
+    if (Catalog && Catalog.syncPublicNotifyFromCloud) {
+      try { await Catalog.syncPublicNotifyFromCloud(); } catch (_) {}
+    }
     const status = Catalog && Catalog.getDeliveryStatus ? Catalog.getDeliveryStatus() : { hasEmail: false, hasWebhook: false, hasSupabaseClient: false, notifyEmail: '' };
     let cloudOk = false;
-    if (Catalog && Catalog.probeCloudRequests && status.hasSupabaseClient) {
-      const probe = await Catalog.probeCloudRequests();
-      cloudOk = !!(probe && probe.ok);
+    let notifyPublished = false;
+    if (Catalog && status.hasSupabaseClient) {
+      if (Catalog.probeCloudRequests) {
+        const probe = await Catalog.probeCloudRequests();
+        cloudOk = !!(probe && probe.ok);
+      }
+      if (Catalog.probePublicNotifyCloud) {
+        const pub = await Catalog.probePublicNotifyCloud();
+        notifyPublished = !!(pub && pub.ok && pub.published);
+        if (pub && pub.ok === false && pub.reason && /relation|does not exist|table/i.test(String(pub.reason))) {
+          notifyPublished = false;
+        }
+      }
     }
     const setPill = (id, on, onText, offText) => {
       const el = document.getElementById(id);
@@ -1023,21 +1036,36 @@ body.is-admin .client-only{display:none!important}
       el.classList.toggle('off', !on);
       el.textContent = on ? onText : offText;
     };
-    setPill('deliveryEmailPill', status.hasEmail, status.notifyEmail || t('مفعّل', 'On'), t('غير مضبوط', 'Not set'));
+    let emailText = t('غير مضبوط', 'Not set');
+    let emailOn = !!status.hasEmail;
+    if (status.hasEmail) {
+      emailText = notifyPublished
+        ? (status.notifyEmail + ' · ' + t('منشور للزوار', 'published'))
+        : (status.notifyEmail + ' · ' + t('محلي فقط — شغّل site_settings.sql', 'local only — run site_settings.sql'));
+      emailOn = notifyPublished;
+    }
+    setPill('deliveryEmailPill', emailOn, emailText, status.hasEmail ? emailText : t('غير مضبوط', 'Not set'));
+    // Keep visible warning color when email exists but is not published.
+    const emailPill = document.getElementById('deliveryEmailPill');
+    if (emailPill && status.hasEmail && !notifyPublished) {
+      emailPill.classList.add('off');
+      emailPill.classList.remove('on');
+      emailPill.textContent = emailText;
+    }
     setPill('deliveryCloudPill', cloudOk, t('متصل', 'Connected'), status.hasSupabaseClient ? t('شغّل SQL أولاً', 'Run SQL first') : t('غير متصل', 'Offline'));
     setPill('deliveryWebhookPill', status.hasWebhook, t('مفعّل', 'On'), t('اختياري', 'Optional'));
     const leadsPill = document.getElementById('leadsDeliveryPill');
     if (leadsPill) {
-      const ready = status.hasEmail || cloudOk;
+      const ready = notifyPublished || cloudOk;
       leadsPill.classList.toggle('on', ready);
       leadsPill.classList.toggle('off', !ready);
       leadsPill.textContent = ready
-        ? (status.hasEmail && cloudOk
+        ? (notifyPublished && cloudOk
           ? t('بريد + سحابة', 'Email + cloud')
-          : (status.hasEmail ? t('بريد مفعّل', 'Email on') : t('سحابة فقط', 'Cloud only')))
+          : (notifyPublished ? t('بريد منشور', 'Email published') : t('سحابة فقط', 'Cloud only')))
         : t('اضبط البريد من الإعدادات', 'Set email in Settings');
     }
-    return { status, cloudOk };
+    return { status, cloudOk, notifyPublished };
   }
   function saveClientRequests(){
     if (Catalog && Catalog.saveSharedRequests) {
@@ -1140,6 +1168,9 @@ body.is-admin .client-only{display:none!important}
     isDemo = false;
     isAdminUser = false;
     currentUser = null;
+    dashBootKey = '';
+    dashBootAt = 0;
+    dashBooting = false;
     clearInterval(heartbeatTimer);
     termsGateMode = 'view';
     const gate = document.getElementById('termsGate');
@@ -1160,6 +1191,9 @@ body.is-admin .client-only{display:none!important}
   const Terms = window.RaseekhTerms;
   let heartbeatTimer = null;
   let termsGateMode = 'accept'; // accept | view
+  let dashBootKey = '';
+  let dashBootAt = 0;
+  let dashBooting = false;
 
   function setTermsBlocked(on){
     const dash = document.getElementById('dashboardView');
@@ -1283,60 +1317,76 @@ body.is-admin .client-only{display:none!important}
     }).join('');
   }
 
-  function showDashboard(user, demo){
-    currentUser = user;
-    isDemo = !!demo;
-    isAdminUser = detectAdmin(user, isDemo);
-    setDemoFlag(isDemo);
-
-    document.getElementById('loginView').classList.add('hidden');
-    document.getElementById('dashboardView').classList.add('active');
-
-    const name = user?.user_metadata?.full_name || user?.user_metadata?.display_name || (isDemo ? t('زائر تجريبي','Demo guest') : '');
-    const email = user?.email || (isDemo ? 'demo@raseekh.local' : '');
-    document.getElementById('dashUserLabel').textContent = name || email || '—';
-    document.getElementById('dashAvatar').textContent = (name || email || '?').trim().charAt(0).toUpperCase();
-    document.getElementById('settingsEmail').value = email;
-    document.getElementById('settingsName').value = isDemo ? t('زائر تجريبي','Demo guest') : (name || '');
-    document.getElementById('settingsPassword').disabled = isDemo;
-    document.getElementById('dashUserStatus').textContent = isDemo ? t('وضع تجريبي','Demo mode') : t('متصل','Online');
-
-    if (Activity && currentUser && !isDemo) {
-      Activity.recordLogin(currentUser, isAdminUser ? 'admin' : 'client');
+  async function showDashboard(user, demo){
+    const key = (demo ? 'demo:' : 'user:') + String((user && (user.email || user.id)) || '').toLowerCase();
+    const now = Date.now();
+    if (
+      dashBooting ||
+      (key && key === dashBootKey && (now - dashBootAt) < 1800 && document.getElementById('dashboardView').classList.contains('active'))
+    ) {
+      return;
     }
-    startPresence();
+    dashBooting = true;
+    dashBootKey = key;
+    dashBootAt = now;
 
-    loadProducts();
-    loadSales();
-    loadStore();
-    loadClientRequests();
-    document.getElementById('storeName').value = store.name || '';
-    document.getElementById('storePhone').value = store.phone || '';
-    const webhookEl = document.getElementById('storeWebhook');
-    if (webhookEl) webhookEl.value = store.webhookUrl || '';
-    const notifyEl = document.getElementById('storeNotifyEmail');
-    if (notifyEl) {
-      const fallbackEmail = (!store.notifyEmail && user && user.email && isAdminUser) ? String(user.email).toLowerCase() : '';
-      notifyEl.value = store.notifyEmail || fallbackEmail || '';
-      if (!store.notifyEmail && fallbackEmail) {
-        store.notifyEmail = fallbackEmail;
-        saveStore();
+    try {
+      currentUser = user;
+      isDemo = !!demo;
+      isAdminUser = detectAdmin(user, isDemo);
+      setDemoFlag(isDemo);
+
+      document.getElementById('loginView').classList.add('hidden');
+      document.getElementById('dashboardView').classList.add('active');
+
+      const name = user?.user_metadata?.full_name || user?.user_metadata?.display_name || (isDemo ? t('زائر تجريبي','Demo guest') : '');
+      const email = user?.email || (isDemo ? 'demo@raseekh.local' : '');
+      document.getElementById('dashUserLabel').textContent = name || email || '—';
+      document.getElementById('dashAvatar').textContent = (name || email || '?').trim().charAt(0).toUpperCase();
+      document.getElementById('settingsEmail').value = email;
+      document.getElementById('settingsName').value = isDemo ? t('زائر تجريبي','Demo guest') : (name || '');
+      document.getElementById('settingsPassword').disabled = isDemo;
+      document.getElementById('dashUserStatus').textContent = isDemo ? t('وضع تجريبي','Demo mode') : t('متصل','Online');
+
+      if (Activity && currentUser && !isDemo) {
+        Activity.recordLogin(currentUser, isAdminUser ? 'admin' : 'client');
       }
-    }
-    if (isAdminUser && Catalog && Catalog.publishPublicNotify) Catalog.publishPublicNotify(store);
-    if (isAdminUser) renderDeliveryStatus();
-    cart = [];
-    applyLang(currentLang);
-    startClock();
-    switchPage('overview');
-    ensureClientTerms();
-    if (isAdminUser) {
-      renderAudienceStats();
-      refreshClientRequestsFromCloud().then(() => {
-        updateLeadsBadge();
-        renderOverview();
-        if (document.getElementById('page-leads')?.classList.contains('active')) renderAdminLeads();
-      });
+      startPresence();
+
+      loadProducts();
+      loadSales();
+      loadStore();
+      loadClientRequests();
+      document.getElementById('storeName').value = store.name || '';
+      document.getElementById('storePhone').value = store.phone || '';
+      const webhookEl = document.getElementById('storeWebhook');
+      if (webhookEl) webhookEl.value = store.webhookUrl || '';
+      const notifyEl = document.getElementById('storeNotifyEmail');
+      if (notifyEl) {
+        const fallbackEmail = (!store.notifyEmail && user && user.email && isAdminUser) ? String(user.email).toLowerCase() : '';
+        notifyEl.value = store.notifyEmail || fallbackEmail || '';
+        if (!store.notifyEmail && fallbackEmail) {
+          store.notifyEmail = fallbackEmail;
+          saveStore();
+        }
+      }
+      if (isAdminUser && Catalog && Catalog.publishPublicNotify) Catalog.publishPublicNotify(store);
+      if (isAdminUser) renderDeliveryStatus();
+      cart = [];
+      applyLang(currentLang);
+      startClock();
+      await ensureClientTerms();
+      switchPage('overview');
+      if (isAdminUser) {
+        renderAudienceStats();
+        refreshClientRequestsFromCloud().then(() => {
+          updateLeadsBadge();
+          renderOverview();
+          if (document.getElementById('page-leads')?.classList.contains('active')) renderAdminLeads();
+        });
+      }
+    } finally {
+      dashBooting = false;
     }
   }
 
@@ -1438,6 +1488,7 @@ body.is-admin .client-only{display:none!important}
     msg.textContent = t('جاري إنشاء الحساب...', 'Creating account...');
     try {
       const result = await Auth.signUp({ email, password, full_name: name, phone });
+      if (Terms && result.user) Terms.acceptTerms(result.user);
       msg.style.color = 'var(--ok)';
       msg.textContent = t('تم إنشاء الحساب', 'Account created');
       showDashboard(result.user, false);
@@ -1881,14 +1932,26 @@ body.is-admin .client-only{display:none!important}
     }
     const baseMsg = pendingClientRequest.message || '';
     const message = note ? (baseMsg + '\n' + t('ملاحظة: ', 'Note: ') + note) : baseMsg;
-    addClientRequest(Object.assign({}, pendingClientRequest, {
+    const saved = addClientRequest(Object.assign({}, pendingClientRequest, {
       phone: phone || pendingClientRequest.phone || '',
       message
     }));
     closeRequestConfirm();
-    showToast(t('تم إرسال طلب عرض السعر', 'Quote request sent'));
-    renderAll();
-    switchPage('requests');
+    showToast(t('جاري إرسال الطلب...', 'Sending request...'));
+    const finish = (delivery) => {
+      if (delivery && delivery.delivered) {
+        showToast(t('تم إرسال طلب عرض السعر', 'Quote request sent'));
+      } else {
+        showToast(t('حُفظ الطلب محلياً — تأكدوا من بريد الإشعار/السحابة', 'Saved locally — check notify email/cloud setup'));
+      }
+      renderAll();
+      switchPage('requests');
+    };
+    if (saved && saved.deliveryPromise) {
+      saved.deliveryPromise.then(finish).catch(() => finish(null));
+    } else {
+      finish({ delivered: true });
+    }
   });
 
   function requestProductAsClient(productId){

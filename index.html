@@ -1284,6 +1284,7 @@ body.terms-locked{overflow:hidden}
       });
       msg.style.color = 'var(--ok)'; msg.textContent = t('تم إنشاء الحساب — جاري التحويل...', 'Account created — redirecting...');
       setPayUnlocked(result.user);
+      if (window.RaseekhTerms && result.user) RaseekhTerms.acceptTerms(result.user);
       if (window.RaseekhActivity) RaseekhActivity.recordLogin(result.user, 'client');
       setTimeout(goDashboard, 400);
     } catch (err) { msg.style.color = 'var(--danger)'; msg.textContent = Auth.friendlyError(err, currentLang); }
@@ -1326,7 +1327,7 @@ body.terms-locked{overflow:hidden}
     }
   }
 
-  document.getElementById('contactForm').addEventListener('submit', (e) => {
+  document.getElementById('contactForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const result = document.getElementById('contactResult');
     const emailVal = document.getElementById('contactEmail').value.trim();
@@ -1352,44 +1353,60 @@ body.terms-locked{overflow:hidden}
     const typeTitle = Catalog && Catalog.requestTypeLabel
       ? Catalog.requestTypeLabel(payload.type, currentLang)
       : payload.type;
-    if (Catalog && Catalog.addSharedRequest) {
-      Catalog.addSharedRequest({
-        name: payload.name,
-        phone: payload.phone,
-        company: payload.company,
-        email: payload.email,
-        userId: payload.userId,
-        title: typeTitle,
-        message: payload.message,
-        type: payload.type,
-        source: loggedInUser ? 'client' : 'site',
-        status: 'new',
-        fingerprint: 'site:' + payload.at + ':' + payload.message + ':' + payload.phone + ':' + payload.email
-      });
-    }
-    result.style.color = 'var(--ok)';
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    if (submitBtn) submitBtn.disabled = true;
+    result.style.color = 'var(--muted)';
+    result.textContent = t('جاري الإرسال...', 'Sending...');
+    let delivery = null;
+    let saved = null;
+    try {
+      if (Catalog && Catalog.addSharedRequest) {
+        saved = Catalog.addSharedRequest({
+          name: payload.name,
+          phone: payload.phone,
+          company: payload.company,
+          email: payload.email,
+          userId: payload.userId,
+          title: typeTitle,
+          message: payload.message,
+          type: payload.type,
+          source: loggedInUser ? 'client' : 'site',
+          status: 'new',
+          fingerprint: 'site:' + payload.at + ':' + payload.message + ':' + payload.phone + ':' + payload.email
+        });
+        if (saved && saved.deliveryPromise) delivery = await saved.deliveryPromise;
+      }
+    } catch (_) {}
+    const ok = !!(delivery && delivery.delivered);
+    result.style.color = ok ? 'var(--ok)' : 'var(--danger)';
     result.classList.remove('ok-pulse');
     void result.offsetWidth;
-    result.classList.add('ok-pulse');
-    result.textContent = loggedInUser
-      ? t('✓ تم إرسال طلبكم إلى راسخ — تابعوه من حساب العميل', '✓ Request sent to Raseekh — track it in your client account')
-      : t('✓ تم إرسال طلبكم إلى راسخ — سنراجع ونرد', '✓ Request sent to Raseekh — we will review and reply');
-    const submitBtn = e.target.querySelector('button[type="submit"]');
+    if (ok) result.classList.add('ok-pulse');
+    result.textContent = ok
+      ? (loggedInUser
+        ? t('✓ تم إرسال طلبكم إلى راسخ — تابعوه من حساب العميل', '✓ Request sent to Raseekh — track it in your client account')
+        : t('✓ تم إرسال طلبكم إلى راسخ — سنراجع ونرد', '✓ Request sent to Raseekh — we will review and reply'))
+      : t('تعذّر إيصال الطلب الآن. حاولوا مرة أخرى أو تواصلوا لاحقاً.', 'Could not deliver the request now. Please try again later.');
     if (submitBtn) {
-      submitBtn.classList.add('sent');
-      const prev = submitBtn.textContent;
-      submitBtn.textContent = t('تم الإرسال', 'Sent');
-      setTimeout(() => { submitBtn.classList.remove('sent'); submitBtn.textContent = prev; applyLang(currentLang); }, 1800);
+      submitBtn.disabled = false;
+      if (ok) {
+        submitBtn.classList.add('sent');
+        const prev = submitBtn.textContent;
+        submitBtn.textContent = t('تم الإرسال', 'Sent');
+        setTimeout(() => { submitBtn.classList.remove('sent'); submitBtn.textContent = prev; applyLang(currentLang); }, 1800);
+      }
     }
-    e.target.reset();
-    const hq = document.getElementById('heroQuoteMsg');
-    if (hq) hq.value = '';
-    if (loggedInUser) {
-      const fullName = loggedInUser.user_metadata && loggedInUser.user_metadata.full_name;
-      const phone = loggedInUser.user_metadata && loggedInUser.user_metadata.phone;
-      if (fullName) document.getElementById('contactName').value = fullName;
-      if (phone) document.getElementById('contactPhone').value = phone;
-      if (loggedInUser.email) document.getElementById('contactEmail').value = loggedInUser.email;
+    if (ok) {
+      e.target.reset();
+      const hq = document.getElementById('heroQuoteMsg');
+      if (hq) hq.value = '';
+      if (loggedInUser) {
+        const fullName = loggedInUser.user_metadata && loggedInUser.user_metadata.full_name;
+        const phone = loggedInUser.user_metadata && loggedInUser.user_metadata.phone;
+        if (fullName) document.getElementById('contactName').value = fullName;
+        if (phone) document.getElementById('contactPhone').value = phone;
+        if (loggedInUser.email) document.getElementById('contactEmail').value = loggedInUser.email;
+      }
     }
   });
 

@@ -21,16 +21,28 @@
 
   function userKey(user) {
     if (!user) return '';
-    return String(user.id || user.email || '').trim().toLowerCase();
+    // Prefer email so local + cloud keys stay aligned (Supabase ids differ from email keys).
+    return String(user.email || user.id || '').trim().toLowerCase();
+  }
+
+  function findPrev(store, user) {
+    const key = userKey(user);
+    if (key && store.users[key]) return { key, prev: store.users[key] };
+    const email = String(user && user.email || '').trim().toLowerCase();
+    const id = String(user && user.id || '').trim().toLowerCase();
+    if (email && store.users[email]) return { key: email, prev: store.users[email] };
+    if (id && store.users[id]) return { key: id, prev: store.users[id] };
+    return { key: key || email || id, prev: {} };
   }
 
   function touch(user, opts) {
-    const key = userKey(user);
-    if (!key) return null;
     const store = readStore();
+    const found = findPrev(store, user);
+    const key = found.key;
+    if (!key) return null;
     const now = new Date().toISOString();
     const nowMs = Date.now();
-    const prev = store.users[key] || {};
+    const prev = found.prev || {};
     let isLogin = !!(opts && opts.login);
     // Avoid double-count when homepage login redirects into dashboard.
     if (isLogin && prev.lastLoginAt) {
@@ -47,6 +59,11 @@
       lastSeenAt: now,
       loginCount: (Number(prev.loginCount) || 0) + (isLogin ? 1 : 0)
     };
+    // Drop legacy id-keyed duplicate if we now store under email.
+    if (user.email && user.id) {
+      const idKey = String(user.id).trim().toLowerCase();
+      if (idKey && idKey !== key && store.users[idKey]) delete store.users[idKey];
+    }
     store.users[key] = next;
     writeStore(store);
     pushCloud(next);
@@ -128,6 +145,19 @@
     } catch (_) {}
   }
 
+  function mergeUserRow(prev, incoming) {
+    return {
+      id: incoming.id || prev.id || '',
+      email: incoming.email || prev.email || '',
+      name: incoming.name || prev.name || '',
+      role: (incoming.role === 'admin' || prev.role === 'admin') ? 'admin' : (incoming.role || prev.role || 'client'),
+      firstLoginAt: olderIso(incoming.firstLoginAt, prev.firstLoginAt),
+      lastLoginAt: newerIso(incoming.lastLoginAt, prev.lastLoginAt),
+      lastSeenAt: newerIso(incoming.lastSeenAt, prev.lastSeenAt),
+      loginCount: Math.max(Number(incoming.loginCount) || 0, Number(prev.loginCount) || 0)
+    };
+  }
+
   async function syncFromCloud() {
     try {
       const sb = global.RaseekhAuth && global.RaseekhAuth.supabase;
@@ -136,19 +166,23 @@
       if (error || !Array.isArray(data)) return getStats();
       const store = readStore();
       data.forEach((row) => {
-        const key = String(row.user_key || row.email || row.user_id || '').toLowerCase();
+        const email = String(row.email || '').toLowerCase();
+        const key = String(email || row.user_key || row.user_id || '').toLowerCase();
         if (!key) return;
         const prev = store.users[key] || {};
-        store.users[key] = {
-          id: row.user_id || prev.id || '',
-          email: row.email || prev.email || key,
-          name: row.name || prev.name || '',
-          role: (row.role === 'admin' || prev.role === 'admin') ? 'admin' : (row.role || prev.role || 'client'),
-          firstLoginAt: olderIso(row.first_login_at, prev.firstLoginAt),
-          lastLoginAt: newerIso(row.last_login_at, prev.lastLoginAt),
-          lastSeenAt: newerIso(row.last_seen_at, prev.lastSeenAt),
-          loginCount: Math.max(Number(row.login_count) || 0, Number(prev.loginCount) || 0)
-        };
+        store.users[key] = mergeUserRow(prev, {
+          id: row.user_id || '',
+          email: email || key,
+          name: row.name || '',
+          role: row.role || 'client',
+          firstLoginAt: row.first_login_at || '',
+          lastLoginAt: row.last_login_at || '',
+          lastSeenAt: row.last_seen_at || '',
+          loginCount: Number(row.login_count) || 0
+        });
+        // Remove id-keyed duplicates after email merge.
+        const idKey = String(row.user_id || '').toLowerCase();
+        if (idKey && idKey !== key && store.users[idKey]) delete store.users[idKey];
       });
       writeStore(store);
       return getStats();

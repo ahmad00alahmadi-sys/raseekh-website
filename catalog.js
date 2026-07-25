@@ -495,6 +495,30 @@
     }
   }
 
+  async function probePublicNotifyCloud() {
+    const sb = getSupabase();
+    if (!sb) return { ok: false, reason: 'no-client', published: false };
+    try {
+      const { data, error } = await sb
+        .from('site_settings')
+        .select('value')
+        .eq('key', 'public_notify')
+        .maybeSingle();
+      if (error) return { ok: false, reason: error.message || 'table-missing', published: false };
+      const value = data && data.value && typeof data.value === 'object' ? data.value : {};
+      const notifyEmail = String(value.notifyEmail || '').trim().toLowerCase();
+      const webhookUrl = String(value.webhookUrl || '').trim();
+      return {
+        ok: true,
+        published: !!(notifyEmail || webhookUrl),
+        notifyEmail,
+        webhookUrl
+      };
+    } catch (err) {
+      return { ok: false, reason: String(err && err.message || err || 'error'), published: false };
+    }
+  }
+
   function getDeliveryStatus() {
     return {
       notifyEmail: resolveNotifyEmail(),
@@ -568,15 +592,12 @@
     list.unshift(row);
     writeJson(CLIENT_REQUESTS_KEY, list.slice(0, 200));
     // Deliver outside this browser: cloud row + email + webhook (best-effort)
-    Promise.resolve()
-      .then(() => pushRequestToCloud(row))
-      .then(() => notifyAdminEmail(row))
-      .then(() => notifyRequestWebhook(row))
-      .catch(() => {});
+    row.deliveryPromise = deliverSharedRequest(row);
     return row;
   }
 
   async function deliverSharedRequest(row) {
+    await syncPublicNotifyFromCloud().catch(() => {});
     const cloud = await pushRequestToCloud(row);
     const email = await notifyAdminEmail(row);
     const webhook = await notifyRequestWebhook(row);
@@ -584,7 +605,8 @@
       cloud: !!cloud,
       email: !!(email && email.ok),
       webhook: !!webhook,
-      emailDetail: email || null
+      emailDetail: email || null,
+      delivered: !!(cloud || (email && email.ok) || webhook)
     };
   }
 
@@ -669,6 +691,7 @@
     resolveNotifyEmail,
     getDeliveryStatus,
     probeCloudRequests,
+    probePublicNotifyCloud,
     requestTypeLabel,
     pushRequestToCloud,
     syncSharedRequestsFromCloud,
