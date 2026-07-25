@@ -720,12 +720,12 @@ body.is-admin .client-only{display:none!important}
           <input type="text" id="depositNote" data-ar-placeholder="ملاحظة / رقم الطلب" data-en-placeholder="Note / request id" placeholder="ملاحظة / رقم الطلب">
           <div style="display:flex;gap:8px;flex-wrap:wrap">
             <button class="btn btn-primary" type="submit" data-method="cash" data-ar="حفظ نقداً" data-en="Save cash">حفظ نقداً</button>
-            <button class="btn btn-brass" type="submit" data-method="card" data-ar="حفظ بطاقة" data-en="Save card">حفظ بطاقة</button>
+            <button class="btn btn-navy" type="submit" data-method="card" data-ar="حفظ بطاقة" data-en="Save card">حفظ بطاقة</button>
           </div>
         </form>
         <div class="msg" id="depositMsg"></div>
       </div>
-      <div class="pos-layout">
+      <div class="pos-layout" id="posFixedLayout">
         <div>
           <input type="search" id="posSearch" style="margin-bottom:12px;padding:12px 14px;width:100%;border:1px solid var(--line);border-radius:10px" data-ar-placeholder="ابحث عن خدمة بسعر ثابت..." data-en-placeholder="Search fixed-price services..." placeholder="ابحث عن خدمة بسعر ثابت...">
           <div class="pos-catalog" id="posCatalog"></div>
@@ -736,7 +736,7 @@ body.is-admin .client-only{display:none!important}
           <div class="cart-total"><span data-ar="الإجمالي" data-en="Total">الإجمالي</span><span id="cartTotal">0.00 SAR</span></div>
           <div class="cart-actions">
             <button class="btn btn-ghost" id="payCashBtn" style="border-color:rgba(255,255,255,.2);color:#fff" data-ar="نقداً" data-en="Cash">نقداً</button>
-            <button class="btn btn-brass" id="payCardBtn" data-ar="بطاقة" data-en="Card">بطاقة</button>
+            <button class="btn btn-primary" id="payCardBtn" data-ar="بطاقة" data-en="Card">بطاقة</button>
           </div>
         </aside>
       </div>
@@ -2496,14 +2496,17 @@ body.is-admin .client-only{display:none!important}
     const q = (document.getElementById('posSearch').value || '').trim().toLowerCase();
     const cat = document.getElementById('posCategory').value;
     const catalog = document.getElementById('posCatalog');
-    const list = products.filter(p => {
+    const layout = document.getElementById('posFixedLayout');
+    const fixedSellable = products.filter(p => p.priceMode === 'fixed' && Number(p.price) > 0 && p.stock > 0);
+    const list = fixedSellable.filter(p => {
       const blob = (p.name + ' ' + (p.name_en || '')).toLowerCase();
       const catOk = cat === 'all' || categoryLabel(p) === cat;
-      const sellable = p.priceMode === 'fixed' && Number(p.price) > 0 && p.stock > 0;
-      return sellable && catOk && (!q || blob.includes(q));
+      return catOk && (!q || blob.includes(q));
     });
+    // Quote-first catalog: keep manual deposit primary; only show fixed-price grid when useful.
+    if (layout) layout.style.display = (fixedSellable.length || cart.length) ? '' : 'none';
     if (!list.length) {
-      catalog.innerHTML = `<div class="empty" style="grid-column:1/-1"><strong>${t('لا توجد خدمات بسعر ثابت','No fixed-price services')}</strong><p>${t('معظم البنود حسب الطلب. حدّدوا سعراً ثابتاً من إدارة الخدمات، أو سجّلوا العربون من صفحة السداد في الموقع.','Most items are quote-based. Set a fixed price in service management, or record a deposit on the site pay page.')}</p><div class="empty-actions"><button class="btn btn-primary" data-goto="products">${t('إدارة الخدمات','Manage services')}</button><a class="btn btn-ghost" href="/#pay">${t('صفحة السداد','Pay page')}</a></div></div>`;
+      catalog.innerHTML = `<div class="empty" style="grid-column:1/-1"><strong>${t('لا توجد خدمات بسعر ثابت','No fixed-price services')}</strong><p>${t('معظم البنود حسب الطلب. حدّدوا سعراً ثابتاً من إدارة الخدمات، أو سجّلوا العربون يدوياً أعلاه.','Most items are quote-based. Set a fixed price in service management, or record a deposit above.')}</p><div class="empty-actions"><button class="btn btn-primary" data-goto="products">${t('إدارة الخدمات','Manage services')}</button><a class="btn btn-ghost" href="/#pay">${t('صفحة السداد','Pay page')}</a></div></div>`;
     } else {
       catalog.innerHTML = list.map(p => `
         <button type="button" class="pos-item" data-add="${p.id}">
@@ -2541,7 +2544,7 @@ body.is-admin .client-only{display:none!important}
   function renderCart(){
     const holder = document.getElementById('cartLines');
     if (!cart.length) {
-      holder.innerHTML = `<div class="empty" style="color:#9BB8AC">${t('لا توجد بنود بعد','No items yet')}</div>`;
+      holder.innerHTML = `<div class="empty" style="color:var(--muted)">${t('لا توجد بنود بعد','No items yet')}</div>`;
       document.getElementById('cartTotal').textContent = money(0);
       return;
     }

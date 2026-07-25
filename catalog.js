@@ -916,11 +916,20 @@
         .eq('key', 'public_catalog')
         .maybeSingle();
       if (error || !data || !data.value || typeof data.value !== 'object') return null;
+      const cloudVersion = Number(data.value.version) || 0;
+      const localVersion = parseInt(localStorage.getItem(VERSION_KEY) || '0', 10) || 0;
+      // After a seed bump, ignore older cloud catalogs so they cannot wipe fresher local defaults.
+      if (localVersion >= CATALOG_VERSION && cloudVersion < CATALOG_VERSION) {
+        return null;
+      }
       const products = Array.isArray(data.value.products) ? data.value.products : [];
       const suggestions = Array.isArray(data.value.suggestions) ? data.value.suggestions : [];
       if (products.length) writeJson(PUBLIC_KEY, products);
       if (suggestions.length) writeJson(SUGGESTIONS_KEY, suggestions);
-      return { products, suggestions, updatedAt: data.value.updatedAt || '' };
+      if (cloudVersion >= CATALOG_VERSION) {
+        localStorage.setItem(VERSION_KEY, String(cloudVersion));
+      }
+      return { products, suggestions, updatedAt: data.value.updatedAt || '', version: cloudVersion };
     } catch (_) {
       return null;
     }

@@ -401,6 +401,13 @@ section{padding:100px 0;position:relative;z-index:1}
 .msg{min-height:18px;font-size:.88rem;font-weight:600}
 .locked{text-align:center;padding:28px 12px;display:flex;flex-direction:column;align-items:center;gap:12px}
 .locked p{color:var(--muted);max-width:36ch}
+.site-banner{
+  display:none;position:sticky;top:0;z-index:90;padding:10px 16px;text-align:center;
+  font-size:.88rem;font-weight:700;background:var(--navy);color:#F4F7FA;border-bottom:2px solid var(--copper);
+}
+.site-banner.show{display:block}
+.site-banner.update{background:var(--harbor)}
+.pay-success-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:14px}
 .pay-amount{display:flex;align-items:center;gap:10px}
 .pay-amount span{color:var(--copper);font-weight:700;white-space:nowrap}
 .pay-summary{
@@ -545,6 +552,11 @@ body.terms-locked{overflow:hidden}
 </head>
 <body>
 <a class="skip-link" href="#services" data-ar="تخطّ إلى المحتوى" data-en="Skip to content">تخطّ إلى المحتوى</a>
+<div class="site-banner" id="offlineBanner" role="status" data-ar="لا يوجد اتصال — أُرسل الطلبات والدفع عند عودة الشبكة" data-en="You are offline — requests and payments need a network connection">لا يوجد اتصال — أُرسل الطلبات والدفع عند عودة الشبكة</div>
+<div class="site-banner update" id="updateBanner" role="status" hidden>
+  <span data-ar="يتوفر تحديث للموقع" data-en="A site update is available">يتوفر تحديث للموقع</span>
+  <button type="button" class="btn btn-primary" id="reloadUpdateBtn" style="margin-inline-start:10px;padding:6px 12px;font-size:.8rem" data-ar="إعادة التحميل" data-en="Reload">إعادة التحميل</button>
+</div>
 
 <header>
   <nav class="wrap">
@@ -912,8 +924,8 @@ body.terms-locked{overflow:hidden}
       <h2 data-ar="سداد عربون أو دفعة" data-en="Pay a deposit">سداد عربون أو دفعة</h2>
       <p data-ar="للعملاء المسجّلين — بطاقة أو Apple Pay عبر Moyasar." data-en="For registered clients — card or Apple Pay via Moyasar.">للعملاء المسجّلين — بطاقة أو Apple Pay عبر Moyasar.</p>
       <div class="locked" id="payLockedMessage">
-        <h3 data-ar="سجّل دخولك أولاً" data-en="Please log in first">سجّل دخولك أولاً</h3>
-        <p data-ar="الدفع متاح بعد تسجيل الدخول أو إنشاء حساب." data-en="Payment unlocks after you sign in or create an account.">الدفع متاح بعد تسجيل الدخول أو إنشاء حساب.</p>
+        <h3 id="payLockTitle" data-ar="سجّل دخولك أولاً" data-en="Please log in first">سجّل دخولك أولاً</h3>
+        <p id="payLockText" data-ar="الدفع متاح بعد تسجيل الدخول أو إنشاء حساب." data-en="Payment unlocks after you sign in or create an account.">الدفع متاح بعد تسجيل الدخول أو إنشاء حساب.</p>
         <button type="button" class="btn btn-primary" id="payLoginBtn" data-ar="تسجيل الدخول" data-en="Log in">تسجيل الدخول</button>
       </div>
       <div id="payBoxContent" style="display:none">
@@ -936,7 +948,11 @@ body.terms-locked{overflow:hidden}
         </div>
         <div class="pay-status" id="payStatusSuccess">
           <h3 data-ar="تم استلام الدفعة" data-en="Payment received">تم استلام الدفعة</h3>
-          <p data-ar="سيتواصل معكم الفريق خلال يوم عمل." data-en="Our team will contact you within one business day.">سيتواصل معكم الفريق خلال يوم عمل.</p>
+          <p id="paySuccessMsg" data-ar="سيتواصل معكم الفريق خلال يوم عمل." data-en="Our team will contact you within one business day.">سيتواصل معكم الفريق خلال يوم عمل.</p>
+          <div class="pay-success-actions" id="paySuccessActions">
+            <a class="btn btn-primary" href="/dashboard/" data-ar="متابعة من حسابي" data-en="Continue in my account">متابعة من حسابي</a>
+            <a class="btn btn-ghost" href="#contact" data-ar="طلب جديد" data-en="New request">طلب جديد</a>
+          </div>
         </div>
         <div class="pay-status" id="payStatusFailed">
           <h3 data-ar="لم تتم العملية" data-en="Payment failed">لم تتم العملية</h3>
@@ -1030,8 +1046,16 @@ body.terms-locked{overflow:hidden}
   const Catalog = window.RaseekhCatalog;
   let currentLang = localStorage.getItem('raseekh_lang') || 'ar';
   let loggedInUser = null;
+  let authProvider = null;
   let clientProducts = [];
   let clientSuggestions = [];
+
+  function isLocalAuthUser(user){
+    return authProvider === 'local' || !!(user && user.app_metadata && user.app_metadata.provider === 'local');
+  }
+  function hasCloudPaySession(user){
+    return !!(user && !isLocalAuthUser(user));
+  }
 
   const authModal = document.getElementById('authModal');
   const modalTabsBar = document.getElementById('modalTabsBar');
@@ -1428,15 +1452,37 @@ body.terms-locked{overflow:hidden}
     showAuthPanel('login');
     openModal();
   }
-  document.getElementById('payLoginBtn').addEventListener('click', () => openAuth('pay'));
+  document.getElementById('payLoginBtn').addEventListener('click', async () => {
+    if (loggedInUser && isLocalAuthUser(loggedInUser) && Auth) {
+      try { await Auth.signOut(); } catch (_) {}
+      authProvider = null;
+      setPayUnlocked(null);
+    }
+    openAuth('pay');
+  });
   function goDashboard(){ window.location.href = DASHBOARD_URL; }
   function readPendingPay(){
     try { return JSON.parse(sessionStorage.getItem('raseekh_pending_pay') || 'null'); }
     catch (_) { return null; }
   }
 
-  function finalizePendingMoyasarPayment(user){
+  function setPaySuccessCopy(delivery){
+    const msg = document.getElementById('paySuccessMsg');
+    if (!msg) return;
+    if (delivery && delivery.delivered) {
+      msg.textContent = t('تم تسجيل العربون وسيتواصل معكم الفريق خلال يوم عمل.', 'Deposit recorded — our team will contact you within one business day.');
+    } else if (delivery && delivery.pendingNotify) {
+      msg.textContent = t('تم حفظ الدفعة — جاري تفعيل إشعار الإدارة.', 'Payment saved — admin notify is still activating.');
+    } else if (delivery && !delivery.cloud) {
+      msg.textContent = t('تم الحفظ محلياً — ادخلوا بحساب سحابي لمزامنة الدفعة مع الإدارة.', 'Saved locally — sign in with a cloud account to sync the payment to admin.');
+    } else {
+      msg.textContent = t('سيتواصل معكم الفريق خلال يوم عمل.', 'Our team will contact you within one business day.');
+    }
+  }
+
+  async function finalizePendingMoyasarPayment(user){
     if (!user || !Catalog || !Catalog.addPaymentRecord) return false;
+    if (!hasCloudPaySession(user)) return false;
     const params = new URLSearchParams(location.search);
     const status = params.get('status');
     const pendingPay = readPendingPay();
@@ -1451,7 +1497,7 @@ body.terms-locked{overflow:hidden}
     const total = Number(pendingPay.amount);
     if (!(total > 0) || total > 100000) return false;
     // Prefer session amount over query string (query is untrusted / in halalas).
-    Catalog.addPaymentRecord({
+    const row = Catalog.addPaymentRecord({
       method: 'card',
       total,
       items: 1,
@@ -1469,10 +1515,15 @@ body.terms-locked{overflow:hidden}
       history.replaceState(null, '', url.pathname + url.search + '#pay');
     } catch (_) {}
     showPayStep(payStatusSuccess);
+    let delivery = null;
+    try { if (row && row.deliveryPromise) delivery = await row.deliveryPromise; } catch (_) {}
+    setPaySuccessCopy(delivery);
     return true;
   }
 
-  function afterAuthSuccess(user){
+  function afterAuthSuccess(user, provider){
+    if (provider) authProvider = provider;
+    else if (user && user.app_metadata && user.app_metadata.provider) authProvider = user.app_metadata.provider;
     setPayUnlocked(user);
     closeModal();
     const params = new URLSearchParams(location.search);
@@ -1487,18 +1538,22 @@ body.terms-locked{overflow:hidden}
       const pay = document.getElementById('pay');
       if (pay) pay.scrollIntoView({ behavior: 'smooth', block: 'start' });
       const nameEl = document.getElementById('payName');
-      if (nameEl && !paidReturn) setTimeout(() => nameEl.focus(), 350);
+      if (nameEl && !paidReturn && hasCloudPaySession(user)) setTimeout(() => nameEl.focus(), 350);
       return;
     }
     setTimeout(goDashboard, 400);
   }
 
-  function setPayUnlocked(user){
+  function setPayUnlocked(user, provider){
+    if (provider) authProvider = provider;
     loggedInUser = user || null;
     const locked = document.getElementById('payLockedMessage');
     const box = document.getElementById('payBoxContent');
     const accountBtn = document.getElementById('accountBtn');
-    if (user) {
+    const lockTitle = document.getElementById('payLockTitle');
+    const lockText = document.getElementById('payLockText');
+    const loginBtn = document.getElementById('payLoginBtn');
+    if (user && hasCloudPaySession(user)) {
       locked.style.display = 'none';
       box.style.display = 'block';
       accountBtn.classList.remove('btn-ghost');
@@ -1516,7 +1571,40 @@ body.terms-locked{overflow:hidden}
       locked.style.display = 'flex';
       box.style.display = 'none';
       accountBtn.classList.add('btn-primary');
-      accountBtn.textContent = t('تسجيل الدخول', 'Log in');
+      accountBtn.textContent = user ? t('حسابي', 'My account') : t('تسجيل الدخول', 'Log in');
+      if (user && isLocalAuthUser(user)) {
+        if (lockTitle) {
+          lockTitle.setAttribute('data-ar', 'يلزم دخول سحابي للدفع');
+          lockTitle.setAttribute('data-en', 'Cloud sign-in required to pay');
+          lockTitle.textContent = t('يلزم دخول سحابي للدفع', 'Cloud sign-in required to pay');
+        }
+        if (lockText) {
+          lockText.setAttribute('data-ar', 'جلستكم محلية ولن تُزامَن الدفعة مع الإدارة. اخرجوا ثم ادخلوا بالحساب السحابي.');
+          lockText.setAttribute('data-en', 'This is a local session — payments will not sync to admin. Sign out and sign in with your cloud account.');
+          lockText.textContent = t('جلستكم محلية ولن تُزامَن الدفعة مع الإدارة. اخرجوا ثم ادخلوا بالحساب السحابي.', 'This is a local session — payments will not sync to admin. Sign out and sign in with your cloud account.');
+        }
+        if (loginBtn) {
+          loginBtn.setAttribute('data-ar', 'دخول سحابي');
+          loginBtn.setAttribute('data-en', 'Cloud sign-in');
+          loginBtn.textContent = t('دخول سحابي', 'Cloud sign-in');
+        }
+      } else {
+        if (lockTitle) {
+          lockTitle.setAttribute('data-ar', 'سجّل دخولك أولاً');
+          lockTitle.setAttribute('data-en', 'Please log in first');
+          lockTitle.textContent = t('سجّل دخولك أولاً', 'Please log in first');
+        }
+        if (lockText) {
+          lockText.setAttribute('data-ar', 'الدفع متاح بعد تسجيل الدخول أو إنشاء حساب.');
+          lockText.setAttribute('data-en', 'Payment unlocks after you sign in or create an account.');
+          lockText.textContent = t('الدفع متاح بعد تسجيل الدخول أو إنشاء حساب.', 'Payment unlocks after you sign in or create an account.');
+        }
+        if (loginBtn) {
+          loginBtn.setAttribute('data-ar', 'تسجيل الدخول');
+          loginBtn.setAttribute('data-en', 'Log in');
+          loginBtn.textContent = t('تسجيل الدخول', 'Log in');
+        }
+      }
     }
   }
 
@@ -1527,14 +1615,17 @@ body.terms-locked{overflow:hidden}
     msg.style.color = 'var(--muted)'; msg.textContent = t('جاري تسجيل الدخول...', 'Signing in...');
     try {
       const result = await Auth.signIn({ email: document.getElementById('loginEmail').value.trim(), password: document.getElementById('loginPassword').value });
+      authProvider = result.provider || null;
       const stayForPay = authIntent === 'pay' || location.hash === '#pay';
       msg.style.color = 'var(--ok)';
       msg.textContent = stayForPay
-        ? t('تم الدخول — يمكنكم إكمال السداد', 'Signed in — continue to payment')
+        ? (result.provider === 'local'
+          ? t('تم الدخول محلياً — يلزم دخول سحابي لإكمال السداد', 'Signed in locally — cloud sign-in is required to pay')
+          : t('تم الدخول — يمكنكم إكمال السداد', 'Signed in — continue to payment'))
         : t('تم الدخول — جاري التحويل...', 'Signed in — redirecting...');
       const role = (Auth.isAdmin && Auth.isAdmin(result.user)) ? 'admin' : 'client';
       if (window.RaseekhActivity) RaseekhActivity.recordLogin(result.user, role);
-      afterAuthSuccess(result.user);
+      afterAuthSuccess(result.user, result.provider);
     } catch (err) { msg.style.color = 'var(--danger)'; msg.textContent = Auth.friendlyError(err, currentLang); }
   });
 
@@ -1556,14 +1647,17 @@ body.terms-locked{overflow:hidden}
         showAuthPanel('login');
         return;
       }
+      authProvider = result.provider || null;
       const stayForPay = authIntent === 'pay' || location.hash === '#pay';
       msg.style.color = 'var(--ok)';
       msg.textContent = stayForPay
-        ? t('تم إنشاء الحساب — يمكنكم إكمال السداد', 'Account created — continue to payment')
+        ? (result.provider === 'local'
+          ? t('تم إنشاء حساب محلي — يلزم دخول سحابي لإكمال السداد', 'Local account created — cloud sign-in is required to pay')
+          : t('تم إنشاء الحساب — يمكنكم إكمال السداد', 'Account created — continue to payment'))
         : t('تم إنشاء الحساب — جاري التحويل...', 'Account created — redirecting...');
       if (window.RaseekhTerms && result.user) RaseekhTerms.acceptTerms(result.user);
       if (window.RaseekhActivity) RaseekhActivity.recordLogin(result.user, 'client');
-      afterAuthSuccess(result.user);
+      afterAuthSuccess(result.user, result.provider);
     } catch (err) { msg.style.color = 'var(--danger)'; msg.textContent = Auth.friendlyError(err, currentLang); }
   });
 
@@ -1585,21 +1679,38 @@ body.terms-locked{overflow:hidden}
     const msg = document.getElementById('resetMsg');
     if (!Auth) return;
     try {
-      await Auth.completePasswordReset(document.getElementById('resetPassword').value);
-      msg.style.color = 'var(--ok)'; msg.textContent = t('تم تحديث كلمة المرور', 'Password updated');
+      const resetResult = await Auth.completePasswordReset(document.getElementById('resetPassword').value);
+      msg.style.color = 'var(--ok)';
+      msg.textContent = t('تم تحديث كلمة المرور', 'Password updated');
+      const sessionInfo = await Auth.getSession();
+      if (sessionInfo && sessionInfo.user) {
+        authProvider = sessionInfo.provider || resetResult.provider || null;
+        afterAuthSuccess(sessionInfo.user, authProvider);
+      } else {
+        showAuthPanel('login');
+        const loginMsg = document.getElementById('loginMsg');
+        if (loginMsg) {
+          loginMsg.style.color = 'var(--ok)';
+          loginMsg.textContent = t('سجّلوا الدخول بكلمة المرور الجديدة', 'Sign in with your new password');
+        }
+      }
     } catch (err) { msg.style.color = 'var(--danger)'; msg.textContent = Auth.friendlyError(err, currentLang); }
   });
 
   if (Auth) {
-    Auth.getSession().then(({ user }) => {
-      if (user) setPayUnlocked(user);
+    Auth.getSession().then(({ user, provider }) => {
+      authProvider = provider || null;
+      if (user) setPayUnlocked(user, provider);
       if (location.hash === '#reset') { openModal(); showAuthPanel('reset'); }
     });
     if (Auth.supabase) {
       Auth.supabase.auth.onAuthStateChange((event, session) => {
         if (event === 'PASSWORD_RECOVERY' || (event === 'SIGNED_IN' && location.hash === '#reset')) { openModal(); showAuthPanel('reset'); }
-        if (event === 'SIGNED_OUT') setPayUnlocked(null);
-        if (event === 'SIGNED_IN' && session?.user && location.hash !== '#reset') setPayUnlocked(session.user);
+        if (event === 'SIGNED_OUT') { authProvider = null; setPayUnlocked(null); }
+        if (event === 'SIGNED_IN' && session?.user && location.hash !== '#reset') {
+          authProvider = 'supabase';
+          setPayUnlocked(session.user, 'supabase');
+        }
       });
     }
   }
@@ -1607,6 +1718,11 @@ body.terms-locked{overflow:hidden}
   document.getElementById('contactForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const result = document.getElementById('contactResult');
+    if (!navigator.onLine) {
+      result.style.color = 'var(--danger)';
+      result.textContent = t('أنتم غير متصلين — أعيدوا الإرسال بعد عودة الشبكة', 'You are offline — send again when back online');
+      return;
+    }
     const emailVal = document.getElementById('contactEmail').value.trim();
     const phoneVal = document.getElementById('contactPhone').value.trim();
     const sessionEmail = loggedInUser && loggedInUser.email ? loggedInUser.email : '';
@@ -1672,11 +1788,19 @@ body.terms-locked{overflow:hidden}
           ? t('✓ استلمنا طلبكم — فعلوا إشعار البريد من الإدارة إن لزم', '✓ Request received — admin may still need to activate email notify')
           : t('✓ تم حفظ الطلب — سنراجعه قريباً', '✓ Request saved — we will review it soon')));
     if (successActions) {
-      if (ok && loggedInUser) {
+      if (ok) {
         successActions.style.display = 'flex';
         successActions.style.gap = '8px';
         successActions.style.flexWrap = 'wrap';
-        successActions.innerHTML = `<a class="btn btn-primary" href="/dashboard/">${escapeHtml(t('متابعة الطلب من حسابي','Track request in my account'))}</a>`;
+        if (loggedInUser) {
+          successActions.innerHTML = `<a class="btn btn-primary" href="/dashboard/">${escapeHtml(t('متابعة الطلب من حسابي','Track request in my account'))}</a>`;
+        } else {
+          successActions.innerHTML = `
+            <button type="button" class="btn btn-primary" id="contactCreateAccountBtn">${escapeHtml(t('إنشاء حساب للمتابعة','Create an account to track'))}</button>
+            <a class="btn btn-ghost" href="#pay">${escapeHtml(t('سداد عربون','Pay a deposit'))}</a>`;
+          const createBtn = document.getElementById('contactCreateAccountBtn');
+          if (createBtn) createBtn.addEventListener('click', () => { openAuth('dashboard'); showAuthPanel('register'); });
+        }
       } else {
         successActions.style.display = 'none';
         successActions.innerHTML = '';
@@ -1752,6 +1876,17 @@ body.terms-locked{overflow:hidden}
     const amount = parseFloat(document.getElementById('payAmount').value);
     const name = document.getElementById('payName').value.trim();
     const msg = document.getElementById('payValidationMsg');
+    if (!navigator.onLine) {
+      msg.style.color = 'var(--danger)';
+      msg.textContent = t('أنتم غير متصلين — أعيدوا المحاولة بعد عودة الشبكة', 'You are offline — try again when back online');
+      return;
+    }
+    if (!hasCloudPaySession(loggedInUser)) {
+      msg.style.color = 'var(--danger)';
+      msg.textContent = t('يلزم دخول سحابي قبل السداد', 'Cloud sign-in is required before payment');
+      setPayUnlocked(loggedInUser, authProvider);
+      return;
+    }
     if (!name) { msg.style.color = 'var(--danger)'; msg.textContent = t('الرجاء كتابة الاسم', 'Please enter your name'); return; }
     if (!amount || amount < 1) { msg.style.color = 'var(--danger)'; msg.textContent = t('أدخل مبلغاً صحيحاً', 'Enter a valid amount'); return; }
     msg.style.color = 'var(--muted)';
@@ -1780,10 +1915,10 @@ body.terms-locked{overflow:hidden}
         at: Date.now()
       }));
     } catch (_) {}
-    function recordMoyasarPayment(payment){
-      if (!Catalog || !Catalog.addPaymentRecord || !payment || payment.status !== 'paid') return;
+    async function recordMoyasarPayment(payment){
+      if (!Catalog || !Catalog.addPaymentRecord || !payment || payment.status !== 'paid') return null;
       const payAmount = typeof payment.amount === 'number' ? payment.amount / 100 : amount;
-      Catalog.addPaymentRecord({
+      const row = Catalog.addPaymentRecord({
         method: 'card',
         total: payAmount,
         items: 1,
@@ -1795,6 +1930,9 @@ body.terms-locked{overflow:hidden}
         paymentId: payment.id || ''
       });
       try { sessionStorage.removeItem('raseekh_pending_pay'); } catch (_) {}
+      let delivery = null;
+      try { if (row && row.deliveryPromise) delivery = await row.deliveryPromise; } catch (_) {}
+      return delivery;
     }
     Moyasar.init({
       element: '#mysr-form',
@@ -1806,8 +1944,8 @@ body.terms-locked{overflow:hidden}
       methods: ['creditcard', 'applepay'],
       on_completed: function(payment){
         if (payment && payment.status === 'paid') {
-          recordMoyasarPayment(payment);
           showPayStep(payStatusSuccess);
+          recordMoyasarPayment(payment).then(setPaySuccessCopy).catch(() => setPaySuccessCopy(null));
         } else showPayStep(payStatusFailed);
         return true;
       }
@@ -1820,13 +1958,19 @@ body.terms-locked{overflow:hidden}
     const params = new URLSearchParams(window.location.search);
     const status = params.get('status');
     if (status !== 'paid' && status !== 'failed') return;
-    const finish = (user) => {
+    const finish = async (user, provider) => {
+      if (provider) authProvider = provider;
+      if (user && status === 'paid' && !hasCloudPaySession(user) && Auth) {
+        try { await Auth.signOut(); } catch (_) {}
+        authProvider = null;
+        user = null;
+      }
       if (!user) {
         openAuth('pay');
         document.getElementById('pay').scrollIntoView({ behavior: 'smooth', block: 'start' });
         return;
       }
-      setPayUnlocked(user);
+      setPayUnlocked(user, provider);
       if (status === 'paid') finalizePendingMoyasarPayment(user);
       else showPayStep(payStatusFailed);
       document.getElementById('pay').scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1838,9 +1982,9 @@ body.terms-locked{overflow:hidden}
         } catch (_) {}
       }
     };
-    if (loggedInUser) finish(loggedInUser);
-    else if (Auth) Auth.getSession().then(({ user }) => finish(user || null));
-    else finish(null);
+    if (loggedInUser) finish(loggedInUser, authProvider);
+    else if (Auth) Auth.getSession().then(({ user, provider }) => finish(user || null, provider || null));
+    else finish(null, null);
   })();
 
   const revealEls = document.querySelectorAll('.reveal');
@@ -1895,11 +2039,33 @@ body.terms-locked{overflow:hidden}
       .catch(() => {});
   }
 
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/sw.js').catch(() => {});
-    });
-  }
+  (function siteConnectivity(){
+    const offline = document.getElementById('offlineBanner');
+    const updateBanner = document.getElementById('updateBanner');
+    const reloadBtn = document.getElementById('reloadUpdateBtn');
+    const syncOnline = () => {
+      if (!offline) return;
+      offline.classList.toggle('show', !navigator.onLine);
+    };
+    window.addEventListener('online', syncOnline);
+    window.addEventListener('offline', syncOnline);
+    syncOnline();
+    if (reloadBtn) reloadBtn.addEventListener('click', () => location.reload());
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').catch(() => {});
+      });
+      let refreshing = false;
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (refreshing) return;
+        refreshing = true;
+        if (updateBanner) {
+          updateBanner.hidden = false;
+          updateBanner.classList.add('show');
+        }
+      });
+    }
+  })();
 })();
 </script>
 </body>
