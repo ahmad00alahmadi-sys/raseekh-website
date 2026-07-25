@@ -2510,7 +2510,11 @@ body.pay-paused .pay-public-entry{display:none!important}
     const companyFromForm = (document.getElementById('contactCompany') && document.getElementById('contactCompany').value.trim()) || '';
     const companyFromMeta = (loggedInUser && loggedInUser.user_metadata && loggedInUser.user_metadata.company) || '';
     const company = (opts.company || companyFromForm || companyFromMeta || '').trim();
-    const segment = opts.segment || getContactSegment();
+    let segment = opts.segment || getContactSegment();
+    // Hero quick-send must not inherit company/institution from a prior Institution request.
+    if (opts.focusHero && type !== 'business' && type !== 'institution') {
+      if (segment === 'company' || segment === 'institution') segment = 'individual';
+    }
     const needsCompany = segment === 'company' || segment === 'institution' || type === 'business';
     const phoneFromMeta = (loggedInUser && loggedInUser.user_metadata && loggedInUser.user_metadata.phone) || '';
     const phoneFromForm = (document.getElementById('contactPhone') && document.getElementById('contactPhone').value.trim()) || '';
