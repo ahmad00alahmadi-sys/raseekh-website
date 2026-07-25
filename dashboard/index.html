@@ -2656,7 +2656,6 @@ body.is-admin .client-only{display:none!important}
         company: company || draft.company || '',
         message
       }));
-      requestConfirmBusy = false;
       pendingClientRequest = null;
       setModalOpen(document.getElementById('requestConfirmModal'), false);
       showToast(t('جاري إرسال الطلب...', 'Sending request...'));
@@ -2668,12 +2667,14 @@ body.is-admin .client-only{display:none!important}
         delivery = null;
       }
       if (submitToken !== requestConfirmSubmitToken) return;
-      if (delivery && (delivery.delivered || delivery.cloud)) {
+      if (!saved) {
+        showToast(t('تعذّر إرسال الطلب — حاولوا مرة أخرى', 'Could not send the request — try again'));
+      } else if (delivery && (delivery.delivered || delivery.cloud)) {
         showToast(t('تم إرسال طلب عرض السعر', 'Quote request sent'));
       } else if (delivery && delivery.pendingNotify) {
         showToast(t('استلمنا الطلب — إشعار الإدارة قيد التفعيل', 'Request received — admin notify is activating'));
       } else {
-        showToast(t('حُفظ الطلب — تابعوه من طلباتي', 'Request saved — track it under My requests'));
+        showToast(t('حُفظ الطلب محلياً — تابعوه من طلباتي أو أعيدوا المحاولة لاحقاً', 'Request saved locally — track it under My requests or retry later'));
       }
       renderAll();
       switchPage('requests');

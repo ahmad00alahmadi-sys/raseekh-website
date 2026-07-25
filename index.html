@@ -1291,10 +1291,12 @@ body.terms-locked,body.auth-locked{overflow:hidden}
       if (saved && saved.deliveryPromise) delivery = await saved.deliveryPromise;
       const delivered = !!(delivery && (delivery.delivered || delivery.cloud));
       const pending = !!(delivery && delivery.pendingNotify);
-      const ok = !!saved;
+      const savedOk = !!saved;
+      // "ok"/Sent only when delivery reached cloud/email/webhook (or pending notify activation).
+      const ok = !!(savedOk && (delivered || pending));
       if (resultEl) {
-        resultEl.style.color = ok ? 'var(--ok)' : 'var(--danger)';
-        resultEl.textContent = !ok
+        resultEl.style.color = ok || savedOk ? 'var(--ok)' : 'var(--danger)';
+        resultEl.textContent = !savedOk
           ? t('تعذّر الإرسال — أكملوا النموذج أدناه', 'Could not send — complete the form below')
           : (delivered
             ? t('✓ تم إرسال طلب عرض السعر', '✓ Quote request sent')
@@ -1302,7 +1304,7 @@ body.terms-locked,body.auth-locked{overflow:hidden}
               ? t('✓ استلمنا طلبكم — جاري تفعيل إشعار الإدارة', '✓ Request received — admin notify is activating')
               : t('✓ تم حفظ الطلب — تابعوه من حسابكم', '✓ Request saved — track it in your account')));
       }
-      if (ok && successActions) {
+      if ((ok || savedOk) && successActions) {
         successActions.style.display = 'flex';
         successActions.style.gap = '8px';
         successActions.style.flexWrap = 'wrap';
@@ -1310,7 +1312,7 @@ body.terms-locked,body.auth-locked{overflow:hidden}
       }
       const hq = document.getElementById('heroQuoteMsg');
       if (hq) hq.value = '';
-      return { ok, delivered, pending };
+      return { ok, saved: savedOk, delivered, pending };
     } catch (_) {
       requestFromCatalog({ type, message, company });
       if (resultEl) {
@@ -1344,6 +1346,9 @@ body.terms-locked,body.auth-locked{overflow:hidden}
       if (result && result.ok) {
         btn.classList.add('sent');
         btn.textContent = t('تم الإرسال', 'Sent');
+        setTimeout(() => restoreQuoteBtn(btn), 2200);
+      } else if (result && result.saved) {
+        btn.textContent = t('حُفظ في الحساب', 'Saved to account');
         setTimeout(() => restoreQuoteBtn(btn), 2200);
       } else if (result && result.redirected) {
         btn.disabled = false;
@@ -1387,6 +1392,9 @@ body.terms-locked,body.auth-locked{overflow:hidden}
       const result = await submitCatalogQuote({ type, message });
       if (result && result.ok) {
         el.textContent = t('تم الإرسال', 'Sent');
+        setTimeout(() => { el.textContent = prev; applyLang(currentLang); }, 1800);
+      } else if (result && result.saved) {
+        el.textContent = t('حُفظ في الحساب', 'Saved to account');
         setTimeout(() => { el.textContent = prev; applyLang(currentLang); }, 1800);
       } else {
         el.textContent = prev;
@@ -1501,6 +1509,9 @@ body.terms-locked,body.auth-locked{overflow:hidden}
       if (result && result.ok) {
         btn.textContent = t('تم الإرسال', 'Sent');
         setTimeout(() => { btn.textContent = prev; applyLang(currentLang); }, 1800);
+      } else if (result && result.saved) {
+        btn.textContent = t('حُفظ في الحساب', 'Saved to account');
+        setTimeout(() => { btn.textContent = prev; applyLang(currentLang); }, 1800);
       } else {
         btn.textContent = prev;
         applyLang(currentLang);
@@ -1555,6 +1566,9 @@ body.terms-locked,body.auth-locked{overflow:hidden}
       });
       if (result && result.ok) {
         btn.textContent = t('تم الإرسال', 'Sent');
+        setTimeout(() => { btn.textContent = prev; applyLang(currentLang); }, 1800);
+      } else if (result && result.saved) {
+        btn.textContent = t('حُفظ في الحساب', 'Saved to account');
         setTimeout(() => { btn.textContent = prev; applyLang(currentLang); }, 1800);
       } else {
         btn.textContent = prev;
@@ -1801,11 +1815,22 @@ body.terms-locked,body.auth-locked{overflow:hidden}
     if (!paymentId) return false;
     if (wasProcessedPay(paymentId)) {
       showPayStep(payStatusSuccess);
+      let delivery = { delivered: false, cloud: false, duplicate: true };
+      try {
+        const existing = Catalog.getPaymentRecords
+          ? Catalog.getPaymentRecords().find((p) => p && p.paymentId === paymentId)
+          : null;
+        if (existing && existing.deliveryStatus === 'delivered') {
+          delivery = { delivered: true, cloud: true, duplicate: true };
+        } else if (existing && Catalog.deliverPaymentRecord) {
+          delivery = await Catalog.deliverPaymentRecord(existing);
+        }
+      } catch (_) {}
+      setPaySuccessCopy(delivery);
       return true;
     }
     const total = Number(pendingPay.amount);
     if (!(total > 0) || total > 100000) return false;
-    markProcessedPay(paymentId);
     // Prefer session amount over query string (query is untrusted / in halalas).
     const row = Catalog.addPaymentRecord({
       method: 'card',
@@ -1818,6 +1843,7 @@ body.terms-locked,body.auth-locked{overflow:hidden}
       source: 'moyasar-return',
       paymentId
     });
+    if (paymentId) markProcessedPay(paymentId);
     try { sessionStorage.removeItem('raseekh_pending_pay'); } catch (_) {}
     try {
       const url = new URL(location.href);
@@ -1831,7 +1857,7 @@ body.terms-locked,body.auth-locked{overflow:hidden}
     return true;
   }
 
-  function afterAuthSuccess(user, provider){
+  async function afterAuthSuccess(user, provider){
     if (provider) authProvider = provider;
     else if (user && user.app_metadata && user.app_metadata.provider) authProvider = user.app_metadata.provider;
     setPayUnlocked(user);
@@ -1841,14 +1867,19 @@ body.terms-locked,body.auth-locked{overflow:hidden}
     const failedReturn = params.get('status') === 'failed';
     if (failedReturn) {
       try { sessionStorage.removeItem('raseekh_pending_pay'); } catch (_) {}
+      showPayStep(payStatusFailed);
     }
     if (authIntent === 'pay' || location.hash === '#pay' || params.get('pay') === '1' || paidReturn || failedReturn) {
       authIntent = 'dashboard';
-      if (paidReturn) finalizePendingMoyasarPayment(user);
+      if (paidReturn) {
+        try { await finalizePendingMoyasarPayment(user); } catch (_) {
+          showPayStep(payStatusFailed);
+        }
+      }
       const pay = document.getElementById('pay');
       if (pay) scrollToEl(pay, { block: 'start' });
       const nameEl = document.getElementById('payName');
-      if (nameEl && !paidReturn && hasCloudPaySession(user)) setTimeout(() => nameEl.focus(), 350);
+      if (nameEl && !paidReturn && !failedReturn && hasCloudPaySession(user)) setTimeout(() => nameEl.focus(), 350);
       return;
     }
     setTimeout(goDashboard, 400);
@@ -2261,6 +2292,16 @@ body.terms-locked,body.auth-locked{overflow:hidden}
   function showPayStep(step){
     [payDetailsStep, paymentFormStep, payStatusSuccess, payStatusFailed].forEach(el => el.classList.remove('active'));
     step.classList.add('active');
+    try {
+      const heading = step.querySelector('h2, h3, [data-ar]');
+      const focusEl = heading || step.querySelector('button, a, .btn') || step;
+      if (focusEl) {
+        if (!focusEl.hasAttribute('tabindex') && focusEl.tagName !== 'BUTTON' && focusEl.tagName !== 'A') {
+          focusEl.setAttribute('tabindex', '-1');
+        }
+        focusEl.focus({ preventScroll: true });
+      }
+    } catch (_) {}
   }
   document.getElementById('payContinueBtn').addEventListener('click', async () => {
     const btn = document.getElementById('payContinueBtn');
@@ -2317,11 +2358,23 @@ body.terms-locked,body.auth-locked{overflow:hidden}
       async function recordMoyasarPayment(payment){
         if (!Catalog || !Catalog.addPaymentRecord || !payment || payment.status !== 'paid') return null;
         const paymentId = payment.id || '';
-        if (paymentId && wasProcessedPay(paymentId)) return { delivered: true, cloud: true, duplicate: true };
+        if (paymentId && wasProcessedPay(paymentId)) {
+          try {
+            const existing = Catalog.getPaymentRecords
+              ? Catalog.getPaymentRecords().find((p) => p && p.paymentId === paymentId)
+              : null;
+            if (existing && existing.deliveryStatus === 'delivered') {
+              return { delivered: true, cloud: true, duplicate: true };
+            }
+            if (existing && Catalog.deliverPaymentRecord) {
+              return await Catalog.deliverPaymentRecord(existing);
+            }
+          } catch (_) {}
+          return { delivered: false, cloud: false, duplicate: true };
+        }
         const payAmount = typeof payment.amount === 'number' ? payment.amount / 100 : amount;
         if (!(payAmount > 0) || payAmount > 100000) return null;
         if (Math.abs(payAmount - amount) > 0.05) return null;
-        if (paymentId) markProcessedPay(paymentId);
         const row = Catalog.addPaymentRecord({
           method: 'card',
           total: amount,
@@ -2333,6 +2386,7 @@ body.terms-locked,body.auth-locked{overflow:hidden}
           source: 'moyasar',
           paymentId
         });
+        if (paymentId) markProcessedPay(paymentId);
         try { sessionStorage.removeItem('raseekh_pending_pay'); } catch (_) {}
         let delivery = null;
         try { if (row && row.deliveryPromise) delivery = await row.deliveryPromise; } catch (_) {}

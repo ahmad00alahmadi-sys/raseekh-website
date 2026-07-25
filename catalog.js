@@ -788,12 +788,30 @@
       (x.id && row.id && x.id === row.id)
     );
     if (existing) {
-      existing.deliveryPromise = deliverPaymentRecord(existing);
+      // Reuse in-flight delivery; if already delivered, do not re-notify.
+      if (existing._delivering && existing.deliveryPromise) return existing;
+      if (existing.deliveryStatus === 'delivered') {
+        existing.deliveryPromise = Promise.resolve({
+          cloud: true,
+          email: true,
+          webhook: false,
+          delivered: true,
+          duplicate: true
+        });
+        return existing;
+      }
+      existing._delivering = true;
+      existing.deliveryPromise = deliverPaymentRecord(existing).finally(() => {
+        existing._delivering = false;
+      });
       return existing;
     }
     list.unshift(row);
     savePaymentRecords(list);
-    row.deliveryPromise = deliverPaymentRecord(row);
+    row._delivering = true;
+    row.deliveryPromise = deliverPaymentRecord(row).finally(() => {
+      row._delivering = false;
+    });
     return row;
   }
 
@@ -889,6 +907,17 @@
   }
 
   async function deliverPaymentRecord(row) {
+    if (row && row.deliveryStatus === 'delivered') {
+      return {
+        cloud: true,
+        email: false,
+        webhook: false,
+        emailDetail: null,
+        pendingNotify: false,
+        delivered: true,
+        duplicate: true
+      };
+    }
     await syncPublicNotifyFromCloud().catch(() => {});
     const cloud = await pushPaymentToCloud(row);
     const notifyRow = {
@@ -923,14 +952,51 @@
         }, 12000).then((res) => !!res && res.ok).catch(() => false);
       }
     } catch (_) {}
+    const delivered = !!(cloud || (email && email.ok) || webhook);
+    const pendingNotify = !!(email && email.pendingConfirm);
+    try {
+      const list = getPaymentRecords();
+      const idx = list.findIndex((r) => r && row && r.id === row.id);
+      if (idx >= 0) {
+        if (delivered) {
+          delete list[idx].syncPending;
+          list[idx].deliveryStatus = 'delivered';
+        } else {
+          list[idx].syncPending = true;
+          list[idx].deliveryStatus = pendingNotify ? 'pending_notify' : 'local';
+        }
+        savePaymentRecords(list);
+        row.deliveryStatus = list[idx].deliveryStatus;
+        row.syncPending = list[idx].syncPending;
+      }
+    } catch (_) {}
     return {
       cloud: !!cloud,
       email: !!(email && email.ok),
       webhook: !!webhook,
       emailDetail: email || null,
-      pendingNotify: !!(email && email.pendingConfirm),
-      delivered: !!(cloud || (email && email.ok) || webhook)
+      pendingNotify: pendingNotify,
+      delivered: delivered
     };
+  }
+
+  async function retryPendingPayments() {
+    const list = getPaymentRecords();
+    const pending = list.filter((r) => r && (r.syncPending || r.deliveryStatus === 'local' || r.deliveryStatus === 'pending_notify'));
+    for (const row of pending.slice(0, 20)) {
+      try {
+        if (row._delivering && row.deliveryPromise) {
+          await row.deliveryPromise;
+          continue;
+        }
+        row._delivering = true;
+        row.deliveryPromise = deliverPaymentRecord(row).finally(() => {
+          row._delivering = false;
+        });
+        await row.deliveryPromise;
+      } catch (_) {}
+    }
+    return getPaymentRecords();
   }
 
   function normalizeFingerprintPart(value) {
@@ -960,18 +1026,21 @@
     if (!row.fingerprint) row.fingerprint = requestFingerprint(row);
     const existing = list.find((x) => x.fingerprint && x.fingerprint === row.fingerprint);
     if (existing) {
-      // Retry delivery for double-submit / refresh within the idempotency window.
-      // Reuse an in-flight promise so parallel clicks do not send duplicate emails.
-      if (existing.deliveryPromise && typeof existing.deliveryPromise.then === 'function') {
-        return existing;
-      }
-      existing.deliveryPromise = deliverSharedRequest(existing);
+      // Reuse only while a delivery is still in flight — settled failures must retry.
+      if (existing._delivering && existing.deliveryPromise) return existing;
+      existing._delivering = true;
+      existing.deliveryPromise = deliverSharedRequest(existing).finally(() => {
+        existing._delivering = false;
+      });
       return existing;
     }
     list.unshift(row);
     writeJson(CLIENT_REQUESTS_KEY, list.slice(0, 200));
     // Deliver outside this browser: cloud row + email + webhook (best-effort)
-    row.deliveryPromise = deliverSharedRequest(row);
+    row._delivering = true;
+    row.deliveryPromise = deliverSharedRequest(row).finally(() => {
+      row._delivering = false;
+    });
     return row;
   }
 
@@ -1017,6 +1086,8 @@
           list[idx].deliveryStatus = pendingNotify ? 'pending_notify' : 'local';
         }
         saveSharedRequests(list);
+        row.deliveryStatus = list[idx].deliveryStatus;
+        row.syncPending = list[idx].syncPending;
       }
     } catch (_) {}
     return {
@@ -1035,11 +1106,14 @@
     const pending = list.filter((r) => r && (r.syncPending || r.deliveryStatus === 'local' || r.deliveryStatus === 'pending_notify'));
     for (const row of pending.slice(0, 20)) {
       try {
-        if (row.deliveryPromise && typeof row.deliveryPromise.then === 'function') {
+        if (row._delivering && row.deliveryPromise) {
           await row.deliveryPromise;
           continue;
         }
-        row.deliveryPromise = deliverSharedRequest(row);
+        row._delivering = true;
+        row.deliveryPromise = deliverSharedRequest(row).finally(() => {
+          row._delivering = false;
+        });
         await row.deliveryPromise;
       } catch (_) {}
     }
@@ -1185,6 +1259,7 @@
     addSharedRequest,
     deliverSharedRequest,
     retryPendingSharedRequests,
+    retryPendingPayments,
     notifyRequestWebhook,
     notifyAdminEmail,
     publishPublicNotify,
@@ -1223,6 +1298,7 @@
   if (typeof global.addEventListener === 'function') {
     global.addEventListener('online', () => {
       retryPendingSharedRequests().catch(() => {});
+      retryPendingPayments().catch(() => {});
     });
   }
 })(typeof window !== 'undefined' ? window : globalThis);
