@@ -1084,12 +1084,12 @@ body.terms-locked,body.auth-locked{overflow:hidden}
           <input type="text" required data-ar-placeholder="الاسم الكامل" data-en-placeholder="Full name" placeholder="الاسم الكامل" id="contactName" autocomplete="name">
         </label>
         <label class="field"><span data-ar="البريد الإلكتروني" data-en="Email">البريد الإلكتروني</span>
-          <input type="email" data-ar-placeholder="name@example.com" data-en-placeholder="name@example.com" placeholder="name@example.com" id="contactEmail" autocomplete="email">
+          <input type="email" required data-ar-placeholder="name@example.com" data-en-placeholder="name@example.com" placeholder="name@example.com" id="contactEmail" autocomplete="email">
         </label>
         <label class="field"><span data-ar="رقم الجوال" data-en="Phone">رقم الجوال</span>
-          <input type="tel" inputmode="tel" maxlength="20" data-ar-placeholder="05xxxxxxxx" data-en-placeholder="05xxxxxxxx" placeholder="05xxxxxxxx" id="contactPhone" autocomplete="tel">
+          <input type="tel" required inputmode="tel" maxlength="20" data-ar-placeholder="05xxxxxxxx" data-en-placeholder="05xxxxxxxx" placeholder="05xxxxxxxx" id="contactPhone" autocomplete="tel">
         </label>
-        <p class="hint-inline" data-ar="يلزم بريد أو جوال واحد على الأقل للتواصل." data-en="Provide at least an email or phone so we can reply.">يلزم بريد أو جوال واحد على الأقل للتواصل.</p>
+        <p class="hint-inline" data-ar="البريد ورقم الجوال مطلوبان للتواصل ورد عرض السعر." data-en="Email and phone are both required so we can reply with a quote.">البريد ورقم الجوال مطلوبان للتواصل ورد عرض السعر.</p>
         <label class="field" id="contactCompanyField">
           <span id="contactCompanyLabel" data-ar="اسم الشركة (اختياري)" data-en="Company (optional)">اسم الشركة (اختياري)</span>
           <input type="text" data-ar-placeholder="اسم الشركة" data-en-placeholder="Company name" placeholder="اسم الشركة" id="contactCompany" autocomplete="organization">
@@ -1363,8 +1363,23 @@ body.terms-locked,body.auth-locked{overflow:hidden}
       ? Catalog.requestTypeLabel(type, currentLang)
       : type;
     const fullName = (loggedInUser.user_metadata && loggedInUser.user_metadata.full_name) || '';
-    const phone = (loggedInUser.user_metadata && loggedInUser.user_metadata.phone) || '';
-    const email = loggedInUser.email || '';
+    const phoneFromMeta = (loggedInUser.user_metadata && loggedInUser.user_metadata.phone) || '';
+    const phoneFromForm = (document.getElementById('contactPhone') && document.getElementById('contactPhone').value.trim()) || '';
+    const phone = phoneFromForm || phoneFromMeta;
+    const emailFromForm = (document.getElementById('contactEmail') && document.getElementById('contactEmail').value.trim()) || '';
+    const email = emailFromForm || loggedInUser.email || '';
+    // Both email and phone are required for every quote request.
+    if (!email || !isUsablePhone(phone)) {
+      requestFromCatalog({ type, message, company });
+      const resultEl = document.getElementById('contactResult');
+      if (resultEl) {
+        resultEl.style.color = 'var(--danger)';
+        resultEl.textContent = t('أكملوا البريد ورقم الجوال ثم أرسلوا الطلب', 'Complete email and phone, then send the request');
+      }
+      if (!email) document.getElementById('contactEmail') && document.getElementById('contactEmail').focus();
+      else document.getElementById('contactPhone') && document.getElementById('contactPhone').focus();
+      return { ok: false, redirected: true, needContact: true };
+    }
     const resultEl = document.getElementById('contactResult');
     const successActions = document.getElementById('contactSuccessActions');
     if (resultEl) {
@@ -2313,13 +2328,19 @@ body.terms-locked,body.auth-locked{overflow:hidden}
     const typeVal = document.getElementById('contactType').value;
     const sessionEmail = loggedInUser && loggedInUser.email ? loggedInUser.email : '';
     const email = emailVal || sessionEmail;
-    if (!email && !phoneVal) {
+    if (!email) {
       result.style.color = 'var(--danger)';
-      result.textContent = t('أدخل بريداً أو رقم جوال للتواصل', 'Enter an email or phone number so we can reply');
-      (emailVal ? document.getElementById('contactPhone') : document.getElementById('contactEmail')).focus();
+      result.textContent = t('أدخل البريد الإلكتروني', 'Enter your email address');
+      document.getElementById('contactEmail').focus();
       return;
     }
-    if (phoneVal && !isUsablePhone(phoneVal)) {
+    if (!phoneVal) {
+      result.style.color = 'var(--danger)';
+      result.textContent = t('أدخل رقم الجوال', 'Enter your phone number');
+      document.getElementById('contactPhone').focus();
+      return;
+    }
+    if (!isUsablePhone(phoneVal)) {
       result.style.color = 'var(--danger)';
       result.textContent = t('رقم الجوال غير صالح — استخدموا صيغة مثل 05xxxxxxxx', 'Phone number looks invalid — use a format like 05xxxxxxxx');
       document.getElementById('contactPhone').focus();

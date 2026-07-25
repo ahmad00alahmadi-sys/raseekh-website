@@ -944,9 +944,13 @@ body.is-admin .client-only{display:none!important}
     <h2 id="requestConfirmHeading" style="margin-bottom:8px" data-ar="تأكيد طلب عرض السعر" data-en="Confirm quote request">تأكيد طلب عرض السعر</h2>
     <p id="requestConfirmTitle" style="color:var(--muted);font-size:.92rem;margin-bottom:14px"></p>
     <form class="form" id="requestConfirmForm">
-      <label class="field"><span data-ar="رقم الجوال للتواصل" data-en="Phone for reply">رقم الجوال للتواصل</span>
-        <input type="tel" id="requestConfirmPhone" inputmode="tel" maxlength="20" data-ar-placeholder="05xxxxxxxx" data-en-placeholder="05xxxxxxxx" placeholder="05xxxxxxxx" autocomplete="tel">
+      <label class="field"><span data-ar="البريد الإلكتروني" data-en="Email">البريد الإلكتروني</span>
+        <input type="email" required id="requestConfirmEmail" data-ar-placeholder="name@example.com" data-en-placeholder="name@example.com" placeholder="name@example.com" autocomplete="email">
       </label>
+      <label class="field"><span data-ar="رقم الجوال للتواصل" data-en="Phone for reply">رقم الجوال للتواصل</span>
+        <input type="tel" required id="requestConfirmPhone" inputmode="tel" maxlength="20" data-ar-placeholder="05xxxxxxxx" data-en-placeholder="05xxxxxxxx" placeholder="05xxxxxxxx" autocomplete="tel">
+      </label>
+      <p class="hint" style="margin:-4px 0 10px;font-size:.82rem;color:var(--muted)" data-ar="البريد ورقم الجوال مطلوبان لرد عرض السعر." data-en="Email and phone are both required for the quote reply.">البريد ورقم الجوال مطلوبان لرد عرض السعر.</p>
       <label class="field" id="requestConfirmCompanyField" hidden>
         <span id="requestConfirmCompanyLabel" data-ar="اسم الشركة" data-en="Company name">اسم الشركة</span>
         <input type="text" id="requestConfirmCompany" data-ar-placeholder="اسم الشركة" data-en-placeholder="Company name" placeholder="اسم الشركة" autocomplete="organization">
@@ -2624,9 +2628,11 @@ body.is-admin .client-only{display:none!important}
     }
     pendingClientRequest = draft;
     document.getElementById('requestConfirmTitle').textContent = draft.summary || draft.title || '';
+    const emailEl = document.getElementById('requestConfirmEmail');
     const phoneEl = document.getElementById('requestConfirmPhone');
+    if (emailEl) emailEl.value = (currentUser && currentUser.email) || draft.email || '';
     const metaPhone = currentUser && currentUser.user_metadata && currentUser.user_metadata.phone;
-    phoneEl.value = metaPhone || '';
+    phoneEl.value = metaPhone || draft.phone || '';
     const companyField = document.getElementById('requestConfirmCompanyField');
     const companyEl = document.getElementById('requestConfirmCompany');
     const needsCompany = draft && (draft.type === 'business' || draft.type === 'system');
@@ -2644,7 +2650,9 @@ body.is-admin .client-only{display:none!important}
       applyLang(currentLang);
     }
     setModalOpen(document.getElementById('requestConfirmModal'), true);
-    if (needsCompany && companyEl && !companyEl.value.trim()) companyEl.focus();
+    if (emailEl && !emailEl.value.trim()) emailEl.focus();
+    else if (!phoneEl.value.trim()) phoneEl.focus();
+    else if (needsCompany && companyEl && !companyEl.value.trim()) companyEl.focus();
     else phoneEl.focus();
   }
   function closeRequestConfirm(){
@@ -2669,17 +2677,25 @@ body.is-admin .client-only{display:none!important}
       return;
     }
     const submitBtn = e.target.querySelector('button[type="submit"]');
+    const emailEl = document.getElementById('requestConfirmEmail');
+    const email = (emailEl && emailEl.value.trim()) || (currentUser && currentUser.email) || '';
     const phone = document.getElementById('requestConfirmPhone').value.trim();
     const note = document.getElementById('requestConfirmNote').value.trim();
     const companyEl = document.getElementById('requestConfirmCompany');
     const company = companyEl ? companyEl.value.trim() : '';
     const draft = Object.assign({}, pendingClientRequest);
     const needsCompany = draft.type === 'business' || draft.type === 'system';
-    if (!phone && !(currentUser && currentUser.email)) {
-      showToast(t('أدخل رقم جوال للتواصل', 'Enter a phone number for reply'));
+    if (!email || email.indexOf('@') < 0) {
+      showToast(t('أدخل البريد الإلكتروني', 'Enter your email address'));
+      if (emailEl) emailEl.focus();
       return;
     }
-    if (phone && !isUsablePhone(phone)) {
+    if (!phone) {
+      showToast(t('أدخل رقم الجوال للتواصل', 'Enter a phone number for reply'));
+      document.getElementById('requestConfirmPhone').focus();
+      return;
+    }
+    if (!isUsablePhone(phone)) {
       showToast(t('رقم الجوال غير صالح — استخدموا صيغة مثل 05xxxxxxxx', 'Phone number looks invalid — use a format like 05xxxxxxxx'));
       document.getElementById('requestConfirmPhone').focus();
       return;
@@ -2724,6 +2740,7 @@ body.is-admin .client-only{display:none!important}
       const baseMsg = draft.message || '';
       const message = note ? (baseMsg + '\n' + t('ملاحظة: ', 'Note: ') + note) : baseMsg;
       const saved = addClientRequest(Object.assign({}, draft, {
+        email: email || draft.email || '',
         phone: phone || draft.phone || '',
         company: company || draft.company || '',
         message
