@@ -31,6 +31,16 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://raseekh.com/blog/hosting-pdpl.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://raseekh.com/blog/quote-process.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://raseekh.com/industries/</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>

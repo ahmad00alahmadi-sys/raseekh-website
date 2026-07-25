@@ -1,9 +1,10 @@
 /* Lightweight offline shell for Raseekh marketing site */
-const CACHE = 'raseekh-shell-v51';
+const CACHE = 'raseekh-shell-v52';
 const ASSETS = [
   '/', '/index.html', '/catalog.js', '/auth.js', '/terms.js', '/activity.js', '/shared-page.css', '/shared-page.js',
   '/terms/', '/terms/index.html', '/privacy/', '/privacy/index.html',
   '/blog/', '/blog/index.html', '/blog/inventory-system.html', '/blog/custom-vs-ready.html', '/blog/ops-system-checklist.html',
+  '/blog/hosting-pdpl.html', '/blog/quote-process.html',
   '/industries/', '/industries/index.html', '/industries/retail.html', '/industries/clinic.html', '/industries/restaurant.html', '/industries/contracting.html',
   '/dashboard/', '/dashboard/index.html', '/manifest.webmanifest', '/icon.svg', '/icon-192.png', '/icon-512.png', '/icon-512-maskable.png'
 ];
