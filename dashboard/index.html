@@ -1777,8 +1777,15 @@ body.is-admin .client-only{display:none!important}
         if (webhookEl) webhookEl.value = store.webhookUrl || '';
         if (notifyLoginEl) notifyLoginEl.checked = store.notifyOnLogin !== false;
         if (storeDirty) {
-          // Hydrate from cloud: local only. Seeded email: one cloud publish.
-          saveStore(seededLocalNotify ? { forceCloud: true } : { skipCloud: true });
+          // Hydrate from cloud: local only. Seeded email: one awaited cloud publish.
+          if (seededLocalNotify) {
+            try {
+              const published = saveStore({ forceCloud: true, awaitCloud: true });
+              if (published && typeof published.then === 'function') await published;
+            } catch (_) {}
+          } else {
+            saveStore({ skipCloud: true });
+          }
         }
         renderDeliveryStatus();
       }
@@ -3110,6 +3117,10 @@ body.is-admin .client-only{display:none!important}
   async function checkout(method){
     if (!requireAdmin('checkout')) return;
     if (checkoutBusy) return;
+    if (!navigator.onLine) {
+      showToast(t('أنتم غير متصلين — أعيدوا التسجيل بعد عودة الشبكة', 'You are offline — record again when back online'));
+      return;
+    }
     if (!cart.length) { showToast(t('لا توجد بنود','No items')); return; }
     for (const line of cart) {
       const p = products.find(x => x.id === line.id);
@@ -3201,6 +3212,13 @@ body.is-admin .client-only{display:none!important}
       e.preventDefault();
       if (!requireAdmin('manualDeposit')) return;
       if (manualDepositForm.dataset.submitting === '1') return;
+      if (!navigator.onLine) {
+        const msgOffline = document.getElementById('depositMsg');
+        msgOffline.style.color = 'var(--danger)';
+        msgOffline.textContent = t('أنتم غير متصلين — أعيدوا التسجيل بعد عودة الشبكة', 'You are offline — record again when back online');
+        showToast(msgOffline.textContent);
+        return;
+      }
       const methodBtn = e.submitter && e.submitter.getAttribute('data-method');
       const method = methodBtn || 'cash';
       const name = document.getElementById('depositName').value.trim();
@@ -3481,10 +3499,28 @@ body.is-admin .client-only{display:none!important}
   const refreshLeadsBtn = document.getElementById('refreshLeadsBtn');
   if (refreshLeadsBtn) {
     refreshLeadsBtn.addEventListener('click', async () => {
+      if (refreshLeadsBtn.dataset.busy === '1') return;
+      refreshLeadsBtn.dataset.busy = '1';
       showToast(t('جاري التحديث...', 'Refreshing...'));
-      await renderAdminLeads();
-      updateLeadsBadge();
-      showToast(t('تم تحديث صندوق الطلبات', 'Request inbox updated'));
+      let ok = true;
+      try {
+        if (!navigator.onLine) {
+          ok = false;
+        } else {
+          await refreshClientRequestsFromCloud();
+          await renderAdminLeads();
+          updateLeadsBadge();
+        }
+      } catch (_) {
+        ok = false;
+        try { await renderAdminLeads(); } catch (_) {}
+        updateLeadsBadge();
+      } finally {
+        refreshLeadsBtn.dataset.busy = '0';
+      }
+      showToast(ok
+        ? t('تم تحديث صندوق الطلبات', 'Request inbox updated')
+        : t('تعذّر التحديث من السحابة — تُعرض البيانات المحلية', 'Cloud refresh failed — showing local data'));
     });
   }
   const exportLeadsBtn = document.getElementById('exportLeadsBtn');

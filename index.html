@@ -1791,6 +1791,12 @@ body.terms-locked,body.auth-locked{overflow:hidden}
     map[String(paymentId)] = Date.now();
     try { sessionStorage.setItem('raseekh_processed_pays_v1', JSON.stringify(map)); } catch (_) {}
   }
+  function clearProcessedPay(paymentId){
+    if (!paymentId) return;
+    const map = readProcessedPays();
+    delete map[String(paymentId)];
+    try { sessionStorage.setItem('raseekh_processed_pays_v1', JSON.stringify(map)); } catch (_) {}
+  }
   function wasProcessedPay(paymentId){
     if (!paymentId) return false;
     const map = readProcessedPays();
@@ -1822,21 +1828,29 @@ body.terms-locked,body.auth-locked{overflow:hidden}
     }
     if (!paymentId) return false;
     if (wasProcessedPay(paymentId)) {
-      setPaySuccessCopy({ recording: true });
-      showPayStep(payStatusSuccess);
-      let delivery = { delivered: false, cloud: false, duplicate: true };
+      let existing = null;
       try {
-        const existing = Catalog.getPaymentRecords
+        existing = Catalog.getPaymentRecords
           ? Catalog.getPaymentRecords().find((p) => p && p.paymentId === paymentId)
           : null;
-        if (existing && existing.deliveryStatus === 'delivered') {
-          delivery = { delivered: true, cloud: true, duplicate: true };
-        } else if (existing && Catalog.deliverPaymentRecord) {
-          delivery = await Catalog.deliverPaymentRecord(existing);
-        }
       } catch (_) {}
-      setPaySuccessCopy(delivery);
-      return true;
+      if (!existing) {
+        // Stale processed mark (cleared storage / other device) — allow re-record.
+        clearProcessedPay(paymentId);
+      } else {
+        setPaySuccessCopy({ recording: true });
+        showPayStep(payStatusSuccess);
+        let delivery = { delivered: false, cloud: false, duplicate: true };
+        try {
+          if (existing.deliveryStatus === 'delivered') {
+            delivery = { delivered: true, cloud: true, duplicate: true };
+          } else if (Catalog.deliverPaymentRecord) {
+            delivery = await Catalog.deliverPaymentRecord(existing);
+          }
+        } catch (_) {}
+        setPaySuccessCopy(delivery);
+        return true;
+      }
     }
     const total = Number(pendingPay.amount);
     if (!(total > 0) || total > 100000) return false;
@@ -2377,14 +2391,18 @@ body.terms-locked,body.auth-locked{overflow:hidden}
             const existing = Catalog.getPaymentRecords
               ? Catalog.getPaymentRecords().find((p) => p && p.paymentId === paymentId)
               : null;
-            if (existing && existing.deliveryStatus === 'delivered') {
+            if (!existing) {
+              clearProcessedPay(paymentId);
+            } else if (existing.deliveryStatus === 'delivered') {
               return { delivered: true, cloud: true, duplicate: true };
-            }
-            if (existing && Catalog.deliverPaymentRecord) {
+            } else if (Catalog.deliverPaymentRecord) {
               return await Catalog.deliverPaymentRecord(existing);
+            } else {
+              return { delivered: false, cloud: false, duplicate: true };
             }
-          } catch (_) {}
-          return { delivered: false, cloud: false, duplicate: true };
+          } catch (_) {
+            return { delivered: false, cloud: false, duplicate: true };
+          }
         }
         const payAmount = typeof payment.amount === 'number' ? payment.amount / 100 : amount;
         if (!(payAmount > 0) || payAmount > 100000) return null;

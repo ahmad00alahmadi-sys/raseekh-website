@@ -118,8 +118,8 @@
   async function probeCloud(timeoutMs) {
     if (!supabaseClient) return false;
     const now = Date.now();
-    // Positive probes stay cached; negative results expire so a brief outage does not lock local-only mode.
-    if (cloudReady === true) return true;
+    // Cache both positive and negative probes briefly so a later outage can fall back to local.
+    if (cloudReady === true && (now - cloudReadyCheckedAt) < CLOUD_PROBE_TTL_MS) return true;
     if (cloudReady === false && (now - cloudReadyCheckedAt) < CLOUD_PROBE_TTL_MS) return false;
     const ctrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
     const timer = setTimeout(() => { try { ctrl && ctrl.abort(); } catch (_) {} }, timeoutMs || 2500);

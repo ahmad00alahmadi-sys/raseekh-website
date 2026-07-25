@@ -19,10 +19,10 @@
 
   function beginPaymentDelivery(row) {
     const key = deliveryKey(row);
-    if (!key) return deliverPaymentRecord(row);
+    if (!key) return runDeliverPaymentRecord(row);
     if (inFlightPaymentDeliveries.has(key)) return inFlightPaymentDeliveries.get(key);
     const promise = Promise.resolve()
-      .then(() => deliverPaymentRecord(row))
+      .then(() => runDeliverPaymentRecord(row))
       .finally(() => { inFlightPaymentDeliveries.delete(key); });
     inFlightPaymentDeliveries.set(key, promise);
     return promise;
@@ -30,10 +30,10 @@
 
   function beginRequestDelivery(row) {
     const key = deliveryKey(row);
-    if (!key) return deliverSharedRequest(row);
+    if (!key) return runDeliverSharedRequest(row);
     if (inFlightRequestDeliveries.has(key)) return inFlightRequestDeliveries.get(key);
     const promise = Promise.resolve()
-      .then(() => deliverSharedRequest(row))
+      .then(() => runDeliverSharedRequest(row))
       .finally(() => { inFlightRequestDeliveries.delete(key); });
     inFlightRequestDeliveries.set(key, promise);
     return promise;
@@ -928,7 +928,7 @@
     }
   }
 
-  async function deliverPaymentRecord(row) {
+  async function runDeliverPaymentRecord(row) {
     if (row && row.deliveryStatus === 'delivered') {
       return {
         cloud: true,
@@ -1070,7 +1070,7 @@
     return row;
   }
 
-  async function deliverSharedRequest(row) {
+  async function runDeliverSharedRequest(row) {
     // Status sync retries: cloud already notified — update row only, do not re-email.
     if (row && row.deliveryStatus === 'delivered' && row.syncPending) {
       const cloud = await pushRequestToCloud(row, { allowUpdate: true });
@@ -1281,7 +1281,6 @@
     saveAdminProducts,
     pruneSuggestions,
     addSharedRequest,
-    deliverSharedRequest,
     retryPendingSharedRequests,
     retryPendingPayments,
     notifyRequestWebhook,
@@ -1300,7 +1299,8 @@
     getPaymentRecords,
     savePaymentRecords,
     addPaymentRecord,
-    deliverPaymentRecord,
+    deliverPaymentRecord: beginPaymentDelivery,
+    deliverSharedRequest: beginRequestDelivery,
     pushPaymentToCloud,
     syncPaymentsFromCloud,
     pushRequestToCloud,
