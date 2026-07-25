@@ -4,7 +4,7 @@
 <script>
 (function(){try{var t=localStorage.getItem("raseekh_theme");document.documentElement.setAttribute("data-theme",t==="night"||t==="dark"?"night":"soft");}catch(e){document.documentElement.setAttribute("data-theme","soft");}})();
 </script>
-
+<style id="hideStickyQuote">#mobileQuoteBar,.mobile-quote-bar,.float-quote{display:none!important}</style>
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -766,7 +766,6 @@ body.terms-locked,body.auth-locked{overflow:hidden}
   .hero-quote .btn{width:100%}
 }
 @media (max-width:768px){
-  .float-cta .float-quote{display:none!important}
 }
 @media (max-width:560px){
   .nav-prefs{gap:4px}
@@ -795,8 +794,6 @@ body.pay-paused .pay-public-entry{display:none!important}
   min-height:46px;padding:12px 16px;border-radius:10px;font-weight:800;text-decoration:none;
   box-shadow:0 14px 28px -18px rgba(16,35,58,.55)
 }
-.float-cta .float-quote{background:var(--copper);color:#fff}
-.float-cta .float-quote:hover{background:#A84C1E}
 .float-cta .float-wa{background:#128C7E;color:#fff;display:none}
 .float-cta .float-wa.show{display:inline-flex}
 .trust-strip{
@@ -1334,8 +1331,8 @@ body.pay-paused .pay-public-entry{display:none!important}
   <div class="wrap">
     <div class="section-head reveal">
       <div class="eyebrow" data-ar="نتائج تشغيلية نموذجية" data-en="Typical operational outcomes">نتائج تشغيلية نموذجية</div>
-      <h2 data-ar="كيف يبدو التحسّن في التشغيل — ليست شهادات عملاء" data-en="What ops improvement can look like — not client testimonials">كيف يبدو التحسّن في التشغيل — ليست شهادات عملاء</h2>
-      <p data-ar="أمثلة افتراضية مبنية على متطلبات شائعة حسب القطاع — ليست تقييمات حقيقية. أي مرجع حقيقي يُذكر فقط بموافقة العميل." data-en="Hypothetical examples based on common sector needs — not real reviews. Real references are named only with client consent.">أمثلة افتراضية مبنية على متطلبات شائعة حسب القطاع — ليست تقييمات حقيقية. أي مرجع حقيقي يُذكر فقط بموافقة العميل.</p>
+      <h2 data-ar="كيف يبدو التحسّن في التشغيل" data-en="What ops improvement can look like">كيف يبدو التحسّن في التشغيل</h2>
+      <p data-ar="أمثلة افتراضية مبنية على متطلبات شائعة حسب القطاع — ليست تقييمات أو شهادات عملاء. أي مرجع حقيقي يُذكر فقط بموافقة العميل." data-en="Hypothetical examples based on common sector needs — not reviews or client testimonials. Real references are named only with client consent.">أمثلة افتراضية مبنية على متطلبات شائعة حسب القطاع — ليست تقييمات أو شهادات عملاء. أي مرجع حقيقي يُذكر فقط بموافقة العميل.</p>
     </div>
     <div class="services-grid reveal stagger">
       <article class="service-block">
