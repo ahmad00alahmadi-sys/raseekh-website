@@ -3497,12 +3497,14 @@ body.is-client .home-bar{
       if (row && Catalog.deliverSharedRequest) delivery = await Catalog.deliverSharedRequest(row);
       else if (Catalog.retryPendingSharedRequests) await Catalog.retryPendingSharedRequests();
       await renderClientRequestsPage({ skipRetry: true });
-      if (delivery && (delivery.delivered || delivery.pendingNotify || delivery.cloud)) {
-        showToast(delivery.delivered
-          ? t('تم إرسال الطلب', 'Request sent')
-          : t('استلمنا الطلب — جاري تأكيد إشعار الإدارة', 'Request received — confirming admin notify'));
+      if (delivery && delivery.delivered) {
+        showToast(t('تم إرسال الطلب', 'Request sent'));
+      } else if (delivery && (delivery.pendingNotify || delivery.cloud)) {
+        showToast(t('استلمنا الطلب — أكّدوا بريد وصول الطلبات من إعدادات المالك', 'Request received — confirm the notify email in owner Settings'));
+      } else if (row) {
+        showToast(t('الطلب محفوظ — فعّلوا بريد وصول الطلبات من إعدادات المالك ليصلكم الإشعار', 'Request saved — enable the notify email in owner Settings to receive alerts'));
       } else {
-        showToast(t('ما زال الإرسال معلّقاً — حاولوا لاحقاً أو تواصلوا عبر النموذج', 'Send is still pending — try later or use the site form'));
+        showToast(t('ما زال الإرسال معلّقاً — فعّلوا بريد وصول الطلبات أو أعيدوا المحاولة', 'Send is still pending — enable the notify email or try again'));
       }
     } catch (_) {
       showToast(t('تعذّرت إعادة الإرسال', 'Could not resend'));
