@@ -415,6 +415,10 @@ section{padding:100px 0;position:relative;z-index:1}
 .work-item h3{font-size:1.05rem;margin-bottom:8px}
 .work-item p{color:var(--muted);font-size:.9rem}
 
+#work .work-item::after{display:none}
+#work .work-item{padding:0}
+#work .ui-mock{margin-bottom:14px}
+
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:18px}
 .panel{
   background:rgba(247,249,252,.9);border:1.5px solid var(--line);border-radius:var(--radius);
@@ -992,6 +996,379 @@ body.terms-locked,body.auth-locked{overflow:hidden}
   </div>
 </section>
 
+<section id="work">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow" data-ar="نماذج أنظمة" data-en="UI mock cases">نماذج أنظمة</div>
+      <h2 data-ar="واجهات تشغيلية بصيغة نصية" data-en="Operational interfaces as text mocks">واجهات تشغيلية بصيغة نصية</h2>
+      <p data-ar="أمثلة تخطيط — ليست لقطات عملاء حقيقيين." data-en="Layout examples — not real client screenshots.">أمثلة تخطيط — ليست لقطات عملاء حقيقيين.</p>
+    </div>
+    <div class="work-list reveal stagger">
+      <article class="work-item">
+        <div class="ui-mock" aria-hidden="true">
+          <div class="ui-mock-chrome">
+            <span>●</span><span>●</span><span>●</span>
+            <span data-ar="لوحة مخزون" data-en="Inventory board">لوحة مخزون</span>
+          </div>
+          <div class="ui-mock-body">
+            <p data-ar="أصناف · كميات · تنبيهات نقص" data-en="SKUs · Qty · Low-stock alerts">أصناف · كميات · تنبيهات نقص</p>
+            <p data-ar="جدول حركات · فلتر فرع" data-en="Movements table · Branch filter">جدول حركات · فلتر فرع</p>
+          </div>
+        </div>
+        <h3 data-ar="مخزون تشغيلي" data-en="Ops inventory">مخزون تشغيلي</h3>
+        <p data-ar="متابعة الكميات والحركات من شاشة واحدة." data-en="Track quantities and movements in one screen.">متابعة الكميات والحركات من شاشة واحدة.</p>
+      </article>
+      <article class="work-item">
+        <div class="ui-mock" aria-hidden="true">
+          <div class="ui-mock-chrome">
+            <span>●</span><span>●</span><span>●</span>
+            <span data-ar="طلبات العملاء" data-en="Client requests">طلبات العملاء</span>
+          </div>
+          <div class="ui-mock-body">
+            <p data-ar="جديد · قيد التنفيذ · مكتمل" data-en="New · In progress · Done">جديد · قيد التنفيذ · مكتمل</p>
+            <p data-ar="تحديث حالة · ملاحظة داخلية" data-en="Status update · Internal note">تحديث حالة · ملاحظة داخلية</p>
+          </div>
+        </div>
+        <h3 data-ar="متابعة طلبات" data-en="Request tracking">متابعة طلبات</h3>
+        <p data-ar="مسار واضح بدل المحادثات المتفرقة." data-en="A clear path instead of scattered chats.">مسار واضح بدل المحادثات المتفرقة.</p>
+      </article>
+      <article class="work-item">
+        <div class="ui-mock" aria-hidden="true">
+          <div class="ui-mock-chrome">
+            <span>●</span><span>●</span><span>●</span>
+            <span data-ar="لوحة صلاحيات" data-en="Roles board">لوحة صلاحيات</span>
+          </div>
+          <div class="ui-mock-body">
+            <p data-ar="أدوار أقسام · وصول محدود" data-en="Dept roles · Limited access">أدوار أقسام · وصول محدود</p>
+            <p data-ar="تقارير يومية · تصدير" data-en="Daily reports · Export">تقارير يومية · تصدير</p>
+          </div>
+        </div>
+        <h3 data-ar="صلاحيات أقسام" data-en="Department roles">صلاحيات أقسام</h3>
+        <p data-ar="كل قسم يرى ما يخصّه فقط." data-en="Each department sees only what it needs.">كل قسم يرى ما يخصّه فقط.</p>
+      </article>
+      <article class="work-item">
+        <div class="ui-mock" aria-hidden="true">
+          <div class="ui-mock-chrome">
+            <span>●</span><span>●</span><span>●</span>
+            <span data-ar="مدفوعات" data-en="Payments">مدفوعات</span>
+          </div>
+          <div class="ui-mock-body">
+            <p data-ar="عربون · إيصال · حالة سداد" data-en="Deposit · Receipt · Pay status">عربون · إيصال · حالة سداد</p>
+            <p data-ar="بطاقة / Apple Pay عبر Moyasar" data-en="Card / Apple Pay via Moyasar">بطاقة / Apple Pay عبر Moyasar</p>
+          </div>
+        </div>
+        <h3 data-ar="سداد مرتبط بالحساب" data-en="Account-linked pay">سداد مرتبط بالحساب</h3>
+        <p data-ar="الدفع يظهر ضمن سجل العميل." data-en="Payments show in the client record.">الدفع يظهر ضمن سجل العميل.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="band-mist" id="estimate" style="padding:88px 0">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow" data-ar="تقدير أولي" data-en="Quick estimate">تقدير أولي</div>
+      <h2 data-ar="نطاق تكلفة تقريبي قبل الطلب" data-en="Indicative cost range before you request">نطاق تكلفة تقريبي قبل الطلب</h2>
+      <p data-ar="حاسبة إرشادية — العرض النهائي بعد مراجعة النطاق." data-en="Guidance only — final quote after scope review.">حاسبة إرشادية — العرض النهائي بعد مراجعة النطاق.</p>
+    </div>
+    <div class="estimate-box reveal">
+      <form class="form" id="estimateForm" onsubmit="return false">
+        <div class="estimate-grid">
+          <label class="field">
+            <span data-ar="نوع الحل" data-en="Solution type">نوع الحل</span>
+            <select id="estimateType">
+              <option value="web" data-ar="موقع أو لوحة" data-en="Website or dashboard">موقع أو لوحة</option>
+              <option value="inventory" data-ar="تطبيق مخزون" data-en="Inventory app">تطبيق مخزون</option>
+              <option value="system" data-ar="نظام تشغيلي" data-en="Ops system">نظام تشغيلي</option>
+              <option value="institution" data-ar="نسخة للمؤسسات" data-en="Institution edition">نسخة للمؤسسات</option>
+            </select>
+          </label>
+          <label class="field">
+            <span data-ar="حجم النطاق" data-en="Scope size">حجم النطاق</span>
+            <select id="estimateSize">
+              <option value="small" data-ar="صغير" data-en="Small">صغير</option>
+              <option value="medium" data-ar="متوسط" data-en="Medium">متوسط</option>
+              <option value="large" data-ar="واسع" data-en="Large">واسع</option>
+            </select>
+          </label>
+          <label class="field">
+            <span data-ar="الاستضافة" data-en="Hosting">الاستضافة</span>
+            <select id="estimateHosting">
+              <option value="client" data-ar="خوادم العميل" data-en="Client servers">خوادم العميل</option>
+              <option value="stc" data-ar="STC Cloud" data-en="STC Cloud">STC Cloud</option>
+              <option value="aws" data-ar="AWS" data-en="AWS">AWS</option>
+              <option value="hosted" data-ar="ترخيص مستضاف" data-en="Hosted license">ترخيص مستضاف</option>
+            </select>
+          </label>
+        </div>
+        <button type="button" class="btn btn-primary" id="estimateBtn" data-ar="احسب التقدير" data-en="Calculate estimate">احسب التقدير</button>
+        <div class="estimate-out" id="estimateResult" role="status" aria-live="polite" data-ar="اختر الخيارات ثم احسب التقدير التقريبي." data-en="Choose options, then calculate an indicative range.">اختر الخيارات ثم احسب التقدير التقريبي.</div>
+      </form>
+      <p style="margin-top:14px;color:var(--muted);font-size:.9rem">
+        <span data-ar="بعد التقدير: " data-en="After estimating: ">بعد التقدير: </span>
+        <a href="#contact" data-ar="أرسلوا طلباً" data-en="send a request">أرسلوا طلباً</a>
+        <span data-ar=" أو راجعوا " data-en=" or see "> أو راجعوا </span>
+        <a href="#faq-cost" data-ar="نطاقات البدء" data-en="starting ranges">نطاقات البدء</a>
+        <span data-ar="." data-en=".">.</span>
+      </p>
+    </div>
+  </div>
+</section>
+
+<section id="stack">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow" data-ar="التقنيات" data-en="Stack">التقنيات</div>
+      <h2 data-ar="أدوات نبني بها بثبات" data-en="Tools we build with steadily">أدوات نبني بها بثبات</h2>
+      <p data-ar="اختيار تقني حسب الحاجة — لا نقيّد المشروع بمكدس واحد." data-en="Tech chosen per need — not locked to one stack.">اختيار تقني حسب الحاجة — لا نقيّد المشروع بمكدس واحد.</p>
+    </div>
+    <div class="reveal stagger" style="display:flex;flex-wrap:wrap;gap:10px">
+      <span class="service-block" style="padding:10px 16px;margin:0" data-ar="HTML / CSS / JS" data-en="HTML / CSS / JS">HTML / CSS / JS</span>
+      <span class="service-block" style="padding:10px 16px;margin:0" data-ar="واجهات عربية / إنجليزية" data-en="AR / EN UIs">واجهات عربية / إنجليزية</span>
+      <span class="service-block" style="padding:10px 16px;margin:0" data-ar="APIs وREST" data-en="APIs & REST">APIs وREST</span>
+      <span class="service-block" style="padding:10px 16px;margin:0" data-ar="قواعد بيانات علائقية" data-en="Relational databases">قواعد بيانات علائقية</span>
+      <span class="service-block" style="padding:10px 16px;margin:0" data-ar="لوحات تحكم" data-en="Dashboards">لوحات تحكم</span>
+      <span class="service-block" style="padding:10px 16px;margin:0" data-ar="تكاملات دفع وSMS" data-en="Pay & SMS integrations">تكاملات دفع وSMS</span>
+      <span class="service-block" style="padding:10px 16px;margin:0" data-ar="نشر سحابي / محلي" data-en="Cloud / on-prem deploy">نشر سحابي / محلي</span>
+    </div>
+  </div>
+</section>
+
+<section class="band-mist" id="industries" style="padding:88px 0">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow" data-ar="حالات استخدام" data-en="Use cases">حالات استخدام</div>
+      <h2 data-ar="قطاعات نفهم متطلبات تشغيلها" data-en="Sectors whose ops we understand">قطاعات نفهم متطلبات تشغيلها</h2>
+      <p data-ar="أمثلة نطاق — كل مشروع يُصمَّم حسب نشاطكم." data-en="Scope examples — each project is designed for your activity.">أمثلة نطاق — كل مشروع يُصمَّم حسب نشاطكم.</p>
+    </div>
+    <div class="services-grid four reveal stagger">
+      <article class="service-block">
+        <h3 data-ar="تجزئة" data-en="Retail">تجزئة</h3>
+        <p data-ar="مخزون فروع، أصناف، وتنبيهات نقص مع تقارير مبيعات مبسّطة." data-en="Branch stock, SKUs, low-stock alerts, and simple sales reports.">مخزون فروع، أصناف، وتنبيهات نقص مع تقارير مبيعات مبسّطة.</p>
+      </article>
+      <article class="service-block">
+        <h3 data-ar="عيادات" data-en="Clinic">عيادات</h3>
+        <p data-ar="مواعيد، ملفات تشغيلية، وصلاحيات طاقم — دون بيانات حساسة زائدة." data-en="Scheduling, ops files, and staff roles — without excess sensitive data.">مواعيد، ملفات تشغيلية، وصلاحيات طاقم — دون بيانات حساسة زائدة.</p>
+      </article>
+      <article class="service-block">
+        <h3 data-ar="مطاعم" data-en="Restaurant">مطاعم</h3>
+        <p data-ar="قوائم، مخزون مطبخ، وطلبات داخلية مرتبطة بنقاط البيع عند الحاجة." data-en="Menus, kitchen stock, and internal orders linked to POS when needed.">قوائم، مخزون مطبخ، وطلبات داخلية مرتبطة بنقاط البيع عند الحاجة.</p>
+      </article>
+      <article class="service-block">
+        <h3 data-ar="مقاولات" data-en="Contracting">مقاولات</h3>
+        <p data-ar="متابعة مشاريع، مواد، ومهام فرق ميدانية بتقارير حالة." data-en="Projects, materials, and field-team tasks with status reports.">متابعة مشاريع، مواد، ومهام فرق ميدانية بتقارير حالة.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="about">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow" data-ar="قصتنا" data-en="Our story">قصتنا</div>
+      <h2 data-ar="فريق برمجيات وشبكات وأنظمة معلومات في السعودية" data-en="A software, networks, and information-systems team in Saudi Arabia">فريق برمجيات وشبكات وأنظمة معلومات في السعودية</h2>
+      <p data-ar="نبني حلولاً تشغيلية بوضوح في النطاق والسعر والمتابعة — من الطلب حتى التشغيل." data-en="We build operational solutions with clear scope, price, and tracking — from request to launch.">نبني حلولاً تشغيلية بوضوح في النطاق والسعر والمتابعة — من الطلب حتى التشغيل.</p>
+    </div>
+    <div class="services-grid four reveal stagger">
+      <article class="service-block">
+        <h3 data-ar="هندسة برمجيات" data-en="Software engineering">هندسة برمجيات</h3>
+        <p data-ar="تصميم وتنفيذ مواقع وأنظمة ولوحات حسب نطاق مكتوب." data-en="Design and build of sites, systems, and dashboards to a written scope.">تصميم وتنفيذ مواقع وأنظمة ولوحات حسب نطاق مكتوب.</p>
+      </article>
+      <article class="service-block">
+        <h3 data-ar="شبكات وبنية" data-en="Networks & infra">شبكات وبنية</h3>
+        <p data-ar="خيارات نشر على بيئة العميل أو سحابة متفق عليها." data-en="Deploy options on client infra or an agreed cloud.">خيارات نشر على بيئة العميل أو سحابة متفق عليها.</p>
+      </article>
+      <article class="service-block">
+        <h3 data-ar="أنظمة معلومات" data-en="Information systems">أنظمة معلومات</h3>
+        <p data-ar="ربط العمليات والتقارير والصلاحيات في مسار واحد." data-en="Connecting ops, reports, and roles in one path.">ربط العمليات والتقارير والصلاحيات في مسار واحد.</p>
+      </article>
+      <article class="service-block">
+        <h3 data-ar="متابعة عميل" data-en="Client follow-up">متابعة عميل</h3>
+        <p data-ar="حساب عميل لرفع الطلبات وتتبع الحالة حتى التسليم." data-en="A client account to raise requests and track status through delivery.">حساب عميل لرفع الطلبات وتتبع الحالة حتى التسليم.</p>
+      </article>
+    </div>
+    <div class="reveal" style="display:flex;flex-wrap:wrap;gap:10px;margin-top:28px" aria-label="Trust badges">
+      <span class="service-block" style="padding:10px 16px;margin:0" data-ar="نطاق مكتوب قبل البدء" data-en="Written scope before start">نطاق مكتوب قبل البدء</span>
+      <span class="service-block" style="padding:10px 16px;margin:0" data-ar="عربي / إنجليزي" data-en="Arabic / English">عربي / إنجليزي</span>
+      <span class="service-block" style="padding:10px 16px;margin:0" data-ar="مواءمة PDPL عند الاستضافة" data-en="PDPL-minded hosting">مواءمة PDPL عند الاستضافة</span>
+      <span class="service-block" style="padding:10px 16px;margin:0" data-ar="متابعة من لوحة العميل" data-en="Track via client portal">متابعة من لوحة العميل</span>
+    </div>
+  </div>
+</section>
+
+<section class="band-mist" id="ownership" style="padding:88px 0">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow" data-ar="الملكية" data-en="Ownership">الملكية</div>
+      <h2 data-ar="ملكية المخرجات المتفق عليها واضحة" data-en="Agreed deliverables ownership is clear">ملكية المخرجات المتفق عليها واضحة</h2>
+      <p data-ar="نثبّت في العرض ما تنتقل ملكيته لكم وما يبقى ترخيصاً." data-en="The quote states what you own and what stays licensed.">نثبّت في العرض ما تنتقل ملكيته لكم وما يبقى ترخيصاً.</p>
+    </div>
+    <div class="two-col reveal stagger">
+      <article class="service-block">
+        <h3 data-ar="بناء مخصّص على بنيتكم" data-en="Custom build on your infra">بناء مخصّص على بنيتكم</h3>
+        <p data-ar="عند الاتفاق: ملكية المخرجات المتفق عليها تنتقل إليكم بعد السداد والتسليم وفق العقد." data-en="When agreed: ownership of contracted deliverables transfers to you after payment and handover per contract.">عند الاتفاق: ملكية المخرجات المتفق عليها تنتقل إليكم بعد السداد والتسليم وفق العقد.</p>
+      </article>
+      <article class="service-block">
+        <h3 data-ar="ترخيص مستضاف" data-en="Hosted license">ترخيص مستضاف</h3>
+        <p data-ar="تشغيل على بيئة نديرها — تستخدمون النظام بترخيص، والملكية تُحدَّد في العرض." data-en="Runs on our managed environment — you use it under license; ownership is set in the quote.">تشغيل على بيئة نديرها — تستخدمون النظام بترخيص، والملكية تُحدَّد في العرض.</p>
+      </article>
+    </div>
+    <div class="reveal" style="margin-top:24px">
+      <a class="btn btn-primary" href="#contact" data-ar="اسألوا عن خيار الملكية" data-en="Ask about ownership options">اسألوا عن خيار الملكية</a>
+      <a class="btn btn-ghost" href="#faq-ownership" data-ar="تفاصيل في الأسئلة" data-en="Details in FAQ">تفاصيل في الأسئلة</a>
+    </div>
+  </div>
+</section>
+
+<section id="hosting">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow" data-ar="الاستضافة" data-en="Hosting">الاستضافة</div>
+      <h2 data-ar="STC Cloud أو AWS أو خوادمكم" data-en="STC Cloud, AWS, or your servers">STC Cloud أو AWS أو خوادمكم</h2>
+      <p data-ar="نختار بيئة النشر مع مراعاة متطلبات التشغيل ونظام حماية البيانات الشخصية (PDPL)." data-en="We choose the deploy environment with ops needs and PDPL in mind.">نختار بيئة النشر مع مراعاة متطلبات التشغيل ونظام حماية البيانات الشخصية (PDPL).</p>
+    </div>
+    <div class="services-grid reveal stagger">
+      <article class="service-block">
+        <h3 data-ar="STC Cloud" data-en="STC Cloud">STC Cloud</h3>
+        <p data-ar="خيار سحابي محلي مناسب لأحمال تشغيلية داخل المملكة عند الاتفاق." data-en="A local cloud option suited to in-Kingdom workloads when agreed.">خيار سحابي محلي مناسب لأحمال تشغيلية داخل المملكة عند الاتفاق.</p>
+      </article>
+      <article class="service-block">
+        <h3 data-ar="AWS" data-en="AWS">AWS</h3>
+        <p data-ar="مرونة توسّع ومناطق متاحة — حسب تصميم المشروع واتفاق الاستضافة." data-en="Scale flexibility and available regions — per project design and hosting agreement.">مرونة توسّع ومناطق متاحة — حسب تصميم المشروع واتفاق الاستضافة.</p>
+      </article>
+      <article class="service-block">
+        <h3 data-ar="خوادم العميل" data-en="Client servers">خوادم العميل</h3>
+        <p data-ar="نشر على بنيتكم مع تسليم وتشغيل وفق نطاق الصلاحيات المتفق عليه." data-en="Deploy on your infra with handover scoped to agreed access.">نشر على بنيتكم مع تسليم وتشغيل وفق نطاق الصلاحيات المتفق عليه.</p>
+      </article>
+    </div>
+    <div class="reveal" style="display:flex;flex-wrap:wrap;gap:10px;margin-top:28px" aria-label="Hosting trust">
+      <span class="service-block" style="padding:10px 16px;margin:0" data-ar="مراعاة PDPL" data-en="PDPL considered">مراعاة PDPL</span>
+      <span class="service-block" style="padding:10px 16px;margin:0" data-ar="نسخ احتياطي حسب الاتفاق" data-en="Backups per agreement">نسخ احتياطي حسب الاتفاق</span>
+      <span class="service-block" style="padding:10px 16px;margin:0" data-ar="وصول محدود بالأدوار" data-en="Role-limited access">وصول محدود بالأدوار</span>
+    </div>
+  </div>
+</section>
+
+<section class="band-mist" id="integrations" style="padding:88px 0">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow" data-ar="التكاملات" data-en="Integrations">التكاملات</div>
+      <h2 data-ar="ربط دفع، فوترة، ورسائل وأنظمة محاسبية" data-en="Pay, invoicing, SMS, and accounting links">ربط دفع، فوترة، ورسائل وأنظمة محاسبية</h2>
+      <p data-ar="نربط ما يحتاجه التشغيل — حسب نطاق المشروع ومزوّدي الخدمة لديكم." data-en="We connect what ops need — per project scope and your providers.">نربط ما يحتاجه التشغيل — حسب نطاق المشروع ومزوّدي الخدمة لديكم.</p>
+    </div>
+    <div class="services-grid four reveal stagger">
+      <article class="service-block">
+        <h3 data-ar="Moyasar" data-en="Moyasar">Moyasar</h3>
+        <p data-ar="مدفوعات بطاقة وApple Pay ضمن مسار العميل المسجّل." data-en="Card and Apple Pay within the signed-in client flow.">مدفوعات بطاقة وApple Pay ضمن مسار العميل المسجّل.</p>
+      </article>
+      <article class="service-block">
+        <h3 data-ar="مسار فوترة جاهز لـ ZATCA" data-en="ZATCA-ready invoicing path">مسار فوترة جاهز لـ ZATCA</h3>
+        <p data-ar="تهيئة مسار فوترة إلكترونية متوافق عند الحاجة — حسب نطاق الامتثال المتفق عليه." data-en="An e-invoicing path prepared for compliance when needed — per agreed compliance scope.">تهيئة مسار فوترة إلكترونية متوافق عند الحاجة — حسب نطاق الامتثال المتفق عليه.</p>
+      </article>
+      <article class="service-block">
+        <h3 data-ar="SMS" data-en="SMS">SMS</h3>
+        <p data-ar="تنبيهات ورسائل تشغيلية عبر مزوّد SMS توافقون عليه." data-en="Ops alerts and messages via an SMS provider you approve.">تنبيهات ورسائل تشغيلية عبر مزوّد SMS توافقون عليه.</p>
+      </article>
+      <article class="service-block">
+        <h3 data-ar="Odoo / محاسبة عبر API" data-en="Odoo / accounting APIs">Odoo / محاسبة عبر API</h3>
+        <p data-ar="ربط أنظمة محاسبية أو Odoo عبر واجهات برمجة حسب البيانات المطلوبة." data-en="Link accounting systems or Odoo via APIs for the data you need.">ربط أنظمة محاسبية أو Odoo عبر واجهات برمجة حسب البيانات المطلوبة.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="portal">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow" data-ar="لوحة العميل" data-en="Client portal">لوحة العميل</div>
+      <h2 data-ar="متابعة الطلبات من حسابكم موجودة الآن" data-en="Request tracking from your account is live">متابعة الطلبات من حسابكم موجودة الآن</h2>
+      <p data-ar="ارفعوا الطلب، تابعوا الحالة، وادفعوا العربون عند الحاجة — من لوحة واحدة." data-en="Raise a request, track status, and pay a deposit when needed — from one dashboard.">ارفعوا الطلب، تابعوا الحالة، وادفعوا العربون عند الحاجة — من لوحة واحدة.</p>
+    </div>
+    <div class="reveal">
+      <a class="btn btn-primary" href="/dashboard/" data-ar="فتح لوحة العميل" data-en="Open client dashboard">فتح لوحة العميل</a>
+      <a class="btn btn-ghost" href="#contact" data-ar="اطلبوا عرض سعر" data-en="Request a quote">اطلبوا عرض سعر</a>
+    </div>
+  </div>
+</section>
+
+<section class="band-mist" id="demo" style="padding:88px 0">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow" data-ar="تجربة" data-en="Demo">تجربة</div>
+      <h2 data-ar="جرّبوا الوضع التجريبي في اللوحة" data-en="Try the sandbox in the dashboard">جرّبوا الوضع التجريبي في اللوحة</h2>
+      <p data-ar="وضع عميل للتصفح دون تعديل إداري — مناسب لفهم المسار قبل التسجيل الكامل." data-en="Client browse mode without admin edits — useful to understand the path before full signup.">وضع عميل للتصفح دون تعديل إداري — مناسب لفهم المسار قبل التسجيل الكامل.</p>
+    </div>
+    <div class="reveal">
+      <a class="btn btn-primary" href="/dashboard/?demo=1" data-ar="فتح التجربة" data-en="Open sandbox demo">فتح التجربة</a>
+      <a class="btn btn-ghost" href="/dashboard/" data-ar="دخول الحساب" data-en="Account login">دخول الحساب</a>
+    </div>
+  </div>
+</section>
+
+<section id="voices">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow" data-ar="ملاحظات قطاعية" data-en="Sector notes">ملاحظات قطاعية</div>
+      <h2 data-ar="تعليقات توضيحية حسب الدور — ليست شهادات بأسماء" data-en="Illustrative role feedback — not named testimonials">تعليقات توضيحية حسب الدور — ليست شهادات بأسماء</h2>
+      <p data-ar="صياغة ممثّلة لاحتياجات شائعة؛ لا تُنسب لأشخاص أو شركات حقيقية." data-en="Representative wording of common needs; not attributed to real people or companies.">صياغة ممثّلة لاحتياجات شائعة؛ لا تُنسب لأشخاص أو شركات حقيقية.</p>
+    </div>
+    <div class="services-grid reveal stagger">
+      <article class="service-block">
+        <p data-ar="«نحتاج مخزوناً يظهر نقص الأصناف قبل انقطاع البيع — بدون تعقيد على الفريق.»" data-en="“We need stock that flags shortages before sales stop — without overloading the team.”">«نحتاج مخزوناً يظهر نقص الأصناف قبل انقطاع البيع — بدون تعقيد على الفريق.»</p>
+        <h3 style="margin-top:12px;font-size:.95rem;color:var(--muted)" data-ar="— مشغّل تجزئة (تعليق توضيحي)" data-en="— Retail operator (illustrative)">— مشغّل تجزئة (تعليق توضيحي)</h3>
+      </article>
+      <article class="service-block">
+        <p data-ar="«المواعيد والصلاحيات أهم من الواجهة الجميلة — نريد وضوحاً يومياً.»" data-en="“Scheduling and roles matter more than polish — we want day-to-day clarity.”">«المواعيد والصلاحيات أهم من الواجهة الجميلة — نريد وضوحاً يومياً.»</p>
+        <h3 style="margin-top:12px;font-size:.95rem;color:var(--muted)" data-ar="— منسّق عيادة (تعليق توضيحي)" data-en="— Clinic coordinator (illustrative)">— منسّق عيادة (تعليق توضيحي)</h3>
+      </article>
+      <article class="service-block">
+        <p data-ar="«متابعة حالة الطلب من لوحة واحدة أفضل من الرسائل المتفرقة.»" data-en="“Tracking request status in one board beats scattered messages.”">«متابعة حالة الطلب من لوحة واحدة أفضل من الرسائل المتفرقة.»</p>
+        <h3 style="margin-top:12px;font-size:.95rem;color:var(--muted)" data-ar="— مدير تشغيل مقاولات (تعليق توضيحي)" data-en="— Contracting ops lead (illustrative)">— مدير تشغيل مقاولات (تعليق توضيحي)</h3>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="band-mist" id="knowledge" style="padding:88px 0">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow" data-ar="معرفة سريعة" data-en="Quick knowledge">معرفة سريعة</div>
+      <h2 data-ar="ثلاث إجابات قبل بدء المشروع" data-en="Three answers before a project starts">ثلاث إجابات قبل بدء المشروع</h2>
+      <p data-ar="ملخصات قصيرة تربطكم بتفاصيل الأسئلة الشائعة." data-en="Short teasers that link into the FAQ details.">ملخصات قصيرة تربطكم بتفاصيل الأسئلة الشائعة.</p>
+    </div>
+    <div class="services-grid reveal stagger">
+      <a class="service-block" href="#faq-timeline" style="text-decoration:none;color:inherit;display:block">
+        <h3 data-ar="كم تستغرق المشاريع؟" data-en="How long do projects take?">كم تستغرق المشاريع؟</h3>
+        <p data-ar="المدة تعتمد على النطاق — من أسابيع لطلبات محددة إلى أشهر للأنظمة الأوسع." data-en="Timeline depends on scope — weeks for focused work, months for wider systems.">المدة تعتمد على النطاق — من أسابيع لطلبات محددة إلى أشهر للأنظمة الأوسع.</p>
+      </a>
+      <a class="service-block" href="#faq-ownership" style="text-decoration:none;color:inherit;display:block">
+        <h3 data-ar="من يملك الكود والمخرجات؟" data-en="Who owns code and deliverables?">من يملك الكود والمخرجات؟</h3>
+        <p data-ar="خيار بناء على بنيتكم أو ترخيص مستضاف — يُثبَّت في العرض." data-en="Custom on your infra or hosted license — fixed in the quote.">خيار بناء على بنيتكم أو ترخيص مستضاف — يُثبَّت في العرض.</p>
+      </a>
+      <a class="service-block" href="#faq-cost" style="text-decoration:none;color:inherit;display:block">
+        <h3 data-ar="ما حدود التكلفة الابتدائية؟" data-en="What are starting cost ranges?">ما حدود التكلفة الابتدائية؟</h3>
+        <p data-ar="نطاقات تقريبية في الحاسبة والأسئلة — والعرض النهائي بعد المراجعة." data-en="Indicative ranges in the estimator and FAQ — final quote after review.">نطاقات تقريبية في الحاسبة والأسئلة — والعرض النهائي بعد المراجعة.</p>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section id="video">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow" data-ar="جولة مباشرة" data-en="Live walkthrough">جولة مباشرة</div>
+      <h2 data-ar="شاهدوا المسار معنا — بدون رابط فيديو عام" data-en="Walk the path with us — no public video link">شاهدوا المسار معنا — بدون رابط فيديو عام</h2>
+      <p data-ar="نفضّل جولة حيّة على احتياجكم بدل مقطع عام قديم." data-en="We prefer a live walkthrough for your need over a stale public clip.">نفضّل جولة حيّة على احتياجكم بدل مقطع عام قديم.</p>
+    </div>
+    <div class="panel reveal" style="max-width:720px">
+      <h3 data-ar="لوحة مشاهدة — قريباً بجولة مخصّصة" data-en="Watch panel — soon via a tailored walkthrough">لوحة مشاهدة — قريباً بجولة مخصّصة</h3>
+      <p data-ar="اطلبوا موعداً لجولة مباشرة على اللوحة أو نموذج مناسب لنشاطكم." data-en="Request a live walkthrough of the dashboard or a mock suited to your activity.">اطلبوا موعداً لجولة مباشرة على اللوحة أو نموذج مناسب لنشاطكم.</p>
+      <a class="btn btn-primary" href="#contact" data-ar="اطلبوا جولة مباشرة" data-en="Request a live walkthrough">اطلبوا جولة مباشرة</a>
+      <a class="btn btn-ghost" href="/dashboard/?demo=1" data-ar="جرّبوا الوضع التجريبي" data-en="Try the sandbox">جرّبوا الوضع التجريبي</a>
+    </div>
+  </div>
+</section>
+
 <section id="faq">
   <div class="wrap">
     <div class="section-head reveal">
@@ -1027,6 +1404,42 @@ body.terms-locked,body.auth-locked{overflow:hidden}
       <details class="faq-item">
         <summary data-ar="هل تعملون عربي وإنجليزي؟" data-en="Do you support Arabic and English?">هل تعملون عربي وإنجليزي؟</summary>
         <p data-ar="نعم. الموقع وحساب العميل يدعمون التبديل الفوري بين العربية والإنجليزية." data-en="Yes. The site and client account support instant AR/EN switching.">نعم. الموقع وحساب العميل يدعمون التبديل الفوري بين العربية والإنجليزية.</p>
+      </details>
+<details class="faq-item" id="faq-timeline">
+        <summary data-ar="كم تستغرق مدة التنفيذ؟" data-en="What is the typical timeline?">كم تستغرق مدة التنفيذ؟</summary>
+        <p data-ar="طلب صغير: غالباً أيام إلى أسبوعين. موقع أو لوحة متوسطة: عدة أسابيع. نظام واسع أو نسخة مؤسسات: يُحدَّد في العرض بعد تثبيت النطاق." data-en="Small request: often days to two weeks. Mid-size site or dashboard: several weeks. Wide system or Institution edition: set in the quote after scope lock.">طلب صغير: غالباً أيام إلى أسبوعين. موقع أو لوحة متوسطة: عدة أسابيع. نظام واسع أو نسخة مؤسسات: يُحدَّد في العرض بعد تثبيت النطاق.</p>
+      </details>
+      <details class="faq-item" id="faq-support">
+        <summary data-ar="ماذا بعد التسليم — الدعم والصيانة؟" data-en="After delivery — support and maintenance?">ماذا بعد التسليم — الدعم والصيانة؟</summary>
+        <p data-ar="يشمل التسليم دعماً لمدة 30 يوماً للأعطال ضمن النطاق المتفق عليه. بعدها تتوفر عقود صيانة اختيارية (تحديثات، متابعة، وتحسينات محدودة حسب العقد)." data-en="Delivery includes 30 days of support for in-scope defects. After that, optional maintenance contracts cover updates, follow-up, and limited improvements per contract.">يشمل التسليم دعماً لمدة 30 يوماً للأعطال ضمن النطاق المتفق عليه. بعدها تتوفر عقود صيانة اختيارية (تحديثات، متابعة، وتحسينات محدودة حسب العقد).</p>
+      </details>
+      <details class="faq-item" id="faq-ownership">
+        <summary data-ar="من يملك المخرجات والكود؟" data-en="Who owns deliverables and code?">من يملك المخرجات والكود؟</summary>
+        <p data-ar="خياران شائعان: بناء مخصّص على بنيتكم تنتقل فيه ملكية المخرجات المتفق عليها بعد السداد والتسليم، أو ترخيص مستضاف تستخدمون فيه النظام دون نقل ملكية كاملة. التفاصيل تُكتب في العرض." data-en="Two common options: a custom build on your infra where agreed deliverables ownership transfers after payment and handover, or a hosted license where you use the system without full ownership transfer. Details are written in the quote.">خياران شائعان: بناء مخصّص على بنيتكم تنتقل فيه ملكية المخرجات المتفق عليها بعد السداد والتسليم، أو ترخيص مستضاف تستخدمون فيه النظام دون نقل ملكية كاملة. التفاصيل تُكتب في العرض.</p>
+      </details>
+      <details class="faq-item" id="faq-refund">
+        <summary data-ar="هل يمكن الاسترداد حسب المرحلة؟" data-en="Are refunds staged by phase?">هل يمكن الاسترداد حسب المرحلة؟</summary>
+        <p data-ar="المراحل المعتادة: اكتشاف (تحليل ونطاق)، تصميم، ثم بناء. أي استرداد أو تسوية يُطبَّق وفق ما أُنجز ودُفع في كل مرحلة حسب العقد — لا يُفترض استرداد كامل بعد بدء التنفيذ المسلَّم." data-en="Usual phases: discovery (analysis and scope), design, then build. Any refund or settlement follows what was completed and paid per phase under the contract — a full refund is not assumed after delivered work has started.">المراحل المعتادة: اكتشاف (تحليل ونطاق)، تصميم، ثم بناء. أي استرداد أو تسوية يُطبَّق وفق ما أُنجز ودُفع في كل مرحلة حسب العقد — لا يُفترض استرداد كامل بعد بدء التنفيذ المسلَّم.</p>
+      </details>
+      <details class="faq-item" id="faq-hosting">
+        <summary data-ar="أين تُستضاف الحلول؟" data-en="Where are solutions hosted?">أين تُستضاف الحلول؟</summary>
+        <p data-ar="STC Cloud، أو AWS، أو خوادمكم — حسب الاتفاق. نراعي متطلبات التشغيل ونظام حماية البيانات الشخصية (PDPL) عند اختيار البيئة." data-en="STC Cloud, AWS, or your servers — as agreed. We consider ops needs and PDPL when choosing the environment.">STC Cloud، أو AWS، أو خوادمكم — حسب الاتفاق. نراعي متطلبات التشغيل ونظام حماية البيانات الشخصية (PDPL) عند اختيار البيئة.</p>
+      </details>
+      <details class="faq-item" id="faq-nda">
+        <summary data-ar="هل توقّعون اتفاقية سرية (NDA)؟" data-en="Do you sign an NDA?">هل توقّعون اتفاقية سرية (NDA)؟</summary>
+        <p data-ar="نعم عند الحاجة — قبل مشاركة تفاصيل حساسة. اطلبوا ذلك من نموذج التواصل أو حساب العميل." data-en="Yes when needed — before sharing sensitive details. Request it via the contact form or client account.">نعم عند الحاجة — قبل مشاركة تفاصيل حساسة. اطلبوا ذلك من نموذج التواصل أو حساب العميل.</p>
+      </details>
+      <details class="faq-item" id="faq-english-ui">
+        <summary data-ar="هل يمكن واجهة إنجليزية؟" data-en="Can you deliver an English UI?">هل يمكن واجهة إنجليزية؟</summary>
+        <p data-ar="نعم. نقدّم واجهات عربية، أو إنجليزية، أو ثنائية اللغة حسب نطاق المشروع — كما في الموقع وحساب العميل." data-en="Yes. We deliver Arabic, English, or bilingual UIs per project scope — as on the site and client account.">نعم. نقدّم واجهات عربية، أو إنجليزية، أو ثنائية اللغة حسب نطاق المشروع — كما في الموقع وحساب العميل.</p>
+      </details>
+      <details class="faq-item" id="faq-cost">
+        <summary data-ar="ما نطاق التكلفة الابتدائية؟" data-en="What are starting cost ranges?">ما نطاق التكلفة الابتدائية؟</summary>
+        <p>
+          <span data-ar="إرشاد تقريبي (قبل العرض النهائي): مواقع/لوحات صغيرة غالباً من حوالي 4,000–8,000 ر.س؛ أنظمة أو مخزون متوسط من حوالي 12,000–25,000 ر.س؛ نسخة مؤسسات حسب الأقسام والتكاملات. استخدموا " data-en="Indicative only (before a final quote): small sites/dashboards often from about SAR 4,000–8,000; mid inventory/systems from about SAR 12,000–25,000; Institution edition depends on departments and integrations. Use the ">إرشاد تقريبي (قبل العرض النهائي): مواقع/لوحات صغيرة غالباً من حوالي 4,000–8,000 ر.س؛ أنظمة أو مخزون متوسط من حوالي 12,000–25,000 ر.س؛ نسخة مؤسسات حسب الأقسام والتكاملات. استخدموا </span>
+          <a href="#estimate" data-ar="قسم التقدير" data-en="estimate section">قسم التقدير</a>
+          <span data-ar=" ثم اطلبوا عرضاً مكتوباً." data-en=", then request a written quote."> ثم اطلبوا عرضاً مكتوباً.</span>
+        </p>
       </details>
     </div>
   </div>
@@ -2724,6 +3137,33 @@ body.terms-locked,body.auth-locked{overflow:hidden}
     }, { threshold: 0.14, rootMargin: '0px 0px -40px 0px' });
     revealEls.forEach((el) => io.observe(el));
   } else revealEls.forEach((el) => el.classList.add('in'));
+
+  (function estimateWidget(){
+    const btn = document.getElementById('estimateBtn');
+    const out = document.getElementById('estimateResult');
+    if (!btn || !out) return;
+    const base = {
+      web: { small: [4000, 8000], medium: [8000, 16000], large: [16000, 28000] },
+      inventory: { small: [8000, 14000], medium: [12000, 25000], large: [25000, 45000] },
+      system: { small: [10000, 18000], medium: [18000, 35000], large: [35000, 60000] },
+      institution: { small: [18000, 30000], medium: [30000, 55000], large: [55000, 90000] }
+    };
+    const hostAdd = { client: 0, stc: 1500, aws: 2000, hosted: 2500 };
+    const fmt = (n) => n.toLocaleString(currentLang === 'ar' ? 'ar-SA' : 'en-US');
+    btn.addEventListener('click', () => {
+      const type = document.getElementById('estimateType')?.value || 'web';
+      const size = document.getElementById('estimateSize')?.value || 'small';
+      const host = document.getElementById('estimateHosting')?.value || 'client';
+      const range = (base[type] && base[type][size]) || base.web.small;
+      const add = hostAdd[host] || 0;
+      const lo = range[0] + add;
+      const hi = range[1] + Math.round(add * 1.5);
+      out.textContent = t(
+        `نطاق تقريبي: ${fmt(lo)} – ${fmt(hi)} ر.س (إرشادي — العرض النهائي بعد مراجعة النطاق).`,
+        `Indicative range: SAR ${fmt(lo)} – ${fmt(hi)} (guidance — final quote after scope review).`
+      );
+    });
+  })();
 
   const Terms = window.RaseekhTerms;
   const termsOverlay = document.getElementById('termsOverlay');
