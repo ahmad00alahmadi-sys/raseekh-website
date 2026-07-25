@@ -60,10 +60,10 @@
         },
         {
           "@type": "Question",
-          "name": "هل الأسعار ظاهرة على المنتجات؟",
+          "name": "هل الأسعار ظاهرة على الخدمات؟",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "معظم البنود حسب الطلب بعد التأكد من المواصفات والكمية."
+            "text": "معظم البنود حسب الطلب بعد مراجعة النطاق والمتطلبات."
           }
         },
         {
@@ -98,8 +98,6 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;500;600;700&family=Tajawal:wght@500;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap">
 <link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;500;600;700&family=Tajawal:wght@500;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.moyasar.com/mpf/1.12/moyasar.css">
-<script src="https://cdn.moyasar.com/mpf/1.12/moyasar.js"></script>
 <script src="/catalog.js"></script>
 <script src="/terms.js"></script>
 <script src="/activity.js"></script>
@@ -113,6 +111,12 @@
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
+.skip-link{
+  position:absolute;inset-inline-start:12px;top:-48px;z-index:300;
+  background:var(--navy);color:#fff;padding:10px 14px;border-radius:var(--radius);font-weight:700;
+}
+.skip-link:focus{top:12px}
+section[id],#contact{scroll-margin-top:84px}
 body{
   background:var(--bg);color:var(--ink);
   font-family:'Readex Pro','Tajawal',sans-serif;line-height:1.75;overflow-x:hidden;
@@ -511,6 +515,7 @@ body.terms-locked{overflow:hidden}
 </style>
 </head>
 <body>
+<a class="skip-link" href="#services" data-ar="تخطّ إلى المحتوى" data-en="Skip to content">تخطّ إلى المحتوى</a>
 
 <header>
   <nav class="wrap">
@@ -680,9 +685,9 @@ body.terms-locked{overflow:hidden}
 <section id="products">
   <div class="wrap">
     <div class="section-head reveal">
-      <div class="eyebrow" data-ar="خدمات إلكترونية" data-en="Digital services">خدمات إلكترونية</div>
+      <div class="eyebrow" data-ar="الكتالوج" data-en="Catalog">الكتالوج</div>
       <h2 data-ar="اختر خدمة واطلب عرض سعر" data-en="Choose a service and request a quote">اختر خدمة واطلب عرض سعر</h2>
-      <p data-ar="حالياً نعرض خدمات أونلاين فقط. التسعير بعد مراجعة احتياجكم." data-en="We currently list online services only. Pricing after reviewing your need.">حالياً نعرض خدمات أونلاين فقط. التسعير بعد مراجعة احتياجكم.</p>
+      <p data-ar="خدمات رقمية جاهزة للطلب. التسعير بعد مراجعة احتياجكم." data-en="Digital services ready to request. Pricing after we review your need.">خدمات رقمية جاهزة للطلب. التسعير بعد مراجعة احتياجكم.</p>
     </div>
     <div class="products-grid reveal" id="clientProductsGrid"></div>
   </div>
@@ -815,8 +820,8 @@ body.terms-locked{overflow:hidden}
         <p data-ar="اكتبوا احتياجكم من الصفحة أو حساب العميل. نراجع النطاق ونرد خلال يوم عمل." data-en="Send your need from the site or client account. We review scope and reply within one business day.">اكتبوا احتياجكم من الصفحة أو حساب العميل. نراجع النطاق ونرد خلال يوم عمل.</p>
       </details>
       <details class="faq-item">
-        <summary data-ar="هل الأسعار ظاهرة على المنتجات؟" data-en="Are product prices listed?">هل الأسعار ظاهرة على المنتجات؟</summary>
-        <p data-ar="معظم البنود «حسب الطلب» بعد التأكد من المواصفات والكمية." data-en="Most items are “on request” after specs and quantity are clear.">معظم البنود «حسب الطلب» بعد التأكد من المواصفات والكمية.</p>
+        <summary data-ar="هل الأسعار ظاهرة على الخدمات؟" data-en="Are service prices listed?">هل الأسعار ظاهرة على الخدمات؟</summary>
+        <p data-ar="معظم البنود «حسب الطلب» بعد مراجعة النطاق والمتطلبات." data-en="Most items are “on request” after we review scope and requirements.">معظم البنود «حسب الطلب» بعد مراجعة النطاق والمتطلبات.</p>
       </details>
       <details class="faq-item">
         <summary data-ar="ما الفرق بين العميل والمدير؟" data-en="What’s the difference between client and admin?">ما الفرق بين العميل والمدير؟</summary>
@@ -1178,6 +1183,18 @@ body.terms-locked{overflow:hidden}
     applyLang(currentLang);
   })();
 
+  (function bootQuoteParams(){
+    const params = new URLSearchParams(location.search);
+    const type = params.get('type');
+    const msg = params.get('msg') || params.get('message');
+    const allowed = ['maintenance','web-dev','programming','systems','api','system','electronics'];
+    if (!type && !msg) return;
+    requestFromCatalog({
+      type: allowed.includes(type) ? type : 'programming',
+      message: msg || ''
+    });
+  })();
+
   const navToggle = document.getElementById('navToggle');
   const navLinks = document.getElementById('navLinks');
   function setNavOpen(open){
@@ -1426,18 +1443,61 @@ body.terms-locked{overflow:hidden}
   const paymentFormStep = document.getElementById('paymentFormStep');
   const payStatusSuccess = document.getElementById('payStatusSuccess');
   const payStatusFailed = document.getElementById('payStatusFailed');
+  let moyasarLoading = null;
+  function loadMoyasar(){
+    if (typeof Moyasar !== 'undefined') return Promise.resolve();
+    if (moyasarLoading) return moyasarLoading;
+    moyasarLoading = new Promise((resolve, reject) => {
+      if (!document.querySelector('link[data-moyasar]')) {
+        const css = document.createElement('link');
+        css.rel = 'stylesheet';
+        css.href = 'https://cdn.moyasar.com/mpf/1.12/moyasar.css';
+        css.setAttribute('data-moyasar', '1');
+        document.head.appendChild(css);
+      }
+      const s = document.createElement('script');
+      s.src = 'https://cdn.moyasar.com/mpf/1.12/moyasar.js';
+      s.async = true;
+      s.onload = () => resolve();
+      s.onerror = () => reject(new Error('moyasar'));
+      document.head.appendChild(s);
+    });
+    return moyasarLoading;
+  }
+  (function prefetchPayGateway(){
+    const pay = document.getElementById('pay');
+    if (!pay || !('IntersectionObserver' in window)) return;
+    const io = new IntersectionObserver((entries) => {
+      if (entries.some((e) => e.isIntersecting)) {
+        loadMoyasar().catch(() => {});
+        io.disconnect();
+      }
+    }, { rootMargin: '240px 0px' });
+    io.observe(pay);
+  })();
   function showPayStep(step){
     [payDetailsStep, paymentFormStep, payStatusSuccess, payStatusFailed].forEach(el => el.classList.remove('active'));
     step.classList.add('active');
   }
-  document.getElementById('payContinueBtn').addEventListener('click', () => {
+  document.getElementById('payContinueBtn').addEventListener('click', async () => {
     const amount = parseFloat(document.getElementById('payAmount').value);
     const name = document.getElementById('payName').value.trim();
     const msg = document.getElementById('payValidationMsg');
     if (!name) { msg.style.color = 'var(--danger)'; msg.textContent = t('الرجاء كتابة الاسم', 'Please enter your name'); return; }
     if (!amount || amount < 1) { msg.style.color = 'var(--danger)'; msg.textContent = t('أدخل مبلغاً صحيحاً', 'Enter a valid amount'); return; }
+    msg.style.color = 'var(--muted)';
+    msg.textContent = t('جاري تحميل بوابة الدفع...', 'Loading payment gateway...');
+    try { await loadMoyasar(); } catch (_) {
+      msg.style.color = 'var(--danger)';
+      msg.textContent = t('تعذّر تحميل بوابة الدفع', 'Payment gateway failed to load');
+      return;
+    }
+    if (typeof Moyasar === 'undefined') {
+      msg.style.color = 'var(--danger)';
+      msg.textContent = t('تعذّر تحميل بوابة الدفع', 'Payment gateway failed to load');
+      return;
+    }
     msg.textContent = '';
-    if (typeof Moyasar === 'undefined') { msg.style.color = 'var(--danger)'; msg.textContent = t('تعذّر تحميل بوابة الدفع', 'Payment gateway failed to load'); return; }
     document.getElementById('paySummaryAmount').textContent = amount.toFixed(2) + ' SAR';
     document.getElementById('mysr-form').innerHTML = '';
     const note = document.getElementById('payNote').value.trim();

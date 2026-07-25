@@ -1830,9 +1830,17 @@ body.is-admin .client-only{display:none!important}
   function renderOverview(){
     const title = document.getElementById('overviewTitle');
     if (title) {
-      title.textContent = isAdminUser
-        ? t('لوحة الإدارة', 'Admin dashboard')
-        : t('حساب العميل', 'Client area');
+      const first = ((currentUser && currentUser.user_metadata && (currentUser.user_metadata.full_name || currentUser.user_metadata.display_name)) || '')
+        .trim().split(/\s+/)[0];
+      if (isAdminUser) {
+        title.textContent = first
+          ? t('أهلاً ' + first + ' — لوحة الإدارة', 'Hi ' + first + ' — Admin')
+          : t('لوحة الإدارة', 'Admin dashboard');
+      } else {
+        title.textContent = first
+          ? t('أهلاً ' + first, 'Hi ' + first)
+          : t('حساب العميل', 'Client area');
+      }
     }
 
     if (isAdminUser) {
