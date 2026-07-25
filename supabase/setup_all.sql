@@ -1,8 +1,6 @@
 -- One-shot setup for Raseekh cloud sync.
 -- Supabase → SQL → New query → paste this whole file → Run
 
-\i is not available in the SQL editor, so this file inlines the four scripts.
-
 -- ===== client_requests =====
 create table if not exists public.client_requests (
   id text primary key,
