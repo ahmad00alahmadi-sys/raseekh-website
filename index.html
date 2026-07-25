@@ -2213,6 +2213,8 @@ body.pay-paused .pay-public-entry{display:none!important}
   }
 
   function purchaseTermsAccepted(){
+    const TermsApi = window.RaseekhTerms;
+    if (TermsApi && TermsApi.hasPurchaseAcceptedSession && TermsApi.hasPurchaseAcceptedSession()) return true;
     const hero = document.getElementById('heroPurchaseTermsCheck');
     const contact = document.getElementById('contactPurchaseTermsCheck');
     return !!(hero && hero.checked) || !!(contact && contact.checked);
@@ -2223,6 +2225,17 @@ body.pay-paused .pay-public-entry{display:none!important}
       const el = document.getElementById(id);
       if (el) el.checked = on;
     });
+    const TermsApi = window.RaseekhTerms;
+    if (TermsApi && TermsApi.setPurchaseAcceptedSession) {
+      if (on) TermsApi.setPurchaseAcceptedSession(true);
+      else TermsApi.setPurchaseAcceptedSession(false);
+    }
+  }
+  function restorePurchaseTermsChecks(){
+    const TermsApi = window.RaseekhTerms;
+    if (TermsApi && TermsApi.hasPurchaseAcceptedSession && TermsApi.hasPurchaseAcceptedSession()) {
+      syncPurchaseTermsChecks(true);
+    }
   }
   function requirePurchaseTerms(prefer){
     const hero = document.getElementById('heroPurchaseTermsCheck');
@@ -3912,8 +3925,10 @@ body.pay-paused .pay-public-entry{display:none!important}
     if (!el) return;
     el.addEventListener('change', () => {
       if (el.checked) syncPurchaseTermsChecks(true);
+      else syncPurchaseTermsChecks(false);
     });
   });
+  restorePurchaseTermsChecks();
   const closeTermsBtn = document.getElementById('closeTermsOverlayBtn');
   if (closeTermsBtn) closeTermsBtn.addEventListener('click', closeTermsOverlay);
   if (termsOverlay) {

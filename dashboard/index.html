@@ -2936,7 +2936,10 @@ body.is-client .home-bar{
     }
     document.getElementById('requestConfirmNote').value = '';
     const purchaseCheck = document.getElementById('requestPurchaseTermsCheck');
-    if (purchaseCheck) purchaseCheck.checked = false;
+    if (purchaseCheck) {
+      const remembered = !!(Terms && Terms.hasPurchaseAcceptedSession && Terms.hasPurchaseAcceptedSession());
+      purchaseCheck.checked = remembered;
+    }
     const submitBtn = document.querySelector('#requestConfirmForm button[type="submit"]');
     if (submitBtn) {
       submitBtn.disabled = false;
@@ -3005,6 +3008,7 @@ body.is-client .home-bar{
       if (purchaseCheck) try { purchaseCheck.focus(); } catch (_) {}
       return;
     }
+    if (Terms && Terms.setPurchaseAcceptedSession) Terms.setPurchaseAcceptedSession(true);
     const submitToken = ++requestConfirmSubmitToken;
     requestConfirmBusy = true;
     if (submitBtn) {
