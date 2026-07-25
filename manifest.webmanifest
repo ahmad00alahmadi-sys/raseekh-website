@@ -1,0 +1,26 @@
+{
+  "name": "راسخ — إلكترونيات وخدمات تقنية",
+  "short_name": "راسخ",
+  "description": "منتجات إلكترونية، صيانة مواقع، خدمات برمجة، وأنظمة كاملة للعملاء.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#E8EDF2",
+  "theme_color": "#10233A",
+  "lang": "ar",
+  "dir": "rtl",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

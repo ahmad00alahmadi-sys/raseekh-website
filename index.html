@@ -9,9 +9,71 @@
 <meta property="og:title" content="راسخ — إلكترونيات وخدمات تقنية">
 <meta property="og:description" content="منتجات إلكترونية، صيانة مواقع، برمجة، وأنظمة كاملة — بواجهة عربية وإنجليزية.">
 <meta name="theme-color" content="#10233A">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://raseekh.com/">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://raseekh.com/">
+<meta property="og:locale" content="ar_SA">
+<meta property="og:locale:alternate" content="en_US">
+<link rel="manifest" href="/manifest.webmanifest">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='10' fill='%2310233A'/%3E%3Cpath d='M14 44V20h12.2c7.2 0 11.4 3.4 11.4 9.2 0 4.4-2.4 7.4-6.4 8.6L40 44h-7.2l-7.4-11.4H21V44H14zm7-17.2h4.8c3.2 0 5-1.4 5-4s-1.8-4-5-4H21v8z' fill='%23E8A05A'/%3E%3C/svg%3E">
 <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='10' fill='%2310233A'/%3E%3Cpath d='M14 44V20h12.2c7.2 0 11.4 3.4 11.4 9.2 0 4.4-2.4 7.4-6.4 8.6L40 44h-7.2l-7.4-11.4H21V44H14zm7-17.2h4.8c3.2 0 5-1.4 5-4s-1.8-4-5-4H21v8z' fill='%23E8A05A'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://raseekh.com/#org",
+      "name": "راسخ",
+      "alternateName": "Raseekh",
+      "url": "https://raseekh.com/",
+      "description": "منتجات إلكترونية، صيانة مواقع، خدمات برمجة، وتطوير أنظمة ولوحات تحكم للعملاء.",
+      "areaServed": "SA",
+      "knowsLanguage": ["ar", "en"]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://raseekh.com/#website",
+      "url": "https://raseekh.com/",
+      "name": "راسخ",
+      "inLanguage": ["ar", "en"],
+      "publisher": { "@id": "https://raseekh.com/#org" }
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://raseekh.com/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "كيف أحصل على عرض سعر؟",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "اكتبوا احتياجكم من الصفحة أو حساب العميل. نراجع النطاق ونرد خلال يوم عمل."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "هل الأسعار ظاهرة على المنتجات؟",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "لا نعرض أسعاراً وهمية. معظم البنود حسب الطلب بعد التأكد من المواصفات والكمية."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "هل يمكن الدفع أونلاين؟",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "نعم — بعد تسجيل الدخول عبر Moyasar (بطاقة / Apple Pay)."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;500;600;700&family=Tajawal:wght@500;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap">
 <link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;500;600;700&family=Tajawal:wght@500;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -119,6 +181,40 @@ nav{display:flex;align-items:center;justify-content:space-between;gap:16px;paddi
 .hero .btn-primary{background:var(--copper);color:#fff}
 .hero .btn-primary:hover{background:#A84C1E}
 .hero .btn-ghost{border-color:rgba(244,247,250,.45);color:#F4F7FA;background:transparent}
+.hero-quote{
+  margin-top:22px;display:grid;grid-template-columns:minmax(140px,.9fr) 1.6fr auto;gap:10px;max-width:640px;
+  animation:rise .9s .4s cubic-bezier(.2,.75,.2,1) both;
+}
+.hero-quote select,.hero-quote input{
+  width:100%;padding:13px 14px;border:1.5px solid rgba(244,247,250,.28);border-radius:var(--radius);
+  background:rgba(16,35,58,.45);color:#F4F7FA;backdrop-filter:blur(8px);
+}
+.hero-quote select option{color:var(--ink);background:#fff}
+.hero-quote input::placeholder{color:rgba(244,247,250,.55)}
+.hero-quote select:focus,.hero-quote input:focus{outline:2px solid rgba(232,160,90,.45);border-color:var(--sand)}
+.hero-quote .btn{white-space:nowrap}
+.btn.sent{background:var(--ok)!important;pointer-events:none}
+.msg.ok-pulse{animation:okPulse .55s ease}
+@keyframes okPulse{0%{opacity:.35;transform:translateY(4px)}100%{opacity:1;transform:none}}
+.faq-list{display:flex;flex-direction:column;gap:10px;max-width:820px}
+.faq-item{
+  border:1.5px solid var(--line);border-radius:var(--radius);background:rgba(247,249,252,.85);overflow:hidden;
+}
+.faq-item summary{
+  cursor:pointer;list-style:none;padding:16px 18px;font-weight:700;color:var(--navy);
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+}
+.faq-item summary::-webkit-details-marker{display:none}
+.faq-item summary::after{content:"+";color:var(--copper);font-weight:800;font-size:1.2rem}
+.faq-item[open] summary::after{content:"–"}
+.faq-item p{padding:0 18px 16px;color:var(--muted);font-size:.95rem}
+.news-list{display:flex;flex-direction:column;gap:0;border-top:1.5px solid var(--line)}
+.news-item{
+  display:grid;grid-template-columns:110px 1fr;gap:18px;padding:18px 0;border-bottom:1.5px solid var(--line);
+}
+.news-item time{color:var(--copper);font-weight:700;font-size:.86rem}
+.news-item h3{font-size:1.05rem;margin-bottom:4px}
+.news-item p{color:var(--muted);font-size:.92rem}
 @keyframes rise{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:none}}
 
 section{padding:100px 0;position:relative;z-index:1}
@@ -323,6 +419,8 @@ body.lang-en .footer-brand{font-family:'Space Grotesk',sans-serif}
   .hero{min-height:auto}.hero-content{padding:80px 0 64px}
   .hero-stage{display:none}
   .price-card.featured{transform:none}
+  .hero-quote{grid-template-columns:1fr}
+  .news-item{grid-template-columns:1fr;gap:6px}
 }
 @media (max-width:560px){
   .services-grid,.products-grid,.suggest-grid,.pricing-grid,.stats-strip,.trust-row{grid-template-columns:1fr}
@@ -342,7 +440,7 @@ body.lang-en .footer-brand{font-family:'Space Grotesk',sans-serif}
       <a href="#products" data-ar="المنتجات" data-en="Products">المنتجات</a>
       <a href="#suggestions" data-ar="الاقتراحات" data-en="Suggestions">الاقتراحات</a>
       <a href="#pricing" data-ar="الأسعار" data-en="Pricing">الأسعار</a>
-      <a href="#process" data-ar="كيف نعمل" data-en="How we work">كيف نعمل</a>
+      <a href="#faq" data-ar="أسئلة" data-en="FAQ">أسئلة</a>
       <a href="#contact" data-ar="تواصل" data-en="Contact">تواصل</a>
     </div>
     <div class="nav-actions">
@@ -421,9 +519,20 @@ body.lang-en .footer-brand{font-family:'Space Grotesk',sans-serif}
     <div class="brand-mark" data-ar-html='را<span>سخ</span>' data-en-html='Ra<span>seekh</span>'>را<span>سخ</span></div>
     <h1 data-ar="إلكترونيات وبرمجة وأنظمة… من الطلب للتشغيل" data-en="Electronics, coding, and systems — from request to launch">إلكترونيات وبرمجة وأنظمة… من الطلب للتشغيل</h1>
     <p data-ar="اطلب احتياجك الآن، ونرسل عرض سعر حقيقي بعد المراجعة." data-en="Request what you need — we send a real quote after review.">اطلب احتياجك الآن، ونرسل عرض سعر حقيقي بعد المراجعة.</p>
+    <form class="hero-quote" id="heroQuoteForm" autocomplete="off">
+      <select id="heroQuoteType" aria-label="Service type">
+        <option value="electronics" data-ar="إلكترونيات" data-en="Electronics">إلكترونيات</option>
+        <option value="maintenance" data-ar="صيانة مواقع" data-en="Maintenance">صيانة مواقع</option>
+        <option value="programming" data-ar="برمجة" data-en="Programming" selected>برمجة</option>
+        <option value="systems" data-ar="أنظمة" data-en="Systems">أنظمة</option>
+        <option value="system" data-ar="نظام كامل" data-en="Full system">نظام كامل</option>
+      </select>
+      <input type="text" id="heroQuoteMsg" required maxlength="220" data-ar-placeholder="صف طلبكم في سطر واحد" data-en-placeholder="Describe your request in one line" placeholder="صف طلبكم في سطر واحد">
+      <button class="btn btn-primary" type="submit" id="heroQuoteBtn" data-ar="اطلب عرض سعر" data-en="Request a quote">اطلب عرض سعر</button>
+    </form>
     <div class="hero-ctas">
-      <a class="btn btn-primary" href="#contact" data-ar="اطلب عرض سعر" data-en="Request a quote">اطلب عرض سعر</a>
       <a class="btn btn-ghost" href="#pricing" data-ar="قارن الباقات" data-en="Compare plans">قارن الباقات</a>
+      <a class="btn btn-ghost" href="#contact" data-ar="نموذج كامل" data-en="Full form">نموذج كامل</a>
     </div>
   </div>
 </section>
@@ -587,6 +696,39 @@ body.lang-en .footer-brand{font-family:'Space Grotesk',sans-serif}
   </div>
 </section>
 
+<section id="whats-new">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow" data-ar="التحديثات" data-en="Updates">التحديثات</div>
+      <h2 data-ar="ما الجديد في راسخ" data-en="What's new at Raseekh">ما الجديد في راسخ</h2>
+      <p data-ar="تحسينات واضحة على الواجهة وحساب العميل." data-en="Clear upgrades to the site and client account.">تحسينات واضحة على الواجهة وحساب العميل.</p>
+    </div>
+    <div class="news-list reveal">
+      <article class="news-item">
+        <time datetime="2026-07">2026-07</time>
+        <div>
+          <h3 data-ar="عروض سعر بدون أرقام وهمية" data-en="Quotes without fake prices">عروض سعر بدون أرقام وهمية</h3>
+          <p data-ar="الكتالوج يعرض «حسب الطلب» — السعر الحقيقي بعد مراجعة النطاق." data-en="Catalog shows “on request” — real pricing after scope review.">الكتالوج يعرض «حسب الطلب» — السعر الحقيقي بعد مراجعة النطاق.</p>
+        </div>
+      </article>
+      <article class="news-item">
+        <time datetime="2026-07">2026-07</time>
+        <div>
+          <h3 data-ar="حساب عميل ومتابعة الطلبات" data-en="Client account & request tracking">حساب عميل ومتابعة الطلبات</h3>
+          <p data-ar="سجّل دخولك لتتبع الطلبات والدفع عبر Moyasar." data-en="Sign in to track requests and pay via Moyasar.">سجّل دخولك لتتبع الطلبات والدفع عبر Moyasar.</p>
+        </div>
+      </article>
+      <article class="news-item">
+        <time datetime="2026-07">2026-07</time>
+        <div>
+          <h3 data-ar="واجهة عربية / إنجليزية" data-en="Arabic / English interface">واجهة عربية / إنجليزية</h3>
+          <p data-ar="تبديل لغة فوري على الموقع وحساب العميل." data-en="Instant language switch on the site and client area.">تبديل لغة فوري على الموقع وحساب العميل.</p>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
 <section id="process">
   <div class="wrap">
     <div class="section-head reveal">
@@ -614,6 +756,38 @@ body.lang-en .footer-brand{font-family:'Space Grotesk',sans-serif}
         <h3 data-ar="التسليم" data-en="Deliver">التسليم</h3>
         <p data-ar="تشغيل جاهز ودعم بعد الإطلاق." data-en="Ready launch with post-go-live support.">تشغيل جاهز ودعم بعد الإطلاق.</p>
       </div>
+    </div>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow" data-ar="أسئلة شائعة" data-en="FAQ">أسئلة شائعة</div>
+      <h2 data-ar="إجابات سريعة قبل الطلب" data-en="Quick answers before you request">إجابات سريعة قبل الطلب</h2>
+      <p data-ar="ما تحتاجونه لبدء عرض السعر بوضوح." data-en="What you need to start a clear quote.">ما تحتاجونه لبدء عرض السعر بوضوح.</p>
+    </div>
+    <div class="faq-list reveal">
+      <details class="faq-item">
+        <summary data-ar="كيف أحصل على عرض سعر؟" data-en="How do I get a quote?">كيف أحصل على عرض سعر؟</summary>
+        <p data-ar="اكتبوا احتياجكم من الصفحة أو حساب العميل. نراجع النطاق ونرد خلال يوم عمل." data-en="Send your need from the site or client account. We review scope and reply within one business day.">اكتبوا احتياجكم من الصفحة أو حساب العميل. نراجع النطاق ونرد خلال يوم عمل.</p>
+      </details>
+      <details class="faq-item">
+        <summary data-ar="هل الأسعار ظاهرة على المنتجات؟" data-en="Are product prices listed?">هل الأسعار ظاهرة على المنتجات؟</summary>
+        <p data-ar="لا نعرض أسعاراً وهمية. معظم البنود «حسب الطلب» بعد التأكد من المواصفات والكمية." data-en="We don’t show fake prices. Most items are “on request” after specs and quantity are clear.">لا نعرض أسعاراً وهمية. معظم البنود «حسب الطلب» بعد التأكد من المواصفات والكمية.</p>
+      </details>
+      <details class="faq-item">
+        <summary data-ar="ما الفرق بين العميل والمدير؟" data-en="What’s the difference between client and admin?">ما الفرق بين العميل والمدير؟</summary>
+        <p data-ar="العميل يطلب ويتابع. المدير فقط يعدّل الكتالوج والمبيعات والطلبات." data-en="Clients request and track. Only admin edits catalog, sales, and leads.">العميل يطلب ويتابع. المدير فقط يعدّل الكتالوج والمبيعات والطلبات.</p>
+      </details>
+      <details class="faq-item">
+        <summary data-ar="هل يمكن الدفع أونلاين؟" data-en="Can I pay online?">هل يمكن الدفع أونلاين؟</summary>
+        <p data-ar="نعم — بعد تسجيل الدخول عبر Moyasar (بطاقة / Apple Pay)." data-en="Yes — after sign-in via Moyasar (card / Apple Pay).">نعم — بعد تسجيل الدخول عبر Moyasar (بطاقة / Apple Pay).</p>
+      </details>
+      <details class="faq-item">
+        <summary data-ar="هل تعملون عربي وإنجليزي؟" data-en="Do you support Arabic and English?">هل تعملون عربي وإنجليزي؟</summary>
+        <p data-ar="نعم. الموقع وحساب العميل يدعمون التبديل الفوري بين العربية والإنجليزية." data-en="Yes. The site and client account support instant AR/EN switching.">نعم. الموقع وحساب العميل يدعمون التبديل الفوري بين العربية والإنجليزية.</p>
+      </details>
     </div>
   </div>
 </section>
@@ -706,6 +880,7 @@ body.lang-en .footer-brand{font-family:'Space Grotesk',sans-serif}
       <a href="#programming" data-ar="خدمات البرمجة" data-en="Programming">خدمات البرمجة</a>
       <a href="#products" data-ar="المنتجات" data-en="Products">المنتجات</a>
       <a href="#pricing" data-ar="الأسعار" data-en="Pricing">الأسعار</a>
+      <a href="#faq" data-ar="أسئلة" data-en="FAQ">أسئلة</a>
       <a href="#terms" data-ar="الشروط" data-en="Terms">الشروط</a>
       <a href="/dashboard/" data-ar="حساب العميل" data-en="Client area">حساب العميل</a>
     </div>
@@ -769,11 +944,26 @@ body.lang-en .footer-brand{font-family:'Space Grotesk',sans-serif}
   function requestFromCatalog(opts){
     const typeEl = document.getElementById('contactType');
     const msgEl = document.getElementById('contactMsg');
+    const nameEl = document.getElementById('contactName');
     if (opts.type && typeEl) typeEl.value = opts.type;
     if (msgEl) msgEl.value = opts.message || '';
     document.getElementById('contact').scrollIntoView({ behavior: 'smooth', block: 'start' });
-    msgEl && msgEl.focus();
+    const focusEl = (nameEl && !nameEl.value.trim()) ? nameEl : msgEl;
+    focusEl && focusEl.focus();
   }
+
+  document.getElementById('heroQuoteForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const type = document.getElementById('heroQuoteType').value;
+    const message = document.getElementById('heroQuoteMsg').value.trim();
+    if (!message) return;
+    requestFromCatalog({ type, message });
+    const btn = document.getElementById('heroQuoteBtn');
+    const prev = btn.textContent;
+    btn.classList.add('sent');
+    btn.textContent = t('تم — أكمل البيانات', 'Done — finish details');
+    setTimeout(() => { btn.classList.remove('sent'); btn.textContent = prev; applyLang(currentLang); }, 1600);
+  });
 
   function typeForProduct(p){
     const cat = (p.category_en || p.category || '').toLowerCase();
@@ -1030,10 +1220,22 @@ body.lang-en .footer-brand{font-family:'Space Grotesk',sans-serif}
       });
     }
     result.style.color = 'var(--ok)';
+    result.classList.remove('ok-pulse');
+    void result.offsetWidth;
+    result.classList.add('ok-pulse');
     result.textContent = loggedInUser
-      ? t('تم إرسال طلبكم — تابعوه من حساب العميل', 'Request sent — track it in your client account')
-      : t('تم إرسال طلبكم بنجاح', 'Your request was sent successfully');
+      ? t('✓ تم إرسال طلبكم — تابعوه من حساب العميل', '✓ Request sent — track it in your client account')
+      : t('✓ تم إرسال طلبكم بنجاح', '✓ Your request was sent successfully');
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    if (submitBtn) {
+      submitBtn.classList.add('sent');
+      const prev = submitBtn.textContent;
+      submitBtn.textContent = t('تم الإرسال', 'Sent');
+      setTimeout(() => { submitBtn.classList.remove('sent'); submitBtn.textContent = prev; applyLang(currentLang); }, 1800);
+    }
     e.target.reset();
+    const hq = document.getElementById('heroQuoteMsg');
+    if (hq) hq.value = '';
     if (loggedInUser) {
       const fullName = loggedInUser.user_metadata && loggedInUser.user_metadata.full_name;
       const phone = loggedInUser.user_metadata && loggedInUser.user_metadata.phone;
@@ -1088,6 +1290,12 @@ body.lang-en .footer-brand{font-family:'Space Grotesk',sans-serif}
     }, { threshold: 0.14, rootMargin: '0px 0px -40px 0px' });
     revealEls.forEach((el) => io.observe(el));
   } else revealEls.forEach((el) => el.classList.add('in'));
+
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js').catch(() => {});
+    });
+  }
 })();
 </script>
 </body>
