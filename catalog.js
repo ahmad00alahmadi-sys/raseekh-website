@@ -297,8 +297,12 @@
 
   function publishPublicNotify(settings) {
     const webhookUrl = String((settings && settings.webhookUrl) || '').trim();
-    writeJson(PUBLIC_NOTIFY_KEY, { webhookUrl: webhookUrl || '' });
-    return webhookUrl;
+    const notifyEmail = String((settings && settings.notifyEmail) || '').trim().toLowerCase();
+    writeJson(PUBLIC_NOTIFY_KEY, {
+      webhookUrl: webhookUrl || '',
+      notifyEmail: notifyEmail || ''
+    });
+    return { webhookUrl, notifyEmail };
   }
 
   function resolveWebhookUrl() {
@@ -308,6 +312,61 @@
     const publicCfg = readObject(PUBLIC_NOTIFY_KEY);
     const store = readObject('raseekh_admin_store_v1');
     return fromWindow || String(publicCfg.webhookUrl || '').trim() || String(store.webhookUrl || '').trim();
+  }
+
+  function resolveNotifyEmail() {
+    const publicCfg = readObject(PUBLIC_NOTIFY_KEY);
+    const store = readObject('raseekh_admin_store_v1');
+    return String(publicCfg.notifyEmail || store.notifyEmail || '').trim().toLowerCase();
+  }
+
+  function getSupabase() {
+    try {
+      return (global.RaseekhAuth && global.RaseekhAuth.supabase) || null;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  function rowToCloud(row) {
+    return {
+      id: row.id,
+      created_at: row.at || new Date().toISOString(),
+      updated_at: row.updatedAt || null,
+      name: row.name || '',
+      phone: row.phone || '',
+      email: row.email || '',
+      company: row.company || '',
+      title: row.title || '',
+      message: row.message || '',
+      type: row.type || 'site',
+      source: row.source || 'site',
+      status: row.status || 'new',
+      user_id: row.userId || '',
+      fingerprint: row.fingerprint || '',
+      payload: row
+    };
+  }
+
+  function cloudToRow(row) {
+    if (!row) return null;
+    const fromPayload = row.payload && typeof row.payload === 'object' ? row.payload : {};
+    return Object.assign({}, fromPayload, {
+      id: row.id || fromPayload.id,
+      at: row.created_at || fromPayload.at,
+      updatedAt: row.updated_at || fromPayload.updatedAt,
+      name: row.name || fromPayload.name || '',
+      phone: row.phone || fromPayload.phone || '',
+      email: row.email || fromPayload.email || '',
+      company: row.company || fromPayload.company || '',
+      title: row.title || fromPayload.title || '',
+      message: row.message || fromPayload.message || '',
+      type: row.type || fromPayload.type || 'site',
+      source: row.source || fromPayload.source || 'site',
+      status: row.status || fromPayload.status || 'new',
+      userId: row.user_id || fromPayload.userId || '',
+      fingerprint: row.fingerprint || fromPayload.fingerprint || ''
+    });
   }
 
   function notifyRequestWebhook(row) {
@@ -323,6 +382,75 @@
       }).then((res) => !!res && res.ok).catch(() => false);
     } catch (_) {
       return Promise.resolve(false);
+    }
+  }
+
+  function notifyAdminEmail(row) {
+    try {
+      const email = resolveNotifyEmail();
+      if (!email || email.indexOf('@') < 0) return Promise.resolve(false);
+      return fetch('https://formsubmit.co/ajax/' + encodeURIComponent(email), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({
+          _subject: 'طلب جديد من موقع راسخ — ' + (row.title || row.type || 'طلب'),
+          name: row.name || 'عميل',
+          email: row.email || 'no-reply@raseekh.local',
+          phone: row.phone || '',
+          company: row.company || '',
+          type: row.type || '',
+          title: row.title || '',
+          message: row.message || '',
+          source: row.source || '',
+          request_id: row.id || '',
+          _template: 'table'
+        }),
+        mode: 'cors',
+        keepalive: true
+      }).then((res) => !!res && res.ok).catch(() => false);
+    } catch (_) {
+      return Promise.resolve(false);
+    }
+  }
+
+  async function pushRequestToCloud(row) {
+    const sb = getSupabase();
+    if (!sb || !row || !row.id) return false;
+    try {
+      const { error } = await sb.from('client_requests').upsert(rowToCloud(row), { onConflict: 'id' });
+      return !error;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  async function syncSharedRequestsFromCloud() {
+    const sb = getSupabase();
+    if (!sb) return getSharedRequests();
+    try {
+      const { data, error } = await sb
+        .from('client_requests')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(200);
+      if (error || !Array.isArray(data)) return getSharedRequests();
+      const local = getSharedRequests();
+      const byId = new Map();
+      local.forEach((r) => { if (r && r.id) byId.set(r.id, r); });
+      data.map(cloudToRow).filter(Boolean).forEach((r) => {
+        const prev = byId.get(r.id);
+        if (!prev) byId.set(r.id, r);
+        else {
+          const prevTime = new Date(prev.updatedAt || prev.at || 0).getTime();
+          const nextTime = new Date(r.updatedAt || r.at || 0).getTime();
+          byId.set(r.id, nextTime >= prevTime ? Object.assign({}, prev, r) : Object.assign({}, r, prev));
+        }
+      });
+      const merged = Array.from(byId.values()).sort((a, b) => new Date(b.at || 0) - new Date(a.at || 0)).slice(0, 200);
+      writeJson(CLIENT_REQUESTS_KEY, merged);
+      return merged;
+    } catch (_) {
+      return getSharedRequests();
     }
   }
 
@@ -358,7 +486,12 @@
     if (dup) return list.find((x) => x.fingerprint === row.fingerprint) || row;
     list.unshift(row);
     writeJson(CLIENT_REQUESTS_KEY, list.slice(0, 200));
-    notifyRequestWebhook(row);
+    // Deliver outside this browser: cloud row + email + webhook (best-effort)
+    Promise.resolve()
+      .then(() => pushRequestToCloud(row))
+      .then(() => notifyAdminEmail(row))
+      .then(() => notifyRequestWebhook(row))
+      .catch(() => {});
     return row;
   }
 
@@ -376,6 +509,7 @@
     if (idx < 0) return null;
     list[idx] = Object.assign({}, list[idx], { status: status || list[idx].status, updatedAt: new Date().toISOString() });
     saveSharedRequests(list);
+    pushRequestToCloud(list[idx]).catch(() => {});
     return list[idx];
   }
 
@@ -434,9 +568,13 @@
     pruneSuggestions,
     addSharedRequest,
     notifyRequestWebhook,
+    notifyAdminEmail,
     publishPublicNotify,
     resolveWebhookUrl,
+    resolveNotifyEmail,
     requestTypeLabel,
+    pushRequestToCloud,
+    syncSharedRequestsFromCloud,
     getSharedRequests,
     saveSharedRequests,
     updateSharedRequestStatus,

@@ -532,7 +532,12 @@ body.is-admin .client-only{display:none!important}
         </div>
       </div>
       <div class="panel">
-        <h3 data-ar="كل الطلبات الواردة" data-en="All incoming requests">كل الطلبات الواردة</h3>
+        <h3 data-ar="صندوق طلبات العملاء" data-en="Client request inbox">صندوق طلبات العملاء</h3>
+        <p style="color:var(--muted);font-size:.9rem;margin-bottom:8px" data-ar="هنا تصلك طلبات نموذج الموقع + طلبات حساب العميل. لتصل من أي جهاز: فعّل جدول Supabase واحفظ بريد الإشعار من الإعدادات." data-en="Website form and client-account requests land here. To receive them on any device: enable the Supabase table and save a notify email in Settings.">هنا تصلك طلبات نموذج الموقع + طلبات حساب العميل. لتصل من أي جهاز: فعّل جدول Supabase واحفظ بريد الإشعار من الإعدادات.</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
+          <button class="btn btn-ghost" type="button" id="refreshLeadsBtn" data-ar="↻ تحديث من السحابة" data-en="↻ Refresh from cloud">↻ تحديث من السحابة</button>
+          <a class="btn btn-ghost" href="#page-settings" id="gotoNotifySettings" data-ar="إعدادات وصول الطلبات" data-en="Request delivery settings">إعدادات وصول الطلبات</a>
+        </div>
         <div class="lead-filters" id="leadFilters">
           <button type="button" class="active" data-lead-filter="all" data-ar="الكل" data-en="All">الكل</button>
           <button type="button" data-lead-filter="new" data-ar="جديد" data-en="New">جديد</button>
@@ -649,10 +654,14 @@ body.is-admin .client-only{display:none!important}
           <label class="field"><span data-ar="هاتف المتجر" data-en="Store phone">هاتف المتجر</span>
             <input type="text" id="storePhone" data-ar-placeholder="هاتف المتجر" data-en-placeholder="Store phone" placeholder="هاتف المتجر">
           </label>
+          <label class="field"><span data-ar="بريد وصول الطلبات" data-en="Request notify email">بريد وصول الطلبات</span>
+            <input type="email" id="storeNotifyEmail" data-ar-placeholder="you@example.com" data-en-placeholder="you@example.com" placeholder="you@example.com" autocomplete="email">
+          </label>
+          <p style="color:var(--muted);font-size:.82rem" data-ar="عند إرسال طلب جديد يُرسل ملخص إلى هذا البريد (FormSubmit). أول مرة يؤكد FormSubmit البريد برسالة تفعيل." data-en="New requests email a summary here via FormSubmit. The first time, FormSubmit sends an activation email.">عند إرسال طلب جديد يُرسل ملخص إلى هذا البريد (FormSubmit). أول مرة يؤكد FormSubmit البريد برسالة تفعيل.</p>
           <label class="field"><span data-ar="Webhook للطلبات (اختياري)" data-en="Request webhook (optional)">Webhook للطلبات (اختياري)</span>
             <input type="url" id="storeWebhook" data-ar-placeholder="https://hooks.example.com/..." data-en-placeholder="https://hooks.example.com/..." placeholder="https://hooks.example.com/...">
           </label>
-          <p style="color:var(--muted);font-size:.82rem" data-ar="عند إرسال طلب من الموقع أو حساب العميل يُرسل JSON إلى هذا الرابط (Zapier / Make / n8n)." data-en="When a request is sent from the site or client account, JSON is posted here (Zapier / Make / n8n).">عند إرسال طلب من الموقع أو حساب العميل يُرسل JSON إلى هذا الرابط (Zapier / Make / n8n).</p>
+          <p style="color:var(--muted);font-size:.82rem" data-ar="اختياري: Zapier / Make / n8n. وللمزامنة بين الأجهزة شغّل ملف supabase/client_requests.sql مرة واحدة في Supabase." data-en="Optional: Zapier / Make / n8n. For cross-device sync, run supabase/client_requests.sql once in Supabase.">اختياري: Zapier / Make / n8n. وللمزامنة بين الأجهزة شغّل ملف supabase/client_requests.sql مرة واحدة في Supabase.</p>
           <button class="btn btn-primary" type="submit" style="width:fit-content" data-ar="حفظ بيانات المتجر" data-en="Save store details">حفظ بيانات المتجر</button>
         </form>
         <div class="msg" id="storeMsg"></div>
@@ -850,8 +859,8 @@ body.is-admin .client-only{display:none!important}
   }
   function loadStore(){
     migrateLegacyKey('raseekh_store_', ADMIN_STORE_KEY);
-    try { store = Object.assign({ name: 'راسخ', phone: '', webhookUrl: '' }, JSON.parse(localStorage.getItem(ADMIN_STORE_KEY) || '{}')); }
-    catch (_) { store = { name: 'راسخ', phone: '', webhookUrl: '' }; }
+    try { store = Object.assign({ name: 'راسخ', phone: '', webhookUrl: '', notifyEmail: '' }, JSON.parse(localStorage.getItem(ADMIN_STORE_KEY) || '{}')); }
+    catch (_) { store = { name: 'راسخ', phone: '', webhookUrl: '', notifyEmail: '' }; }
   }
   function saveStore(){
     if (!requireAdmin('saveStore')) return;
@@ -882,6 +891,15 @@ body.is-admin .client-only{display:none!important}
     }
     try { clientRequests = JSON.parse(localStorage.getItem(CLIENT_REQUESTS_KEY) || '[]'); }
     catch (_) { clientRequests = []; }
+  }
+  async function refreshClientRequestsFromCloud(){
+    if (Catalog && Catalog.syncSharedRequestsFromCloud) {
+      try { clientRequests = await Catalog.syncSharedRequestsFromCloud(); }
+      catch (_) { loadClientRequests(); }
+    } else {
+      loadClientRequests();
+    }
+    return clientRequests;
   }
   function saveClientRequests(){
     if (Catalog && Catalog.saveSharedRequests) {
@@ -1015,11 +1033,20 @@ body.is-admin .client-only{display:none!important}
     document.getElementById('storePhone').value = store.phone || '';
     const webhookEl = document.getElementById('storeWebhook');
     if (webhookEl) webhookEl.value = store.webhookUrl || '';
+    const notifyEl = document.getElementById('storeNotifyEmail');
+    if (notifyEl) notifyEl.value = store.notifyEmail || '';
     if (isAdminUser && Catalog && Catalog.publishPublicNotify) Catalog.publishPublicNotify(store);
     cart = [];
     applyLang(currentLang);
     startClock();
     switchPage('overview');
+    if (isAdminUser) {
+      refreshClientRequestsFromCloud().then(() => {
+        updateLeadsBadge();
+        renderOverview();
+        if (document.getElementById('page-leads')?.classList.contains('active')) renderAdminLeads();
+      });
+    }
   }
 
   function enterDemo(){
@@ -1315,10 +1342,10 @@ body.is-admin .client-only{display:none!important}
     `).join('');
   }
 
-  function renderAdminLeads(){
+  async function renderAdminLeads(){
     const box = document.getElementById('adminLeadsList');
     if (!box) return;
-    loadClientRequests();
+    await refreshClientRequestsFromCloud();
     let siteLeads = [];
     try { siteLeads = JSON.parse(localStorage.getItem('raseekh_contact_leads') || '[]'); } catch (_) {}
 
@@ -1902,12 +1929,39 @@ body.is-admin .client-only{display:none!important}
     store.name = document.getElementById('storeName').value.trim() || 'راسخ';
     store.phone = document.getElementById('storePhone').value.trim();
     store.webhookUrl = (document.getElementById('storeWebhook').value || '').trim();
+    store.notifyEmail = (document.getElementById('storeNotifyEmail').value || '').trim().toLowerCase();
     saveStore();
     document.getElementById('storeMsg').style.color = 'var(--ok)';
-    document.getElementById('storeMsg').textContent = store.webhookUrl
-      ? t('تم الحفظ — إشعارات الطلبات مفعّلة عبر Webhook', 'Saved — request webhook notifications enabled')
-      : t('تم حفظ بيانات المتجر','Store details saved');
+    if (store.notifyEmail) {
+      document.getElementById('storeMsg').textContent = t(
+        'تم الحفظ — الطلبات الجديدة ستصل لهذا البريد (فعّل FormSubmit من رسالة التأكيد)',
+        'Saved — new requests will email this address (activate FormSubmit from the confirmation mail)'
+      );
+    } else if (store.webhookUrl) {
+      document.getElementById('storeMsg').textContent = t('تم الحفظ — إشعارات الطلبات مفعّلة عبر Webhook', 'Saved — request webhook notifications enabled');
+    } else {
+      document.getElementById('storeMsg').textContent = t('تم حفظ بيانات المتجر','Store details saved');
+    }
   });
+
+  const refreshLeadsBtn = document.getElementById('refreshLeadsBtn');
+  if (refreshLeadsBtn) {
+    refreshLeadsBtn.addEventListener('click', async () => {
+      showToast(t('جاري التحديث...', 'Refreshing...'));
+      await renderAdminLeads();
+      updateLeadsBadge();
+      showToast(t('تم تحديث صندوق الطلبات', 'Request inbox updated'));
+    });
+  }
+  const gotoNotifySettings = document.getElementById('gotoNotifySettings');
+  if (gotoNotifySettings) {
+    gotoNotifySettings.addEventListener('click', (e) => {
+      e.preventDefault();
+      switchPage('settings');
+      const panel = document.getElementById('storeSettingsPanel');
+      if (panel) panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  }
 
   applyLang(currentLang);
 
