@@ -303,6 +303,11 @@ nav{display:flex;align-items:center;justify-content:space-between;gap:16px;paddi
 .hero-quote{
   display:grid;grid-template-columns:minmax(132px,.85fr) 1.55fr auto;gap:10px;max-width:640px;
 }
+.hero-quote .check{
+  grid-column:1 / -1;color:rgba(232,237,242,.82);margin:2px 0 0;
+}
+.hero-quote .check a{color:var(--sand)}
+.hero-quote .check a:hover{color:#fff}
 .hero-quote select,.hero-quote input{
   width:100%;padding:14px 15px;border:1.5px solid rgba(244,247,250,.3);border-radius:var(--radius);
   background:rgba(12,27,46,.55);color:#F4F7FA;backdrop-filter:blur(10px);
@@ -954,6 +959,14 @@ body.pay-paused .pay-public-entry{display:none!important}
         </select>
         <input type="text" id="heroQuoteMsg" required maxlength="220" data-ar-placeholder="صف طلبكم في سطر واحد" data-en-placeholder="Describe your request in one line" placeholder="صف طلبكم في سطر واحد" data-ar-aria="وصف الطلب" data-en-aria="Request summary" aria-label="وصف الطلب">
         <button class="btn btn-primary" type="submit" id="heroQuoteBtn" data-ar="اطلب عرض سعر" data-en="Request a quote">اطلب عرض سعر</button>
+        <label class="check" for="heroPurchaseTermsCheck">
+          <input type="checkbox" id="heroPurchaseTermsCheck" required>
+          <span class="check-text">
+            <span data-ar="أوافق على " data-en="I agree to the ">أوافق على </span>
+            <a href="/terms/#purchase" id="heroPurchaseTermsLink" data-ar="شروط شراء المنتجات" data-en="product purchase terms">شروط شراء المنتجات</a>
+            <span data-ar="." data-en=".">.</span>
+          </span>
+        </label>
       </form>
       <div class="hero-note">
         <a href="#contact" id="heroOpenFullForm" data-ar="أو افتحوا النموذج الكامل" data-en="Or open the full form">أو افتحوا النموذج الكامل</a>
@@ -1866,6 +1879,14 @@ body.pay-paused .pay-public-entry{display:none!important}
         <label class="field"><span data-ar="تفاصيل الطلب" data-en="Request details">تفاصيل الطلب</span>
           <textarea required data-ar-placeholder="صف طلبكم باختصار" data-en-placeholder="Briefly describe your request" placeholder="صف طلبكم باختصار" id="contactMsg"></textarea>
         </label>
+        <label class="check" for="contactPurchaseTermsCheck">
+          <input type="checkbox" id="contactPurchaseTermsCheck" required>
+          <span class="check-text">
+            <span data-ar="أوافق على " data-en="I agree to the ">أوافق على </span>
+            <a href="/terms/#purchase" id="contactPurchaseTermsLink" data-ar="شروط شراء المنتجات" data-en="product purchase terms">شروط شراء المنتجات</a>
+            <span data-ar="." data-en=".">.</span>
+          </span>
+        </label>
         <button class="btn btn-primary" type="submit" data-ar="إرسال الطلب" data-en="Send request">إرسال الطلب</button>
         <div class="msg" id="contactResult" role="status" aria-live="polite"></div>
         <div id="contactSuccessActions" style="display:none;margin-top:12px"></div>
@@ -2191,10 +2212,44 @@ body.pay-paused .pay-public-entry{display:none!important}
     focusEl && focusEl.focus();
   }
 
+  function purchaseTermsAccepted(){
+    const hero = document.getElementById('heroPurchaseTermsCheck');
+    const contact = document.getElementById('contactPurchaseTermsCheck');
+    return !!(hero && hero.checked) || !!(contact && contact.checked);
+  }
+  function syncPurchaseTermsChecks(checked){
+    const on = !!checked;
+    ['heroPurchaseTermsCheck', 'contactPurchaseTermsCheck'].forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) el.checked = on;
+    });
+  }
+  function requirePurchaseTerms(prefer){
+    const hero = document.getElementById('heroPurchaseTermsCheck');
+    const contact = document.getElementById('contactPurchaseTermsCheck');
+    const resultEl = document.getElementById('contactResult');
+    const msg = t('يلزم الموافقة على شروط شراء المنتجات أولاً', 'Please accept the product purchase terms first');
+    if (prefer === 'hero' && hero) {
+      scrollToEl(document.getElementById('heroQuoteForm') || document.querySelector('.hero'), { block: 'center' });
+      try { hero.focus(); } catch (_) {}
+      return;
+    }
+    if (resultEl) {
+      resultEl.style.color = 'var(--danger)';
+      resultEl.textContent = msg;
+    }
+    scrollToEl(document.getElementById('contact'), { block: 'start' });
+    try { contact && contact.focus(); } catch (_) {}
+  }
+
   async function submitCatalogQuote(opts){
     const type = opts.type || 'programming';
     const message = (opts.message || '').trim();
     if (!message) return { ok: false, empty: true };
+    if (!purchaseTermsAccepted()) {
+      requirePurchaseTerms(opts.focusHero ? 'hero' : 'contact');
+      return { ok: false, needPurchaseTerms: true };
+    }
     if (!navigator.onLine) {
       requestFromCatalog({ type, message, company: (opts.company || '').trim() });
       const resultEl = document.getElementById('contactResult');
@@ -2311,13 +2366,22 @@ body.pay-paused .pay-public-entry{display:none!important}
     const type = document.getElementById('heroQuoteType').value;
     const message = document.getElementById('heroQuoteMsg').value.trim();
     if (!message) return;
+    if (!purchaseTermsAccepted()) {
+      requirePurchaseTerms('hero');
+      return;
+    }
+    syncPurchaseTermsChecks(true);
     const btn = document.getElementById('heroQuoteBtn');
     if (btn.getAttribute('aria-busy') === 'true') return;
     btn.disabled = true;
     btn.setAttribute('aria-busy', 'true');
     btn.textContent = t('جاري الإرسال...', 'Sending...');
     try {
-      const result = await submitCatalogQuote({ type, message });
+      const result = await submitCatalogQuote({ type, message, focusHero: true });
+      if (result && result.needPurchaseTerms) {
+        restoreQuoteBtn(btn);
+        return;
+      }
       if (result && result.ok) {
         btn.classList.add('sent');
         btn.textContent = t('تم الإرسال', 'Sent');
@@ -3374,6 +3438,14 @@ body.pay-paused .pay-public-entry{display:none!important}
       document.getElementById('contactMsg').focus();
       return;
     }
+    const purchaseCheck = document.getElementById('contactPurchaseTermsCheck');
+    if (!purchaseCheck || !purchaseCheck.checked) {
+      result.style.color = 'var(--danger)';
+      result.textContent = t('يلزم الموافقة على شروط شراء المنتجات أولاً', 'Please accept the product purchase terms first');
+      if (purchaseCheck) try { purchaseCheck.focus(); } catch (_) {}
+      return;
+    }
+    syncPurchaseTermsChecks(true);
     const companyForSave = segmentVal === 'other'
       ? (otherNoteVal || companyVal)
       : companyVal;
@@ -3792,11 +3864,12 @@ body.pay-paused .pay-public-entry{display:none!important}
   const termsBody = document.getElementById('termsOverlayBody');
   function openTermsOverlay(e, mode){
     if (e) e.preventDefault();
-    const view = mode === 'auth' ? 'auth' : 'full';
+    const view = mode === 'auth' ? 'auth' : (mode === 'purchase' ? 'purchase' : 'full');
     if (Terms && termsBody) {
       const ver = (Terms.TERMS_VERSION || '1') + ':' + view;
       if (termsBody.dataset.ready !== ver) {
         if (view === 'auth' && Terms.renderAuthInto) Terms.renderAuthInto(termsBody);
+        else if (view === 'purchase' && Terms.renderPurchaseInto) Terms.renderPurchaseInto(termsBody);
         else Terms.renderInto(termsBody);
         termsBody.dataset.ready = ver;
         applyLang(currentLang);
@@ -3816,8 +3889,11 @@ body.pay-paused .pay-public-entry{display:none!important}
     termsOverlay.setAttribute('aria-hidden', 'true');
     // Always clear terms lock; auth-locked keeps scroll locked while auth remains open.
     document.body.classList.remove('terms-locked');
-    const link = document.getElementById('registerTermsLink') || document.getElementById('loginTermsLink');
-    if (link && authModal && authModal.classList.contains('open')) {
+    const link = document.getElementById('registerTermsLink')
+      || document.getElementById('loginTermsLink')
+      || document.getElementById('contactPurchaseTermsLink')
+      || document.getElementById('heroPurchaseTermsLink');
+    if (link && ((authModal && authModal.classList.contains('open')) || document.getElementById('contact'))) {
       try { link.focus(); } catch (_) {}
     }
   }
@@ -3827,6 +3903,17 @@ body.pay-paused .pay-public-entry{display:none!important}
   if (regTermsLink) regTermsLink.addEventListener('click', (e) => openTermsOverlay(e, 'auth'));
   const loginTermsLink = document.getElementById('loginTermsLink');
   if (loginTermsLink) loginTermsLink.addEventListener('click', (e) => openTermsOverlay(e, 'auth'));
+  const contactPurchaseTermsLink = document.getElementById('contactPurchaseTermsLink');
+  if (contactPurchaseTermsLink) contactPurchaseTermsLink.addEventListener('click', (e) => openTermsOverlay(e, 'purchase'));
+  const heroPurchaseTermsLink = document.getElementById('heroPurchaseTermsLink');
+  if (heroPurchaseTermsLink) heroPurchaseTermsLink.addEventListener('click', (e) => openTermsOverlay(e, 'purchase'));
+  ['heroPurchaseTermsCheck', 'contactPurchaseTermsCheck'].forEach((id) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('change', () => {
+      if (el.checked) syncPurchaseTermsChecks(true);
+    });
+  });
   const closeTermsBtn = document.getElementById('closeTermsOverlayBtn');
   if (closeTermsBtn) closeTermsBtn.addEventListener('click', closeTermsOverlay);
   if (termsOverlay) {

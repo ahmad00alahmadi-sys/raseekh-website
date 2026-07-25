@@ -76,7 +76,7 @@
             <p data-ar="السداد الإلكتروني العام من الموقع متوقف مؤقتاً. طريقة الدفع والعربون تُتفقان كتابةً في عرض السعر (تحويل، تسجيل يدوي من الإدارة، أو بوابة دفع مرخّصة عند إعادة التفعيل للعملاء المسجّلين). قد يُطلب عربون أو دفعات مرحلية قبل بدء التنفيذ. سياسة الاسترداد حسب المرحلة ما لم يُتفق كتابةً على غير ذلك: (1) مرحلة الفهم/الاكتشاف قبل أي تصميم أو بناء — يُراجع ردّ العربون أو معظمه بعد خصم تكلفة الدراسة إن وُجدت؛ (2) مرحلة التصميم بعد اعتماد مخرجات تصميم — يُحتسب ما أُنجز من التصميم ويُسوّى المتبقي بحسن نية؛ (3) مرحلة البناء بعد بدء التنفيذ المسلَّم — يُحتسب العربون والدفعات ضمن قيمة العمل المنجز ولا يُفترض استرداد كامل. أي إلغاء من طرف راسخ دون سبب عائد للعميل يُعالج بردّ مناسب لما لم يُسلَّم. وتُطبَّق أيضاً بنود «شروط شراء المنتجات» أدناه عند شراء منتجات أو أجهزة." data-en="Public online checkout on the site is temporarily paused. Payment method and deposits are agreed in writing in the quote (transfer, admin-recorded deposit, or a licensed gateway when re-enabled for signed-in clients). Deposits or milestone payments may be required before work begins. Refunds by phase unless otherwise agreed in writing: (1) discovery before any design or build — deposit refund (full or most) after deducting discovery cost if any; (2) design after design deliverables are approved — completed design work is charged and the balance settled in good faith; (3) build after delivered work has started — deposits and payments apply to completed work and a full refund is not assumed. If Raseekh cancels without client cause, an appropriate refund for undelivered work applies. The Product purchase terms below also apply when buying products or hardware.">السداد الإلكتروني العام من الموقع متوقف مؤقتاً. طريقة الدفع والعربون تُتفقان كتابةً في عرض السعر (تحويل، تسجيل يدوي من الإدارة، أو بوابة دفع مرخّصة عند إعادة التفعيل للعملاء المسجّلين). قد يُطلب عربون أو دفعات مرحلية قبل بدء التنفيذ. سياسة الاسترداد حسب المرحلة ما لم يُتفق كتابةً على غير ذلك: (1) مرحلة الفهم/الاكتشاف قبل أي تصميم أو بناء — يُراجع ردّ العربون أو معظمه بعد خصم تكلفة الدراسة إن وُجدت؛ (2) مرحلة التصميم بعد اعتماد مخرجات تصميم — يُحتسب ما أُنجز من التصميم ويُسوّى المتبقي بحسن نية؛ (3) مرحلة البناء بعد بدء التنفيذ المسلَّم — يُحتسب العربون والدفعات ضمن قيمة العمل المنجز ولا يُفترض استرداد كامل. أي إلغاء من طرف راسخ دون سبب عائد للعميل يُعالج بردّ مناسب لما لم يُسلَّم. وتُطبَّق أيضاً بنود «شروط شراء المنتجات» أدناه عند شراء منتجات أو أجهزة.</p>
           </article>
 
-          <article class="terms-item">
+          <article class="terms-item" id="terms-purchase">
             <h3 data-ar="ب) شروط وأحكام شراء المنتجات" data-en="B) Product purchase terms">ب) شروط وأحكام شراء المنتجات</h3>
             <p data-ar="تنطبق البنود التالية عند طلب أو شراء منتجات أو أجهزة عبر راسخ (بما فيها الطلب عبر الحساب أو العرض المكتوب). السداد الإلكتروني العام قد يكون متوقفاً مؤقتاً؛ عندها تُتمّم الطلبات بالاتفاق المكتوب." data-en="The following clauses apply when ordering or buying products or hardware through Raseekh (including via account or written quote). Public online checkout may be temporarily paused; orders are then completed by written agreement.">تنطبق البنود التالية عند طلب أو شراء منتجات أو أجهزة عبر راسخ (بما فيها الطلب عبر الحساب أو العرض المكتوب). السداد الإلكتروني العام قد يكون متوقفاً مؤقتاً؛ عندها تُتمّم الطلبات بالاتفاق المكتوب.</p>
           </article>
@@ -170,6 +170,46 @@
           </article>
           <p style="margin-top:14px;font-size:.9rem;color:var(--muted)">
             <a href="/terms/" data-ar="عرض الشروط الكاملة" data-en="View full terms">عرض الشروط الكاملة</a>
+            <span aria-hidden="true"> · </span>
+            <a href="/privacy/" data-ar="سياسة الخصوصية" data-en="Privacy policy">سياسة الخصوصية</a>
+          </p>
+        </div>
+      </div>
+    `;
+  }
+
+  function purchaseTermsHtml() {
+    return `
+      <div class="terms-doc">
+        <div class="terms-doc-head">
+          <div class="eyebrow" data-ar="الشراء" data-en="Purchase">الشراء</div>
+          <h2 data-ar="شروط شراء المنتجات" data-en="Product purchase terms">شروط شراء المنتجات</h2>
+          <p data-ar="تنطبق هذه البنود عند طلب أو شراء منتجات أو أجهزة أو طلب عرض سعر عبر راسخ (بما فيها الطلب عبر الحساب أو العرض المكتوب)." data-en="These clauses apply when ordering or buying products or hardware, or requesting a quote through Raseekh (including via account or written quote).">تنطبق هذه البنود عند طلب أو شراء منتجات أو أجهزة أو طلب عرض سعر عبر راسخ (بما فيها الطلب عبر الحساب أو العرض المكتوب).</p>
+          <div class="terms-updated" data-ar="آخر تحديث: يوليو 2026" data-en="Last updated: July 2026">آخر تحديث: يوليو 2026</div>
+        </div>
+        <div class="terms-list">
+          <article class="terms-item">
+            <h3 data-ar="1) قبول الطلبات" data-en="1) Order acceptance">1) قبول الطلبات</h3>
+            <p data-ar="إتمام العميل لعملية الطلب وإرسالها عبر الموقع أو الحساب يُعتبر إقراراً وموافقة تامة على الالتزام بهذه الشروط. ويحتفظ راسخ بالحق المطلق في قبول أو رفض أو إلغاء أي طلب لأسباب عدة (مثل: عدم توفر المنتج، وجود خطأ في التسعير، أو عدم اجتياز عملية التحقق الأمني)." data-en="Completing and submitting an order via the site or account is full acknowledgment and acceptance of these terms. Raseekh retains absolute right to accept, reject, or cancel any order for reasons including product unavailability, pricing error, or failed security verification.">إتمام العميل لعملية الطلب وإرسالها عبر الموقع أو الحساب يُعتبر إقراراً وموافقة تامة على الالتزام بهذه الشروط. ويحتفظ راسخ بالحق المطلق في قبول أو رفض أو إلغاء أي طلب لأسباب عدة (مثل: عدم توفر المنتج، وجود خطأ في التسعير، أو عدم اجتياز عملية التحقق الأمني).</p>
+          </article>
+          <article class="terms-item">
+            <h3 data-ar="2) الأسعار والدفع" data-en="2) Prices and payment">2) الأسعار والدفع</h3>
+            <p data-ar="جميع الأسعار المعروضة توضح بالعملة المحلية وتخضع للتحديثات المستمرة. تتم عمليات الدفع عبر وسائل وبوابات الدفع الإلكترونية المعتمدة والآمنة المتاحة، أو عبر طريقة متفق عليها كتابةً عند إيقاف السداد الإلكتروني العام. يتعهد العميل بتقديم بيانات مالية صحيحة عند إتمام السداد، ويتحمل المسؤولية الكاملة عن أي رفض لعملية الدفع يصدر من جهة إصداره البنكية." data-en="All displayed prices are in local currency and may be updated. Payments are made through approved secure electronic methods available on the site, or by a method agreed in writing when public checkout is paused. The client must provide accurate payment details and accepts full responsibility for any bank-side payment decline.">جميع الأسعار المعروضة توضح بالعملة المحلية وتخضع للتحديثات المستمرة. تتم عمليات الدفع عبر وسائل وبوابات الدفع الإلكترونية المعتمدة والآمنة المتاحة، أو عبر طريقة متفق عليها كتابةً عند إيقاف السداد الإلكتروني العام. يتعهد العميل بتقديم بيانات مالية صحيحة عند إتمام السداد، ويتحمل المسؤولية الكاملة عن أي رفض لعملية الدفع يصدر من جهة إصداره البنكية.</p>
+          </article>
+          <article class="terms-item">
+            <h3 data-ar="3) الشحن والتوصيل" data-en="3) Shipping and delivery">3) الشحن والتوصيل</h3>
+            <p data-ar="عند شراء منتجات أو أجهزة قابلة للشحن، يقوم راسخ بتسليم الطلبات لشركات الشحن المعتمدة لتوصيلها إلى العنوان المسجل من قبل العميل (وتوريد الأجهزة المادية متاح حالياً داخل الرياض فقط ما لم يُتفق كتابةً على غير ذلك). المدد الزمنية المذكورة للتوصيل تقديرية، ولا يتحمل راسخ المسؤولية عن أي تأخير ناجم عن شركات الشحن أو الظروف الخارجة عن الإرادة. يتحمل العميل المسؤولية الكاملة عن صحة ودقة عنوان الشحن ورقم التواصل، وفي حال رجوع الشحنة بسبب خطأ أو نقص في البيانات، يتحمل العميل رسوم إعادة الشحن الإضافية." data-en="For shippable products or hardware, Raseekh hands orders to approved carriers for delivery to the address registered by the client (physical hardware supply is currently Riyadh-only unless otherwise agreed in writing). Stated delivery times are estimates; Raseekh is not liable for carrier delays or circumstances beyond its control. The client is fully responsible for accurate shipping address and contact number; if a shipment returns due to wrong or incomplete details, the client bears reshipping fees.">عند شراء منتجات أو أجهزة قابلة للشحن، يقوم راسخ بتسليم الطلبات لشركات الشحن المعتمدة لتوصيلها إلى العنوان المسجل من قبل العميل (وتوريد الأجهزة المادية متاح حالياً داخل الرياض فقط ما لم يُتفق كتابةً على غير ذلك). المدد الزمنية المذكورة للتوصيل تقديرية، ولا يتحمل راسخ المسؤولية عن أي تأخير ناجم عن شركات الشحن أو الظروف الخارجة عن الإرادة. يتحمل العميل المسؤولية الكاملة عن صحة ودقة عنوان الشحن ورقم التواصل، وفي حال رجوع الشحنة بسبب خطأ أو نقص في البيانات، يتحمل العميل رسوم إعادة الشحن الإضافية.</p>
+          </article>
+          <article class="terms-item">
+            <h3 data-ar="4) الاسترجاع والاستبدال" data-en="4) Returns and exchanges">4) الاسترجاع والاستبدال</h3>
+            <p data-ar="يحق للعميل طلب استرجاع أو استبدال المنتجات المادية وفقاً للمدة المحددة في سياسة راسخ أو العرض المكتوب، شريطة أن يكون المنتج بحالته الأصلية، وغير مستخدم، وبغلافه الأصلي مع إرفاق إثبات الشراء. تُستثنى بعض المنتجات من الاسترجاع أو الاستبدال لأسباب صحية أو لطبيعتها الخاصة (مثل المنتجات الرقمية، أو الخدمات البرمجية، أو المنتجات المفصلة أو المجهزة خصيصاً بناءً على طلب العميل)." data-en="Clients may request return or exchange of physical products within the period set in Raseekh policy or the written quote, provided the item is unused, in original condition and packaging, with proof of purchase. Some items are excluded for health or nature reasons (such as digital products, software services, or custom-made items).">يحق للعميل طلب استرجاع أو استبدال المنتجات المادية وفقاً للمدة المحددة في سياسة راسخ أو العرض المكتوب، شريطة أن يكون المنتج بحالته الأصلية، وغير مستخدم، وبغلافه الأصلي مع إرفاق إثبات الشراء. تُستثنى بعض المنتجات من الاسترجاع أو الاستبدال لأسباب صحية أو لطبيعتها الخاصة (مثل المنتجات الرقمية، أو الخدمات البرمجية، أو المنتجات المفصلة أو المجهزة خصيصاً بناءً على طلب العميل).</p>
+          </article>
+          <article class="terms-item">
+            <h3 data-ar="5) حدود المسؤولية في الشراء" data-en="5) Purchase liability limits">5) حدود المسؤولية في الشراء</h3>
+            <p data-ar="لا يتحمل راسخ المسؤولية عن أي أضرار مباشرة أو غير مباشرة ناتجة عن سوء استخدام المنتجات بعد استلامها من قبل العميل، وتقتصر مسؤولية راسخ القصوى المتعلقة بالمنتج محل النزاع على قيمة ذلك المنتج فقط، ما لم ينص الاتفاق الخاص على ضمان أوسع." data-en="Raseekh is not liable for direct or indirect damage from misuse of products after the client receives them. Raseekh’s maximum liability for the disputed product is limited to that product’s value, unless a specific agreement provides a broader warranty.">لا يتحمل راسخ المسؤولية عن أي أضرار مباشرة أو غير مباشرة ناتجة عن سوء استخدام المنتجات بعد استلامها من قبل العميل، وتقتصر مسؤولية راسخ القصوى المتعلقة بالمنتج محل النزاع على قيمة ذلك المنتج فقط، ما لم ينص الاتفاق الخاص على ضمان أوسع.</p>
+          </article>
+          <p style="margin-top:14px;font-size:.9rem;color:var(--muted)">
+            <a href="/terms/#purchase" data-ar="عرض الشروط الكاملة" data-en="View full terms">عرض الشروط الكاملة</a>
             <span aria-hidden="true"> · </span>
             <a href="/privacy/" data-ar="سياسة الخصوصية" data-en="Privacy policy">سياسة الخصوصية</a>
           </p>
@@ -366,6 +406,11 @@
     el.innerHTML = authTermsHtml();
   }
 
+  function renderPurchaseInto(el) {
+    if (!el) return;
+    el.innerHTML = purchaseTermsHtml();
+  }
+
   function renderPrivacyInto(el) {
     if (!el) return;
     el.innerHTML = privacyHtml();
@@ -387,9 +432,11 @@
     TERMS_VERSION,
     termsHtml,
     authTermsHtml,
+    purchaseTermsHtml,
     privacyHtml,
     renderInto,
     renderAuthInto,
+    renderPurchaseInto,
     renderPrivacyInto,
     hasAccepted,
     acceptTerms,
