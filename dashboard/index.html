@@ -84,6 +84,23 @@ a{color:inherit;text-decoration:none}
   background:rgba(176,141,46,.12);border:1px solid rgba(176,141,46,.35);
   border-radius:12px;padding:12px 14px;margin-bottom:14px;color:var(--forest);font-size:.9rem;
 }
+.role-pill{
+  display:inline-block;font-size:.72rem;font-weight:700;padding:3px 8px;border-radius:999px;
+  background:var(--mist);color:var(--forest);margin-top:4px;
+}
+.role-pill.admin{background:rgba(176,141,46,.2);color:#7A5E12}
+body.is-client .admin-only{display:none!important}
+body.is-admin .client-only{display:none!important}
+.browse-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.browse-card{
+  background:#FBFCFA;border:1px solid var(--line);border-radius:12px;padding:14px;
+  display:flex;flex-direction:column;gap:6px;text-align:start;
+}
+.browse-card h4{font-size:1rem}
+.browse-card p{color:var(--muted);font-size:.86rem;flex:1}
+.browse-card .price{font-weight:800;color:var(--forest)}
+@media (max-width:900px){.browse-grid{grid-template-columns:1fr 1fr}}
+@media (max-width:520px){.browse-grid{grid-template-columns:1fr}}
 
 #dashboardView{
   display:none;position:relative;z-index:1;min-height:100vh;
@@ -244,8 +261,8 @@ a{color:inherit;text-decoration:none}
       <div class="logo" data-ar-html='را<em>سخ</em>' data-en-html='Ra<em>seekh</em>'>را<em>سخ</em></div>
       <button class="lang-btn" id="loginLangBtn" type="button">EN</button>
     </div>
-    <p class="sub" data-ar="سجّل دخولك لمتابعة طلباتك ومنتجاتك وخدماتك" data-en="Sign in to manage your requests, products, and services">سجّل دخولك لمتابعة طلباتك ومنتجاتك وخدماتك</p>
-    <div class="demo-banner" data-ar="يمكنك تجربة حساب العميل فوراً بدون تسجيل عبر الزر بالأسفل." data-en="Try the client area instantly without signup using the button below.">يمكنك تجربة حساب العميل فوراً بدون تسجيل عبر الزر بالأسفل.</div>
+    <p class="sub" data-ar="سجّل كعميل لمتابعة الطلبات والاقتراحات. التعديل مخصص لحساب الإدارة فقط." data-en="Sign in as a client to follow requests and suggestions. Editing is admin-only.">سجّل كعميل لمتابعة الطلبات والاقتراحات. التعديل مخصص لحساب الإدارة فقط.</p>
+    <div class="demo-banner" data-ar="التجربة الفورية = وضع عميل (بدون تعديل). الإدارة فقط بحساب خاص." data-en="Instant demo = client mode (no editing). Admin access is a private account only.">التجربة الفورية = وضع عميل (بدون تعديل). الإدارة فقط بحساب خاص.</div>
 
     <div class="tabs" id="authTabsBar">
       <button type="button" class="tab active" id="loginTabBtn" data-ar="دخول" data-en="Login">دخول</button>
@@ -295,9 +312,13 @@ a{color:inherit;text-decoration:none}
     </div>
     <nav class="side-nav">
       <button class="nav-item active" data-page="overview"><span class="ico">◈</span><span data-ar="نظرة عامة" data-en="Overview">نظرة عامة</span></button>
-      <button class="nav-item" data-page="pos"><span class="ico">▣</span><span data-ar="طلبات البيع" data-en="Sales desk">طلبات البيع</span></button>
-      <button class="nav-item" data-page="products"><span class="ico">▤</span><span data-ar="المنتجات" data-en="Products">المنتجات</span></button>
-      <button class="nav-item" data-page="sales"><span class="ico">฿</span><span data-ar="سجل الطلبات" data-en="Orders">سجل الطلبات</span></button>
+      <button class="nav-item client-only" data-page="catalog"><span class="ico">▤</span><span data-ar="الكتالوج" data-en="Catalog">الكتالوج</span></button>
+      <button class="nav-item client-only" data-page="suggestions"><span class="ico">✦</span><span data-ar="الاقتراحات" data-en="Suggestions">الاقتراحات</span></button>
+      <button class="nav-item client-only" data-page="requests"><span class="ico">✉</span><span data-ar="طلباتي" data-en="My requests">طلباتي</span></button>
+      <button class="nav-item admin-only" data-page="pos"><span class="ico">▣</span><span data-ar="طلبات البيع" data-en="Sales desk">طلبات البيع</span></button>
+      <button class="nav-item admin-only" data-page="products"><span class="ico">▤</span><span data-ar="إدارة المنتجات" data-en="Manage products">إدارة المنتجات</span></button>
+      <button class="nav-item admin-only" data-page="sales"><span class="ico">฿</span><span data-ar="سجل الطلبات" data-en="Orders">سجل الطلبات</span></button>
+      <button class="nav-item admin-only" data-page="leads"><span class="ico">✉</span><span data-ar="طلبات العملاء" data-en="Client requests">طلبات العملاء</span></button>
       <button class="nav-item" data-page="settings"><span class="ico">⚙</span><span data-ar="الإعدادات" data-en="Settings">الإعدادات</span></button>
     </nav>
     <div class="side-foot">
@@ -306,6 +327,7 @@ a{color:inherit;text-decoration:none}
         <div>
           <div class="user-email" id="dashUserLabel">—</div>
           <div class="user-status" id="dashUserStatus" data-ar="متصل" data-en="Online">متصل</div>
+          <div class="role-pill" id="dashRolePill">عميل</div>
         </div>
       </div>
       <button class="btn btn-ghost" style="width:100%" id="logoutBtn" data-ar="تسجيل الخروج" data-en="Log out">تسجيل الخروج</button>
@@ -322,40 +344,120 @@ a{color:inherit;text-decoration:none}
     <div class="page active" id="page-overview">
       <div class="topbar">
         <div>
-          <h1 data-ar="أهلاً بعودتك" data-en="Welcome back">أهلاً بعودتك</h1>
+          <h1 id="overviewTitle" data-ar="أهلاً بعودتك" data-en="Welcome back">أهلاً بعودتك</h1>
           <div class="crumb">راسخ <span>/</span> <span data-ar="نظرة عامة" data-en="Overview">نظرة عامة</span></div>
         </div>
-        <button class="btn btn-primary" data-goto="pos" data-ar="فتح طلبات البيع" data-en="Open sales desk">فتح طلبات البيع</button>
+        <button class="btn btn-primary admin-only" data-goto="pos" data-ar="فتح طلبات البيع" data-en="Open sales desk">فتح طلبات البيع</button>
+        <button class="btn btn-primary client-only" data-goto="catalog" data-ar="تصفح الكتالوج" data-en="Browse catalog">تصفح الكتالوج</button>
       </div>
-      <div class="stats">
+
+      <div class="client-note client-only" data-ar="أنت في حساب عميل: يمكنك الطلب والمتابعة فقط. إضافة/تعديل المنتجات مخصص لحساب الإدارة." data-en="You are in a client account: request and follow only. Add/edit products is admin-only.">أنت في حساب عميل: يمكنك الطلب والمتابعة فقط. إضافة/تعديل المنتجات مخصص لحساب الإدارة.</div>
+
+      <div class="stats admin-only">
         <div class="stat"><div class="label" data-ar="المنتجات" data-en="Products">المنتجات</div><div class="value" id="statProducts">0</div><div class="hint" data-ar="في الكتالوج" data-en="in catalog">في الكتالوج</div></div>
         <div class="stat"><div class="label" data-ar="مبيعات اليوم" data-en="Today sales">مبيعات اليوم</div><div class="value" id="statToday">0</div><div class="hint">SAR</div></div>
         <div class="stat"><div class="label" data-ar="عدد الفواتير" data-en="Receipts">عدد الفواتير</div><div class="value" id="statReceipts">0</div><div class="hint" data-ar="اليوم" data-en="today">اليوم</div></div>
         <div class="stat"><div class="label" data-ar="مخزون منخفض" data-en="Low stock">مخزون منخفض</div><div class="value" id="statLow">0</div><div class="hint" data-ar="يحتاج تزويد" data-en="needs restock">يحتاج تزويد</div></div>
       </div>
-      <div class="grid-2">
+      <div class="stats client-only">
+        <div class="stat"><div class="label" data-ar="منتجات متاحة" data-en="Available items">منتجات متاحة</div><div class="value" id="statClientProducts">0</div><div class="hint" data-ar="للطلب" data-en="to request">للطلب</div></div>
+        <div class="stat"><div class="label" data-ar="اقتراحات" data-en="Suggestions">اقتراحات</div><div class="value" id="statClientSuggestions">0</div><div class="hint" data-ar="جاهزة" data-en="ready">جاهزة</div></div>
+        <div class="stat"><div class="label" data-ar="طلباتي" data-en="My requests">طلباتي</div><div class="value" id="statClientRequests">0</div><div class="hint" data-ar="مرسلة" data-en="sent">مرسلة</div></div>
+        <div class="stat"><div class="label" data-ar="الحساب" data-en="Account">الحساب</div><div class="value" style="font-size:1.1rem" data-ar="عميل" data-en="Client">عميل</div><div class="hint" data-ar="بدون صلاحية تعديل" data-en="no edit access">بدون صلاحية تعديل</div></div>
+      </div>
+
+      <div class="grid-2 admin-only">
         <div class="panel">
           <h3 data-ar="آخر المبيعات" data-en="Recent sales">آخر المبيعات</h3>
           <div id="recentSales"></div>
         </div>
         <div class="panel">
-          <h3 data-ar="اختصارات" data-en="Shortcuts">اختصارات</h3>
+          <h3 data-ar="اختصارات الإدارة" data-en="Admin shortcuts">اختصارات الإدارة</h3>
           <div style="display:flex;flex-direction:column;gap:10px">
             <button class="btn btn-primary" data-goto="pos" data-ar="طلب بيع جديد" data-en="New sales order">طلب بيع جديد</button>
-            <button class="btn btn-ghost" data-goto="products" data-ar="إدارة المنتجات الإلكترونية" data-en="Manage electronics">إدارة المنتجات الإلكترونية</button>
-            <button class="btn btn-ghost" data-goto="sales" data-ar="سجل الطلبات" data-en="Order history">سجل الطلبات</button>
-            <a class="btn btn-ghost" href="/#suggestions" data-ar="عرض اقتراحات العميل" data-en="View client suggestions">عرض اقتراحات العميل</a>
+            <button class="btn btn-ghost" data-goto="products" data-ar="إدارة المنتجات" data-en="Manage products">إدارة المنتجات</button>
+            <button class="btn btn-ghost" data-goto="leads" data-ar="طلبات العملاء" data-en="Client requests">طلبات العملاء</button>
+            <a class="btn btn-ghost" href="/#products" data-ar="معاينة واجهة العميل" data-en="Preview client view">معاينة واجهة العميل</a>
           </div>
         </div>
       </div>
+
+      <div class="grid-2 client-only">
+        <div class="panel">
+          <h3 data-ar="اختصارات العميل" data-en="Client shortcuts">اختصارات العميل</h3>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <button class="btn btn-primary" data-goto="catalog" data-ar="تصفح المنتجات والخدمات" data-en="Browse products & services">تصفح المنتجات والخدمات</button>
+            <button class="btn btn-ghost" data-goto="suggestions" data-ar="عرض الاقتراحات" data-en="View suggestions">عرض الاقتراحات</button>
+            <button class="btn btn-ghost" data-goto="requests" data-ar="متابعة طلباتي" data-en="Track my requests">متابعة طلباتي</button>
+            <a class="btn btn-ghost" href="/#pay" data-ar="سداد عربون" data-en="Pay a deposit">سداد عربون</a>
+          </div>
+        </div>
+        <div class="panel">
+          <h3 data-ar="آخر طلباتي" data-en="Latest requests">آخر طلباتي</h3>
+          <div id="clientRecentRequests"></div>
+        </div>
+      </div>
+
       <div class="panel" style="margin-top:16px">
-        <h3 data-ar="اقتراحات العميل" data-en="Client suggestions">اقتراحات العميل</h3>
-        <p style="color:var(--muted);font-size:.9rem;margin:6px 0 12px" data-ar="هذه الباقات تظهر للعميل في صفحة الموقع مع المنتجات." data-en="These packages appear for clients on the public website with the products.">هذه الباقات تظهر للعميل في صفحة الموقع مع المنتجات.</p>
+        <h3 data-ar="اقتراحات جاهزة" data-en="Ready suggestions">اقتراحات جاهزة</h3>
+        <p style="color:var(--muted);font-size:.9rem;margin:6px 0 12px" data-ar="الباقات التالية ظاهرة للعميل. الإدارة فقط تعدّل الكتالوج." data-en="These packages are visible to clients. Only admin can edit the catalog.">الباقات التالية ظاهرة للعميل. الإدارة فقط تعدّل الكتالوج.</p>
         <div class="suggest-mini" id="overviewSuggestions"></div>
       </div>
     </div>
 
-    <div class="page" id="page-pos">
+    <div class="page client-only" id="page-catalog">
+      <div class="topbar">
+        <div>
+          <h1 data-ar="الكتالوج" data-en="Catalog">الكتالوج</h1>
+          <div class="crumb">راسخ <span>/</span> <span data-ar="عرض فقط" data-en="View only">عرض فقط</span></div>
+        </div>
+      </div>
+      <div class="client-note" data-ar="عرض فقط — لا يمكنك تعديل الأسعار أو المخزون من حساب العميل." data-en="View only — clients cannot edit prices or stock.">عرض فقط — لا يمكنك تعديل الأسعار أو المخزون من حساب العميل.</div>
+      <div class="panel">
+        <input type="search" id="clientCatalogSearch" style="margin-bottom:14px;padding:12px 14px;width:100%;border:1px solid var(--line);border-radius:10px" data-ar-placeholder="ابحث..." data-en-placeholder="Search..." placeholder="ابحث...">
+        <div class="browse-grid" id="clientCatalogGrid"></div>
+      </div>
+    </div>
+
+    <div class="page client-only" id="page-suggestions">
+      <div class="topbar">
+        <div>
+          <h1 data-ar="الاقتراحات" data-en="Suggestions">الاقتراحات</h1>
+          <div class="crumb">راسخ <span>/</span> <span data-ar="باقات مقترحة" data-en="Suggested packages">باقات مقترحة</span></div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="suggest-mini" id="clientSuggestionsList"></div>
+      </div>
+    </div>
+
+    <div class="page client-only" id="page-requests">
+      <div class="topbar">
+        <div>
+          <h1 data-ar="طلباتي" data-en="My requests">طلباتي</h1>
+          <div class="crumb">راسخ <span>/</span> <span data-ar="متابعة" data-en="Tracking">متابعة</span></div>
+        </div>
+      </div>
+      <div class="panel">
+        <h3 data-ar="الطلبات المرسلة" data-en="Submitted requests">الطلبات المرسلة</h3>
+        <div id="clientRequestsList" style="margin-top:12px"></div>
+      </div>
+    </div>
+
+    <div class="page admin-only" id="page-leads">
+      <div class="topbar">
+        <div>
+          <h1 data-ar="طلبات العملاء" data-en="Client requests">طلبات العملاء</h1>
+          <div class="crumb">راسخ <span>/</span> <span data-ar="إدارة" data-en="Admin">إدارة</span></div>
+        </div>
+      </div>
+      <div class="panel">
+        <h3 data-ar="كل الطلبات الواردة" data-en="All incoming requests">كل الطلبات الواردة</h3>
+        <div id="adminLeadsList" style="margin-top:12px"></div>
+      </div>
+    </div>
+
+    <div class="page admin-only" id="page-pos">
       <div class="topbar">
         <div>
           <h1 data-ar="طلبات البيع" data-en="Sales desk">طلبات البيع</h1>
@@ -385,15 +487,15 @@ a{color:inherit;text-decoration:none}
       </div>
     </div>
 
-    <div class="page" id="page-products">
+    <div class="page admin-only" id="page-products">
       <div class="topbar">
         <div>
-          <h1 data-ar="المنتجات" data-en="Products">المنتجات</h1>
-          <div class="crumb">راسخ <span>/</span> <span data-ar="المنتجات" data-en="Products">المنتجات</span></div>
+          <h1 data-ar="إدارة المنتجات" data-en="Manage products">إدارة المنتجات</h1>
+          <div class="crumb">راسخ <span>/</span> <span data-ar="إدارة فقط" data-en="Admin only">إدارة فقط</span></div>
         </div>
         <button class="btn btn-primary" id="addProductBtn" data-ar="+ منتج جديد" data-en="+ New product">+ منتج جديد</button>
       </div>
-      <div class="client-note" data-ar="كل المنتجات هنا تُعرض للعميل تلقائياً في صفحة الموقع مع قسم الاقتراحات." data-en="Every product here is shown to clients on the website along with the suggestions section.">كل المنتجات هنا تُعرض للعميل تلقائياً في صفحة الموقع مع قسم الاقتراحات.</div>
+      <div class="client-note" data-ar="هذه الصفحة للإدارة فقط. أي تعديل هنا يظهر للعملاء في الموقع وفي حساب العميل." data-en="Admin only. Changes here appear to clients on the website and in the client area.">هذه الصفحة للإدارة فقط. أي تعديل هنا يظهر للعملاء في الموقع وفي حساب العميل.</div>
       <div class="panel">
         <div class="toolbar">
           <h3 data-ar="كتالوج المنتجات" data-en="Product catalog">كتالوج المنتجات</h3>
@@ -420,7 +522,7 @@ a{color:inherit;text-decoration:none}
       </div>
     </div>
 
-    <div class="page" id="page-sales">
+    <div class="page admin-only" id="page-sales">
       <div class="topbar">
         <div>
           <h1 data-ar="المبيعات" data-en="Sales">المبيعات</h1>
@@ -451,14 +553,18 @@ a{color:inherit;text-decoration:none}
         </form>
         <div class="msg" id="settingsMsg"></div>
       </div>
-      <div class="panel">
-        <h3 data-ar="بيانات المتجر" data-en="Store details">بيانات المتجر</h3>
+      <div class="panel admin-only" id="storeSettingsPanel">
+        <h3 data-ar="بيانات المتجر (إدارة)" data-en="Store details (admin)">بيانات المتجر (إدارة)</h3>
         <form class="form" id="storeForm" style="max-width:480px">
           <input type="text" id="storeName" data-ar-placeholder="اسم المتجر" data-en-placeholder="Store name" placeholder="اسم المتجر">
           <input type="text" id="storePhone" data-ar-placeholder="هاتف المتجر" data-en-placeholder="Store phone" placeholder="هاتف المتجر">
           <button class="btn btn-primary" type="submit" style="width:fit-content" data-ar="حفظ بيانات المتجر" data-en="Save store details">حفظ بيانات المتجر</button>
         </form>
         <div class="msg" id="storeMsg"></div>
+      </div>
+      <div class="panel client-only">
+        <h3 data-ar="صلاحية الحساب" data-en="Account permission">صلاحية الحساب</h3>
+        <p style="color:var(--muted);font-size:.95rem" data-ar="حسابك عميل: طلب ومتابعة فقط. لا يمكن تعديل المنتجات أو الأسعار أو المخزون." data-en="Your account is a client: request and track only. You cannot edit products, prices, or stock.">حسابك عميل: طلب ومتابعة فقط. لا يمكن تعديل المنتجات أو الأسعار أو المخزون.</p>
       </div>
     </div>
   </main>
@@ -519,17 +625,19 @@ a{color:inherit;text-decoration:none}
   let currentLang = localStorage.getItem('raseekh_lang') || 'ar';
   let currentUser = null;
   let isDemo = false;
+  let isAdminUser = false;
   let products = [];
   let sales = [];
+  let clientRequests = [];
   let cart = [];
   let store = { name: 'راسخ', phone: '' };
   let editingProductId = null;
   let lastSale = null;
   let toastTimer;
   const Catalog = window.RaseekhCatalog;
-  const DEFAULT_PRODUCTS = Catalog
-    ? Catalog.DEFAULT_PRODUCTS.map(p => ({ ...p }))
-    : [];
+  const ADMIN_SALES_KEY = 'raseekh_admin_sales_v1';
+  const ADMIN_STORE_KEY = 'raseekh_admin_store_v1';
+  const CLIENT_REQUESTS_KEY = 'raseekh_all_client_requests_v1';
 
   function t(ar, en){ return currentLang === 'ar' ? ar : en; }
   function uid(){ return 'id-' + Date.now() + '-' + Math.random().toString(36).slice(2,7); }
@@ -551,37 +659,83 @@ a{color:inherit;text-decoration:none}
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => el.classList.remove('show'), 2800);
   }
-  function storageKey(base){ return 'raseekh_' + base + '_' + (currentUser?.id || 'guest'); }
+  function requireAdmin(action){
+    if (isAdminUser) return true;
+    showToast(t('التعديل متاح لحساب الإدارة فقط', 'Editing is available for the admin account only'));
+    if (action) console.warn('Blocked client action:', action);
+    return false;
+  }
+  function detectAdmin(user, demo){
+    if (demo) return false;
+    if (Auth && typeof Auth.isAdmin === 'function') return Auth.isAdmin(user);
+    const email = String(user?.email || '').trim().toLowerCase();
+    return email === 'ahmad00alahmadi@gmail.com';
+  }
+  function applyRoleUI(){
+    document.body.classList.toggle('is-admin', isAdminUser);
+    document.body.classList.toggle('is-client', !isAdminUser);
+    const pill = document.getElementById('dashRolePill');
+    if (pill) {
+      pill.textContent = isAdminUser ? t('إدارة', 'Admin') : t('عميل', 'Client');
+      pill.classList.toggle('admin', isAdminUser);
+    }
+    document.getElementById('pageTitle').textContent = isAdminUser
+      ? t('لوحة الإدارة — راسخ', 'Admin dashboard — Raseekh')
+      : t('حساب العميل — راسخ', 'Client area — Raseekh');
+  }
 
   function loadProducts(){
-    try {
-      const raw = localStorage.getItem(storageKey('products'));
-      products = raw ? JSON.parse(raw) : DEFAULT_PRODUCTS.map(p => ({ ...p }));
-    } catch (_) { products = DEFAULT_PRODUCTS.map(p => ({ ...p })); }
     if (Catalog) {
-      products = Catalog.ensureCatalogVersion(products);
-      saveProducts();
-      publishToClient();
+      products = Catalog.loadAdminProducts();
+      return;
     }
+    products = [];
   }
   function saveProducts(){
-    localStorage.setItem(storageKey('products'), JSON.stringify(products));
-    publishToClient();
-  }
-  function publishToClient(){
-    if (!Catalog) return;
-    Catalog.publishClientCatalog(products, Catalog.DEFAULT_SUGGESTIONS);
+    if (!requireAdmin('saveProducts')) return;
+    if (Catalog) Catalog.saveAdminProducts(products);
   }
   function loadSales(){
-    try { sales = JSON.parse(localStorage.getItem(storageKey('sales')) || '[]'); }
+    try { sales = JSON.parse(localStorage.getItem(ADMIN_SALES_KEY) || '[]'); }
     catch (_) { sales = []; }
   }
-  function saveSales(){ localStorage.setItem(storageKey('sales'), JSON.stringify(sales)); }
+  function saveSales(){
+    if (!requireAdmin('saveSales')) return;
+    localStorage.setItem(ADMIN_SALES_KEY, JSON.stringify(sales));
+  }
   function loadStore(){
-    try { store = Object.assign({ name: 'راسخ', phone: '' }, JSON.parse(localStorage.getItem(storageKey('store')) || '{}')); }
+    try { store = Object.assign({ name: 'راسخ', phone: '' }, JSON.parse(localStorage.getItem(ADMIN_STORE_KEY) || '{}')); }
     catch (_) { store = { name: 'راسخ', phone: '' }; }
   }
-  function saveStore(){ localStorage.setItem(storageKey('store'), JSON.stringify(store)); }
+  function saveStore(){
+    if (!requireAdmin('saveStore')) return;
+    localStorage.setItem(ADMIN_STORE_KEY, JSON.stringify(store));
+  }
+  function loadClientRequests(){
+    try { clientRequests = JSON.parse(localStorage.getItem(CLIENT_REQUESTS_KEY) || '[]'); }
+    catch (_) { clientRequests = []; }
+  }
+  function saveClientRequests(){
+    localStorage.setItem(CLIENT_REQUESTS_KEY, JSON.stringify(clientRequests.slice(0, 200)));
+  }
+  function myRequests(){
+    const email = String(currentUser?.email || '').toLowerCase();
+    const id = currentUser?.id || '';
+    return clientRequests.filter(r => r.userId === id || (email && r.email === email));
+  }
+  function addClientRequest(payload){
+    const row = Object.assign({
+      id: uid(),
+      at: new Date().toISOString(),
+      userId: currentUser?.id || '',
+      email: currentUser?.email || '',
+      name: currentUser?.user_metadata?.full_name || '',
+      status: 'new'
+    }, payload);
+    clientRequests.unshift(row);
+    saveClientRequests();
+    return row;
+  }
 
   function applyLang(lang){
     currentLang = lang;
@@ -603,10 +757,10 @@ a{color:inherit;text-decoration:none}
     });
     document.getElementById('loginLangBtn').textContent = lang === 'ar' ? 'EN' : 'AR';
     document.getElementById('dashLangBtn').textContent = lang === 'ar' ? 'EN' : 'AR';
-    document.getElementById('pageTitle').textContent = lang === 'ar' ? 'لوحة التحكم — راسخ' : 'Dashboard — Raseekh';
     if (isDemo) {
       document.getElementById('dashUserStatus').textContent = t('وضع تجريبي', 'Demo mode');
     }
+    applyRoleUI();
     renderAll();
     fillCategoryFilter();
   }
@@ -638,7 +792,9 @@ a{color:inherit;text-decoration:none}
 
   function showLogin(){
     isDemo = false;
+    isAdminUser = false;
     setDemoFlag(false);
+    document.body.classList.remove('is-admin', 'is-client');
     document.getElementById('loginView').classList.remove('hidden');
     document.getElementById('dashboardView').classList.remove('active');
   }
@@ -646,6 +802,7 @@ a{color:inherit;text-decoration:none}
   function showDashboard(user, demo){
     currentUser = user;
     isDemo = !!demo;
+    isAdminUser = detectAdmin(user, isDemo);
     setDemoFlag(isDemo);
 
     document.getElementById('loginView').classList.add('hidden');
@@ -663,6 +820,7 @@ a{color:inherit;text-decoration:none}
     loadProducts();
     loadSales();
     loadStore();
+    loadClientRequests();
     document.getElementById('storeName').value = store.name || '';
     document.getElementById('storePhone').value = store.phone || '';
     cart = [];
@@ -675,14 +833,23 @@ a{color:inherit;text-decoration:none}
     showDashboard({
       id: 'demo-user',
       email: 'demo@raseekh.local',
-      user_metadata: { full_name: t('زائر تجريبي','Demo guest') }
+      user_metadata: { full_name: t('زائر تجريبي','Demo guest'), role: 'client' }
     }, true);
-    showToast(t('دخلت وضع التجربة','Entered demo mode'));
-    switchPage('pos');
+    showToast(t('دخلت كعميل تجريبي (بدون تعديل)','Entered as demo client (no editing)'));
+    switchPage('catalog');
   }
   document.getElementById('demoBtn').addEventListener('click', enterDemo);
 
   function switchPage(page){
+    const adminPages = { pos:1, products:1, sales:1, leads:1 };
+    const clientPages = { catalog:1, suggestions:1, requests:1 };
+    if (adminPages[page] && !isAdminUser) {
+      showToast(t('هذه الصفحة للإدارة فقط', 'This page is admin-only'));
+      page = 'overview';
+    }
+    if (clientPages[page] && isAdminUser) {
+      // admin can still open client pages if needed — allow catalog preview via site
+    }
     document.querySelectorAll('.nav-item').forEach(b => b.classList.toggle('active', b.dataset.page === page));
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     const target = document.getElementById('page-' + page);
@@ -691,6 +858,10 @@ a{color:inherit;text-decoration:none}
     if (page === 'products') renderProducts();
     if (page === 'sales') renderSales();
     if (page === 'overview') renderOverview();
+    if (page === 'catalog') renderClientCatalog();
+    if (page === 'suggestions') renderClientSuggestionsPage();
+    if (page === 'requests') renderClientRequestsPage();
+    if (page === 'leads') renderAdminLeads();
   }
   document.querySelectorAll('.nav-item').forEach(btn => btn.addEventListener('click', () => switchPage(btn.dataset.page)));
   document.querySelectorAll('[data-goto]').forEach(el => el.addEventListener('click', () => switchPage(el.dataset.goto)));
@@ -781,10 +952,18 @@ a{color:inherit;text-decoration:none}
 
   function renderAll(){
     if (!currentUser) return;
+    applyRoleUI();
     renderOverview();
-    renderProducts();
-    renderPos();
-    renderSales();
+    if (isAdminUser) {
+      renderProducts();
+      renderPos();
+      renderSales();
+      renderAdminLeads();
+    } else {
+      renderClientCatalog();
+      renderClientSuggestionsPage();
+      renderClientRequestsPage();
+    }
   }
 
   function todaySales(){
@@ -802,42 +981,222 @@ a{color:inherit;text-decoration:none}
   }
 
   function renderOverview(){
-    const todays = todaySales();
-    const total = todays.reduce((s, x) => s + (x.total || 0), 0);
-    document.getElementById('statProducts').textContent = products.length;
-    document.getElementById('statToday').textContent = total.toFixed(0);
-    document.getElementById('statReceipts').textContent = todays.length;
-    document.getElementById('statLow').textContent = products.filter(p => p.kind !== 'service' && p.stock <= 5).length;
-    const holder = document.getElementById('recentSales');
-    const recent = sales.slice(0, 5);
-    if (!recent.length) {
-      holder.innerHTML = `<div class="empty">${t('لا توجد مبيعات بعد — ابدأ من نقطة البيع','No sales yet — start from POS')}</div>`;
+    const title = document.getElementById('overviewTitle');
+    if (title) {
+      title.textContent = isAdminUser
+        ? t('لوحة الإدارة', 'Admin dashboard')
+        : t('حساب العميل', 'Client area');
+    }
+
+    if (isAdminUser) {
+      const todays = todaySales();
+      const total = todays.reduce((s, x) => s + (x.total || 0), 0);
+      document.getElementById('statProducts').textContent = products.length;
+      document.getElementById('statToday').textContent = total.toFixed(0);
+      document.getElementById('statReceipts').textContent = todays.length;
+      document.getElementById('statLow').textContent = products.filter(p => p.kind !== 'service' && p.stock <= 5).length;
+      const holder = document.getElementById('recentSales');
+      const recent = sales.slice(0, 5);
+      if (!recent.length) {
+        holder.innerHTML = `<div class="empty">${t('لا توجد مبيعات بعد — ابدأ من نقطة البيع','No sales yet — start from POS')}</div>`;
+      } else {
+        holder.innerHTML = recent.map(s => `
+          <div class="sale-row">
+            <div>
+              <div>${s.method === 'card' ? t('بطاقة','Card') : t('نقداً','Cash')} · ${s.items} ${t('صنف','items')}</div>
+              <div style="color:var(--muted);font-size:.78rem">${new Date(s.at).toLocaleString(currentLang === 'ar' ? 'ar-SA' : 'en-US')}</div>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center">
+              <strong>${money(s.total)}</strong>
+              <button class="btn btn-ghost" style="padding:6px 10px;font-size:.78rem" data-view-sale="${s.id}">${t('إيصال','Receipt')}</button>
+            </div>
+          </div>
+        `).join('');
+      }
     } else {
-      holder.innerHTML = recent.map(s => `
-        <div class="sale-row">
-          <div>
-            <div>${s.method === 'card' ? t('بطاقة','Card') : t('نقداً','Cash')} · ${s.items} ${t('صنف','items')}</div>
-            <div style="color:var(--muted);font-size:.78rem">${new Date(s.at).toLocaleString(currentLang === 'ar' ? 'ar-SA' : 'en-US')}</div>
+      const mine = myRequests();
+      const suggestions = Catalog ? Catalog.getClientSuggestions() : [];
+      document.getElementById('statClientProducts').textContent = products.length;
+      document.getElementById('statClientSuggestions').textContent = suggestions.length;
+      document.getElementById('statClientRequests').textContent = mine.length;
+      const recentBox = document.getElementById('clientRecentRequests');
+      if (!mine.length) {
+        recentBox.innerHTML = `<div class="empty">${t('لا توجد طلبات بعد — اطلب من الكتالوج أو الاقتراحات','No requests yet — order from catalog or suggestions')}</div>`;
+      } else {
+        recentBox.innerHTML = mine.slice(0, 5).map(r => `
+          <div class="sale-row">
+            <div>
+              <div>${escapeHtml(r.title || r.message || t('طلب','Request'))}</div>
+              <div style="color:var(--muted);font-size:.78rem">${new Date(r.at).toLocaleString(currentLang === 'ar' ? 'ar-SA' : 'en-US')}</div>
+            </div>
+            <strong>${escapeHtml(r.status === 'new' ? t('جديد','New') : r.status)}</strong>
           </div>
-          <div style="display:flex;gap:8px;align-items:center">
-            <strong>${money(s.total)}</strong>
-            <button class="btn btn-ghost" style="padding:6px 10px;font-size:.78rem" data-view-sale="${s.id}">${t('إيصال','Receipt')}</button>
-          </div>
-        </div>
-      `).join('');
+        `).join('');
+      }
     }
 
     const suggestBox = document.getElementById('overviewSuggestions');
     if (suggestBox && Catalog) {
-      const suggestions = Catalog.DEFAULT_SUGGESTIONS;
+      const suggestions = Catalog.getClientSuggestions();
       suggestBox.innerHTML = suggestions.map((s) => {
-        const title = Catalog.label(s, currentLang, 'title', 'title_en');
+        const titleText = Catalog.label(s, currentLang, 'title', 'title_en');
         const items = Catalog.suggestionItems(s, products, currentLang).join(currentLang === 'ar' ? '، ' : ', ');
         const totalAmt = Catalog.suggestionTotal(s, products);
-        return `<div class="item"><strong>${escapeHtml(title)}</strong><span>${escapeHtml(items)}</span><div style="margin-top:6px;font-weight:700;color:var(--forest)">${escapeHtml(money(totalAmt))}</div></div>`;
+        const action = isAdminUser
+          ? ''
+          : `<button class="btn btn-primary" style="margin-top:8px;padding:8px 12px;font-size:.82rem" data-client-suggest="${escapeHtml(s.id)}">${escapeHtml(t('اطلب الاقتراح','Request suggestion'))}</button>`;
+        return `<div class="item"><strong>${escapeHtml(titleText)}</strong><span>${escapeHtml(items)}</span><div style="margin-top:6px;font-weight:700;color:var(--forest)">${escapeHtml(money(totalAmt))}</div>${action}</div>`;
       }).join('');
     }
   }
+
+  function renderClientCatalog(){
+    const grid = document.getElementById('clientCatalogGrid');
+    if (!grid) return;
+    const q = (document.getElementById('clientCatalogSearch')?.value || '').trim().toLowerCase();
+    const list = products.filter(p => {
+      const blob = (p.name + ' ' + (p.name_en || '') + ' ' + (p.category || '')).toLowerCase();
+      return !q || blob.includes(q);
+    });
+    if (!list.length) {
+      grid.innerHTML = `<div class="empty" style="grid-column:1/-1">${t('لا توجد منتجات','No products')}</div>`;
+      return;
+    }
+    grid.innerHTML = list.map(p => `
+      <article class="browse-card">
+        <div style="color:var(--brass);font-size:.75rem;font-weight:700">${escapeHtml(categoryLabel(p))}</div>
+        <h4>${escapeHtml(productLabel(p))}</h4>
+        <p>${escapeHtml((currentLang === 'en' && p.desc_en) ? p.desc_en : (p.desc || t('متاح للطلب','Available to order')))}</p>
+        <div class="price">${money(p.price)}</div>
+        <button type="button" class="btn btn-ghost" style="margin-top:6px" data-client-product="${escapeHtml(p.id)}">${escapeHtml(t('اطلب هذا','Request this'))}</button>
+      </article>
+    `).join('');
+  }
+
+  function renderClientSuggestionsPage(){
+    const box = document.getElementById('clientSuggestionsList');
+    if (!box || !Catalog) return;
+    const suggestions = Catalog.getClientSuggestions();
+    box.innerHTML = suggestions.map((s) => {
+      const titleText = Catalog.label(s, currentLang, 'title', 'title_en');
+      const desc = Catalog.label(s, currentLang, 'desc', 'desc_en');
+      const items = Catalog.suggestionItems(s, products, currentLang).join(currentLang === 'ar' ? '، ' : ', ');
+      const totalAmt = Catalog.suggestionTotal(s, products);
+      return `<div class="item">
+        <strong>${escapeHtml(titleText)}</strong>
+        <span>${escapeHtml(desc)}</span>
+        <span>${escapeHtml(items)}</span>
+        <div style="margin-top:6px;font-weight:700;color:var(--forest)">${escapeHtml(money(totalAmt))}</div>
+        <button class="btn btn-primary" style="margin-top:8px;padding:8px 12px;font-size:.82rem" data-client-suggest="${escapeHtml(s.id)}">${escapeHtml(t('اطلب هذا الاقتراح','Request this suggestion'))}</button>
+      </div>`;
+    }).join('');
+  }
+
+  function renderClientRequestsPage(){
+    const box = document.getElementById('clientRequestsList');
+    if (!box) return;
+    const mine = myRequests();
+    if (!mine.length) {
+      box.innerHTML = `<div class="empty">${t('لا توجد طلبات مرسلة بعد','No submitted requests yet')}</div>`;
+      return;
+    }
+    box.innerHTML = mine.map(r => `
+      <div class="sale-row">
+        <div>
+          <div><strong>${escapeHtml(r.title || t('طلب','Request'))}</strong></div>
+          <div style="color:var(--muted);font-size:.86rem;white-space:pre-wrap">${escapeHtml(r.message || '')}</div>
+          <div style="color:var(--muted);font-size:.78rem;margin-top:4px">${new Date(r.at).toLocaleString(currentLang === 'ar' ? 'ar-SA' : 'en-US')}</div>
+        </div>
+        <strong>${escapeHtml(r.status === 'new' ? t('جديد','New') : r.status)}</strong>
+      </div>
+    `).join('');
+  }
+
+  function renderAdminLeads(){
+    const box = document.getElementById('adminLeadsList');
+    if (!box) return;
+    let siteLeads = [];
+    try { siteLeads = JSON.parse(localStorage.getItem('raseekh_contact_leads') || '[]'); } catch (_) {}
+    const fromClients = clientRequests.map(r => ({
+      at: r.at,
+      name: r.name || r.email || '—',
+      source: t('حساب عميل','Client account'),
+      message: (r.title ? r.title + ' — ' : '') + (r.message || '')
+    }));
+    const fromSite = siteLeads.map(r => ({
+      at: r.at,
+      name: r.name || '—',
+      source: t('نموذج الموقع','Website form'),
+      message: (r.type ? '[' + r.type + '] ' : '') + (r.message || '')
+    }));
+    const all = fromClients.concat(fromSite).sort((a, b) => new Date(b.at) - new Date(a.at));
+    if (!all.length) {
+      box.innerHTML = `<div class="empty">${t('لا توجد طلبات واردة بعد','No incoming requests yet')}</div>`;
+      return;
+    }
+    box.innerHTML = all.slice(0, 80).map(r => `
+      <div class="sale-row">
+        <div>
+          <div><strong>${escapeHtml(r.name)}</strong> · <span style="color:var(--muted)">${escapeHtml(r.source)}</span></div>
+          <div style="color:var(--muted);font-size:.86rem;white-space:pre-wrap">${escapeHtml(r.message)}</div>
+          <div style="color:var(--muted);font-size:.78rem;margin-top:4px">${new Date(r.at).toLocaleString(currentLang === 'ar' ? 'ar-SA' : 'en-US')}</div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function requestProductAsClient(productId){
+    if (isAdminUser) {
+      showToast(t('أنت في حساب الإدارة — استخدم إدارة المنتجات للتعديل', 'You are admin — use product management to edit'));
+      return;
+    }
+    const p = products.find(x => x.id === productId);
+    if (!p) return;
+    addClientRequest({
+      type: 'product',
+      title: productLabel(p),
+      message: t('طلب منتج/خدمة: ', 'Product/service request: ') + productLabel(p) + ' — ' + money(p.price),
+      productId: p.id,
+      price: p.price
+    });
+    showToast(t('تم إرسال طلبك', 'Your request was sent'));
+    renderAll();
+    switchPage('requests');
+  }
+
+  function requestSuggestionAsClient(suggestionId){
+    if (isAdminUser) return;
+    if (!Catalog) return;
+    const s = Catalog.getClientSuggestions().find(x => x.id === suggestionId);
+    if (!s) return;
+    const titleText = Catalog.label(s, currentLang, 'title', 'title_en');
+    const items = Catalog.suggestionItems(s, products, currentLang);
+    const totalAmt = Catalog.suggestionTotal(s, products);
+    addClientRequest({
+      type: 'suggestion',
+      title: titleText,
+      message: t('طلب اقتراح: ', 'Suggestion request: ') + titleText + '\n' + items.join(currentLang === 'ar' ? '، ' : ', ') + '\n' + money(totalAmt),
+      suggestionId: s.id,
+      price: totalAmt
+    });
+    showToast(t('تم إرسال طلب الاقتراح', 'Suggestion request sent'));
+    renderAll();
+    switchPage('requests');
+  }
+
+  document.getElementById('clientCatalogSearch')?.addEventListener('input', renderClientCatalog);
+  document.getElementById('clientCatalogGrid')?.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-client-product]');
+    if (btn) requestProductAsClient(btn.dataset.clientProduct);
+  });
+  document.getElementById('clientSuggestionsList')?.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-client-suggest]');
+    if (btn) requestSuggestionAsClient(btn.dataset.clientSuggest);
+  });
+  document.getElementById('overviewSuggestions')?.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-client-suggest]');
+    if (btn) requestSuggestionAsClient(btn.dataset.clientSuggest);
+  });
 
   document.getElementById('recentSales').addEventListener('click', (e) => {
     const btn = e.target.closest('[data-view-sale]');
@@ -881,6 +1240,7 @@ a{color:inherit;text-decoration:none}
 
   document.getElementById('productSearch').addEventListener('input', renderProducts);
   document.getElementById('productsBody').addEventListener('click', (e) => {
+    if (!requireAdmin('productsActions')) return;
     const edit = e.target.closest('[data-edit]');
     const del = e.target.closest('[data-del]');
     const restock = e.target.closest('[data-restock]');
@@ -899,6 +1259,7 @@ a{color:inherit;text-decoration:none}
   });
 
   function openProductModal(id){
+    if (!requireAdmin('openProductModal')) return;
     editingProductId = id || null;
     const modal = document.getElementById('productModal');
     const title = document.getElementById('productModalTitle');
@@ -917,12 +1278,16 @@ a{color:inherit;text-decoration:none}
     }
     modal.classList.add('open');
   }
-  document.getElementById('addProductBtn').addEventListener('click', () => openProductModal(null));
+  document.getElementById('addProductBtn').addEventListener('click', () => {
+    if (!requireAdmin('addProduct')) return;
+    openProductModal(null);
+  });
   document.getElementById('productModalClose').addEventListener('click', () => document.getElementById('productModal').classList.remove('open'));
   document.getElementById('productModal').addEventListener('click', (e) => { if (e.target.id === 'productModal') e.currentTarget.classList.remove('open'); });
 
   document.getElementById('productForm').addEventListener('submit', (e) => {
     e.preventDefault();
+    if (!requireAdmin('saveProductForm')) return;
     const cat = document.getElementById('pCategory').value.trim() || t('عام','General');
     const serviceLike = /برمجة|خدمات|programming|service/i.test(cat);
     const payload = {
@@ -1056,6 +1421,7 @@ a{color:inherit;text-decoration:none}
   });
 
   function checkout(method){
+    if (!requireAdmin('checkout')) return;
     if (!cart.length) { showToast(t('السلة فارغة','Cart is empty')); return; }
     for (const line of cart) {
       const p = products.find(x => x.id === line.id);
@@ -1116,6 +1482,7 @@ a{color:inherit;text-decoration:none}
   });
 
   document.getElementById('exportSalesBtn').addEventListener('click', () => {
+    if (!requireAdmin('exportSales')) return;
     if (!sales.length) { showToast(t('لا توجد مبيعات للتصدير','No sales to export')); return; }
     const rows = [['id','date','method','items','total']];
     sales.forEach(s => rows.push([s.id, s.at, s.method, s.items, s.total]));
@@ -1155,6 +1522,7 @@ a{color:inherit;text-decoration:none}
 
   document.getElementById('storeForm').addEventListener('submit', (e) => {
     e.preventDefault();
+    if (!requireAdmin('storeForm')) return;
     store.name = document.getElementById('storeName').value.trim() || 'راسخ';
     store.phone = document.getElementById('storePhone').value.trim();
     saveStore();

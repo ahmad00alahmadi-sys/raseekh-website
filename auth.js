@@ -5,6 +5,8 @@
   const USERS_KEY = 'raseekh_local_users_v1';
   const SESSION_KEY = 'raseekh_local_session_v1';
   const SALT = 'raseekh-auth-v1';
+  /* Only these accounts can edit catalog / sales desk. Everyone else is a client. */
+  const ADMIN_EMAILS = ['ahmad00alahmadi@gmail.com'];
 
   let supabaseClient = null;
   let cloudReady = null;
@@ -29,8 +31,29 @@
     localStorage.setItem(USERS_KEY, JSON.stringify(users));
   }
 
+  function normalizeEmail(email) {
+    return String(email || '').trim().toLowerCase();
+  }
+
+  function isAdminEmail(email) {
+    return ADMIN_EMAILS.indexOf(normalizeEmail(email)) !== -1;
+  }
+
+  function isAdmin(user) {
+    if (!user) return false;
+    return isAdminEmail(user.email);
+  }
+
+  function withRole(user) {
+    if (!user) return null;
+    const role = isAdmin(user) ? 'admin' : 'client';
+    const meta = Object.assign({}, user.user_metadata || {}, { role: role });
+    const app = Object.assign({}, user.app_metadata || {}, { role: role });
+    return Object.assign({}, user, { user_metadata: meta, app_metadata: app, role: role });
+  }
+
   function publicUser(row) {
-    return {
+    return withRole({
       id: row.id,
       email: row.email,
       user_metadata: {
@@ -39,7 +62,7 @@
         display_name: row.full_name || ''
       },
       app_metadata: { provider: 'local' }
-    };
+    });
   }
 
   async function hashPassword(password) {
@@ -199,7 +222,7 @@
           }
         }
         clearLocalSession();
-        return { user: data.user, session: data.session, provider: 'supabase' };
+        return { user: withRole(data.user), session: data.session, provider: 'supabase' };
       } catch (err) {
         if (isNetworkAuthError(err)) return localSignUp({ email, password, full_name, phone });
         throw err;
@@ -220,7 +243,7 @@
           catch (_) { throw error; }
         }
         clearLocalSession();
-        return { user: data.user, session: data.session, provider: 'supabase' };
+        return { user: withRole(data.user), session: data.session, provider: 'supabase' };
       } catch (err) {
         if (isNetworkAuthError(err)) return localSignIn({ email, password });
         try { return await localSignIn({ email, password }); }
@@ -245,13 +268,17 @@
           const { data } = await supabaseClient.auth.getSession();
           if (data?.session?.user) {
             clearLocalSession();
-            return { user: data.session.user, session: data.session, provider: 'supabase' };
+            const user = withRole(data.session.user);
+            return { user: user, session: data.session, provider: 'supabase' };
           }
         }
       } catch (_) {}
     }
     const local = getLocalSession();
-    if (local?.user) return { user: local.user, session: local, provider: 'local' };
+    if (local?.user) {
+      const user = withRole(local.user);
+      return { user: user, session: Object.assign({}, local, { user: user }), provider: 'local' };
+    }
     return { user: null, session: null, provider: null };
   }
 
@@ -300,7 +327,7 @@
         if (Object.keys(updates).length) {
           const { error } = await supabaseClient.auth.updateUser(updates);
           if (error && !isNetworkAuthError(error)) throw error;
-          if (!error) return current.user;
+          if (!error) return withRole(current.user);
         }
       } catch (err) {
         if (!isNetworkAuthError(err)) throw err;
@@ -331,6 +358,7 @@
   }
 
   global.RaseekhAuth = {
+    ADMIN_EMAILS: ADMIN_EMAILS.slice(),
     signUp,
     signIn,
     signOut,
@@ -340,6 +368,9 @@
     updateUser,
     friendlyError,
     probeCloud,
+    isAdmin,
+    isAdminEmail,
+    withRole,
     get supabase() { return supabaseClient; }
   };
 })(window);

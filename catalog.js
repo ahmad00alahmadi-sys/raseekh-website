@@ -2,6 +2,7 @@
 (function (global) {
   const PUBLIC_KEY = 'raseekh_client_catalog_v1';
   const SUGGESTIONS_KEY = 'raseekh_client_suggestions_v1';
+  const ADMIN_PRODUCTS_KEY = 'raseekh_admin_products_v1';
   const VERSION_KEY = 'raseekh_catalog_version';
   const CATALOG_VERSION = 3;
 
@@ -208,6 +209,8 @@
   function getClientProducts() {
     const stored = readJson(PUBLIC_KEY, null);
     if (stored && stored.length) return stored;
+    const admin = readJson(ADMIN_PRODUCTS_KEY, null);
+    if (admin && admin.length) return admin.filter((p) => p && p.client !== false);
     return cloneList(DEFAULT_PRODUCTS);
   }
 
@@ -215,6 +218,21 @@
     const stored = readJson(SUGGESTIONS_KEY, null);
     if (stored && stored.length) return stored;
     return cloneList(DEFAULT_SUGGESTIONS);
+  }
+
+  function loadAdminProducts() {
+    const stored = readJson(ADMIN_PRODUCTS_KEY, null);
+    const ensured = ensureCatalogVersion(stored && stored.length ? stored : cloneList(DEFAULT_PRODUCTS));
+    writeJson(ADMIN_PRODUCTS_KEY, ensured);
+    publishClientCatalog(ensured, getClientSuggestions());
+    return ensured;
+  }
+
+  function saveAdminProducts(products) {
+    const list = Array.isArray(products) ? products : [];
+    writeJson(ADMIN_PRODUCTS_KEY, list);
+    publishClientCatalog(list, getClientSuggestions());
+    return list;
   }
 
   function money(n, lang) {
@@ -250,6 +268,8 @@
     publishClientCatalog,
     getClientProducts,
     getClientSuggestions,
+    loadAdminProducts,
+    saveAdminProducts,
     money,
     label,
     suggestionTotal,
