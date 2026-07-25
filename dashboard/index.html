@@ -1665,6 +1665,7 @@ body.is-admin .client-only{display:none!important}
         return;
       }
       if (Terms && result.user) Terms.acceptTerms(result.user);
+      authProvider = result.provider || null;
       msg.style.color = 'var(--ok)';
       msg.textContent = t('تم إنشاء الحساب', 'Account created');
       showDashboard(result.user, false);
@@ -2729,18 +2730,25 @@ body.is-admin .client-only{display:none!important}
 
     if (Auth && Auth.supabase) {
       Auth.supabase.auth.onAuthStateChange((event, session) => {
-        if (event === 'SIGNED_OUT' && !isDemo) showLogin();
-        if (event === 'SIGNED_IN' && session?.user) showDashboard(session.user, false);
+        if (event === 'SIGNED_OUT' && !isDemo) {
+          authProvider = null;
+          showLogin();
+        }
+        if (event === 'SIGNED_IN' && session?.user) {
+          authProvider = 'supabase';
+          showDashboard(session.user, false);
+        }
       });
     }
 
     // Real account always wins over sticky demo, unless ?demo=1 was requested.
     if (Auth && !wantDemo) {
       try {
-        const { user } = await Auth.getSession();
-        if (user) {
+        const sessionInfo = await Auth.getSession();
+        if (sessionInfo && sessionInfo.user) {
+          authProvider = sessionInfo.provider || (sessionInfo.user.app_metadata && sessionInfo.user.app_metadata.provider) || null;
           setDemoFlag(false);
-          showDashboard(user, false);
+          showDashboard(sessionInfo.user, false);
           return;
         }
       } catch (_) {}
