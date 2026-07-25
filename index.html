@@ -317,14 +317,12 @@ nav{display:flex;align-items:center;justify-content:space-between;gap:16px;paddi
 .hero-quote select:focus,.hero-quote input:focus{outline:2px solid rgba(232,160,90,.5);border-color:var(--sand)}
 .hero-quote .btn{white-space:nowrap;min-height:52px}
 .hero-contact-panel{
-  display:none;margin-top:14px;max-width:640px;padding:16px;
+  display:block;margin-top:14px;max-width:640px;padding:16px;
   border:1.5px solid rgba(232,160,90,.55);border-radius:var(--radius);
   background:rgba(12,27,46,.72);backdrop-filter:blur(12px);
   box-shadow:0 0 0 3px rgba(232,160,90,.18);
 }
-.hero-contact-panel.is-open{display:block;animation:heroPanelIn .35s ease}
-.hero-contact-panel.is-pulse{animation:heroPanelIn .35s ease, heroPanelPulse .9s ease}
-@keyframes heroPanelIn{from{opacity:.2;transform:translateY(10px)}to{opacity:1;transform:none}}
+.hero-contact-panel.is-pulse{animation:heroPanelPulse .9s ease}
 @keyframes heroPanelPulse{
   0%,100%{box-shadow:0 0 0 3px rgba(232,160,90,.18)}
   40%{box-shadow:0 0 0 8px rgba(232,160,90,.35)}
@@ -1043,7 +1041,7 @@ body.pay-paused .pay-public-entry{display:none!important}
           <option value="hardware" data-ar="أجهزة (الرياض فقط)" data-en="Hardware (Riyadh only)">أجهزة (الرياض فقط)</option>
         </select>
         <input type="text" id="heroQuoteMsg" required maxlength="220" data-ar-placeholder="اكتبوا ملخص الطلب في سطر واحد" data-en-placeholder="Summarize your request in one line" placeholder="اكتبوا ملخص الطلب في سطر واحد" data-ar-aria="وصف الطلب" data-en-aria="Request summary" aria-label="وصف الطلب">
-        <button class="btn btn-primary" type="submit" id="heroQuoteBtn" data-ar="اطلبوا عرض سعر" data-en="Request a quote">اطلبوا عرض سعر</button>
+        <button class="btn btn-primary" type="submit" id="heroQuoteBtn" data-ar="إرسال الطلب" data-en="Send request">إرسال الطلب</button>
         <label class="check" for="heroPurchaseTermsCheck">
           <input type="checkbox" id="heroPurchaseTermsCheck" required>
           <span class="check-text">
@@ -1053,8 +1051,8 @@ body.pay-paused .pay-public-entry{display:none!important}
           </span>
         </label>
       </form>
-      <div class="hero-contact-panel" id="heroContactPanel" aria-live="polite">
-        <p class="hero-contact-title" id="heroContactTitle" data-ar="أكملوا بيانات التواصل هنا لإرسال الطلب" data-en="Complete your contact details here to send the request">أكملوا بيانات التواصل هنا لإرسال الطلب</p>
+      <div class="hero-contact-panel is-open" id="heroContactPanel" aria-live="polite">
+        <p class="hero-contact-title" id="heroContactTitle" data-ar="نموذج طلب السعر — أكملوا البيانات تحت واضغطوا إرسال" data-en="Quote form — complete the fields below and press Send">نموذج طلب السعر — أكملوا البيانات تحت واضغطوا إرسال</p>
         <div class="hero-contact-grid">
           <label class="field"><span data-ar="الاسم الكامل" data-en="Full name">الاسم الكامل</span>
             <input type="text" id="heroContactName" autocomplete="name" data-ar-placeholder="الاسم الكامل" data-en-placeholder="Full name" placeholder="الاسم الكامل">
@@ -2335,13 +2333,12 @@ body.pay-paused .pay-public-entry{display:none!important}
     setIfEmpty('heroContactCompany', (opts && opts.company) || (document.getElementById('contactCompany') && document.getElementById('contactCompany').value) || draft.company || '');
     const title = document.getElementById('heroContactTitle');
     if (title) {
-      title.textContent = t('أكملوا بيانات التواصل هنا لإرسال الطلب', 'Complete your contact details here to send the request');
+      title.textContent = t('نموذج طلب السعر — أكملوا البيانات تحت واضغطوا إرسال', 'Quote form — complete the fields below and press Send');
     }
     const msg = document.getElementById('heroContactMsg');
     if (msg) { msg.textContent = ''; msg.style.color = ''; }
     panel.classList.add('is-open');
     panel.classList.remove('is-pulse');
-    // restart pulse
     void panel.offsetWidth;
     panel.classList.add('is-pulse');
     setTimeout(() => panel.classList.remove('is-pulse'), 1000);
@@ -2838,7 +2835,7 @@ body.pay-paused .pay-public-entry{display:none!important}
       revealHeroContactPanel({ type, message, company: heroContact.company });
       if (heroMsg) {
         heroMsg.style.color = 'var(--sand)';
-        if (!heroContact.name) heroMsg.textContent = t('النموذج ظهر تحت — أكملوا الاسم ثم أرسلوا', 'The form appeared below — complete your name, then send');
+        if (!heroContact.name) heroMsg.textContent = t('أكملوا الاسم في النموذج الظاهر تحت', 'Complete your name in the form shown below');
         else if (needsOrg && !heroContact.company) heroMsg.textContent = t('أدخلوا اسم المؤسسة ثم أرسلوا', 'Enter the organization name, then send');
         else if (!isUsableEmail(heroContact.email)) heroMsg.textContent = t('أدخلوا بريداً صالحاً ثم أرسلوا', 'Enter a valid email, then send');
         else if (!isUsablePhone(heroContact.phone)) heroMsg.textContent = t('أدخلوا رقم جوال صالح ثم أرسلوا', 'Enter a valid phone, then send');
@@ -4615,6 +4612,7 @@ body.pay-paused .pay-public-entry{display:none!important}
   });
   restorePurchaseTermsChecks();
   restoreAuthTermsChecks();
+  syncHeroCompanyVisibility(document.getElementById('heroQuoteType') && document.getElementById('heroQuoteType').value);
   if (PUBLIC_PAY_ENABLED) {
     const payNote = document.getElementById('payPurchaseTermsNote');
     const payLabel = document.getElementById('payPurchaseTermsLabel');
