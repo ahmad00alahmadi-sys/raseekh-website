@@ -5,6 +5,7 @@
   const ADMIN_PRODUCTS_KEY = 'raseekh_admin_products_v1';
   const VERSION_KEY = 'raseekh_catalog_version';
   const SUGGESTIONS_VERSION_KEY = 'raseekh_suggestions_version';
+  const TESTIMONIALS_KEY = 'raseekh_public_testimonials_v1';
   const CATALOG_VERSION = 10;
   const SUGGESTIONS_VERSION = 8;
   const CLIENT_REQUESTS_KEY = 'raseekh_all_client_requests_v1';
@@ -191,10 +192,145 @@
     }
   ];
 
+  const DEFAULT_TESTIMONIALS = [
+    {
+      id: 'tv1',
+      name_ar: 'فهد العتيبي',
+      name_en: 'Fahad Al-Otaibi',
+      role_ar: 'مدير تشغيل · تجزئة · الرياض',
+      role_en: 'Ops manager · Retail · Riyadh',
+      quote_ar: 'قبل راسخ كان نقص الصنف يفاجئنا وقت الذروة. الآن التنبيه يجي قبل ما الرف يفضى، والفريق ما عاد يعتمد على واتساب.',
+      quote_en: 'Before Raseekh, stockouts surprised us at peak hours. Now alerts arrive before the shelf empties, and the team no longer relies on WhatsApp.',
+      stars: 5
+    },
+    {
+      id: 'tv2',
+      name_ar: 'نورة الشمري',
+      name_en: 'Noura Al-Shammari',
+      role_ar: 'منسّقة عيادة · القصيم',
+      role_en: 'Clinic coordinator · Qassim',
+      quote_ar: 'همّنا كان المواعيد وصلاحيات الاستقبال. النظام رتّب اليوم بدون تعقيد، وكل واحد يشوف اللي يخصّه فقط.',
+      quote_en: 'Our priority was appointments and reception roles. The system ordered the day without clutter, and each person only sees what they need.',
+      stars: 5
+    },
+    {
+      id: 'tv3',
+      name_ar: 'سلمان الحربي',
+      name_en: 'Salman Al-Harbi',
+      role_ar: 'مدير مشاريع · مقاولات · جدة',
+      role_en: 'Project manager · Contracting · Jeddah',
+      quote_ar: 'كنت أتابع المشاريع من رسائل متفرقة. لوحة العميل خلّت حالة الطلب والمواد واضحة للمشرفين في الموقع.',
+      quote_en: 'I tracked projects through scattered messages. The client board made request and materials status clear for site supervisors.',
+      stars: 5
+    }
+  ];
+
   function cloneList(list) {
     return list.map((item) => Object.assign({}, item, {
       productIds: item.productIds ? item.productIds.slice() : undefined
     }));
+  }
+
+  function normalizeTestimonial(row) {
+    if (!row || typeof row !== 'object') return null;
+    const stars = Math.max(1, Math.min(5, parseInt(row.stars, 10) || 5));
+    const id = String(row.id || ('tv_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6)));
+    const quote_ar = String(row.quote_ar || row.quote || '').trim();
+    const quote_en = String(row.quote_en || row.quote || quote_ar).trim();
+    const name_ar = String(row.name_ar || row.name || '').trim();
+    const name_en = String(row.name_en || row.name || name_ar).trim();
+    if (!quote_ar && !quote_en) return null;
+    if (!name_ar && !name_en) return null;
+    return {
+      id: id,
+      name_ar: name_ar || name_en,
+      name_en: name_en || name_ar,
+      role_ar: String(row.role_ar || row.role || '').trim(),
+      role_en: String(row.role_en || row.role || row.role_ar || '').trim(),
+      quote_ar: quote_ar || quote_en,
+      quote_en: quote_en || quote_ar,
+      stars: stars,
+      createdAt: row.createdAt || new Date().toISOString()
+    };
+  }
+
+  function getTestimonials() {
+    const stored = readJson(TESTIMONIALS_KEY, null);
+    if (Array.isArray(stored)) {
+      return stored.map(normalizeTestimonial).filter(Boolean);
+    }
+    const seeded = cloneList(DEFAULT_TESTIMONIALS).map(normalizeTestimonial).filter(Boolean);
+    writeJson(TESTIMONIALS_KEY, seeded);
+    return seeded;
+  }
+
+  async function publishTestimonialsToCloud(list) {
+    const sb = getSupabase();
+    if (!sb) return false;
+    try {
+      const value = {
+        items: Array.isArray(list) ? list : [],
+        updatedAt: new Date().toISOString()
+      };
+      const { error } = await sb.from('site_settings').upsert({
+        key: 'public_testimonials',
+        value: value,
+        updated_at: new Date().toISOString()
+      }, { onConflict: 'key' });
+      return !error;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  function saveTestimonials(list, opts) {
+    const normalized = (Array.isArray(list) ? list : []).map(normalizeTestimonial).filter(Boolean);
+    writeJson(TESTIMONIALS_KEY, normalized);
+    if (opts && opts.cloud) {
+      const pub = publishTestimonialsToCloud(normalized);
+      if (opts && opts.awaitCloud) return pub.then((ok) => ({ items: normalized, cloud: !!ok }));
+      pub.catch(() => {});
+    }
+    return { items: normalized, cloud: false };
+  }
+
+  function addTestimonial(input, opts) {
+    const row = normalizeTestimonial(Object.assign({}, input, {
+      id: input && input.id ? input.id : ('tv_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6)),
+      createdAt: new Date().toISOString()
+    }));
+    if (!row) return { ok: false, reason: 'invalid' };
+    const list = getTestimonials();
+    list.unshift(row);
+    const saved = saveTestimonials(list, opts || { cloud: true });
+    return { ok: true, row: row, saved: saved };
+  }
+
+  function deleteTestimonial(id, opts) {
+    const key = String(id || '');
+    if (!key) return { ok: false };
+    const list = getTestimonials().filter((row) => row.id !== key);
+    const saved = saveTestimonials(list, opts || { cloud: true });
+    return { ok: true, items: list, saved: saved };
+  }
+
+  async function syncTestimonialsFromCloud() {
+    const sb = getSupabase();
+    if (!sb) return null;
+    try {
+      const { data, error } = await sb
+        .from('site_settings')
+        .select('value')
+        .eq('key', 'public_testimonials')
+        .maybeSingle();
+      if (error || !data || !data.value || typeof data.value !== 'object') return null;
+      const items = Array.isArray(data.value.items) ? data.value.items.map(normalizeTestimonial).filter(Boolean) : null;
+      if (!items) return null;
+      writeJson(TESTIMONIALS_KEY, items);
+      return { items: items, updatedAt: data.value.updatedAt || '' };
+    } catch (_) {
+      return null;
+    }
   }
 
   function readJson(key, fallback) {
@@ -1515,6 +1651,13 @@
     syncSharedRequestsFromCloud,
     publishClientCatalogToCloud,
     syncPublicCatalogFromCloud,
+    getTestimonials,
+    saveTestimonials,
+    addTestimonial,
+    deleteTestimonial,
+    publishTestimonialsToCloud,
+    syncTestimonialsFromCloud,
+    DEFAULT_TESTIMONIALS: cloneList(DEFAULT_TESTIMONIALS),
     getSharedRequests,
     saveSharedRequests,
     updateSharedRequestStatus,

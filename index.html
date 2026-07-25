@@ -1524,43 +1524,9 @@ body.terms-locked,body.auth-locked{overflow:hidden}
     <div class="section-head reveal">
       <div class="eyebrow" data-ar="آراء العملاء" data-en="Client voices">آراء العملاء</div>
       <h2 data-ar="ماذا يقول من شغّل النظام مع راسخ" data-en="What operators say after going live with Raseekh">ماذا يقول من شغّل النظام مع راسخ</h2>
-      <p data-ar="مقتطفات من تجارب تشغيلية بعد التسليم — بصياغة شركة راسخ." data-en="Post-delivery ops excerpts — written in Raseekh’s company voice.">مقتطفات من تجارب تشغيلية بعد التسليم — بصياغة شركة راسخ.</p>
+      <p data-ar="آراء تشغيلية تُدار من لوحة راسخ — تُحدَّث عند إضافة أو حذف رأي." data-en="Ops voices managed from the Raseekh dashboard — updated when a voice is added or removed.">آراء تشغيلية تُدار من لوحة راسخ — تُحدَّث عند إضافة أو حذف رأي.</p>
     </div>
-    <div class="services-grid reveal stagger">
-      <article class="service-block voice-card">
-        <div class="voice-stars" aria-hidden="true">★★★★★</div>
-        <p data-ar="«قبل راسخ كان نقص الصنف يفاجئنا وقت الذروة. الآن التنبيه يجي قبل ما الرف يفضى، والفريق ما عاد يعتمد على واتساب.»" data-en="“Before Raseekh, stockouts surprised us at peak hours. Now alerts arrive before the shelf empties, and the team no longer relies on WhatsApp.”">«قبل راسخ كان نقص الصنف يفاجئنا وقت الذروة. الآن التنبيه يجي قبل ما الرف يفضى، والفريق ما عاد يعتمد على واتساب.»</p>
-        <div class="voice-who">
-          <div class="voice-avatar">ف</div>
-          <div>
-            <h3 data-ar="فهد العتيبي" data-en="Fahad Al-Otaibi">فهد العتيبي</h3>
-            <p data-ar="مدير تشغيل · تجزئة · الرياض" data-en="Ops manager · Retail · Riyadh">مدير تشغيل · تجزئة · الرياض</p>
-          </div>
-        </div>
-      </article>
-      <article class="service-block voice-card">
-        <div class="voice-stars" aria-hidden="true">★★★★★</div>
-        <p data-ar="«همّنا كان المواعيد وصلاحيات الاستقبال. النظام رتّب اليوم بدون تعقيد، وكل واحد يشوف اللي يخصّه فقط.»" data-en="“Our priority was appointments and reception roles. The system ordered the day without clutter, and each person only sees what they need.”">«همّنا كان المواعيد وصلاحيات الاستقبال. النظام رتّب اليوم بدون تعقيد، وكل واحد يشوف اللي يخصّه فقط.»</p>
-        <div class="voice-who">
-          <div class="voice-avatar">ن</div>
-          <div>
-            <h3 data-ar="نورة الشمري" data-en="Noura Al-Shammari">نورة الشمري</h3>
-            <p data-ar="منسّقة عيادة · القصيم" data-en="Clinic coordinator · Qassim">منسّقة عيادة · القصيم</p>
-          </div>
-        </div>
-      </article>
-      <article class="service-block voice-card">
-        <div class="voice-stars" aria-hidden="true">★★★★★</div>
-        <p data-ar="«كنت أتابع المشاريع من رسائل متفرقة. لوحة العميل خلّت حالة الطلب والمواد واضحة للمشرفين في الموقع.»" data-en="“I tracked projects through scattered messages. The client board made request and materials status clear for site supervisors.”">«كنت أتابع المشاريع من رسائل متفرقة. لوحة العميل خلّت حالة الطلب والمواد واضحة للمشرفين في الموقع.»</p>
-        <div class="voice-who">
-          <div class="voice-avatar">س</div>
-          <div>
-            <h3 data-ar="سلمان الحربي" data-en="Salman Al-Harbi">سلمان الحربي</h3>
-            <p data-ar="مدير مشاريع · مقاولات · جدة" data-en="Project manager · Contracting · Jeddah">مدير مشاريع · مقاولات · جدة</p>
-          </div>
-        </div>
-      </article>
-    </div>
+    <div class="services-grid reveal stagger" id="voicesGrid"></div>
   </div>
 </section>
 
@@ -1941,12 +1907,42 @@ body.terms-locked,body.auth-locked{overflow:hidden}
     const typeEl = document.getElementById('contactType');
     if (typeEl) syncContactTypeFeatures(typeEl.value);
     renderClientCatalog();
+    renderVoices();
   }
 
   function escapeHtml(str){
     const d = document.createElement('div');
     d.textContent = str == null ? '' : String(str);
     return d.innerHTML;
+  }
+
+  function renderVoices(){
+    const grid = document.getElementById('voicesGrid');
+    if (!grid) return;
+    const Catalog = window.RaseekhCatalog;
+    const list = (Catalog && Catalog.getTestimonials) ? Catalog.getTestimonials() : [];
+    if (!list.length) {
+      grid.innerHTML = `<article class="service-block voice-card"><p data-ar="لا توجد آراء معروضة حالياً." data-en="No voices are published right now.">${escapeHtml(t('لا توجد آراء معروضة حالياً.','No voices are published right now.'))}</p></article>`;
+      return;
+    }
+    grid.innerHTML = list.map((row) => {
+      const name = currentLang === 'en' ? (row.name_en || row.name_ar) : (row.name_ar || row.name_en);
+      const role = currentLang === 'en' ? (row.role_en || row.role_ar) : (row.role_ar || row.role_en);
+      const quote = currentLang === 'en' ? (row.quote_en || row.quote_ar) : (row.quote_ar || row.quote_en);
+      const stars = Math.max(1, Math.min(5, parseInt(row.stars, 10) || 5));
+      const avatar = String(name || '?').trim().charAt(0);
+      return `<article class="service-block voice-card">
+        <div class="voice-stars" aria-hidden="true">${'★'.repeat(stars)}</div>
+        <p>«${escapeHtml(quote)}»</p>
+        <div class="voice-who">
+          <div class="voice-avatar">${escapeHtml(avatar)}</div>
+          <div>
+            <h3>${escapeHtml(name)}</h3>
+            <p>${escapeHtml(role || '')}</p>
+          </div>
+        </div>
+      </article>`;
+    }).join('');
   }
 
   function prefersReducedMotion(){
@@ -3545,6 +3541,13 @@ body.terms-locked,body.auth-locked{overflow:hidden}
     RaseekhCatalog.syncPublicCatalogFromCloud()
       .then((cloud) => { if (cloud && cloud.products) renderClientCatalog(); })
       .catch(() => {});
+  }
+  if (window.RaseekhCatalog && RaseekhCatalog.syncTestimonialsFromCloud) {
+    RaseekhCatalog.syncTestimonialsFromCloud()
+      .then(() => { renderVoices(); })
+      .catch(() => { renderVoices(); });
+  } else {
+    renderVoices();
   }
 
   (function siteConnectivity(){
