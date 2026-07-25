@@ -714,7 +714,7 @@ body.is-client .home-bar{
       <div class="panel" style="margin-top:16px">
         <h3 data-ar="اقتراحات جاهزة" data-en="Ready suggestions">اقتراحات جاهزة</h3>
         <p class="admin-only" style="color:var(--muted);font-size:.9rem;margin:6px 0 12px" data-ar="الباقات التالية ظاهرة للعميل. الإدارة فقط تعدّل الكتالوج." data-en="These packages are visible to clients. Only admin can edit the catalog.">الباقات التالية ظاهرة للعميل. الإدارة فقط تعدّل الكتالوج.</p>
-        <p class="client-only" style="color:var(--muted);font-size:.9rem;margin:6px 0 12px" data-ar="باقات إلكترونية جاهزة للبدء — اختر مساراً واطلب عرض سعر." data-en="Ready digital packages — pick a path and request a quote.">باقات إلكترونية جاهزة للبدء — اختر مساراً واطلب عرض سعر.</p>
+        <p class="client-only" style="color:var(--muted);font-size:.9rem;margin:6px 0 12px" data-ar="باقات جاهزة — أضيفوها إلى طلباتي من هنا." data-en="Ready packages — add them to My requests from here.">باقات جاهزة — أضيفوها إلى طلباتي من هنا.</p>
         <div class="suggest-mini" id="overviewSuggestions"></div>
       </div>
     </div>
@@ -727,7 +727,7 @@ body.is-client .home-bar{
         </div>
         <a class="btn btn-ghost" href="/" data-ar="← الرئيسية" data-en="← Home">← الرئيسية</a>
       </div>
-      <div class="client-note" data-ar="خدمات رقمية للطلب أونلاين. التسعير بعد مراجعة احتياجكم — وفق العرض المكتوب." data-en="Digital services available online. Pricing after we review your need — per the written quote.">خدمات رقمية للطلب أونلاين. التسعير بعد مراجعة احتياجكم — وفق العرض المكتوب.</div>
+      <div class="client-note" data-ar="اختاروا خدمة ظاهرة ثم اضغطوا «إضافة إلى طلباتي». بعد التأكيد يظهر الطلب مباشرة في طلباتي." data-en="Pick a visible service, then tap “Add to My requests”. After confirm it appears in My requests.">اختاروا خدمة ظاهرة ثم اضغطوا «إضافة إلى طلباتي». بعد التأكيد يظهر الطلب مباشرة في طلباتي.</div>
       <div class="panel">
         <input type="search" id="clientCatalogSearch" style="margin-bottom:14px;padding:12px 14px;width:100%;border:1px solid var(--line);border-radius:10px" data-ar-placeholder="ابحث..." data-en-placeholder="Search..." placeholder="ابحث...">
         <div class="browse-grid" id="clientCatalogGrid"></div>
@@ -1042,7 +1042,7 @@ body.is-client .home-bar{
 <div class="modal-overlay" id="requestConfirmModal" role="dialog" aria-modal="true" aria-labelledby="requestConfirmHeading" aria-hidden="true">
   <div class="modal">
     <button class="modal-close" id="requestConfirmClose" type="button" data-ar-aria="إغلاق" data-en-aria="Close" aria-label="إغلاق">×</button>
-    <h2 id="requestConfirmHeading" style="margin-bottom:8px" data-ar="تأكيد طلب عرض السعر" data-en="Confirm quote request">تأكيد طلب عرض السعر</h2>
+    <h2 id="requestConfirmHeading" style="margin-bottom:8px" data-ar="تأكيد الإضافة إلى طلباتي" data-en="Confirm add to My requests">تأكيد الإضافة إلى طلباتي</h2>
     <p id="requestConfirmTitle" style="color:var(--muted);font-size:.92rem;margin-bottom:14px"></p>
     <form class="form" id="requestConfirmForm">
       <label class="field"><span data-ar="البريد الإلكتروني" data-en="Email">البريد الإلكتروني</span>
@@ -2663,7 +2663,7 @@ body.is-client .home-bar{
         const clearBtn = document.getElementById('clearCatalogSearchBtn');
         if (clearBtn && searchEl) clearBtn.addEventListener('click', () => { searchEl.value = ''; renderClientCatalog(); });
       } else {
-        grid.innerHTML = `<div class="empty" style="grid-column:1/-1"><strong>${t('لا توجد خدمات ظاهرة','No services shown')}</strong><p>${t('اطلبوا عرض سعر مباشرة، بما في ذلك تطبيق مخزون.','Request a quote directly — including an inventory app.')}</p></div>`;
+        grid.innerHTML = `<div class="empty" style="grid-column:1/-1"><strong>${t('لا توجد خدمات ظاهرة','No services shown')}</strong><p>${t('لازم تظهر خدمة واحدة على الأقل (المالك يفعّل «ظاهر للعميل») عشان تقدروا تضيفوها لطلباتي.','At least one service must be visible (owner enables “Visible to clients”) so you can add it to My requests.')}</p></div>`;
       }
       return;
     }
@@ -2673,7 +2673,7 @@ body.is-client .home-bar{
         <h4>${escapeHtml(productLabel(p))}</h4>
         <p>${escapeHtml((currentLang === 'en' && p.desc_en) ? p.desc_en : (p.desc || t('متاح للطلب','Available to order')))}</p>
         <div class="price">${escapeHtml(priceLabel(p))}</div>
-        <button type="button" class="btn btn-ghost" style="margin-top:6px" data-client-product="${escapeHtml(p.id)}">${escapeHtml(t('اطلب عرض سعر','Request a quote'))}</button>
+        <button type="button" class="btn btn-primary" style="margin-top:6px" data-client-product="${escapeHtml(p.id)}">${escapeHtml(t('إضافة إلى طلباتي','Add to My requests'))}</button>
       </article>
     `).join('');
   }
@@ -2683,7 +2683,7 @@ body.is-client .home-bar{
     if (!box || !Catalog) return;
     const suggestions = Catalog.getClientSuggestions();
     if (!suggestions.length) {
-      box.innerHTML = `<div class="empty"><strong>${t('لا توجد اقتراحات حالياً','No suggestions right now')}</strong><p>${t('اطلبوا عرض سعر من الكتالوج أو لتطبيق مخزون.','Request a quote from the catalog or for an inventory app.')}</p></div>`;
+      box.innerHTML = `<div class="empty"><strong>${t('لا توجد اقتراحات حالياً','No suggestions right now')}</strong><p>${t('أضيفوا خدمة من الكتالوج إلى طلباتي، أو انتظروا باقات ينشرها المالك.','Add a catalog service to My requests, or wait for packages the owner publishes.')}</p></div>`;
       return;
     }
     box.innerHTML = suggestions.map((s) => {
@@ -2698,7 +2698,7 @@ body.is-client .home-bar{
         <span>${escapeHtml(desc)}</span>
         <span>${escapeHtml(items)}</span>
         <div style="margin-top:6px;font-weight:700;color:var(--harbor)">${escapeHtml(priceText)}</div>
-        <button class="btn btn-primary" style="margin-top:8px;padding:8px 12px;font-size:.82rem" data-client-suggest="${escapeHtml(s.id)}">${escapeHtml(t('اطلب عرض سعر','Request a quote'))}</button>
+        <button class="btn btn-primary" style="margin-top:8px;padding:8px 12px;font-size:.82rem" data-client-suggest="${escapeHtml(s.id)}">${escapeHtml(t('إضافة إلى طلباتي','Add to My requests'))}</button>
       </div>`;
     }).join('');
   }
@@ -2713,7 +2713,7 @@ body.is-client .home-bar{
     await refreshClientRequestsFromCloud();
     const mine = myRequests();
     if (!mine.length) {
-      box.innerHTML = `<div class="empty"><strong>${escapeHtml(t('لا توجد طلبات مرسلة بعد','No submitted requests yet'))}</strong><p>${escapeHtml(t('اطلب عرض سعر من الكتالوج أو الاقتراحات، وستظهر حالتها هنا.','Request a quote from catalog or suggestions — status will show here.'))}</p><div class="empty-actions"><button class="btn btn-primary" data-goto="catalog">${escapeHtml(t('تصفح الكتالوج','Browse catalog'))}</button><a class="btn btn-ghost" href="/#contact">${escapeHtml(t('نموذج الموقع','Site form'))}</a></div></div>`;
+      box.innerHTML = `<div class="empty"><strong>${escapeHtml(t('لا توجد طلبات بعد','No requests yet'))}</strong><p>${escapeHtml(t('من الكتالوج اضغطوا «إضافة إلى طلباتي» على أي خدمة ظاهرة — بعد التأكيد تظهر هنا.','From the catalog tap “Add to My requests” on any visible service — after confirm it shows here.'))}</p><div class="empty-actions"><button class="btn btn-primary" data-goto="catalog">${escapeHtml(t('فتح الكتالوج','Open catalog'))}</button><button class="btn btn-ghost" data-goto="suggestions">${escapeHtml(t('الاقتراحات','Suggestions'))}</button></div></div>`;
       return;
     }
     const seenMap = loadRequestSeenStatusMap();
