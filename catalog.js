@@ -299,7 +299,7 @@
     }
   }
 
-  function publishPublicNotify(settings) {
+  function publishPublicNotify(settings, opts) {
     const webhookUrl = String((settings && settings.webhookUrl) || '').trim();
     const notifyEmail = String((settings && settings.notifyEmail) || '').trim().toLowerCase();
     const notifyOnLogin = settings && settings.notifyOnLogin === false ? false : true;
@@ -308,14 +308,23 @@
       notifyEmail: notifyEmail || '',
       notifyOnLogin: notifyOnLogin
     };
+    const existing = readObject(PUBLIC_NOTIFY_KEY);
+    // Avoid wiping a published cloud/local config with an empty accidental publish.
+    if (!opts || !opts.allowEmpty) {
+      if (!cfg.notifyEmail && existing.notifyEmail) cfg.notifyEmail = String(existing.notifyEmail).toLowerCase();
+      if (!cfg.webhookUrl && existing.webhookUrl) cfg.webhookUrl = String(existing.webhookUrl);
+    }
     writeJson(PUBLIC_NOTIFY_KEY, cfg);
-    pushPublicNotifyToCloud(cfg).catch(() => {});
+    if (cfg.notifyEmail || cfg.webhookUrl || (opts && opts.forceCloud)) {
+      pushPublicNotifyToCloud(cfg).catch(() => {});
+    }
     return cfg;
   }
 
   async function pushPublicNotifyToCloud(cfg) {
     const sb = getSupabase();
     if (!sb || !cfg) return false;
+    if (!cfg.notifyEmail && !cfg.webhookUrl) return false;
     try {
       const { error } = await sb.from('site_settings').upsert({
         key: 'public_notify',
@@ -343,16 +352,17 @@
         .maybeSingle();
       if (error || !data || !data.value) return readObject(PUBLIC_NOTIFY_KEY);
       const value = data.value && typeof data.value === 'object' ? data.value : {};
-      const cfg = {
-        notifyEmail: String(value.notifyEmail || '').trim().toLowerCase(),
-        webhookUrl: String(value.webhookUrl || '').trim(),
-        notifyOnLogin: value.notifyOnLogin === false ? false : true
-      };
+      const cloudEmail = String(value.notifyEmail || '').trim().toLowerCase();
+      const cloudWebhook = String(value.webhookUrl || '').trim();
+      const cloudHasNotifyOnLogin = Object.prototype.hasOwnProperty.call(value, 'notifyOnLogin');
       const local = readObject(PUBLIC_NOTIFY_KEY);
       const merged = {
-        notifyEmail: cfg.notifyEmail || String(local.notifyEmail || '').trim().toLowerCase(),
-        webhookUrl: cfg.webhookUrl || String(local.webhookUrl || '').trim(),
-        notifyOnLogin: cfg.notifyOnLogin !== false && local.notifyOnLogin !== false
+        notifyEmail: cloudEmail || String(local.notifyEmail || '').trim().toLowerCase(),
+        webhookUrl: cloudWebhook || String(local.webhookUrl || '').trim(),
+        // Prefer cloud flag when cloud row exists; don't let stale local false suppress it.
+        notifyOnLogin: cloudHasNotifyOnLogin
+          ? value.notifyOnLogin !== false
+          : local.notifyOnLogin !== false
       };
       writeJson(PUBLIC_NOTIFY_KEY, merged);
       return merged;

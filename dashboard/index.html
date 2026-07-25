@@ -1467,21 +1467,40 @@ body.is-admin .client-only{display:none!important}
       loadClientRequests();
       document.getElementById('storeName').value = store.name || '';
       document.getElementById('storePhone').value = store.phone || '';
-    const webhookEl = document.getElementById('storeWebhook');
-    if (webhookEl) webhookEl.value = store.webhookUrl || '';
-    const notifyEl = document.getElementById('storeNotifyEmail');
-    if (notifyEl) {
-      const fallbackEmail = (!store.notifyEmail && user && user.email && isAdminUser) ? String(user.email).toLowerCase() : '';
-      notifyEl.value = store.notifyEmail || fallbackEmail || '';
-      if (!store.notifyEmail && fallbackEmail) {
-        store.notifyEmail = fallbackEmail;
-        saveStore();
+      const webhookEl = document.getElementById('storeWebhook');
+      if (webhookEl) webhookEl.value = store.webhookUrl || '';
+      const notifyEl = document.getElementById('storeNotifyEmail');
+      if (notifyEl) {
+        const fallbackEmail = (!store.notifyEmail && user && user.email && isAdminUser) ? String(user.email).toLowerCase() : '';
+        notifyEl.value = store.notifyEmail || fallbackEmail || '';
+        if (!store.notifyEmail && fallbackEmail) {
+          store.notifyEmail = fallbackEmail;
+          saveStore();
+        }
       }
-    }
-    const notifyLoginEl = document.getElementById('storeNotifyLogin');
-    if (notifyLoginEl) notifyLoginEl.checked = store.notifyOnLogin !== false;
-      if (isAdminUser && Catalog && Catalog.publishPublicNotify) Catalog.publishPublicNotify(store);
-      if (isAdminUser) renderDeliveryStatus();
+      const notifyLoginEl = document.getElementById('storeNotifyLogin');
+      if (notifyLoginEl) notifyLoginEl.checked = store.notifyOnLogin !== false;
+
+      if (isAdminUser && Catalog) {
+        let cloudCfg = null;
+        try {
+          if (Catalog.syncPublicNotifyFromCloud) cloudCfg = await Catalog.syncPublicNotifyFromCloud();
+        } catch (_) {}
+        if (cloudCfg) {
+          if (!store.notifyEmail && cloudCfg.notifyEmail) store.notifyEmail = cloudCfg.notifyEmail;
+          if (!store.webhookUrl && cloudCfg.webhookUrl) store.webhookUrl = cloudCfg.webhookUrl;
+          if (store.notifyOnLogin == null && cloudCfg.notifyOnLogin != null) store.notifyOnLogin = cloudCfg.notifyOnLogin !== false;
+          if (notifyEl && store.notifyEmail) notifyEl.value = store.notifyEmail;
+          if (webhookEl && store.webhookUrl) webhookEl.value = store.webhookUrl;
+          if (notifyLoginEl) notifyLoginEl.checked = store.notifyOnLogin !== false;
+          saveStore();
+        }
+        // Publish only when we have something useful — never wipe cloud with blanks.
+        if ((store.notifyEmail || store.webhookUrl) && Catalog.publishPublicNotify) {
+          Catalog.publishPublicNotify(store);
+        }
+        renderDeliveryStatus();
+      }
       cart = [];
       applyLang(currentLang);
       startClock();
@@ -2531,6 +2550,9 @@ body.is-admin .client-only{display:none!important}
     const notifyLoginEl = document.getElementById('storeNotifyLogin');
     store.notifyOnLogin = notifyLoginEl ? !!notifyLoginEl.checked : true;
     saveStore();
+    if (Catalog && Catalog.publishPublicNotify) {
+      Catalog.publishPublicNotify(store, { allowEmpty: !store.notifyEmail && !store.webhookUrl, forceCloud: true });
+    }
     renderDeliveryStatus();
     document.getElementById('storeMsg').style.color = 'var(--ok)';
     if (store.notifyEmail) {

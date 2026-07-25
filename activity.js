@@ -67,15 +67,25 @@
     store.users[key] = next;
     writeStore(store);
     pushCloud(next);
-    if (isLogin) notifyLoginAlert(next);
+    // Notify on login intent even when count is debounced (homepage → dashboard).
+    if (opts && opts.login) notifyLoginAlert(next);
     return next;
   }
 
-  function notifyLoginAlert(row) {
+  async function notifyLoginAlert(row) {
     try {
       if (!row || row.role === 'admin') return;
       const Auth = global.RaseekhAuth;
       if (Auth && Auth.isAdminEmail && Auth.isAdminEmail(row.email)) return;
+      const Catalog = global.RaseekhCatalog;
+      if (!Catalog || !Catalog.notifyAdminEmail) return;
+      const email = String(row.email || '').toLowerCase();
+      if (!email) return;
+
+      if (Catalog.syncPublicNotifyFromCloud) {
+        try { await Catalog.syncPublicNotifyFromCloud(); } catch (_) {}
+      }
+
       const store = (() => {
         try { return JSON.parse(localStorage.getItem('raseekh_admin_store_v1') || '{}'); }
         catch (_) { return {}; }
@@ -85,22 +95,15 @@
         catch (_) { return {}; }
       })();
       if (store.notifyOnLogin === false || publicCfg.notifyOnLogin === false) return;
-      const Catalog = global.RaseekhCatalog;
-      if (!Catalog || !Catalog.notifyAdminEmail) return;
-      const email = String(row.email || '').toLowerCase();
-      if (!email) return;
+      if (!Catalog.resolveNotifyEmail || !Catalog.resolveNotifyEmail()) return;
+
       const mapKey = 'raseekh_login_notified_v1';
       let map = {};
       try { map = JSON.parse(localStorage.getItem(mapKey) || '{}') || {}; } catch (_) { map = {}; }
       const last = map[email] ? new Date(map[email]).getTime() : 0;
       if (last && (Date.now() - last) < 6 * 60 * 60 * 1000) return;
-      map[email] = new Date().toISOString();
-      localStorage.setItem(mapKey, JSON.stringify(map));
-      // Ensure notify email is available even if only in public cfg.
-      if (!store.notifyEmail && publicCfg.notifyEmail) {
-        // resolveNotifyEmail already merges these
-      }
-      Catalog.notifyAdminEmail({
+
+      const result = await Catalog.notifyAdminEmail({
         title: 'تسجيل دخول عميل',
         type: 'login',
         name: row.name || email,
@@ -110,7 +113,11 @@
         message: 'دخل العميل إلى حساب راسخ. عدد مرات الدخول: ' + (Number(row.loginCount) || 1),
         source: 'login',
         id: 'login-' + email
-      }).catch(() => {});
+      });
+      if (result && result.ok) {
+        map[email] = new Date().toISOString();
+        localStorage.setItem(mapKey, JSON.stringify(map));
+      }
     } catch (_) {}
   }
 
