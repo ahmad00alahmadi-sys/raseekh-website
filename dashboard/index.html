@@ -1051,7 +1051,7 @@ body.is-client .home-bar{
       <label class="field"><span data-ar="رقم الجوال للتواصل" data-en="Phone for reply">رقم الجوال للتواصل</span>
         <input type="tel" required id="requestConfirmPhone" inputmode="tel" maxlength="20" data-ar-placeholder="05xxxxxxxx" data-en-placeholder="05xxxxxxxx" placeholder="05xxxxxxxx" autocomplete="tel">
       </label>
-      <p class="hint" style="margin:-4px 0 10px;font-size:.82rem;color:var(--muted)" data-ar="البريد ورقم الجوال مطلوبان لرد عرض السعر." data-en="Email and phone are both required for the quote reply.">البريد ورقم الجوال مطلوبان لرد عرض السعر.</p>
+      <p class="hint" style="margin:-4px 0 10px;font-size:.82rem;color:var(--muted)" data-ar="بعد الإضافة يظهر الطلب في طلباتي ونرد على بريدكم أو جوالكم." data-en="After adding, the request appears in My requests and we reply on your email or phone.">بعد الإضافة يظهر الطلب في طلباتي ونرد على بريدكم أو جوالكم.</p>
       <label class="field" id="requestConfirmCompanyField" hidden>
         <span id="requestConfirmCompanyLabel" data-ar="اسم الشركة" data-en="Company name">اسم الشركة</span>
         <input type="text" id="requestConfirmCompany" data-ar-placeholder="اسم الشركة" data-en-placeholder="Company name" placeholder="اسم الشركة" autocomplete="organization">
@@ -1068,7 +1068,7 @@ body.is-client .home-bar{
         </span>
       </label>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <button class="btn btn-primary" type="submit" data-ar="إرسال الطلب" data-en="Send request">إرسال الطلب</button>
+        <button class="btn btn-primary" type="submit" data-ar="إضافة إلى طلباتي" data-en="Add to My requests">إضافة إلى طلباتي</button>
         <button class="btn btn-ghost" type="button" id="requestConfirmCancel" data-ar="إلغاء" data-en="Cancel">إلغاء</button>
       </div>
     </form>
@@ -2644,7 +2644,7 @@ body.is-client .home-bar{
             : t('عرض سعر بعد المراجعة', 'Custom quote after review');
           const action = isAdminUser
             ? ''
-            : `<button class="btn btn-primary" style="margin-top:8px;padding:8px 12px;font-size:.82rem" data-client-suggest="${escapeHtml(s.id)}">${escapeHtml(t('اطلب عرض سعر','Request a quote'))}</button>`;
+            : `<button class="btn btn-primary" style="margin-top:8px;padding:8px 12px;font-size:.82rem" data-client-suggest="${escapeHtml(s.id)}">${escapeHtml(t('إضافة إلى طلباتي','Add to My requests'))}</button>`;
           return `<div class="item"><strong>${escapeHtml(titleText)}</strong><span>${escapeHtml(items)}</span><div style="margin-top:6px;font-weight:700;color:var(--harbor)">${escapeHtml(priceText)}</div>${action}</div>`;
         }).join('');
       }
@@ -3319,11 +3319,11 @@ body.is-client .home-bar{
       }
       if (submitToken !== requestConfirmSubmitToken) return;
       if (delivery && delivery.delivered) {
-        showToast(t('تم إرسال طلب عرض السعر', 'Quote request sent'));
+        showToast(t('تمت الإضافة إلى طلباتي', 'Added to My requests'));
       } else if (delivery && delivery.pendingNotify) {
-        showToast(t('استلمنا الطلب — إشعار الإدارة قيد التفعيل', 'Request received — admin notify is activating'));
+        showToast(t('أُضيف لطلباتي — إشعار الإدارة قيد التفعيل', 'Added to My requests — admin notify is activating'));
       } else {
-        showToast(t('حُفظ الطلب محلياً — تابعوه من طلباتي أو أعيدوا المحاولة لاحقاً', 'Request saved locally — track it under My requests or retry later'));
+        showToast(t('حُفظ في طلباتي محلياً — يمكن إعادة الإرسال لاحقاً', 'Saved in My requests locally — you can resend later'));
       }
       renderAll();
       switchPage('requests');
@@ -3352,7 +3352,7 @@ body.is-client .home-bar{
       type: reqType,
       title,
       summary: title + ' — ' + priceLabel(p),
-      message: t('طلب عرض سعر لـ: ', 'Quote request for: ') + title + ' — ' + priceLabel(p),
+      message: t('طلب إضافة خدمة: ', 'Service add request: ') + title + ' — ' + priceLabel(p),
       productId: p.id,
       priceMode: p.priceMode || 'quote',
       price: Number(p.price) || 0
