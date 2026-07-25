@@ -463,7 +463,7 @@ body.is-admin .client-only{display:none!important}
       <button class="nav-item client-only" data-page="requests"><span class="ico">✉</span><span data-ar="طلباتي" data-en="My requests">طلباتي</span></button>
       <button class="nav-item admin-only" data-page="pos"><span class="ico">▣</span><span data-ar="تسجيل دفعة" data-en="Record payment">تسجيل دفعة</span></button>
       <button class="nav-item admin-only" data-page="products"><span class="ico">▤</span><span data-ar="إدارة الخدمات" data-en="Manage services">إدارة الخدمات</span></button>
-      <button class="nav-item admin-only" data-page="sales"><span class="ico">฿</span><span data-ar="سجل الطلبات" data-en="Orders">سجل الطلبات</span></button>
+      <button class="nav-item admin-only" data-page="sales"><span class="ico">฿</span><span data-ar="سجل المدفوعات" data-en="Payments log">سجل المدفوعات</span></button>
       <button class="nav-item admin-only" data-page="leads"><span class="ico">✉</span><span data-ar="طلبات العملاء" data-en="Client requests">طلبات العملاء</span><span class="nav-badge" id="leadsNavBadge">0</span></button>
       <button class="nav-item admin-only" data-page="activity"><span class="ico">◎</span><span data-ar="تسجيل الدخول" data-en="Logins">تسجيل الدخول</span><span class="nav-badge" id="activityNavBadge">0</span></button>
       <button class="nav-item" data-page="settings"><span class="ico">⚙</span><span data-ar="الإعدادات" data-en="Settings">الإعدادات</span></button>
@@ -767,13 +767,13 @@ body.is-admin .client-only{display:none!important}
     <div class="page admin-only" id="page-sales">
       <div class="topbar">
         <div>
-          <h1 data-ar="المبيعات" data-en="Sales">المبيعات</h1>
-          <div class="crumb"><span data-ar="راسخ" data-en="Raseekh">راسخ</span> <span>/</span> <span data-ar="المبيعات" data-en="Sales">المبيعات</span></div>
+          <h1 data-ar="سجل المدفوعات" data-en="Payments log">سجل المدفوعات</h1>
+          <div class="crumb"><span data-ar="راسخ" data-en="Raseekh">راسخ</span> <span>/</span> <span data-ar="مدفوعات" data-en="Payments">مدفوعات</span></div>
         </div>
         <button class="btn btn-ghost" id="exportSalesBtn" data-ar="تصدير CSV" data-en="Export CSV">تصدير CSV</button>
       </div>
       <div class="panel">
-        <h3 data-ar="سجل الفواتير" data-en="Receipt history">سجل الفواتير</h3>
+        <h3 data-ar="المدفوعات المسجّلة" data-en="Recorded payments">المدفوعات المسجّلة</h3>
         <div id="salesList"></div>
       </div>
     </div>
