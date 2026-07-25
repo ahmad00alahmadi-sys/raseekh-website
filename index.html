@@ -1722,11 +1722,13 @@ body.terms-locked{overflow:hidden}
       accountBtn.textContent = t('حسابي', 'My account');
       const fullName = user.user_metadata && user.user_metadata.full_name;
       const phone = user.user_metadata && user.user_metadata.phone;
+      const company = user.user_metadata && user.user_metadata.company;
       if (fullName) {
         document.getElementById('payName').value = fullName;
         if (!document.getElementById('contactName').value) document.getElementById('contactName').value = fullName;
       }
       if (phone && !document.getElementById('contactPhone').value) document.getElementById('contactPhone').value = phone;
+      if (company && !document.getElementById('contactCompany').value) document.getElementById('contactCompany').value = company;
       if (user.email && !document.getElementById('contactEmail').value) document.getElementById('contactEmail').value = user.email;
     } else {
       locked.style.display = 'flex';
