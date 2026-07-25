@@ -2935,6 +2935,8 @@ body.is-client .home-bar{
       companyEl.value = needsCompany ? (draft.company || metaCompany || '') : '';
     }
     document.getElementById('requestConfirmNote').value = '';
+    const purchaseCheck = document.getElementById('requestPurchaseTermsCheck');
+    if (purchaseCheck) purchaseCheck.checked = false;
     const submitBtn = document.querySelector('#requestConfirmForm button[type="submit"]');
     if (submitBtn) {
       submitBtn.disabled = false;
