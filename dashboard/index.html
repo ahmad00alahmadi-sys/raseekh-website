@@ -1155,6 +1155,7 @@ body.is-admin .client-only{display:none!important}
     if (page === 'suggestions') renderClientSuggestionsPage();
     if (page === 'requests') renderClientRequestsPage();
     if (page === 'leads') renderAdminLeads();
+    if (page === 'settings' && isAdminUser) renderDeliveryStatus();
   }
   document.querySelectorAll('.nav-item').forEach(btn => btn.addEventListener('click', () => switchPage(btn.dataset.page)));
   document.querySelectorAll('[data-goto]').forEach(el => el.addEventListener('click', () => switchPage(el.dataset.goto)));
