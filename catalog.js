@@ -282,9 +282,11 @@
     return list;
   }
 
-  function readStoreSettings() {
+  const PUBLIC_NOTIFY_KEY = 'raseekh_public_notify_v1';
+
+  function readObject(key) {
     try {
-      const raw = localStorage.getItem('raseekh_admin_store_v1');
+      const raw = localStorage.getItem(key);
       if (!raw) return {};
       const parsed = JSON.parse(raw);
       return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {};
@@ -293,10 +295,24 @@
     }
   }
 
+  function publishPublicNotify(settings) {
+    const webhookUrl = String((settings && settings.webhookUrl) || '').trim();
+    writeJson(PUBLIC_NOTIFY_KEY, { webhookUrl: webhookUrl || '' });
+    return webhookUrl;
+  }
+
+  function resolveWebhookUrl() {
+    const fromWindow = typeof global !== 'undefined' && global.RASEEKH_WEBHOOK
+      ? String(global.RASEEKH_WEBHOOK).trim()
+      : '';
+    const publicCfg = readObject(PUBLIC_NOTIFY_KEY);
+    const store = readObject('raseekh_admin_store_v1');
+    return fromWindow || String(publicCfg.webhookUrl || '').trim() || String(store.webhookUrl || '').trim();
+  }
+
   function notifyRequestWebhook(row) {
     try {
-      const store = readStoreSettings();
-      const url = String(store.webhookUrl || '').trim();
+      const url = resolveWebhookUrl();
       if (!url || !/^https?:\/\//i.test(url)) return Promise.resolve(false);
       return fetch(url, {
         method: 'POST',
@@ -310,6 +326,23 @@
     }
   }
 
+  function requestTypeLabel(type, lang) {
+    const map = {
+      electronics: { ar: 'منتجات إلكترونية', en: 'Electronics' },
+      maintenance: { ar: 'صيانة مواقع', en: 'Website maintenance' },
+      'web-dev': { ar: 'تطوير مواقع', en: 'Website development' },
+      programming: { ar: 'خدمات البرمجة', en: 'Programming' },
+      systems: { ar: 'أنظمة ولوحات', en: 'Systems & dashboards' },
+      api: { ar: 'ربط API', en: 'API & integrations' },
+      system: { ar: 'نظام كامل', en: 'Complete system' },
+      product: { ar: 'منتج', en: 'Product' },
+      suggestion: { ar: 'اقتراح', en: 'Suggestion' },
+      site: { ar: 'طلب موقع', en: 'Website request' }
+    };
+    const row = map[type] || { ar: type || 'طلب', en: type || 'Request' };
+    return lang === 'en' ? row.en : row.ar;
+  }
+
   function addSharedRequest(payload) {
     const list = readJson(CLIENT_REQUESTS_KEY, []);
     const row = Object.assign({
@@ -318,6 +351,11 @@
       status: 'new',
       source: 'site'
     }, payload || {});
+    if (!row.fingerprint) {
+      row.fingerprint = 'req:' + (row.at || '') + ':' + (row.message || '') + ':' + (row.phone || '') + ':' + (row.email || '');
+    }
+    const dup = list.some((x) => x.fingerprint && x.fingerprint === row.fingerprint);
+    if (dup) return list.find((x) => x.fingerprint === row.fingerprint) || row;
     list.unshift(row);
     writeJson(CLIENT_REQUESTS_KEY, list.slice(0, 200));
     notifyRequestWebhook(row);
@@ -396,6 +434,9 @@
     pruneSuggestions,
     addSharedRequest,
     notifyRequestWebhook,
+    publishPublicNotify,
+    resolveWebhookUrl,
+    requestTypeLabel,
     getSharedRequests,
     saveSharedRequests,
     updateSharedRequestStatus,

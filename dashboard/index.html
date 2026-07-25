@@ -67,6 +67,19 @@ a{color:inherit;text-decoration:none}
 }
 .form input:focus,.form select:focus,.form textarea:focus{outline:2px solid rgba(42,111,122,.28);border-color:var(--harbor)}
 .mobile-logout{display:none}
+.nav-badge{
+  margin-inline-start:auto;min-width:20px;height:20px;padding:0 6px;border-radius:999px;
+  background:var(--copper);color:#fff;font-size:.7rem;font-weight:800;display:none;align-items:center;justify-content:center;
+}
+.nav-badge.show{display:inline-flex}
+.lead-filters{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 4px}
+.lead-filters button{
+  border:1.5px solid var(--line);background:#fff;color:var(--muted);border-radius:var(--radius);
+  padding:8px 12px;cursor:pointer;font-weight:700;font-size:.82rem;
+}
+.lead-filters button.active{background:var(--navy);color:#F4F7FA;border-color:var(--navy)}
+.stat.clickable{cursor:pointer;transition:transform .15s,border-color .15s}
+.stat.clickable:hover{transform:translateY(-2px);border-color:var(--copper)}
 .btn{
   display:inline-flex;align-items:center;justify-content:center;gap:8px;
   border:none;border-radius:var(--radius);padding:12px 18px;cursor:pointer;font-weight:700;
@@ -371,7 +384,7 @@ body.is-admin .client-only{display:none!important}
       <button class="nav-item admin-only" data-page="pos"><span class="ico">▣</span><span data-ar="طلبات البيع" data-en="Sales desk">طلبات البيع</span></button>
       <button class="nav-item admin-only" data-page="products"><span class="ico">▤</span><span data-ar="إدارة المنتجات" data-en="Manage products">إدارة المنتجات</span></button>
       <button class="nav-item admin-only" data-page="sales"><span class="ico">฿</span><span data-ar="سجل الطلبات" data-en="Orders">سجل الطلبات</span></button>
-      <button class="nav-item admin-only" data-page="leads"><span class="ico">✉</span><span data-ar="طلبات العملاء" data-en="Client requests">طلبات العملاء</span></button>
+      <button class="nav-item admin-only" data-page="leads"><span class="ico">✉</span><span data-ar="طلبات العملاء" data-en="Client requests">طلبات العملاء</span><span class="nav-badge" id="leadsNavBadge">0</span></button>
       <button class="nav-item" data-page="settings"><span class="ico">⚙</span><span data-ar="الإعدادات" data-en="Settings">الإعدادات</span></button>
     </nav>
     <div class="side-foot">
@@ -418,7 +431,11 @@ body.is-admin .client-only{display:none!important}
         <div class="stat"><div class="label" data-ar="المنتجات" data-en="Products">المنتجات</div><div class="value" id="statProducts">0</div><div class="hint" data-ar="في الكتالوج" data-en="in catalog">في الكتالوج</div></div>
         <div class="stat"><div class="label" data-ar="مبيعات اليوم" data-en="Today sales">مبيعات اليوم</div><div class="value" id="statToday">0</div><div class="hint">SAR</div></div>
         <div class="stat"><div class="label" data-ar="عدد الفواتير" data-en="Receipts">عدد الفواتير</div><div class="value" id="statReceipts">0</div><div class="hint" data-ar="اليوم" data-en="today">اليوم</div></div>
-        <div class="stat"><div class="label" data-ar="مخزون منخفض" data-en="Low stock">مخزون منخفض</div><div class="value" id="statLow">0</div><div class="hint" data-ar="يحتاج تزويد" data-en="needs restock">يحتاج تزويد</div></div>
+        <div class="stat clickable" id="statNewRequestsCard" role="button" tabindex="0">
+          <div class="label" data-ar="طلبات جديدة" data-en="New requests">طلبات جديدة</div>
+          <div class="value" id="statNewRequests">0</div>
+          <div class="hint" data-ar="بانتظار المتابعة" data-en="awaiting follow-up">بانتظار المتابعة</div>
+        </div>
       </div>
       <div class="stats client-only">
         <div class="stat"><div class="label" data-ar="منتجات متاحة" data-en="Available items">منتجات متاحة</div><div class="value" id="statClientProducts">0</div><div class="hint" data-ar="للطلب" data-en="to request">للطلب</div></div>
@@ -516,6 +533,13 @@ body.is-admin .client-only{display:none!important}
       </div>
       <div class="panel">
         <h3 data-ar="كل الطلبات الواردة" data-en="All incoming requests">كل الطلبات الواردة</h3>
+        <div class="lead-filters" id="leadFilters">
+          <button type="button" class="active" data-lead-filter="all" data-ar="الكل" data-en="All">الكل</button>
+          <button type="button" data-lead-filter="new" data-ar="جديد" data-en="New">جديد</button>
+          <button type="button" data-lead-filter="in_progress" data-ar="قيد المعالجة" data-en="In progress">قيد المعالجة</button>
+          <button type="button" data-lead-filter="done" data-ar="مكتمل" data-en="Done">مكتمل</button>
+          <button type="button" data-lead-filter="closed" data-ar="مغلق" data-en="Closed">مغلق</button>
+        </div>
         <div id="adminLeadsList" style="margin-top:12px"></div>
       </div>
     </div>
@@ -687,7 +711,7 @@ body.is-admin .client-only{display:none!important}
 
 <div class="modal-overlay" id="requestConfirmModal">
   <div class="modal">
-    <button class="modal-close" id="requestConfirmClose" type="button" aria-label="close">×</button>
+    <button class="modal-close" id="requestConfirmClose" type="button" data-ar-aria="إغلاق" data-en-aria="Close" aria-label="إغلاق">×</button>
     <h2 style="margin-bottom:8px" data-ar="تأكيد طلب عرض السعر" data-en="Confirm quote request">تأكيد طلب عرض السعر</h2>
     <p id="requestConfirmTitle" style="color:var(--muted);font-size:.92rem;margin-bottom:14px"></p>
     <form class="form" id="requestConfirmForm">
@@ -832,6 +856,24 @@ body.is-admin .client-only{display:none!important}
   function saveStore(){
     if (!requireAdmin('saveStore')) return;
     localStorage.setItem(ADMIN_STORE_KEY, JSON.stringify(store));
+    if (Catalog && Catalog.publishPublicNotify) Catalog.publishPublicNotify(store);
+  }
+  let leadsFilter = 'all';
+  function updateLeadsBadge(){
+    loadClientRequests();
+    const n = clientRequests.filter((r) => (r.status || 'new') === 'new').length;
+    const badge = document.getElementById('leadsNavBadge');
+    if (!badge) return;
+    badge.textContent = String(n);
+    badge.classList.toggle('show', isAdminUser && n > 0);
+  }
+  function requestTitle(r){
+    if (r.title && !/^(electronics|maintenance|web-dev|programming|systems|api|system|site|product|suggestion)$/i.test(String(r.title))) {
+      return r.title;
+    }
+    const type = r.type || r.title || 'site';
+    if (Catalog && Catalog.requestTypeLabel) return Catalog.requestTypeLabel(type, currentLang);
+    return r.title || t('طلب', 'Request');
   }
   function loadClientRequests(){
     if (Catalog && Catalog.getSharedRequests) {
@@ -898,6 +940,10 @@ body.is-admin .client-only{display:none!important}
       const v = lang === 'ar' ? el.getAttribute('data-ar-placeholder') : el.getAttribute('data-en-placeholder');
       if (v !== null) el.setAttribute('placeholder', v);
     });
+    document.querySelectorAll('[data-ar-aria]').forEach(el => {
+      const v = lang === 'ar' ? el.getAttribute('data-ar-aria') : el.getAttribute('data-en-aria');
+      if (v !== null) el.setAttribute('aria-label', v);
+    });
     document.getElementById('loginLangBtn').textContent = lang === 'ar' ? 'EN' : 'AR';
     document.getElementById('dashLangBtn').textContent = lang === 'ar' ? 'EN' : 'AR';
     if (isDemo) {
@@ -906,6 +952,7 @@ body.is-admin .client-only{display:none!important}
     applyRoleUI();
     renderAll();
     fillCategoryFilter();
+    updateLeadsBadge();
   }
 
   document.getElementById('loginLangBtn').addEventListener('click', () => applyLang(currentLang === 'ar' ? 'en' : 'ar'));
@@ -1142,7 +1189,10 @@ body.is-admin .client-only{display:none!important}
       document.getElementById('statProducts').textContent = products.length;
       document.getElementById('statToday').textContent = total.toFixed(0);
       document.getElementById('statReceipts').textContent = todays.length;
-      document.getElementById('statLow').textContent = products.filter(p => p.kind !== 'service' && p.stock <= 5).length;
+      loadClientRequests();
+      const newCount = clientRequests.filter((r) => (r.status || 'new') === 'new').length;
+      document.getElementById('statNewRequests').textContent = newCount;
+      updateLeadsBadge();
       const holder = document.getElementById('recentSales');
       const recent = sales.slice(0, 5);
       if (!recent.length) {
@@ -1271,11 +1321,26 @@ body.is-admin .client-only{display:none!important}
     let siteLeads = [];
     try { siteLeads = JSON.parse(localStorage.getItem('raseekh_contact_leads') || '[]'); } catch (_) {}
 
-    // Import legacy site leads into shared requests once (for status tracking)
+    // Import legacy site leads once — skip if already mirrored into shared requests
+    let changed = false;
     siteLeads.forEach((r) => {
       if (!r || r._imported) return;
-      const fingerprint = 'site:' + (r.at || '') + ':' + (r.message || '') + ':' + (r.phone || '');
-      if (clientRequests.some(x => x.fingerprint === fingerprint)) return;
+      const fingerprint = 'site:' + (r.at || '') + ':' + (r.message || '') + ':' + (r.phone || '') + ':' + (r.email || '');
+      const already = clientRequests.some((x) =>
+        x.fingerprint === fingerprint ||
+        (
+          String(x.message || '') === String(r.message || '') &&
+          String(x.at || '') === String(r.at || '') &&
+          String(x.phone || '') === String(r.phone || '') &&
+          String(x.email || '') === String(r.email || '')
+        )
+      );
+      r._imported = true;
+      changed = true;
+      if (already) return;
+      const title = Catalog && Catalog.requestTypeLabel
+        ? Catalog.requestTypeLabel(r.type || 'site', currentLang)
+        : (r.type || t('طلب موقع', 'Website request'));
       clientRequests.unshift({
         id: uid(),
         at: r.at || new Date().toISOString(),
@@ -1283,31 +1348,40 @@ body.is-admin .client-only{display:none!important}
         phone: r.phone || '',
         company: r.company || '',
         email: r.email || '',
-        title: r.type || t('طلب موقع', 'Website request'),
+        title,
         message: r.message || '',
         type: r.type || 'site',
         source: 'site',
         status: 'new',
-        fingerprint: fingerprint
+        fingerprint
       });
-      r._imported = true;
     });
-    try { localStorage.setItem('raseekh_contact_leads', JSON.stringify(siteLeads)); } catch (_) {}
-    saveClientRequests();
-    loadClientRequests();
+    if (changed) {
+      try { localStorage.setItem('raseekh_contact_leads', JSON.stringify(siteLeads)); } catch (_) {}
+      saveClientRequests();
+      loadClientRequests();
+    }
+    updateLeadsBadge();
 
-    if (!clientRequests.length) {
-      box.innerHTML = `<div class="empty">${t('لا توجد طلبات واردة بعد','No incoming requests yet')}</div>`;
+    const filtered = clientRequests.filter((r) => leadsFilter === 'all' || (r.status || 'new') === leadsFilter);
+    if (!filtered.length) {
+      box.innerHTML = `<div class="empty">${t('لا توجد طلبات ضمن هذا التصفية','No requests in this filter')}</div>`;
       return;
     }
-    box.innerHTML = clientRequests.slice(0, 80).map(r => `
+    const sorted = filtered.slice().sort((a, b) => {
+      const rank = (s) => (s === 'new' ? 0 : s === 'in_progress' ? 1 : 2);
+      const d = rank(a.status || 'new') - rank(b.status || 'new');
+      if (d !== 0) return d;
+      return new Date(b.at || 0) - new Date(a.at || 0);
+    });
+    box.innerHTML = sorted.slice(0, 80).map(r => `
       <div class="sale-row" style="align-items:flex-start">
         <div style="flex:1">
           <div><strong>${escapeHtml(r.name || r.email || '—')}</strong> · <span style="color:var(--muted)">${escapeHtml(r.source === 'site' ? t('نموذج الموقع','Website form') : t('حساب عميل','Client account'))}</span></div>
           <div style="color:var(--muted);font-size:.86rem;margin-top:2px">
             ${escapeHtml([r.phone, r.email, r.company].filter(Boolean).join(' · ') || t('بدون بيانات تواصل إضافية','No extra contact details'))}
           </div>
-          <div style="font-size:.92rem;margin-top:6px"><strong>${escapeHtml(r.title || t('طلب','Request'))}</strong></div>
+          <div style="font-size:.92rem;margin-top:6px"><strong>${escapeHtml(requestTitle(r))}</strong></div>
           <div style="color:var(--muted);font-size:.86rem;white-space:pre-wrap">${escapeHtml(r.message || '')}</div>
           <div style="color:var(--muted);font-size:.78rem;margin-top:4px">${new Date(r.at).toLocaleString(currentLang === 'ar' ? 'ar-SA' : 'en-US')}</div>
         </div>
@@ -1321,6 +1395,33 @@ body.is-admin .client-only{display:none!important}
         </div>
       </div>
     `).join('');
+  }
+
+  const leadFilters = document.getElementById('leadFilters');
+  if (leadFilters) {
+    leadFilters.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-lead-filter]');
+      if (!btn) return;
+      leadsFilter = btn.getAttribute('data-lead-filter') || 'all';
+      leadFilters.querySelectorAll('[data-lead-filter]').forEach((el) => el.classList.toggle('active', el === btn));
+      renderAdminLeads();
+    });
+  }
+  const statNewCard = document.getElementById('statNewRequestsCard');
+  if (statNewCard) {
+    const openNewLeads = () => {
+      leadsFilter = 'new';
+      if (leadFilters) {
+        leadFilters.querySelectorAll('[data-lead-filter]').forEach((el) => {
+          el.classList.toggle('active', el.getAttribute('data-lead-filter') === 'new');
+        });
+      }
+      switchPage('leads');
+    };
+    statNewCard.addEventListener('click', openNewLeads);
+    statNewCard.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openNewLeads(); }
+    });
   }
 
   const adminLeadsList = document.getElementById('adminLeadsList');
@@ -1802,7 +1903,9 @@ body.is-admin .client-only{display:none!important}
     store.webhookUrl = (document.getElementById('storeWebhook').value || '').trim();
     saveStore();
     document.getElementById('storeMsg').style.color = 'var(--ok)';
-    document.getElementById('storeMsg').textContent = t('تم حفظ بيانات المتجر','Store details saved');
+    document.getElementById('storeMsg').textContent = store.webhookUrl
+      ? t('تم الحفظ — إشعارات الطلبات مفعّلة عبر Webhook', 'Saved — request webhook notifications enabled')
+      : t('تم حفظ بيانات المتجر','Store details saved');
   });
 
   applyLang(currentLang);

@@ -68,10 +68,26 @@
         },
         {
           "@type": "Question",
+          "name": "ما الفرق بين العميل والمدير؟",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "العميل يطلب ويتابع. المدير فقط يعدّل الكتالوج والمبيعات والطلبات."
+          }
+        },
+        {
+          "@type": "Question",
           "name": "هل يمكن الدفع أونلاين؟",
           "acceptedAnswer": {
             "@type": "Answer",
             "text": "نعم — بعد تسجيل الدخول عبر Moyasar (بطاقة / Apple Pay)."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "هل تعملون عربي وإنجليزي؟",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "نعم. الموقع وحساب العميل يدعمون التبديل الفوري بين العربية والإنجليزية."
           }
         }
       ]
@@ -459,7 +475,7 @@ body.lang-en .footer-brand{font-family:'Space Grotesk',sans-serif}
   </nav>
 </header>
 
-<div class="modal-overlay" id="authModal">
+<div class="modal-overlay" id="authModal" role="dialog" aria-modal="true" aria-labelledby="authModalTitle" aria-hidden="true">
   <div class="modal">
     <button class="modal-close" id="modalCloseBtn" type="button" data-ar-aria="إغلاق" data-en-aria="Close" aria-label="إغلاق">×</button>
     <div id="authTabs">
@@ -468,7 +484,7 @@ body.lang-en .footer-brand{font-family:'Space Grotesk',sans-serif}
         <button type="button" class="tab" id="modalRegisterTabBtn" data-ar="حساب جديد" data-en="Sign up">حساب جديد</button>
       </div>
       <div class="panel-auth active" id="modalLoginPanel">
-        <h3 data-ar="تسجيل الدخول" data-en="Sign in to your account">تسجيل الدخول</h3>
+        <h3 id="authModalTitle" data-ar="تسجيل الدخول" data-en="Sign in to your account">تسجيل الدخول</h3>
         <form class="form" id="loginForm">
           <input type="email" id="loginEmail" required data-ar-placeholder="البريد الإلكتروني" data-en-placeholder="Email" placeholder="البريد الإلكتروني">
           <input type="password" id="loginPassword" required data-ar-placeholder="كلمة المرور" data-en-placeholder="Password" placeholder="كلمة المرور">
@@ -997,10 +1013,15 @@ body.lang-en .footer-brand{font-family:'Space Grotesk',sans-serif}
     if (!message) return;
     requestFromCatalog({ type, message });
     const btn = document.getElementById('heroQuoteBtn');
-    const prev = btn.textContent;
-    btn.classList.add('sent');
-    btn.textContent = t('تم — أكمل البيانات', 'Done — finish details');
-    setTimeout(() => { btn.classList.remove('sent'); btn.textContent = prev; applyLang(currentLang); }, 1600);
+    const prevAr = btn.getAttribute('data-ar') || 'اطلب عرض سعر';
+    const prevEn = btn.getAttribute('data-en') || 'Request a quote';
+    btn.classList.remove('sent');
+    btn.textContent = t('أكمل النموذج ↓', 'Continue below ↓');
+    setTimeout(() => {
+      btn.setAttribute('data-ar', prevAr);
+      btn.setAttribute('data-en', prevEn);
+      applyLang(currentLang);
+    }, 2200);
   });
 
   function typeForProduct(p){
@@ -1120,10 +1141,19 @@ body.lang-en .footer-brand{font-family:'Space Grotesk',sans-serif}
   navToggle.addEventListener('click', () => setNavOpen(!navLinks.classList.contains('open')));
   navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => setNavOpen(false)));
 
-  function openModal(){ authModal.classList.add('open'); }
+  let lastFocusBeforeAuth = null;
+  function openModal(){
+    lastFocusBeforeAuth = document.activeElement;
+    authModal.classList.add('open');
+    authModal.setAttribute('aria-hidden', 'false');
+    const focusEl = document.querySelector('#authModal .panel-auth.active input') || document.getElementById('modalCloseBtn');
+    setTimeout(() => focusEl && focusEl.focus(), 20);
+  }
   function closeModal(){
     authModal.classList.remove('open');
+    authModal.setAttribute('aria-hidden', 'true');
     ['loginMsg','registerMsg','forgotMsg','resetMsg'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = ''; });
+    if (lastFocusBeforeAuth && typeof lastFocusBeforeAuth.focus === 'function') lastFocusBeforeAuth.focus();
   }
   function showAuthPanel(name){
     Object.values(panels).forEach(p => p.classList.remove('active'));
@@ -1131,6 +1161,17 @@ body.lang-en .footer-brand{font-family:'Space Grotesk',sans-serif}
     modalTabsBar.style.display = (name === 'login' || name === 'register') ? 'flex' : 'none';
     if (name === 'login') { document.getElementById('modalLoginTabBtn').classList.add('active'); document.getElementById('modalRegisterTabBtn').classList.remove('active'); }
     if (name === 'register') { document.getElementById('modalRegisterTabBtn').classList.add('active'); document.getElementById('modalLoginTabBtn').classList.remove('active'); }
+    const titleEl = document.getElementById('authModalTitle');
+    if (titleEl) {
+      const heading = panels[name] && panels[name].querySelector('h3');
+      if (heading) {
+        titleEl.setAttribute('data-ar', heading.getAttribute('data-ar') || heading.textContent);
+        titleEl.setAttribute('data-en', heading.getAttribute('data-en') || heading.textContent);
+        titleEl.textContent = currentLang === 'ar'
+          ? (heading.getAttribute('data-ar') || heading.textContent)
+          : (heading.getAttribute('data-en') || heading.textContent);
+      }
+    }
   }
 
   document.getElementById('accountBtn').addEventListener('click', () => {
@@ -1263,11 +1304,9 @@ body.lang-en .footer-brand{font-family:'Space Grotesk',sans-serif}
       email: email,
       userId: loggedInUser && loggedInUser.id ? loggedInUser.id : ''
     };
-    try {
-      const prev = JSON.parse(localStorage.getItem('raseekh_contact_leads') || '[]');
-      prev.unshift(payload);
-      localStorage.setItem('raseekh_contact_leads', JSON.stringify(prev.slice(0, 50)));
-    } catch (_) {}
+    const typeTitle = Catalog && Catalog.requestTypeLabel
+      ? Catalog.requestTypeLabel(payload.type, currentLang)
+      : payload.type;
     if (Catalog && Catalog.addSharedRequest) {
       Catalog.addSharedRequest({
         name: payload.name,
@@ -1275,11 +1314,12 @@ body.lang-en .footer-brand{font-family:'Space Grotesk',sans-serif}
         company: payload.company,
         email: payload.email,
         userId: payload.userId,
-        title: payload.type,
+        title: typeTitle,
         message: payload.message,
         type: payload.type,
         source: loggedInUser ? 'client' : 'site',
-        status: 'new'
+        status: 'new',
+        fingerprint: 'site:' + payload.at + ':' + payload.message + ':' + payload.phone + ':' + payload.email
       });
     }
     result.style.color = 'var(--ok)';
