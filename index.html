@@ -1897,7 +1897,8 @@ body.pay-paused .pay-public-entry{display:none!important}
   /* Flip to true when the new public checkout is ready. */
   const PUBLIC_PAY_ENABLED = false;
   const DASHBOARD_URL = '/dashboard/';
-  const MOYASAR_PUBLISHABLE_KEY = 'pk_live_U94Vg5e2kjJY557CU8qjnxv83shQJx6o125RrRey';
+  /* Publishable key left blank while public checkout is paused (payment path will change). */
+  const MOYASAR_PUBLISHABLE_KEY = '';
   const Auth = window.RaseekhAuth;
   const Catalog = window.RaseekhCatalog;
   let currentLang = localStorage.getItem('raseekh_lang') || 'ar';
@@ -1908,6 +1909,7 @@ body.pay-paused .pay-public-entry{display:none!important}
 
   if (!PUBLIC_PAY_ENABLED) {
     document.body.classList.add('pay-paused');
+    try { sessionStorage.removeItem('raseekh_pending_pay'); } catch (_) {}
     try {
       const url = new URL(location.href);
       const payReturn = url.searchParams.get('status') || url.searchParams.get('pay') || url.searchParams.get('id') || url.searchParams.get('payment_id');
@@ -2768,6 +2770,11 @@ body.pay-paused .pay-public-entry{display:none!important}
     openModal();
   }
   document.getElementById('payLoginBtn').addEventListener('click', async () => {
+    if (!PUBLIC_PAY_ENABLED) {
+      const contact = document.getElementById('contact');
+      if (contact) scrollToEl(contact, { block: 'start' });
+      return;
+    }
     if (loggedInUser && isLocalAuthUser(loggedInUser) && Auth) {
       try { await Auth.signOut(); } catch (_) {}
       authProvider = null;
@@ -2936,7 +2943,7 @@ body.pay-paused .pay-public-entry{display:none!important}
       method: 'card',
       total,
       items: 1,
-      note: pendingPay.note || t('عربون عبر Moyasar', 'Moyasar deposit'),
+      note: pendingPay.note || t('عربون عبر بوابة الدفع', 'Payment gateway deposit'),
       name: pendingPay.name || (user.user_metadata && user.user_metadata.full_name) || '',
       email: user.email || pendingPay.email || '',
       userId: user.id || pendingPay.userId || '',
@@ -3493,6 +3500,11 @@ body.pay-paused .pay-public-entry{display:none!important}
     const amount = parseFloat(document.getElementById('payAmount').value);
     const name = document.getElementById('payName').value.trim();
     const msg = document.getElementById('payValidationMsg');
+    if (!MOYASAR_PUBLISHABLE_KEY) {
+      msg.style.color = 'var(--danger)';
+      msg.textContent = t('بوابة الدفع غير مفعّلة حالياً — تواصلوا عبر طلب عرض السعر', 'Checkout is not enabled right now — request a quote instead');
+      return;
+    }
     if (!navigator.onLine) {
       msg.style.color = 'var(--danger)';
       msg.textContent = t('أنتم غير متصلين — أعيدوا المحاولة بعد عودة الشبكة', 'You are offline — try again when back online');
@@ -3578,7 +3590,7 @@ body.pay-paused .pay-public-entry{display:none!important}
           method: 'card',
           total: amount,
           items: 1,
-          note: note || t('عربون عبر الموقع', 'Site deposit'),
+          note: note || t('عربون عبر بوابة الدفع', 'Payment gateway deposit'),
           name: name,
           email: (loggedInUser && loggedInUser.email) || '',
           userId: (loggedInUser && loggedInUser.id) || '',
@@ -3622,6 +3634,7 @@ body.pay-paused .pay-public-entry{display:none!important}
   document.getElementById('payBackBtn').addEventListener('click', () => showPayStep(payDetailsStep));
   document.getElementById('payRetryBtn').addEventListener('click', () => showPayStep(payDetailsStep));
   (function checkPaymentReturn(){
+    if (!PUBLIC_PAY_ENABLED) return;
     const params = paymentReturnParams();
     const status = params.get('status');
     if (status !== 'paid' && status !== 'failed') {
