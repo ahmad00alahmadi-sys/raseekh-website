@@ -1031,6 +1031,16 @@ body.is-admin .client-only{display:none!important}
       .replace(/ى/g, 'ي')
       .trim();
   }
+  function prefersReducedMotion(){
+    try { return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); }
+    catch (_) { return false; }
+  }
+  function scrollToEl(el, opts){
+    if (!el || !el.scrollIntoView) return;
+    const behavior = prefersReducedMotion() ? 'auto' : ((opts && opts.behavior) || 'smooth');
+    const block = (opts && opts.block) || 'start';
+    try { el.scrollIntoView({ behavior, block }); } catch (_) { el.scrollIntoView(); }
+  }
   function productSearchBlob(p){
     if (!p) return '';
     return normalizeSearchText([p.name, p.name_en, p.category, p.category_en, p.desc, p.desc_en].filter(Boolean).join(' '));
@@ -3202,7 +3212,7 @@ body.is-admin .client-only{display:none!important}
       e.preventDefault();
       switchPage('settings');
       const panel = document.getElementById('storeSettingsPanel');
-      if (panel) panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (panel) scrollToEl(panel, { block: 'start' });
     });
   }
 
