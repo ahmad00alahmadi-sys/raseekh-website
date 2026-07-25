@@ -55,13 +55,22 @@ drop policy if exists "raseekh_settings_auth_write" on public.site_settings;
 drop policy if exists "raseekh_settings_auth_update" on public.site_settings;
 drop policy if exists "raseekh_settings_admin_write" on public.site_settings;
 drop policy if exists "raseekh_settings_admin_update" on public.site_settings;
-create policy "raseekh_settings_public_read" on public.site_settings for select to anon, authenticated using (key = 'public_notify');
+create policy "raseekh_settings_public_read" on public.site_settings for select to anon, authenticated using (
+  key in ('public_notify', 'public_catalog')
+);
 create policy "raseekh_settings_admin_write" on public.site_settings for insert to authenticated with check (
-  key = 'public_notify' and lower(coalesce(auth.jwt() ->> 'email', '')) = 'ahmad00alahmadi@gmail.com'
+  key in ('public_notify', 'public_catalog')
+  and lower(coalesce(auth.jwt() ->> 'email', '')) = 'ahmad00alahmadi@gmail.com'
 );
 create policy "raseekh_settings_admin_update" on public.site_settings for update to authenticated
-  using (key = 'public_notify' and lower(coalesce(auth.jwt() ->> 'email', '')) = 'ahmad00alahmadi@gmail.com')
-  with check (key = 'public_notify' and lower(coalesce(auth.jwt() ->> 'email', '')) = 'ahmad00alahmadi@gmail.com');
+  using (
+    key in ('public_notify', 'public_catalog')
+    and lower(coalesce(auth.jwt() ->> 'email', '')) = 'ahmad00alahmadi@gmail.com'
+  )
+  with check (
+    key in ('public_notify', 'public_catalog')
+    and lower(coalesce(auth.jwt() ->> 'email', '')) = 'ahmad00alahmadi@gmail.com'
+  );
 grant select on table public.site_settings to anon, authenticated;
 grant insert, update on table public.site_settings to authenticated;
 

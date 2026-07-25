@@ -235,6 +235,7 @@
       : pruneSuggestions(list);
     writeJson(PUBLIC_KEY, clientProducts);
     writeJson(SUGGESTIONS_KEY, finalSuggestions);
+    publishClientCatalogToCloud(clientProducts, finalSuggestions).catch(() => {});
     return clientProducts;
   }
 
@@ -507,12 +508,23 @@
     }
   }
 
-  async function pushRequestToCloud(row) {
+  async function pushRequestToCloud(row, opts) {
     const sb = getSupabase();
     if (!sb || !row || !row.id) return false;
+    const allowUpdate = !!(opts && opts.allowUpdate);
+    const payload = rowToCloud(row);
     try {
-      const { error } = await sb.from('client_requests').upsert(rowToCloud(row), { onConflict: 'id' });
-      return !error;
+      if (allowUpdate) {
+        const { error } = await sb.from('client_requests').upsert(payload, { onConflict: 'id' });
+        return !error;
+      }
+      // Anon guests only have INSERT — avoid upsert UPDATE privilege failures.
+      const { error } = await sb.from('client_requests').upsert(payload, { onConflict: 'id', ignoreDuplicates: true });
+      if (!error) return true;
+      const { error: insertErr } = await sb.from('client_requests').insert(payload);
+      if (!insertErr) return true;
+      const msg = String((insertErr && insertErr.message) || '').toLowerCase();
+      return msg.includes('duplicate') || msg.includes('unique') || insertErr.code === '23505';
     } catch (_) {
       return false;
     }
@@ -708,10 +720,66 @@
         fingerprint: row.fingerprint || '',
         payload: row
       };
-      const { error } = await sb.from('payments').upsert(payload, { onConflict: 'id' });
-      return !error;
+      // Anon/authenticated inserts only — no UPDATE grant on payments.
+      const { error } = await sb.from('payments').upsert(payload, { onConflict: 'id', ignoreDuplicates: true });
+      if (!error) return true;
+      const { error: insertErr } = await sb.from('payments').insert(payload);
+      if (!insertErr) return true;
+      const msg = String((insertErr && insertErr.message) || '').toLowerCase();
+      return msg.includes('duplicate') || msg.includes('unique') || insertErr.code === '23505';
     } catch (_) {
       return false;
+    }
+  }
+
+  function cloudPaymentToRow(row) {
+    if (!row) return null;
+    const embedded = row.payload && typeof row.payload === 'object' ? row.payload : {};
+    return Object.assign({}, embedded, {
+      id: row.id || embedded.id,
+      at: row.created_at || embedded.at || new Date().toISOString(),
+      method: row.method || embedded.method || 'card',
+      total: Number(row.total != null ? row.total : embedded.total) || 0,
+      items: Number(row.items != null ? row.items : embedded.items) || 1,
+      note: row.note || embedded.note || '',
+      name: row.name || embedded.name || '',
+      email: row.email || embedded.email || '',
+      userId: row.user_id || embedded.userId || '',
+      source: row.source || embedded.source || 'site',
+      paymentId: row.payment_id || embedded.paymentId || '',
+      fingerprint: row.fingerprint || embedded.fingerprint || '',
+      lines: embedded.lines || []
+    });
+  }
+
+  async function syncPaymentsFromCloud() {
+    const sb = getSupabase();
+    if (!sb) return getPaymentRecords();
+    try {
+      const { data, error } = await sb
+        .from('payments')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(200);
+      if (error || !Array.isArray(data)) return getPaymentRecords();
+      const local = getPaymentRecords();
+      const byId = new Map();
+      local.forEach((r) => { if (r && r.id) byId.set(r.id, r); });
+      data.map(cloudPaymentToRow).filter(Boolean).forEach((r) => {
+        if (!r.id) return;
+        const prev = byId.get(r.id);
+        if (!prev) byId.set(r.id, r);
+        else {
+          const prevTime = new Date(prev.at || 0).getTime();
+          const nextTime = new Date(r.at || 0).getTime();
+          byId.set(r.id, nextTime >= prevTime ? Object.assign({}, prev, r) : Object.assign({}, r, prev));
+        }
+      });
+      const merged = Array.from(byId.values()).sort((a, b) => new Date(b.at || 0) - new Date(a.at || 0)).slice(0, 200);
+      savePaymentRecords(merged);
+      return merged;
+    } catch (_) {
+      return getPaymentRecords();
     }
   }
 
@@ -810,8 +878,49 @@
     if (idx < 0) return null;
     list[idx] = Object.assign({}, list[idx], { status: status || list[idx].status, updatedAt: new Date().toISOString() });
     saveSharedRequests(list);
-    pushRequestToCloud(list[idx]).catch(() => {});
+    pushRequestToCloud(list[idx], { allowUpdate: true }).catch(() => {});
     return list[idx];
+  }
+
+  async function publishClientCatalogToCloud(products, suggestions) {
+    const sb = getSupabase();
+    if (!sb) return false;
+    try {
+      const value = {
+        products: products || [],
+        suggestions: suggestions || [],
+        updatedAt: new Date().toISOString(),
+        version: CATALOG_VERSION
+      };
+      const { error } = await sb.from('site_settings').upsert({
+        key: 'public_catalog',
+        value: value,
+        updated_at: new Date().toISOString()
+      }, { onConflict: 'key' });
+      return !error;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  async function syncPublicCatalogFromCloud() {
+    const sb = getSupabase();
+    if (!sb) return null;
+    try {
+      const { data, error } = await sb
+        .from('site_settings')
+        .select('value')
+        .eq('key', 'public_catalog')
+        .maybeSingle();
+      if (error || !data || !data.value || typeof data.value !== 'object') return null;
+      const products = Array.isArray(data.value.products) ? data.value.products : [];
+      const suggestions = Array.isArray(data.value.suggestions) ? data.value.suggestions : [];
+      if (products.length) writeJson(PUBLIC_KEY, products);
+      if (suggestions.length) writeJson(SUGGESTIONS_KEY, suggestions);
+      return { products, suggestions, updatedAt: data.value.updatedAt || '' };
+    } catch (_) {
+      return null;
+    }
   }
 
   function money(n, lang) {
@@ -887,8 +996,11 @@
     addPaymentRecord,
     deliverPaymentRecord,
     pushPaymentToCloud,
+    syncPaymentsFromCloud,
     pushRequestToCloud,
     syncSharedRequestsFromCloud,
+    publishClientCatalogToCloud,
+    syncPublicCatalogFromCloud,
     getSharedRequests,
     saveSharedRequests,
     updateSharedRequestStatus,

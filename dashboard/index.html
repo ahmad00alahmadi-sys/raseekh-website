@@ -1062,6 +1062,13 @@ body.is-admin .client-only{display:none!important}
     try { sales = JSON.parse(localStorage.getItem(ADMIN_SALES_KEY) || '[]'); }
     catch (_) { sales = []; }
   }
+  async function refreshSalesFromCloud(){
+    if (Catalog && Catalog.syncPaymentsFromCloud) {
+      try { sales = await Catalog.syncPaymentsFromCloud(); }
+      catch (_) { loadSales(); }
+    } else loadSales();
+    return sales;
+  }
   function saveSales(){
     if (!requireAdmin('saveSales')) return;
     if (Catalog && Catalog.savePaymentRecords) {
@@ -1580,6 +1587,9 @@ body.is-admin .client-only{display:none!important}
       loadSales();
       loadStore();
       loadClientRequests();
+      if (Catalog && Catalog.syncPublicCatalogFromCloud) {
+        Catalog.syncPublicCatalogFromCloud().catch(() => {});
+      }
       document.getElementById('storeName').value = store.name || '';
       document.getElementById('storePhone').value = store.phone || '';
       const webhookEl = document.getElementById('storeWebhook');
@@ -1628,9 +1638,13 @@ body.is-admin .client-only{display:none!important}
       switchPage('overview');
       if (isAdminUser) {
         renderAudienceStats();
-        refreshClientRequestsFromCloud().then(() => {
+        Promise.all([
+          refreshClientRequestsFromCloud(),
+          refreshSalesFromCloud()
+        ]).then(() => {
           updateLeadsBadge();
           renderOverview();
+          renderSales();
           if (document.getElementById('page-leads')?.classList.contains('active')) renderAdminLeads();
         });
       } else if (!isDemo) {

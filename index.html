@@ -1430,15 +1430,57 @@ body.terms-locked{overflow:hidden}
   }
   document.getElementById('payLoginBtn').addEventListener('click', () => openAuth('pay'));
   function goDashboard(){ window.location.href = DASHBOARD_URL; }
+  function readPendingPay(){
+    try { return JSON.parse(sessionStorage.getItem('raseekh_pending_pay') || 'null'); }
+    catch (_) { return null; }
+  }
+
+  function finalizePendingMoyasarPayment(user){
+    if (!user || !Catalog || !Catalog.addPaymentRecord) return false;
+    const params = new URLSearchParams(location.search);
+    const status = params.get('status');
+    const pendingPay = readPendingPay();
+    const paymentId = params.get('id') || params.get('payment_id') || '';
+    if (status !== 'paid' && !pendingPay) return false;
+    if (status && status !== 'paid') return false;
+    const amountParam = parseFloat(params.get('amount') || '');
+    let total = 0;
+    if (pendingPay && Number(pendingPay.amount) > 0) total = Number(pendingPay.amount);
+    else if (Number.isFinite(amountParam) && amountParam > 0) total = amountParam / 100; // Moyasar uses halalas
+    if (!(total > 0) && !paymentId) return false;
+    Catalog.addPaymentRecord({
+      method: 'card',
+      total,
+      items: 1,
+      note: (pendingPay && pendingPay.note) || t('عربون عبر Moyasar', 'Moyasar deposit'),
+      name: (pendingPay && pendingPay.name) || (user.user_metadata && user.user_metadata.full_name) || '',
+      email: user.email || (pendingPay && pendingPay.email) || '',
+      userId: user.id || (pendingPay && pendingPay.userId) || '',
+      source: 'moyasar-return',
+      paymentId
+    });
+    try { sessionStorage.removeItem('raseekh_pending_pay'); } catch (_) {}
+    try {
+      const url = new URL(location.href);
+      ['status', 'id', 'payment_id', 'amount', 'message', 'pay'].forEach((k) => url.searchParams.delete(k));
+      history.replaceState(null, '', url.pathname + url.search + '#pay');
+    } catch (_) {}
+    showPayStep(payStatusSuccess);
+    return true;
+  }
+
   function afterAuthSuccess(user){
     setPayUnlocked(user);
     closeModal();
-    if (authIntent === 'pay' || location.hash === '#pay') {
+    const pendingPay = readPendingPay();
+    const paidReturn = new URLSearchParams(location.search).get('status') === 'paid';
+    if (authIntent === 'pay' || location.hash === '#pay' || paidReturn || pendingPay) {
       authIntent = 'dashboard';
+      if (paidReturn || pendingPay) finalizePendingMoyasarPayment(user);
       const pay = document.getElementById('pay');
       if (pay) pay.scrollIntoView({ behavior: 'smooth', block: 'start' });
       const nameEl = document.getElementById('payName');
-      if (nameEl) setTimeout(() => nameEl.focus(), 350);
+      if (nameEl && !paidReturn) setTimeout(() => nameEl.focus(), 350);
       return;
     }
     setTimeout(goDashboard, 400);
@@ -1780,33 +1822,16 @@ body.terms-locked{overflow:hidden}
         return;
       }
       setPayUnlocked(user);
-      if (status === 'paid' && Catalog && Catalog.addPaymentRecord) {
-        const amountParam = parseFloat(params.get('amount') || '');
-        let total = Number.isFinite(amountParam) ? (amountParam > 1000 ? amountParam / 100 : amountParam) : 0;
-        if (!(total > 0) && pendingPay && Number(pendingPay.amount) > 0) total = Number(pendingPay.amount);
-        const paymentId = params.get('id') || params.get('payment_id') || '';
-        if (total > 0 || paymentId) {
-          Catalog.addPaymentRecord({
-            method: 'card',
-            total,
-            items: 1,
-            note: (pendingPay && pendingPay.note) || t('عربون عبر Moyasar', 'Moyasar deposit'),
-            name: (pendingPay && pendingPay.name) || (user.user_metadata && user.user_metadata.full_name) || '',
-            email: user.email || (pendingPay && pendingPay.email) || '',
-            userId: user.id || (pendingPay && pendingPay.userId) || '',
-            source: 'moyasar-return',
-            paymentId
-          });
-        }
-        try { sessionStorage.removeItem('raseekh_pending_pay'); } catch (_) {}
-      }
-      showPayStep(status === 'paid' ? payStatusSuccess : payStatusFailed);
+      if (status === 'paid') finalizePendingMoyasarPayment(user);
+      else showPayStep(payStatusFailed);
       document.getElementById('pay').scrollIntoView({ behavior: 'smooth', block: 'start' });
-      try {
-        const url = new URL(location.href);
-        ['status', 'id', 'payment_id', 'amount', 'message', 'pay'].forEach((k) => url.searchParams.delete(k));
-        history.replaceState(null, '', url.pathname + url.search + '#pay');
-      } catch (_) {}
+      if (status !== 'paid') {
+        try {
+          const url = new URL(location.href);
+          ['status', 'id', 'payment_id', 'amount', 'message', 'pay'].forEach((k) => url.searchParams.delete(k));
+          history.replaceState(null, '', url.pathname + url.search + '#pay');
+        } catch (_) {}
+      }
     };
     if (loggedInUser) finish(loggedInUser);
     else if (Auth) Auth.getSession().then(({ user }) => finish(user || null));
@@ -1858,6 +1883,11 @@ body.terms-locked{overflow:hidden}
 
   if (window.RaseekhCatalog && RaseekhCatalog.syncPublicNotifyFromCloud) {
     RaseekhCatalog.syncPublicNotifyFromCloud().catch(() => {});
+  }
+  if (window.RaseekhCatalog && RaseekhCatalog.syncPublicCatalogFromCloud) {
+    RaseekhCatalog.syncPublicCatalogFromCloud()
+      .then((cloud) => { if (cloud && cloud.products) renderClientCatalog(); })
+      .catch(() => {});
   }
 
   if ('serviceWorker' in navigator) {
