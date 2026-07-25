@@ -2293,7 +2293,7 @@ body.is-client .home-bar{
       const holder = document.getElementById('recentSales');
       const recent = sales.slice(0, 5);
       if (!recent.length) {
-        holder.innerHTML = `<div class="empty"><strong>${t('لا توجد مدفوعات مسجّلة بعد','No recorded payments yet')}</strong><p>${t('سجّلوا عربونًا من الموقع أو دفعة لخدمة بسعر ثابت.' ,'Record a site deposit or a fixed-price service payment.')}</p><div class="empty-actions"><button class="btn btn-primary" data-goto="leads">${t('فتح الطلبات','Open requests')}</button><a class="btn btn-ghost" href="/#contact">${t('نموذج الطلب','Request form')}</a></div></div>`;
+        holder.innerHTML = `<div class="empty"><strong>${t('لا توجد مدفوعات مسجّلة بعد','No recorded payments yet')}</strong><p>${t('سجّلوا عربوناً يدوياً أو دفعة لخدمة بسعر ثابت. السداد الإلكتروني العام متوقف مؤقتاً.' ,'Record a manual deposit or a fixed-price service payment. Public online checkout is temporarily paused.')}</p><div class="empty-actions"><button class="btn btn-primary" data-goto="leads">${t('فتح الطلبات','Open requests')}</button><a class="btn btn-ghost" href="/#contact">${t('نموذج الطلب','Request form')}</a></div></div>`;
       } else {
         holder.innerHTML = recent.map(s => `
           <div class="sale-row">
@@ -3476,7 +3476,7 @@ body.is-client .home-bar{
   function renderSales(){
     const holder = document.getElementById('salesList');
     if (!sales.length) {
-      holder.innerHTML = `<div class="empty"><strong>${t('لا يوجد سجل مدفوعات بعد','No payments history yet')}</strong><p>${t('سجّلوا عربوناً يدوياً أو انتظروا دفعة من صفحة السداد.','Record a manual deposit or wait for a site payment.')}</p></div>`;
+      holder.innerHTML = `<div class="empty"><strong>${t('لا يوجد سجل مدفوعات بعد','No payments history yet')}</strong><p>${t('سجّلوا عربوناً يدوياً أعلاه. السداد الإلكتروني العام متوقف مؤقتاً.','Record a manual deposit above. Public online checkout is temporarily paused.')}</p></div>`;
       return;
     }
     holder.innerHTML = sales.map(s => {

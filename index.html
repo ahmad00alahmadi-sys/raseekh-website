@@ -1261,25 +1261,25 @@ body.pay-paused .pay-public-entry{display:none!important}
       </article>
       <article class="work-item">
         <div class="ui-mock" aria-hidden="true">
-          <div class="ui-mock-chrome"><span></span><span></span><span></span><span data-ar="سداد العربون" data-en="Deposit payment">سداد العربون</span></div>
+          <div class="ui-mock-chrome"><span></span><span></span><span></span><span data-ar="عروض الأسعار" data-en="Quotes">عروض الأسعار</span></div>
           <div class="ui-mock-body">
             <div class="ui-mock-side"><i></i><i></i><i></i><i></i></div>
             <div class="ui-mock-main">
               <div class="ui-mock-kpis">
+                <b>3<small data-ar="مفتوح" data-en="Open">مفتوح</small></b>
+                <b>2<small data-ar="معتمد" data-en="Approved">معتمد</small></b>
                 <b>SAR<small data-ar="العملة" data-en="Currency">العملة</small></b>
-                <b>Moyasar<small data-ar="البوابة" data-en="Gateway">البوابة</small></b>
-                <b>OK<small data-ar="إيصال" data-en="Receipt">إيصال</small></b>
               </div>
               <div class="ui-mock-table">
-                <span><em data-ar="عربون مشروع" data-en="Project deposit">عربون مشروع</em><span>2,500</span><strong style="color:var(--ok)" data-ar="مدفوع" data-en="Paid">مدفوع</strong></span>
-                <span><em data-ar="دفعة مرحلية" data-en="Milestone">دفعة مرحلية</em><span>4,000</span><strong data-ar="بانتظار" data-en="Pending">بانتظار</strong></span>
-                <span><em>Apple Pay</em><span data-ar="بطاقة" data-en="Card">بطاقة</span><strong style="color:var(--harbor)">SAMA</strong></span>
+                <span><em data-ar="مخزون فروع" data-en="Branch stock">مخزون فروع</em><span data-ar="مسودة" data-en="Draft">مسودة</span><strong data-ar="جديد" data-en="New">جديد</strong></span>
+                <span><em data-ar="لوحة تشغيل" data-en="Ops board">لوحة تشغيل</em><span data-ar="مرسل" data-en="Sent">مرسل</span><strong style="color:var(--harbor)" data-ar="مراجعة" data-en="Review">مراجعة</strong></span>
+                <span><em data-ar="صيانة موقع" data-en="Site care">صيانة موقع</em><span data-ar="مقبول" data-en="Accepted">مقبول</span><strong style="color:var(--ok)" data-ar="معتمد" data-en="Approved">معتمد</strong></span>
               </div>
             </div>
           </div>
         </div>
-        <h3 data-ar="سداد مرتبط بالحساب" data-en="Account-linked pay">سداد مرتبط بالحساب</h3>
-        <p data-ar="عربون وإيصال ضمن سجل العميل المسجّل." data-en="Deposit and receipt inside the signed-in client record.">عربون وإيصال ضمن سجل العميل المسجّل.</p>
+        <h3 data-ar="عروض مرتبطة بالحساب" data-en="Account-linked quotes">عروض مرتبطة بالحساب</h3>
+        <p data-ar="نطاق وسعر مكتوبان ضمن سجل العميل المسجّل." data-en="Written scope and price inside the signed-in client record.">نطاق وسعر مكتوبان ضمن سجل العميل المسجّل.</p>
       </article>
     </div>
   </div>
@@ -1383,7 +1383,7 @@ body.pay-paused .pay-public-entry{display:none!important}
       <span class="service-block" style="padding:10px 16px;margin:0" data-ar="PostgreSQL / قواعد علائقية" data-en="PostgreSQL / relational DBs">PostgreSQL / قواعد علائقية</span>
       <span class="service-block" style="padding:10px 16px;margin:0" data-ar="Supabase (مصادقة وبيانات)" data-en="Supabase (auth & data)">Supabase (مصادقة وبيانات)</span>
       <span class="service-block" style="padding:10px 16px;margin:0" data-ar="لوحات تحكم تشغيلية" data-en="Ops dashboards">لوحات تحكم تشغيلية</span>
-      <span class="service-block" style="padding:10px 16px;margin:0" data-ar="Moyasar · SMS · ZATCA path" data-en="Moyasar · SMS · ZATCA path">Moyasar · SMS · ZATCA path</span>
+      <span class="service-block" style="padding:10px 16px;margin:0" data-ar="SMS · مسار ZATCA · تكاملات حسب العرض" data-en="SMS · ZATCA path · integrations per quote">SMS · مسار ZATCA · تكاملات حسب العرض</span>
       <span class="service-block" style="padding:10px 16px;margin:0" data-ar="استضافة حسب طلب العميل" data-en="Hosting per client request">استضافة حسب طلب العميل</span>
     </div>
   </div>
@@ -1544,13 +1544,13 @@ body.pay-paused .pay-public-entry{display:none!important}
   <div class="wrap">
     <div class="section-head reveal">
       <div class="eyebrow" data-ar="التكاملات" data-en="Integrations">التكاملات</div>
-      <h2 data-ar="ربط دفع، فوترة، ورسائل وأنظمة محاسبية" data-en="Pay, invoicing, SMS, and accounting links">ربط دفع، فوترة، ورسائل وأنظمة محاسبية</h2>
+      <h2 data-ar="ربط فوترة، رسائل، وأنظمة محاسبية" data-en="Invoicing, messaging, and accounting links">ربط فوترة، رسائل، وأنظمة محاسبية</h2>
       <p data-ar="نربط ما يحتاجه التشغيل — حسب نطاق المشروع ومزوّدي الخدمة لديكم." data-en="We connect what ops need — per project scope and your providers.">نربط ما يحتاجه التشغيل — حسب نطاق المشروع ومزوّدي الخدمة لديكم.</p>
     </div>
     <div class="services-grid four reveal stagger">
       <article class="service-block">
-        <h3 data-ar="Moyasar" data-en="Moyasar">Moyasar</h3>
-        <p data-ar="مدفوعات بطاقة وApple Pay ضمن مسار العميل المسجّل." data-en="Card and Apple Pay within the signed-in client flow.">مدفوعات بطاقة وApple Pay ضمن مسار العميل المسجّل.</p>
+        <h3 data-ar="بوابات دفع عند الحاجة" data-en="Payment gateways when needed">بوابات دفع عند الحاجة</h3>
+        <p data-ar="ربط بوابة دفع مرخّصة ضمن نطاق المشروع عند الاتفاق — السداد العام من الموقع متوقف مؤقتاً." data-en="Link a licensed payment gateway within project scope when agreed — public site checkout is temporarily paused.">ربط بوابة دفع مرخّصة ضمن نطاق المشروع عند الاتفاق — السداد العام من الموقع متوقف مؤقتاً.</p>
       </article>
       <article class="service-block">
         <h3 data-ar="مسار فوترة جاهز لـ ZATCA" data-en="ZATCA-ready invoicing path">مسار فوترة جاهز لـ ZATCA</h3>
@@ -3219,16 +3219,18 @@ body.pay-paused .pay-public-entry{display:none!important}
           authProvider = 'supabase';
           setPayUnlocked(session.user, 'supabase');
           // Paid return only — do not hijack normal login for abandoned pending checkout.
-          const params = paymentReturnParams();
-          if (params.get('status') === 'paid') {
-            try { closeModal(); } catch (_) {}
-            finalizePendingMoyasarPayment(session.user).then((ok) => {
-              if (!ok) showPayStep(payStatusFailed);
-              const pay = document.getElementById('pay');
-              if (pay) scrollToEl(pay, { block: 'start' });
-            }).catch(() => {
-              showPayStep(payStatusFailed);
-            });
+          if (PUBLIC_PAY_ENABLED) {
+            const params = paymentReturnParams();
+            if (params.get('status') === 'paid') {
+              try { closeModal(); } catch (_) {}
+              finalizePendingMoyasarPayment(session.user).then((ok) => {
+                if (!ok) showPayStep(payStatusFailed);
+                const pay = document.getElementById('pay');
+                if (pay) scrollToEl(pay, { block: 'start' });
+              }).catch(() => {
+                showPayStep(payStatusFailed);
+              });
+            }
           }
         }
       });
