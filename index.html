@@ -11,6 +11,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@600;700;800&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.moyasar.com/mpf/1.12/moyasar.css">
 <script src="https://cdn.moyasar.com/mpf/1.12/moyasar.js"></script>
+<script src="/catalog.js"></script>
 <style>
 :root{
   --ink:#0A1612;--forest:#0C3F32;--leaf:#1A7A5C;--brass:#B08D2E;
@@ -143,7 +144,27 @@ section{padding:96px 0;position:relative;z-index:1}
 .product-item .tag{font-size:.72rem;font-weight:700;color:var(--brass);letter-spacing:.06em}
 .product-item h3{font-size:1.05rem}
 .product-item p{color:var(--muted);font-size:.88rem;flex:1}
-.product-item .price{font-weight:800;color:var(--forest)}
+.product-item .price{font-weight:800;color:var(--forest);margin-top:4px}
+.product-item .meta{font-size:.78rem;color:var(--muted)}
+.product-item .btn{margin-top:10px;align-self:flex-start;padding:9px 14px;font-size:.85rem}
+
+.suggest-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:18px}
+.suggest-card{
+  background:linear-gradient(155deg,rgba(12,63,50,.96), rgba(7,28,23,.98));
+  color:#F4FAF7;padding:26px 24px;border:1px solid transparent;
+  display:flex;flex-direction:column;gap:10px;min-height:220px;
+}
+.suggest-card .badge{
+  align-self:flex-start;font-size:.72rem;font-weight:700;letter-spacing:.06em;
+  color:#0A1612;background:#D4B45A;padding:4px 10px;
+}
+.suggest-card h3{font-size:1.2rem}
+.suggest-card p{color:rgba(244,250,247,.8);font-size:.92rem;flex:1}
+.suggest-card .items{font-size:.88rem;color:rgba(244,250,247,.9);line-height:1.7}
+.suggest-card .total{font-weight:800;font-size:1.05rem;color:#D4B45A}
+.suggest-card .btn{align-self:flex-start;margin-top:4px}
+.suggest-card .btn-primary{background:#D4B45A;color:#0A1612}
+.suggest-card .btn-primary:hover{background:#C4A24A}
 
 .work-list{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:rgba(255,255,255,.35)}
 .work-item{padding:28px 22px;border-inline-end:1px solid var(--line)}
@@ -201,13 +222,13 @@ body.lang-en .footer-brand{font-family:'Outfit',sans-serif}
   .nav-links{display:none;position:absolute;top:66px;inset-inline:16px;flex-direction:column;background:rgba(255,255,255,.96);border:1px solid var(--line);padding:16px;border-radius:16px;box-shadow:var(--shadow);gap:14px;z-index:90}
   .nav-links.open{display:flex}
   .nav-toggle{display:flex}
-  .services-grid,.services-grid.four,.products-grid{grid-template-columns:1fr 1fr}
+  .services-grid,.services-grid.four,.products-grid,.suggest-grid{grid-template-columns:1fr 1fr}
   .work-list,.two-col{grid-template-columns:1fr}
   .work-item{border-inline-end:none;border-bottom:1px solid var(--line)}
   .hero{min-height:auto}.hero-content{padding:80px 0 64px}
 }
 @media (max-width:560px){
-  .services-grid,.products-grid{grid-template-columns:1fr}
+  .services-grid,.products-grid,.suggest-grid{grid-template-columns:1fr}
   .wrap{padding:0 18px}
 }
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
@@ -222,6 +243,7 @@ body.lang-en .footer-brand{font-family:'Outfit',sans-serif}
       <a href="#services" data-ar="خدماتنا" data-en="Services">خدماتنا</a>
       <a href="#programming" data-ar="خدمات البرمجة" data-en="Programming">خدمات البرمجة</a>
       <a href="#products" data-ar="المنتجات" data-en="Products">المنتجات</a>
+      <a href="#suggestions" data-ar="الاقتراحات" data-en="Suggestions">الاقتراحات</a>
       <a href="#process" data-ar="كيف نعمل" data-en="How we work">كيف نعمل</a>
       <a href="#pay" data-ar="الدفع" data-en="Pay">الدفع</a>
       <a href="#contact" data-ar="تواصل" data-en="Contact">تواصل</a>
@@ -388,36 +410,22 @@ body.lang-en .footer-brand{font-family:'Outfit',sans-serif}
 <section id="products">
   <div class="wrap">
     <div class="section-head reveal">
-      <div class="eyebrow" data-ar="المنتجات الإلكترونية" data-en="Electronics">المنتجات الإلكترونية</div>
-      <h2 data-ar="أجهزة وإلكترونيات لتشغيل أعمالك" data-en="Devices and electronics to run your work">أجهزة وإلكترونيات لتشغيل أعمالك</h2>
-      <p data-ar="منتجات جاهزة للطلب مع إمكانية التنسيق والتوريد حسب احتياجكم." data-en="Ready-to-order products with supply options based on your needs.">منتجات جاهزة للطلب مع إمكانية التنسيق والتوريد حسب احتياجكم.</p>
+      <div class="eyebrow" data-ar="كتالوج العميل" data-en="Client catalog">كتالوج العميل</div>
+      <h2 data-ar="نفس المنتجات والخدمات الظاهرة لديكم" data-en="The same products and services you manage">نفس المنتجات والخدمات الظاهرة لديكم</h2>
+      <p data-ar="الكتالوج أدناه هو ما يراه العميل: أجهزة، صيانة، وخدمات برمجة بأسعار واضحة." data-en="The catalog below is what clients see: devices, maintenance, and programming services with clear prices.">الكتالوج أدناه هو ما يراه العميل: أجهزة، صيانة، وخدمات برمجة بأسعار واضحة.</p>
     </div>
-    <div class="products-grid reveal">
-      <article class="product-item">
-        <span class="tag">ELC-01</span>
-        <h3 data-ar="أجهزة لابتوب للأعمال" data-en="Business laptops">أجهزة لابتوب للأعمال</h3>
-        <p data-ar="أجهزة مناسبة للإدارة والبرمجة والعمل اليومي." data-en="Suitable for admin, development, and daily work.">أجهزة مناسبة للإدارة والبرمجة والعمل اليومي.</p>
-        <div class="price" data-ar="حسب الطلب" data-en="On request">حسب الطلب</div>
-      </article>
-      <article class="product-item">
-        <span class="tag">ELC-02</span>
-        <h3 data-ar="طابعات ونقاط بيع" data-en="Printers & POS hardware">طابعات ونقاط بيع</h3>
-        <p data-ar="طابعات فواتير وأجهزة كاشير للمحلات والمنشآت." data-en="Receipt printers and till hardware for stores.">طابعات فواتير وأجهزة كاشير للمحلات والمنشآت.</p>
-        <div class="price" data-ar="حسب الطلب" data-en="On request">حسب الطلب</div>
-      </article>
-      <article class="product-item">
-        <span class="tag">ELC-03</span>
-        <h3 data-ar="شبكات وراوترات" data-en="Networking gear">شبكات وراوترات</h3>
-        <p data-ar="تجهيز شبكة مستقرة للمكاتب والفروع." data-en="Stable networking setup for offices and branches.">تجهيز شبكة مستقرة للمكاتب والفروع.</p>
-        <div class="price" data-ar="حسب الطلب" data-en="On request">حسب الطلب</div>
-      </article>
-      <article class="product-item">
-        <span class="tag">ELC-04</span>
-        <h3 data-ar="اكسسوارات تقنية" data-en="Tech accessories">اكسسوارات تقنية</h3>
-        <p data-ar="شاشات، وحدات تخزين، وكابلات وتجهيزات مكتبية." data-en="Monitors, storage, cables, and office tech gear.">شاشات، وحدات تخزين، وكابلات وتجهيزات مكتبية.</p>
-        <div class="price" data-ar="حسب الطلب" data-en="On request">حسب الطلب</div>
-      </article>
+    <div class="products-grid reveal" id="clientProductsGrid"></div>
+  </div>
+</section>
+
+<section id="suggestions">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow" data-ar="الاقتراحات" data-en="Suggestions">الاقتراحات</div>
+      <h2 data-ar="اقتراحات جاهزة للعميل" data-en="Ready suggestions for clients">اقتراحات جاهزة للعميل</h2>
+      <p data-ar="باقات مقترحة تجمع منتجات وخدمات برمجة — يطلبها العميل مباشرة." data-en="Suggested packages combining products and programming services — clients can request them directly.">باقات مقترحة تجمع منتجات وخدمات برمجة — يطلبها العميل مباشرة.</p>
     </div>
+    <div class="suggest-grid reveal" id="clientSuggestionsGrid"></div>
   </div>
 </section>
 
@@ -539,6 +547,7 @@ body.lang-en .footer-brand{font-family:'Outfit',sans-serif}
       <a href="#services" data-ar="الخدمات" data-en="Services">الخدمات</a>
       <a href="#programming" data-ar="خدمات البرمجة" data-en="Programming">خدمات البرمجة</a>
       <a href="#products" data-ar="المنتجات" data-en="Products">المنتجات</a>
+      <a href="#suggestions" data-ar="الاقتراحات" data-en="Suggestions">الاقتراحات</a>
       <a href="#terms" data-ar="الشروط" data-en="Terms">الشروط</a>
       <a href="/dashboard/" data-ar="حساب العميل" data-en="Client area">حساب العميل</a>
     </div>
@@ -552,8 +561,11 @@ body.lang-en .footer-brand{font-family:'Outfit',sans-serif}
   const DASHBOARD_URL = '/dashboard/';
   const MOYASAR_PUBLISHABLE_KEY = 'pk_live_U94Vg5e2kjJY557CU8qjnxv83shQJx6o125RrRey';
   const Auth = window.RaseekhAuth;
+  const Catalog = window.RaseekhCatalog;
   let currentLang = localStorage.getItem('raseekh_lang') || 'ar';
   let loggedInUser = null;
+  let clientProducts = [];
+  let clientSuggestions = [];
 
   const authModal = document.getElementById('authModal');
   const modalTabsBar = document.getElementById('modalTabsBar');
@@ -587,7 +599,120 @@ body.lang-en .footer-brand{font-family:'Outfit',sans-serif}
     document.getElementById('langToggle').textContent = lang === 'ar' ? 'EN' : 'AR';
     document.title = lang === 'ar' ? 'راسخ — منتجات إلكترونية وخدمات تقنية' : 'Raseekh — Electronics & Technical Services';
     if (loggedInUser) document.getElementById('accountBtn').textContent = t('حسابي', 'My account');
+    renderClientCatalog();
   }
+
+  function escapeHtml(str){
+    const d = document.createElement('div');
+    d.textContent = str == null ? '' : String(str);
+    return d.innerHTML;
+  }
+
+  function requestFromCatalog(opts){
+    const typeEl = document.getElementById('contactType');
+    const msgEl = document.getElementById('contactMsg');
+    if (opts.type && typeEl) typeEl.value = opts.type;
+    if (msgEl) msgEl.value = opts.message || '';
+    document.getElementById('contact').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    msgEl && msgEl.focus();
+  }
+
+  function typeForProduct(p){
+    const cat = (p.category_en || p.category || '').toLowerCase();
+    if (cat.includes('programming') || cat.includes('برمجة')) return 'programming';
+    if (cat.includes('service') || cat.includes('خدمات') || p.kind === 'service') {
+      if ((p.name_en || '').toLowerCase().includes('maintenance') || (p.name || '').includes('صيانة')) return 'maintenance';
+      if ((p.name_en || '').toLowerCase().includes('system') || (p.name || '').includes('نظام')) return 'system';
+      return 'programming';
+    }
+    return 'electronics';
+  }
+
+  function renderClientCatalog(){
+    if (!Catalog) return;
+    clientProducts = Catalog.getClientProducts();
+    clientSuggestions = Catalog.getClientSuggestions();
+    if (!localStorage.getItem('raseekh_client_catalog_v1')) {
+      Catalog.publishClientCatalog(clientProducts, clientSuggestions);
+    }
+
+    const grid = document.getElementById('clientProductsGrid');
+    const suggestGrid = document.getElementById('clientSuggestionsGrid');
+    if (!grid || !suggestGrid) return;
+
+    if (!clientProducts.length) {
+      grid.innerHTML = `<div class="product-item"><p>${escapeHtml(t('لا توجد منتجات حالياً','No products yet'))}</p></div>`;
+    } else {
+      grid.innerHTML = clientProducts.map((p) => {
+        const name = Catalog.label(p, currentLang, 'name', 'name_en');
+        const desc = Catalog.label(p, currentLang, 'desc', 'desc_en') || t('متاح للطلب','Available to order');
+        const cat = Catalog.label(p, currentLang, 'category', 'category_en');
+        const status = p.kind === 'service'
+          ? t('خدمة متاحة','Service available')
+          : (p.stock > 0 ? t('متوفر','In stock') : t('غير متوفر','Out of stock'));
+        return `
+          <article class="product-item">
+            <span class="tag">${escapeHtml(cat || (p.kind === 'service' ? t('خدمة','Service') : t('منتج','Product')))}</span>
+            <h3>${escapeHtml(name)}</h3>
+            <p>${escapeHtml(desc)}</p>
+            <div class="meta">${escapeHtml(status)}</div>
+            <div class="price">${escapeHtml(Catalog.money(p.price, currentLang))}</div>
+            <button type="button" class="btn btn-ghost" data-request-product="${escapeHtml(p.id)}">${escapeHtml(t('اطلب هذا','Request this'))}</button>
+          </article>
+        `;
+      }).join('');
+    }
+
+    suggestGrid.innerHTML = clientSuggestions.map((s) => {
+      const title = Catalog.label(s, currentLang, 'title', 'title_en');
+      const desc = Catalog.label(s, currentLang, 'desc', 'desc_en');
+      const badge = Catalog.label(s, currentLang, 'badge', 'badge_en');
+      const items = Catalog.suggestionItems(s, clientProducts, currentLang);
+      const total = Catalog.suggestionTotal(s, clientProducts);
+      return `
+        <article class="suggest-card">
+          <span class="badge">${escapeHtml(badge)}</span>
+          <h3>${escapeHtml(title)}</h3>
+          <p>${escapeHtml(desc)}</p>
+          <div class="items">${escapeHtml(items.join(currentLang === 'ar' ? ' • ' : ' • '))}</div>
+          <div class="total">${escapeHtml(t('الإجمالي التقريبي','Approx. total') + ': ' + Catalog.money(total, currentLang))}</div>
+          <button type="button" class="btn btn-primary" data-request-suggestion="${escapeHtml(s.id)}">${escapeHtml(t('اطلب هذا الاقتراح','Request this suggestion'))}</button>
+        </article>
+      `;
+    }).join('');
+  }
+
+  document.getElementById('clientProductsGrid').addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-request-product]');
+    if (!btn || !Catalog) return;
+    const p = clientProducts.find((x) => x.id === btn.dataset.requestProduct);
+    if (!p) return;
+    const name = Catalog.label(p, currentLang, 'name', 'name_en');
+    requestFromCatalog({
+      type: typeForProduct(p),
+      message: t(
+        'أرغب بطلب: ' + name + ' — السعر ' + Catalog.money(p.price, 'ar'),
+        'I would like to request: ' + name + ' — price ' + Catalog.money(p.price, 'en')
+      )
+    });
+  });
+
+  document.getElementById('clientSuggestionsGrid').addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-request-suggestion]');
+    if (!btn || !Catalog) return;
+    const s = clientSuggestions.find((x) => x.id === btn.dataset.requestSuggestion);
+    if (!s) return;
+    const title = Catalog.label(s, currentLang, 'title', 'title_en');
+    const items = Catalog.suggestionItems(s, clientProducts, currentLang);
+    const total = Catalog.suggestionTotal(s, clientProducts);
+    requestFromCatalog({
+      type: 'programming',
+      message: t(
+        'أرغب بطلب الاقتراح: ' + title + '\nيشمل: ' + items.join('، ') + '\nالإجمالي التقريبي: ' + Catalog.money(total, 'ar'),
+        'I would like to request suggestion: ' + title + '\nIncludes: ' + items.join(', ') + '\nApprox. total: ' + Catalog.money(total, 'en')
+      )
+    });
+  });
 
   document.getElementById('langToggle').addEventListener('click', () => applyLang(currentLang === 'ar' ? 'en' : 'ar'));
   applyLang(currentLang);

@@ -10,6 +10,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@600;700;800&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="/auth.js"></script>
+<script src="/catalog.js"></script>
 <style>
 :root{
   --ink:#0A1612;--forest:#0C3F32;--leaf:#1A7A5C;--brass:#B08D2E;
@@ -72,6 +73,16 @@ a{color:inherit;text-decoration:none}
 .demo-banner{
   background:var(--mist);border:1px dashed var(--leaf);border-radius:10px;padding:10px 12px;
   font-size:.82rem;color:var(--forest);margin-bottom:14px;
+}
+.suggest-mini{display:flex;flex-direction:column;gap:10px}
+.suggest-mini .item{
+  border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:#FBFCFA;
+}
+.suggest-mini .item strong{display:block;margin-bottom:4px}
+.suggest-mini .item span{color:var(--muted);font-size:.86rem}
+.client-note{
+  background:rgba(176,141,46,.12);border:1px solid rgba(176,141,46,.35);
+  border-radius:12px;padding:12px 14px;margin-bottom:14px;color:var(--forest);font-size:.9rem;
 }
 
 #dashboardView{
@@ -333,8 +344,14 @@ a{color:inherit;text-decoration:none}
             <button class="btn btn-primary" data-goto="pos" data-ar="طلب بيع جديد" data-en="New sales order">طلب بيع جديد</button>
             <button class="btn btn-ghost" data-goto="products" data-ar="إدارة المنتجات الإلكترونية" data-en="Manage electronics">إدارة المنتجات الإلكترونية</button>
             <button class="btn btn-ghost" data-goto="sales" data-ar="سجل الطلبات" data-en="Order history">سجل الطلبات</button>
+            <a class="btn btn-ghost" href="/#suggestions" data-ar="عرض اقتراحات العميل" data-en="View client suggestions">عرض اقتراحات العميل</a>
           </div>
         </div>
+      </div>
+      <div class="panel" style="margin-top:16px">
+        <h3 data-ar="اقتراحات العميل" data-en="Client suggestions">اقتراحات العميل</h3>
+        <p style="color:var(--muted);font-size:.9rem;margin:6px 0 12px" data-ar="هذه الباقات تظهر للعميل في صفحة الموقع مع المنتجات." data-en="These packages appear for clients on the public website with the products.">هذه الباقات تظهر للعميل في صفحة الموقع مع المنتجات.</p>
+        <div class="suggest-mini" id="overviewSuggestions"></div>
       </div>
     </div>
 
@@ -376,10 +393,14 @@ a{color:inherit;text-decoration:none}
         </div>
         <button class="btn btn-primary" id="addProductBtn" data-ar="+ منتج جديد" data-en="+ New product">+ منتج جديد</button>
       </div>
+      <div class="client-note" data-ar="كل المنتجات هنا تُعرض للعميل تلقائياً في صفحة الموقع مع قسم الاقتراحات." data-en="Every product here is shown to clients on the website along with the suggestions section.">كل المنتجات هنا تُعرض للعميل تلقائياً في صفحة الموقع مع قسم الاقتراحات.</div>
       <div class="panel">
         <div class="toolbar">
           <h3 data-ar="كتالوج المنتجات" data-en="Product catalog">كتالوج المنتجات</h3>
-          <input type="search" id="productSearch" style="padding:10px 12px;border:1px solid var(--line);border-radius:10px;min-width:200px" data-ar-placeholder="بحث..." data-en-placeholder="Search..." placeholder="بحث...">
+          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+            <a class="btn btn-ghost" href="/#products" style="padding:10px 12px" data-ar="معاينة العميل" data-en="Client preview">معاينة العميل</a>
+            <input type="search" id="productSearch" style="padding:10px 12px;border:1px solid var(--line);border-radius:10px;min-width:200px" data-ar-placeholder="بحث..." data-en-placeholder="Search..." placeholder="بحث...">
+          </div>
         </div>
         <div style="overflow-x:auto">
           <table class="product-table">
@@ -450,7 +471,7 @@ a{color:inherit;text-decoration:none}
     <form class="form" id="productForm">
       <input type="text" id="pName" required data-ar-placeholder="اسم المنتج" data-en-placeholder="Product name" placeholder="اسم المنتج">
       <input type="text" id="pNameEn" data-ar-placeholder="الاسم بالإنجليزية (اختياري)" data-en-placeholder="English name (optional)" placeholder="الاسم بالإنجليزية (اختياري)">
-      <input type="text" id="pCategory" data-ar-placeholder="القسم (مثال: مشروبات)" data-en-placeholder="Category (e.g. Drinks)" placeholder="القسم (مثال: مشروبات)">
+      <input type="text" id="pCategory" data-ar-placeholder="القسم (مثال: أجهزة / برمجة / خدمات)" data-en-placeholder="Category (e.g. Devices / Programming / Services)" placeholder="القسم (مثال: أجهزة / برمجة / خدمات)">
       <input type="number" id="pPrice" min="0" step="0.01" required data-ar-placeholder="السعر" data-en-placeholder="Price" placeholder="السعر">
       <input type="number" id="pStock" min="0" step="1" required data-ar-placeholder="المخزون" data-en-placeholder="Stock" placeholder="المخزون">
       <button class="btn btn-primary" type="submit" data-ar="حفظ المنتج" data-en="Save product">حفظ المنتج</button>
@@ -505,20 +526,10 @@ a{color:inherit;text-decoration:none}
   let editingProductId = null;
   let lastSale = null;
   let toastTimer;
-
-  const DEFAULT_PRODUCTS = [
-    { id: 'p1', name: 'لابتوب أعمال', name_en: 'Business laptop', category: 'أجهزة', category_en: 'Devices', price: 3200, stock: 8 },
-    { id: 'p2', name: 'طابعة فواتير', name_en: 'Receipt printer', category: 'أجهزة', category_en: 'Devices', price: 450, stock: 15 },
-    { id: 'p3', name: 'راوتر مكتبي', name_en: 'Office router', category: 'شبكات', category_en: 'Networking', price: 380, stock: 20 },
-    { id: 'p4', name: 'شاشة مكتبية', name_en: 'Monitor', category: 'اكسسوارات', category_en: 'Accessories', price: 720, stock: 12 },
-    { id: 'p5', name: 'وحدة تخزين SSD', name_en: 'SSD drive', category: 'اكسسوارات', category_en: 'Accessories', price: 260, stock: 30 },
-    { id: 'p6', name: 'صيانة موقع شهرية', name_en: 'Monthly site maintenance', category: 'خدمات', category_en: 'Services', price: 500, stock: 99 },
-    { id: 'p7', name: 'تطوير موقع إلكتروني', name_en: 'Website development', category: 'برمجة', category_en: 'Programming', price: 2500, stock: 99 },
-    { id: 'p8', name: 'تعديل وتحسين برمجة', name_en: 'Code modification', category: 'برمجة', category_en: 'Programming', price: 350, stock: 99 },
-    { id: 'p9', name: 'برمجة نظام ولوحة تحكم', name_en: 'System & dashboard build', category: 'برمجة', category_en: 'Programming', price: 4500, stock: 99 },
-    { id: 'p10', name: 'ربط API وأنظمة', name_en: 'API & integrations', category: 'برمجة', category_en: 'Programming', price: 1200, stock: 99 },
-    { id: 'p11', name: 'نظام مخصص كامل', name_en: 'Complete custom system', category: 'خدمات', category_en: 'Services', price: 5000, stock: 99 }
-  ];
+  const Catalog = window.RaseekhCatalog;
+  const DEFAULT_PRODUCTS = Catalog
+    ? Catalog.DEFAULT_PRODUCTS.map(p => ({ ...p }))
+    : [];
 
   function t(ar, en){ return currentLang === 'ar' ? ar : en; }
   function uid(){ return 'id-' + Date.now() + '-' + Math.random().toString(36).slice(2,7); }
@@ -547,8 +558,20 @@ a{color:inherit;text-decoration:none}
       const raw = localStorage.getItem(storageKey('products'));
       products = raw ? JSON.parse(raw) : DEFAULT_PRODUCTS.map(p => ({ ...p }));
     } catch (_) { products = DEFAULT_PRODUCTS.map(p => ({ ...p })); }
+    if (Catalog) {
+      products = Catalog.ensureCatalogVersion(products);
+      saveProducts();
+      publishToClient();
+    }
   }
-  function saveProducts(){ localStorage.setItem(storageKey('products'), JSON.stringify(products)); }
+  function saveProducts(){
+    localStorage.setItem(storageKey('products'), JSON.stringify(products));
+    publishToClient();
+  }
+  function publishToClient(){
+    if (!Catalog) return;
+    Catalog.publishClientCatalog(products, Catalog.DEFAULT_SUGGESTIONS);
+  }
   function loadSales(){
     try { sales = JSON.parse(localStorage.getItem(storageKey('sales')) || '[]'); }
     catch (_) { sales = []; }
@@ -784,25 +807,36 @@ a{color:inherit;text-decoration:none}
     document.getElementById('statProducts').textContent = products.length;
     document.getElementById('statToday').textContent = total.toFixed(0);
     document.getElementById('statReceipts').textContent = todays.length;
-    document.getElementById('statLow').textContent = products.filter(p => p.stock <= 5).length;
+    document.getElementById('statLow').textContent = products.filter(p => p.kind !== 'service' && p.stock <= 5).length;
     const holder = document.getElementById('recentSales');
     const recent = sales.slice(0, 5);
     if (!recent.length) {
       holder.innerHTML = `<div class="empty">${t('لا توجد مبيعات بعد — ابدأ من نقطة البيع','No sales yet — start from POS')}</div>`;
-      return;
+    } else {
+      holder.innerHTML = recent.map(s => `
+        <div class="sale-row">
+          <div>
+            <div>${s.method === 'card' ? t('بطاقة','Card') : t('نقداً','Cash')} · ${s.items} ${t('صنف','items')}</div>
+            <div style="color:var(--muted);font-size:.78rem">${new Date(s.at).toLocaleString(currentLang === 'ar' ? 'ar-SA' : 'en-US')}</div>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <strong>${money(s.total)}</strong>
+            <button class="btn btn-ghost" style="padding:6px 10px;font-size:.78rem" data-view-sale="${s.id}">${t('إيصال','Receipt')}</button>
+          </div>
+        </div>
+      `).join('');
     }
-    holder.innerHTML = recent.map(s => `
-      <div class="sale-row">
-        <div>
-          <div>${s.method === 'card' ? t('بطاقة','Card') : t('نقداً','Cash')} · ${s.items} ${t('صنف','items')}</div>
-          <div style="color:var(--muted);font-size:.78rem">${new Date(s.at).toLocaleString(currentLang === 'ar' ? 'ar-SA' : 'en-US')}</div>
-        </div>
-        <div style="display:flex;gap:8px;align-items:center">
-          <strong>${money(s.total)}</strong>
-          <button class="btn btn-ghost" style="padding:6px 10px;font-size:.78rem" data-view-sale="${s.id}">${t('إيصال','Receipt')}</button>
-        </div>
-      </div>
-    `).join('');
+
+    const suggestBox = document.getElementById('overviewSuggestions');
+    if (suggestBox && Catalog) {
+      const suggestions = Catalog.DEFAULT_SUGGESTIONS;
+      suggestBox.innerHTML = suggestions.map((s) => {
+        const title = Catalog.label(s, currentLang, 'title', 'title_en');
+        const items = Catalog.suggestionItems(s, products, currentLang).join(currentLang === 'ar' ? '، ' : ', ');
+        const totalAmt = Catalog.suggestionTotal(s, products);
+        return `<div class="item"><strong>${escapeHtml(title)}</strong><span>${escapeHtml(items)}</span><div style="margin-top:6px;font-weight:700;color:var(--forest)">${escapeHtml(money(totalAmt))}</div></div>`;
+      }).join('');
+    }
   }
 
   document.getElementById('recentSales').addEventListener('click', (e) => {
@@ -829,7 +863,11 @@ a{color:inherit;text-decoration:none}
         <td>${escapeHtml(categoryLabel(p))}</td>
         <td>${money(p.price)}</td>
         <td>${p.stock}</td>
-        <td><span class="badge ${p.stock <= 5 ? 'low' : ''}">${p.stock <= 5 ? t('منخفض','Low') : t('متوفر','In stock')}</span></td>
+        <td><span class="badge ${p.kind !== 'service' && p.stock <= 5 ? 'low' : ''}">${
+          p.kind === 'service'
+            ? t('خدمة','Service')
+            : (p.stock <= 5 ? t('منخفض','Low') : t('متوفر','In stock'))
+        }</span></td>
         <td>
           <div class="row-actions">
             <button class="btn btn-ghost" style="padding:6px 10px" data-edit="${p.id}">✎</button>
@@ -886,13 +924,16 @@ a{color:inherit;text-decoration:none}
   document.getElementById('productForm').addEventListener('submit', (e) => {
     e.preventDefault();
     const cat = document.getElementById('pCategory').value.trim() || t('عام','General');
+    const serviceLike = /برمجة|خدمات|programming|service/i.test(cat);
     const payload = {
       name: document.getElementById('pName').value.trim(),
       name_en: document.getElementById('pNameEn').value.trim(),
       category: cat,
       category_en: cat,
       price: parseFloat(document.getElementById('pPrice').value) || 0,
-      stock: parseInt(document.getElementById('pStock').value, 10) || 0
+      stock: parseInt(document.getElementById('pStock').value, 10) || 0,
+      kind: serviceLike ? 'service' : 'product',
+      client: true
     };
     if (editingProductId) {
       const idx = products.findIndex(p => p.id === editingProductId);
