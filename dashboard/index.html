@@ -1184,16 +1184,20 @@ body.is-admin .client-only{display:none!important}
     switchPage('requests');
   }
 
-  document.getElementById('clientCatalogSearch')?.addEventListener('input', renderClientCatalog);
-  document.getElementById('clientCatalogGrid')?.addEventListener('click', (e) => {
+  const clientCatalogSearch = document.getElementById('clientCatalogSearch');
+  if (clientCatalogSearch) clientCatalogSearch.addEventListener('input', renderClientCatalog);
+  const clientCatalogGrid = document.getElementById('clientCatalogGrid');
+  if (clientCatalogGrid) clientCatalogGrid.addEventListener('click', (e) => {
     const btn = e.target.closest('[data-client-product]');
     if (btn) requestProductAsClient(btn.dataset.clientProduct);
   });
-  document.getElementById('clientSuggestionsList')?.addEventListener('click', (e) => {
+  const clientSuggestionsList = document.getElementById('clientSuggestionsList');
+  if (clientSuggestionsList) clientSuggestionsList.addEventListener('click', (e) => {
     const btn = e.target.closest('[data-client-suggest]');
     if (btn) requestSuggestionAsClient(btn.dataset.clientSuggest);
   });
-  document.getElementById('overviewSuggestions')?.addEventListener('click', (e) => {
+  const overviewSuggestions = document.getElementById('overviewSuggestions');
+  if (overviewSuggestions) overviewSuggestions.addEventListener('click', (e) => {
     const btn = e.target.closest('[data-client-suggest]');
     if (btn) requestSuggestionAsClient(btn.dataset.clientSuggest);
   });
