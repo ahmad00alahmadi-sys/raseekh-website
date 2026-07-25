@@ -1,0 +1,2837 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" id="htmlRoot">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title id="pageTitle">لوحة التحكم — راسخ</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='10' fill='%2310233A'/%3E%3Cpath d='M14 44V20h12.2c7.2 0 11.4 3.4 11.4 9.2 0 4.4-2.4 7.4-6.4 8.6L40 44h-7.2l-7.4-11.4H21V44H14zm7-17.2h4.8c3.2 0 5-1.4 5-4s-1.8-4-5-4H21v8z' fill='%23E8A05A'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='10' fill='%2310233A'/%3E%3Cpath d='M14 44V20h12.2c7.2 0 11.4 3.4 11.4 9.2 0 4.4-2.4 7.4-6.4 8.6L40 44h-7.2l-7.4-11.4H21V44H14zm7-17.2h4.8c3.2 0 5-1.4 5-4s-1.8-4-5-4H21v8z' fill='%23E8A05A'/%3E%3C/svg%3E">
+<meta name="theme-color" content="#10233A">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;500;600;700&family=Tajawal:wght@500;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="/auth.js"></script>
+<script src="/catalog.js"></script>
+<script src="/terms.js"></script>
+<script src="/activity.js"></script>
+<style>
+:root{
+  --ink:#10233A;--navy:#16324F;--harbor:#2A6F7A;--copper:#C45C26;--sand:#E8A05A;
+  --bg:#E8EDF2;--panel:#F7F9FC;--mist:#D5DEE8;--line:#B8C4D1;
+  --muted:#5A6B7C;--danger:#B42318;--ok:#1F7A58;
+  --radius:6px;--shadow:0 18px 40px -28px rgba(16,35,58,.45);
+  --forest:var(--navy);--leaf:var(--harbor);--brass:var(--copper);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{min-height:100%}
+body{
+  background:var(--bg);color:var(--ink);
+  font-family:'Readex Pro','Tajawal',sans-serif;line-height:1.65;
+}
+body.lang-en{font-family:'Space Grotesk',sans-serif}
+body::before{
+  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 70% 40% at 100% 0%, rgba(196,92,38,.12), transparent 50%),
+    radial-gradient(ellipse 60% 35% at 0% 10%, rgba(42,111,122,.12), transparent 50%),
+    linear-gradient(180deg,#DCE4EC,var(--bg));
+}
+body::after{
+  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.18;
+  background-image:
+    linear-gradient(rgba(16,35,58,.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(16,35,58,.04) 1px, transparent 1px);
+  background-size:48px 48px;
+}
+h1,h2,h3,.logo{font-family:'Tajawal',sans-serif}
+body.lang-en h1,body.lang-en h2,body.lang-en h3,body.lang-en .logo{font-family:'Space Grotesk',sans-serif}
+button,input,select,textarea{font:inherit}
+a{color:inherit;text-decoration:none}
+.hidden{display:none!important}
+
+#loginView{position:relative;z-index:2;min-height:100vh;display:grid;place-items:center;padding:24px}
+.login-card{
+  width:100%;max-width:440px;background:var(--panel);border:1.5px solid var(--line);
+  border-radius:10px;padding:32px;box-shadow:var(--shadow);animation:rise .45s ease;
+  border-top:4px solid var(--copper);
+}
+@keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.login-card .logo{font-size:1.85rem;font-weight:800;margin-bottom:6px}
+.login-card .logo em{font-style:normal;color:var(--copper)}
+.login-card .sub{color:var(--muted);margin-bottom:22px;font-size:.95rem}
+.form{display:flex;flex-direction:column;gap:12px}
+.form label.field{display:flex;flex-direction:column;gap:6px;font-size:.8rem;font-weight:700;color:var(--muted)}
+.form input,.form select,.form textarea{
+  width:100%;padding:13px 14px;border:1.5px solid var(--line);border-radius:var(--radius);background:#fff;
+}
+.form input:focus,.form select:focus,.form textarea:focus{outline:2px solid rgba(42,111,122,.28);border-color:var(--harbor)}
+.mobile-logout{display:none}
+.nav-badge{
+  margin-inline-start:auto;min-width:20px;height:20px;padding:0 6px;border-radius:999px;
+  background:var(--copper);color:#fff;font-size:.7rem;font-weight:800;display:none;align-items:center;justify-content:center;
+}
+.nav-badge.show{display:inline-flex}
+.lead-filters{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 4px}
+.lead-filters button{
+  border:1.5px solid var(--line);background:#fff;color:var(--muted);border-radius:var(--radius);
+  padding:8px 12px;cursor:pointer;font-weight:700;font-size:.82rem;
+}
+.lead-filters button.active{background:var(--navy);color:#F4F7FA;border-color:var(--navy)}
+.stat.clickable{cursor:pointer;transition:transform .15s,border-color .15s}
+.stat.clickable:hover{transform:translateY(-2px);border-color:var(--copper)}
+.delivery-status{
+  display:grid;gap:8px;margin:10px 0 14px;padding:12px 14px;border:1.5px solid var(--line);
+  border-radius:var(--radius);background:rgba(247,249,252,.9);font-size:.86rem;
+}
+.delivery-status .row{display:flex;justify-content:space-between;gap:10px;align-items:center}
+.delivery-pill{
+  display:inline-flex;align-items:center;gap:6px;padding:3px 8px;border-radius:2px;font-size:.75rem;font-weight:700;
+  background:var(--mist);color:var(--navy);
+}
+.delivery-pill.on{background:rgba(31,122,88,.14);color:var(--ok)}
+.delivery-pill.off{background:#FCE8E6;color:var(--danger)}
+.status-chip{
+  display:inline-flex;padding:4px 8px;border-radius:2px;font-size:.75rem;font-weight:700;
+  background:rgba(42,111,122,.12);color:var(--harbor);
+}
+.status-chip.new{background:rgba(196,92,38,.16);color:#8A3E14}
+.status-chip.in_progress{background:rgba(42,111,122,.16);color:var(--harbor)}
+.status-chip.done{background:rgba(31,122,88,.14);color:var(--ok)}
+.status-chip.closed{background:var(--mist);color:var(--muted)}
+.setup-steps{display:flex;flex-direction:column;gap:8px;text-align:start;margin-top:12px;color:var(--muted);font-size:.9rem}
+.setup-steps b{color:var(--navy)}
+.setup-banner{
+  display:none;margin-bottom:14px;padding:16px 18px;border:1.5px solid rgba(196,92,38,.35);
+  border-radius:var(--radius);background:rgba(232,160,90,.12);border-inline-start:4px solid var(--copper);
+}
+.setup-banner.show{display:block}
+.setup-banner h3{color:var(--navy);margin-bottom:6px;font-size:1.05rem}
+.setup-banner p{color:var(--muted);font-size:.9rem;margin-bottom:10px}
+.setup-banner ol{margin:0 0 12px;padding-inline-start:1.2em;color:var(--ink);font-size:.9rem;display:flex;flex-direction:column;gap:4px}
+.setup-banner.ok{
+  border-color:rgba(31,122,88,.35);background:rgba(31,122,88,.08);border-inline-start-color:var(--ok);
+}
+.terms-gate{
+  position:fixed;inset:0;z-index:300;display:none;align-items:center;justify-content:center;
+  padding:16px;background:rgba(16,35,58,.78);backdrop-filter:blur(8px);
+}
+.terms-gate.open{display:flex}
+body.terms-locked{overflow:hidden}
+#dashboardView.terms-blocked .sidebar,
+#dashboardView.terms-blocked .main{pointer-events:none;user-select:none}
+.terms-gate-sheet{
+  width:min(840px,100%);max-height:min(90vh,920px);overflow:auto;background:var(--panel);
+  border:1.5px solid var(--line);border-radius:10px;padding:22px 18px 16px;box-shadow:var(--shadow);
+  border-top:4px solid var(--copper);
+}
+.terms-gate-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;position:sticky;bottom:0;background:linear-gradient(180deg,transparent,var(--panel) 30%);padding-top:16px}
+.check{display:flex;align-items:flex-start;gap:10px;font-size:.9rem;color:var(--muted);margin:4px 0 10px}
+.check input{margin-top:4px;accent-color:var(--copper)}
+.check a{color:var(--harbor);font-weight:700}
+.activity-list{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+.activity-row{
+  display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;
+  padding:10px 12px;border:1.5px solid var(--line);border-radius:8px;background:rgba(247,249,252,.7);
+}
+.activity-row .meta{color:var(--muted);font-size:.8rem}
+.activity-pill{
+  display:inline-flex;align-items:center;padding:4px 8px;border-radius:999px;font-size:.72rem;font-weight:700;
+  background:rgba(42,111,122,.14);color:var(--harbor);
+}
+.activity-pill.off{background:var(--mist);color:var(--muted)}
+.terms-doc .eyebrow{color:var(--copper);font-weight:700;font-size:.8rem;margin-bottom:8px}
+.terms-doc-head h2{font-size:clamp(1.4rem,2.8vw,1.9rem);color:var(--navy);margin-bottom:8px}
+.terms-doc-head p{color:var(--muted);margin-bottom:8px}
+.terms-updated{color:var(--copper);font-weight:700;font-size:.82rem;margin-bottom:12px}
+.terms-list{display:flex;flex-direction:column}
+.terms-item{padding:12px 0;border-bottom:1.5px solid var(--line)}
+.terms-item:last-child{border-bottom:none}
+.terms-item h3{color:var(--navy);font-size:1rem;margin-bottom:6px}
+.terms-item p{color:var(--muted);font-size:.92rem;line-height:1.75}
+.audience-stats{margin-top:14px}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  border:none;border-radius:var(--radius);padding:12px 18px;cursor:pointer;font-weight:700;
+  transition:transform .15s,background .15s;
+}
+.btn:hover{transform:translateY(-2px)}
+.btn-primary{background:var(--navy);color:#F4F7FA}
+.btn-primary:hover{background:#0C1B2E}
+.btn-ghost{background:transparent;border:1.5px solid var(--line);color:var(--ink)}
+.btn-brass{background:var(--copper);color:#fff}
+.btn-danger{background:#FCE8E6;color:var(--danger);border:1px solid #F3C1BB}
+.msg{min-height:18px;font-size:.88rem;font-weight:600}
+.login-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.tabs{display:flex;border:1.5px solid var(--line);border-radius:var(--radius);overflow:hidden;margin-bottom:16px}
+.tab{flex:1;border:none;background:var(--bg);color:var(--muted);padding:11px;cursor:pointer;font-weight:700}
+.tab.active{background:var(--navy);color:#F4F7FA}
+.auth-panel{display:none}
+.auth-panel.active{display:block}
+.linkish{background:none;border:none;color:var(--muted);text-decoration:underline;cursor:pointer;font-size:.85rem;padding:0;margin-top:10px}
+.demo-banner{
+  background:rgba(42,111,122,.1);border:1.5px dashed var(--harbor);border-radius:var(--radius);padding:10px 12px;
+  font-size:.82rem;color:var(--navy);margin-bottom:14px;
+}
+.suggest-mini{display:flex;flex-direction:column;gap:10px}
+.suggest-mini .item{
+  border:1.5px solid var(--line);border-radius:var(--radius);padding:12px 14px;background:#fff;
+  border-inline-start:3px solid var(--copper);
+}
+.suggest-mini .item strong{display:block;margin-bottom:4px}
+.suggest-mini .item span{color:var(--muted);font-size:.86rem}
+.client-note{
+  background:rgba(196,92,38,.1);border:1.5px solid rgba(196,92,38,.3);
+  border-radius:var(--radius);padding:12px 14px;margin-bottom:14px;color:var(--navy);font-size:.9rem;
+}
+.role-pill{
+  display:inline-block;font-size:.72rem;font-weight:700;padding:3px 8px;border-radius:2px;
+  background:var(--mist);color:var(--navy);margin-top:4px;
+}
+.role-pill.admin{background:rgba(196,92,38,.18);color:#8A3E14}
+body.is-client .admin-only{display:none!important}
+body.is-admin .client-only{display:none!important}
+.home-bar{
+  display:flex;gap:8px;align-items:center;justify-content:space-between;
+  margin-bottom:14px;padding:12px 14px;background:var(--panel);border:1.5px solid var(--line);
+  border-radius:var(--radius);border-inline-start:4px solid var(--copper);
+}
+.home-bar a.btn-primary{white-space:nowrap}
+.browse-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.browse-card{
+  background:#fff;border:1.5px solid var(--line);border-radius:var(--radius);padding:14px;
+  display:flex;flex-direction:column;gap:6px;text-align:start;transition:border-color .15s,transform .15s;
+}
+.browse-card:hover{border-color:var(--harbor);transform:translateY(-2px)}
+.browse-card h4{font-size:1rem}
+.browse-card p{color:var(--muted);font-size:.86rem;flex:1}
+.browse-card .price{font-weight:800;color:var(--navy)}
+@media (max-width:900px){.browse-grid{grid-template-columns:1fr 1fr}}
+@media (max-width:520px){.browse-grid{grid-template-columns:1fr}}
+
+#dashboardView{
+  display:none;position:relative;z-index:1;min-height:100vh;
+  grid-template-columns:250px 1fr;
+}
+#dashboardView.active{display:grid}
+.sidebar{
+  background:linear-gradient(180deg,#10233A 0%, #16324F 100%);color:#D7E2EC;
+  border-inline-end:none;padding:22px 14px;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;
+}
+.side-logo{padding:4px 10px 18px;border-bottom:1px solid rgba(255,255,255,.12);margin-bottom:14px}
+.side-logo .logo{font-size:1.35rem;font-weight:800;color:#F4F7FA}
+.side-logo .logo em{font-style:normal;color:var(--sand)}
+.side-nav{display:flex;flex-direction:column;gap:4px;flex:1}
+.nav-item{
+  display:flex;align-items:center;gap:10px;width:100%;text-align:start;
+  padding:12px 12px;border-radius:var(--radius);border:1px solid transparent;
+  background:none;color:rgba(215,226,236,.78);cursor:pointer;font-size:.93rem;
+}
+.nav-item:hover{background:rgba(255,255,255,.08);color:#fff}
+.nav-item.active{background:rgba(196,92,38,.22);color:#fff;border-color:rgba(232,160,90,.35);font-weight:700}
+.nav-item .ico{width:22px;text-align:center;font-size:.85rem;opacity:.8}
+.side-foot{border-top:1px solid rgba(255,255,255,.12);padding-top:14px;margin-top:10px}
+.user-row{display:flex;gap:10px;align-items:center;padding:8px;margin-bottom:10px}
+.avatar{
+  width:36px;height:36px;border-radius:var(--radius);background:linear-gradient(135deg,var(--copper),var(--sand));
+  color:#fff;display:grid;place-items:center;font-weight:800;flex-shrink:0;
+}
+.user-email{font-size:.82rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:150px;color:#F4F7FA}
+.user-status{font-size:.72rem;color:var(--sand)}
+.side-foot .btn-ghost{border-color:rgba(255,255,255,.2);color:#F4F7FA}
+.main{padding:28px 32px;min-width:0}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:24px;flex-wrap:wrap}
+.topbar h1{font-size:1.55rem}
+.crumb{color:var(--muted);font-size:.8rem;margin-top:4px}
+.crumb span{color:var(--copper)}
+.top-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.lang-btn,.clock{
+  border:1.5px solid var(--line);background:var(--panel);border-radius:var(--radius);
+  padding:9px 12px;font-size:.82rem;font-weight:700;cursor:pointer;color:var(--ink);
+}
+.clock{cursor:default;color:var(--muted);font-weight:600}
+.page{display:none}
+.page.active{display:block;animation:rise .35s ease}
+
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
+.stat{background:var(--panel);border:1.5px solid var(--line);border-radius:var(--radius);padding:18px;border-top:3px solid var(--harbor)}
+.stat .label{color:var(--muted);font-size:.85rem;margin-bottom:8px}
+.stat .value{font-size:1.8rem;font-weight:800;color:var(--navy)}
+.stat .hint{font-size:.78rem;color:var(--muted);margin-top:6px}
+
+.panel{
+  background:var(--panel);border:1.5px solid var(--line);border-radius:var(--radius);padding:22px;margin-bottom:18px;
+}
+.panel h3{font-size:1.05rem;margin-bottom:14px}
+.grid-2{display:grid;grid-template-columns:1.2fr .8fr;gap:16px}
+.toolbar{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:14px;flex-wrap:wrap}
+.product-table{width:100%;border-collapse:collapse}
+.product-table th,.product-table td{padding:12px 10px;border-bottom:1px solid var(--line);text-align:start;font-size:.92rem}
+.product-table th{color:var(--muted);font-size:.78rem;font-weight:600}
+.badge{
+  display:inline-flex;padding:4px 10px;border-radius:2px;font-size:.75rem;font-weight:700;
+  background:rgba(42,111,122,.12);color:var(--harbor);
+}
+.badge.low{background:#FCE8E6;color:var(--danger)}
+.row-actions{display:flex;gap:6px}
+
+.pos-layout{display:grid;grid-template-columns:1.4fr .9fr;gap:16px;align-items:start}
+.pos-catalog{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.pos-item{
+  background:var(--panel);border:1.5px solid var(--line);border-radius:var(--radius);padding:16px 12px;
+  text-align:center;cursor:pointer;transition:border-color .15s,transform .15s;
+}
+.pos-item:hover{border-color:var(--copper);transform:translateY(-2px)}
+.pos-item h4{font-size:.95rem;margin-bottom:4px}
+.pos-item .price{color:var(--navy);font-weight:700}
+.pos-item .stock{font-size:.75rem;color:var(--muted);margin-top:4px}
+.pos-item .cat{font-size:.7rem;color:var(--copper);margin-bottom:6px;font-weight:700}
+.cart{
+  background:linear-gradient(165deg,#10233A,#16324F);color:#E8F0F5;border-radius:10px;padding:18px;
+  position:sticky;top:16px;min-height:420px;display:flex;flex-direction:column;
+  border-top:4px solid var(--copper);
+}
+.cart h3{margin-bottom:12px;color:#F4F7FA}
+.cart-lines{flex:1;overflow:auto;display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
+.cart-line{
+  display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;
+  background:rgba(255,255,255,.06);border-radius:var(--radius);padding:10px;font-size:.88rem;
+}
+.qty-ctrl{display:flex;gap:6px;align-items:center}
+.qty-ctrl button{
+  width:26px;height:26px;border-radius:var(--radius);border:1px solid rgba(255,255,255,.15);
+  background:rgba(255,255,255,.08);color:#fff;cursor:pointer;
+}
+.cart-total{
+  display:flex;justify-content:space-between;align-items:center;
+  background:rgba(196,92,38,.25);border:1px solid rgba(232,160,90,.35);
+  border-radius:var(--radius);padding:12px;font-weight:800;margin-bottom:10px;
+}
+.cart-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.empty{
+  color:var(--muted);text-align:center;padding:40px 16px;
+  border:1.5px dashed var(--line);border-radius:var(--radius);background:rgba(247,249,252,.65);
+}
+.empty strong{display:block;color:var(--navy);margin-bottom:6px}
+.stat{animation:rise .45s ease both}
+.stats .stat:nth-child(1){animation-delay:.04s}
+.stats .stat:nth-child(2){animation-delay:.1s}
+.stats .stat:nth-child(3){animation-delay:.16s}
+.stats .stat:nth-child(4){animation-delay:.22s}
+.main,.sidebar{position:relative;z-index:1}
+.sale-row{
+  display:flex;justify-content:space-between;gap:12px;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);font-size:.92rem;
+}
+.sale-row:last-child{border-bottom:none}
+
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(16,35,58,.55);backdrop-filter:blur(4px);
+  z-index:100;display:none;align-items:center;justify-content:center;padding:18px;
+}
+.modal-overlay.open{display:flex}
+.modal{
+  background:var(--panel);border:1.5px solid var(--line);border-radius:10px;
+  width:100%;max-width:460px;padding:24px;position:relative;box-shadow:var(--shadow);
+}
+.modal-close{position:absolute;top:12px;inset-inline-start:12px;border:none;background:none;font-size:1.3rem;cursor:pointer;color:var(--muted)}
+.receipt{font-size:.9rem}
+.receipt-head{text-align:center;margin-bottom:14px;border-bottom:1px dashed var(--line);padding-bottom:12px}
+.receipt-line{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px solid var(--mist)}
+.receipt-total{display:flex;justify-content:space-between;margin-top:12px;font-weight:800;font-size:1.1rem;color:var(--navy)}
+.toast{
+  position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:var(--ink);color:#F4F7FA;padding:12px 18px;border-radius:var(--radius);z-index:200;
+  opacity:0;pointer-events:none;transition:.3s;font-size:.9rem;
+  border-inline-start:4px solid var(--sand);box-shadow:var(--shadow);
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media print{
+  body *{visibility:hidden}
+  #receiptPrintArea,#receiptPrintArea *{visibility:visible}
+  #receiptPrintArea{position:absolute;left:0;top:0;width:100%;padding:24px}
+  .modal-overlay{position:static;display:block!important;background:none}
+  .modal{box-shadow:none;border:none;max-width:100%}
+  .no-print{display:none!important}
+}
+
+@media (max-width:960px){
+  #dashboardView.active{display:flex;flex-direction:column}
+  .sidebar{position:relative;height:auto;border-inline-end:none;border-bottom:1px solid rgba(255,255,255,.12)}
+  .side-nav{flex-direction:row;overflow-x:auto}
+  .side-foot{display:none}
+  .mobile-logout{display:inline-flex}
+  .side-logo{display:flex!important;align-items:center;justify-content:space-between;border-bottom:none;margin-bottom:0;padding-bottom:0}
+  .nav-item{white-space:nowrap}
+  .main{padding:18px}
+  .home-bar{display:flex!important}
+  .stats{grid-template-columns:1fr 1fr}
+  .grid-2,.pos-layout{grid-template-columns:1fr}
+  .pos-catalog{grid-template-columns:repeat(2,1fr)}
+  .cart{position:relative;top:0}
+}
+@media (max-width:520px){
+  .stats{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div id="loginView">
+  <div class="login-card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <div class="logo" data-ar-html='را<em>سخ</em>' data-en-html='Ra<em>seekh</em>'>را<em>سخ</em></div>
+      <button class="lang-btn" id="loginLangBtn" type="button">EN</button>
+    </div>
+    <p class="sub" data-ar="سجّل كعميل لمتابعة الطلبات والاقتراحات. التعديل مخصص لحساب الإدارة فقط." data-en="Sign in as a client to follow requests and suggestions. Editing is admin-only.">سجّل كعميل لمتابعة الطلبات والاقتراحات. التعديل مخصص لحساب الإدارة فقط.</p>
+    <div class="demo-banner" data-ar="التجربة الفورية = وضع عميل (بدون تعديل). الإدارة فقط بحساب خاص." data-en="Instant demo = client mode (no editing). Admin access is a private account only.">التجربة الفورية = وضع عميل (بدون تعديل). الإدارة فقط بحساب خاص.</div>
+
+    <div class="tabs" id="authTabsBar">
+      <button type="button" class="tab active" id="loginTabBtn" data-ar="دخول" data-en="Login">دخول</button>
+      <button type="button" class="tab" id="registerTabBtn" data-ar="حساب جديد" data-en="Sign up">حساب جديد</button>
+    </div>
+
+    <div class="auth-panel active" id="loginPanel">
+      <form class="form" id="dashLoginForm">
+        <label class="field"><span data-ar="البريد الإلكتروني" data-en="Email">البريد الإلكتروني</span>
+          <input type="email" id="dashLoginEmail" required data-ar-placeholder="البريد الإلكتروني" data-en-placeholder="Email" placeholder="البريد الإلكتروني" autocomplete="email">
+        </label>
+        <label class="field"><span data-ar="كلمة المرور" data-en="Password">كلمة المرور</span>
+          <input type="password" id="dashLoginPassword" required data-ar-placeholder="كلمة المرور" data-en-placeholder="Password" placeholder="كلمة المرور" autocomplete="current-password">
+        </label>
+        <button class="btn btn-primary" type="submit" data-ar="دخول إلى النظام" data-en="Enter system">دخول إلى النظام</button>
+      </form>
+      <button type="button" class="linkish" id="forgotLink" data-ar="نسيت كلمة المرور؟" data-en="Forgot password?">نسيت كلمة المرور؟</button>
+      <div class="msg" id="dashLoginMsg"></div>
+    </div>
+
+    <div class="auth-panel" id="registerPanel">
+      <form class="form" id="dashRegisterForm">
+        <label class="field"><span data-ar="الاسم الكامل" data-en="Full name">الاسم الكامل</span>
+          <input type="text" id="dashRegisterName" required data-ar-placeholder="الاسم الكامل" data-en-placeholder="Full name" placeholder="الاسم الكامل" autocomplete="name">
+        </label>
+        <label class="field"><span data-ar="البريد الإلكتروني" data-en="Email">البريد الإلكتروني</span>
+          <input type="email" id="dashRegisterEmail" required data-ar-placeholder="البريد الإلكتروني" data-en-placeholder="Email" placeholder="البريد الإلكتروني" autocomplete="email">
+        </label>
+        <label class="field"><span data-ar="رقم الجوال (اختياري)" data-en="Phone (optional)">رقم الجوال (اختياري)</span>
+          <input type="tel" id="dashRegisterPhone" data-ar-placeholder="05xxxxxxxx" data-en-placeholder="05xxxxxxxx" placeholder="05xxxxxxxx" autocomplete="tel">
+        </label>
+        <label class="field"><span data-ar="كلمة المرور (6+)" data-en="Password (6+)">كلمة المرور (6+)</span>
+          <input type="password" id="dashRegisterPassword" minlength="6" required data-ar-placeholder="كلمة المرور (6+)" data-en-placeholder="Password (6+)" placeholder="كلمة المرور (6+)" autocomplete="new-password">
+        </label>
+        <label class="check">
+          <input type="checkbox" id="dashRegisterTermsCheck" required>
+          <span><span data-ar="أوافق على" data-en="I agree to the">أوافق على</span> <a href="/terms/" id="dashRegisterTermsLink" target="_blank" rel="noopener" data-ar="الشروط والأحكام" data-en="Terms">الشروط والأحكام</a></span>
+        </label>
+        <button class="btn btn-primary" type="submit" data-ar="إنشاء حساب" data-en="Create account">إنشاء حساب</button>
+      </form>
+      <div class="msg" id="dashRegisterMsg"></div>
+    </div>
+
+    <div class="auth-panel" id="forgotPanel">
+      <form class="form" id="dashForgotForm">
+        <input type="email" id="dashForgotEmail" required data-ar-placeholder="البريد الإلكتروني" data-en-placeholder="Email" placeholder="البريد الإلكتروني">
+        <button class="btn btn-primary" type="submit" data-ar="إرسال رابط التعيين" data-en="Send reset link">إرسال رابط التعيين</button>
+      </form>
+      <button type="button" class="linkish" id="backLoginLink" data-ar="رجوع لتسجيل الدخول" data-en="Back to login">رجوع لتسجيل الدخول</button>
+      <div class="msg" id="dashForgotMsg"></div>
+    </div>
+
+    <div class="login-actions">
+      <button class="btn btn-brass" type="button" id="demoBtn" data-ar="تجربة فورية" data-en="Try demo">تجربة فورية</button>
+      <a class="btn btn-ghost" href="/" data-ar="← الموقع الرئيسي" data-en="← Main site">← الموقع الرئيسي</a>
+    </div>
+  </div>
+</div>
+
+<div id="dashboardView">
+  <aside class="sidebar">
+    <div class="side-logo">
+      <a class="logo" href="/" data-ar-html='را<em>سخ</em>' data-en-html='Ra<em>seekh</em>'>را<em>سخ</em></a>
+    </div>
+    <nav class="side-nav">
+      <button class="nav-item active" data-page="overview"><span class="ico">◈</span><span data-ar="نظرة عامة" data-en="Overview">نظرة عامة</span></button>
+      <button class="nav-item client-only" data-page="catalog"><span class="ico">▤</span><span data-ar="الكتالوج" data-en="Catalog">الكتالوج</span></button>
+      <button class="nav-item client-only" data-page="suggestions"><span class="ico">✦</span><span data-ar="الاقتراحات" data-en="Suggestions">الاقتراحات</span></button>
+      <button class="nav-item client-only" data-page="requests"><span class="ico">✉</span><span data-ar="طلباتي" data-en="My requests">طلباتي</span></button>
+      <button class="nav-item admin-only" data-page="pos"><span class="ico">▣</span><span data-ar="طلبات البيع" data-en="Sales desk">طلبات البيع</span></button>
+      <button class="nav-item admin-only" data-page="products"><span class="ico">▤</span><span data-ar="إدارة المنتجات" data-en="Manage products">إدارة المنتجات</span></button>
+      <button class="nav-item admin-only" data-page="sales"><span class="ico">฿</span><span data-ar="سجل الطلبات" data-en="Orders">سجل الطلبات</span></button>
+      <button class="nav-item admin-only" data-page="leads"><span class="ico">✉</span><span data-ar="طلبات العملاء" data-en="Client requests">طلبات العملاء</span><span class="nav-badge" id="leadsNavBadge">0</span></button>
+      <button class="nav-item admin-only" data-page="activity"><span class="ico">◎</span><span data-ar="تسجيل الدخول" data-en="Logins">تسجيل الدخول</span><span class="nav-badge" id="activityNavBadge">0</span></button>
+      <button class="nav-item" data-page="settings"><span class="ico">⚙</span><span data-ar="الإعدادات" data-en="Settings">الإعدادات</span></button>
+    </nav>
+    <div class="side-foot">
+      <div class="user-row">
+        <div class="avatar" id="dashAvatar">?</div>
+        <div>
+          <div class="user-email" id="dashUserLabel">—</div>
+          <div class="user-status" id="dashUserStatus" data-ar="متصل" data-en="Online">متصل</div>
+          <div class="role-pill" id="dashRolePill">عميل</div>
+        </div>
+      </div>
+      <button class="btn btn-ghost" style="width:100%" id="logoutBtn" data-ar="تسجيل الخروج" data-en="Log out">تسجيل الخروج</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="home-bar">
+      <div>
+        <strong data-ar="حساب راسخ" data-en="Raseekh account">حساب راسخ</strong>
+        <div style="color:var(--muted);font-size:.82rem" data-ar="يمكنك الرجوع للموقع في أي وقت" data-en="You can return to the website anytime">يمكنك الرجوع للموقع في أي وقت</div>
+      </div>
+      <a class="btn btn-primary" href="/" data-ar="← الصفحة الرئيسية" data-en="← Home page">← الصفحة الرئيسية</a>
+    </div>
+    <div class="top-actions" style="justify-content:flex-end;margin-bottom:8px">
+      <div class="clock" id="dashClock">—</div>
+      <button class="lang-btn" id="dashLangBtn" type="button">EN</button>
+      <button class="btn btn-ghost client-only" id="viewTermsBtn" type="button" data-ar="الشروط" data-en="Terms">الشروط</button>
+      <a class="btn btn-ghost" href="/" data-ar="الصفحة الرئيسية" data-en="Home">الصفحة الرئيسية</a>
+      <button class="btn btn-ghost mobile-logout" id="logoutBtnMobile" type="button" data-ar="خروج" data-en="Log out">خروج</button>
+    </div>
+
+    <div class="page active" id="page-overview">
+      <div class="topbar">
+        <div>
+          <h1 id="overviewTitle" data-ar="أهلاً بعودتك" data-en="Welcome back">أهلاً بعودتك</h1>
+          <div class="crumb"><span data-ar="راسخ" data-en="Raseekh">راسخ</span> <span>/</span> <span data-ar="نظرة عامة" data-en="Overview">نظرة عامة</span></div>
+        </div>
+        <button class="btn btn-primary admin-only" data-goto="pos" data-ar="فتح طلبات البيع" data-en="Open sales desk">فتح طلبات البيع</button>
+        <button class="btn btn-primary client-only" data-goto="catalog" data-ar="تصفح الكتالوج" data-en="Browse catalog">تصفح الكتالوج</button>
+      </div>
+
+      <div class="setup-banner admin-only" id="adminSetupBanner">
+        <h3 data-ar="إعداد وصول الطلبات وتسجيل الدخول" data-en="Set up requests & login tracking">إعداد وصول الطلبات وتسجيل الدخول</h3>
+        <p id="adminSetupBannerText" data-ar="أكملوا هذه الخطوات مرة واحدة حتى تصلكم الطلبات وتعرفوا من سجّل دخول من أي جهاز." data-en="Complete these once so requests and logins reach you across devices.">أكملوا هذه الخطوات مرة واحدة حتى تصلكم الطلبات وتعرفوا من سجّل دخول من أي جهاز.</p>
+        <ol>
+          <li data-ar="في Supabase → SQL شغّلوا ملف supabase/setup_all.sql" data-en="In Supabase → SQL run supabase/setup_all.sql">في Supabase → SQL شغّلوا ملف supabase/setup_all.sql</li>
+          <li data-ar="من الإعدادات احفظوا «بريد وصول الطلبات» وفعّلوا FormSubmit" data-en="In Settings save “Request notify email” and activate FormSubmit">من الإعدادات احفظوا «بريد وصول الطلبات» وفعّلوا FormSubmit</li>
+          <li data-ar="ادخلوا بحساب الإدارة السحابي (ليس جلسة محلية)" data-en="Sign in with the cloud admin account (not a local session)">ادخلوا بحساب الإدارة السحابي (ليس جلسة محلية)</li>
+        </ol>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn btn-primary" type="button" data-goto="settings" data-ar="فتح الإعدادات" data-en="Open settings">فتح الإعدادات</button>
+          <button class="btn btn-ghost" type="button" id="recheckSetupBtn" data-ar="إعادة الفحص" data-en="Recheck">إعادة الفحص</button>
+        </div>
+      </div>
+
+      <div class="stats admin-only">
+        <div class="stat"><div class="label" data-ar="المنتجات" data-en="Products">المنتجات</div><div class="value" id="statProducts">0</div><div class="hint" data-ar="في الكتالوج" data-en="in catalog">في الكتالوج</div></div>
+        <div class="stat"><div class="label" data-ar="مبيعات اليوم" data-en="Today sales">مبيعات اليوم</div><div class="value" id="statToday">0</div><div class="hint">SAR</div></div>
+        <div class="stat"><div class="label" data-ar="عدد الفواتير" data-en="Receipts">عدد الفواتير</div><div class="value" id="statReceipts">0</div><div class="hint" data-ar="اليوم" data-en="today">اليوم</div></div>
+        <div class="stat clickable" id="statNewRequestsCard" role="button" tabindex="0">
+          <div class="label" data-ar="طلبات جديدة" data-en="New requests">طلبات جديدة</div>
+          <div class="value" id="statNewRequests">0</div>
+          <div class="hint" data-ar="بانتظار المتابعة" data-en="awaiting follow-up">بانتظار المتابعة</div>
+        </div>
+      </div>
+      <div class="stats admin-only audience-stats">
+        <div class="stat clickable" id="statRegisteredCard" role="button" tabindex="0" data-goto="activity"><div class="label" data-ar="سجّلوا دخول" data-en="Logged-in users">سجّلوا دخول</div><div class="value" id="statRegisteredUsers">0</div><div class="hint" data-ar="اضغط للتفاصيل" data-en="tap for details">اضغط للتفاصيل</div></div>
+        <div class="stat clickable" id="statActiveCard" role="button" tabindex="0" data-goto="activity"><div class="label" data-ar="نشط الآن" data-en="Active now">نشط الآن</div><div class="value" id="statActiveUsers">0</div><div class="hint" data-ar="آخر 15 دقيقة" data-en="last 15 minutes">آخر 15 دقيقة</div></div>
+        <div class="stat clickable" data-goto="activity"><div class="label" data-ar="دخول اليوم" data-en="Logins today">دخول اليوم</div><div class="value" id="statLoginsToday">0</div><div class="hint" data-ar="حسابات اليوم" data-en="accounts today">حسابات اليوم</div></div>
+        <div class="stat clickable" data-goto="leads"><div class="label" data-ar="طلبات جديدة" data-en="New requests">طلبات جديدة</div><div class="value" id="statNewRequestsDup">0</div><div class="hint" data-ar="صندوق الطلبات" data-en="request inbox">صندوق الطلبات</div></div>
+      </div>
+      <div class="panel admin-only" style="margin-top:14px">
+        <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center">
+          <div>
+            <h3 data-ar="كيف تعرف الدخول والطلبات؟" data-en="How to track logins & requests">كيف تعرف الدخول والطلبات؟</h3>
+            <p style="color:var(--muted);font-size:.9rem;margin:4px 0 0" data-ar="تسجيل الدخول من قائمة «تسجيل الدخول». الطلبات من «طلبات العملاء» + بريد الإشعار في الإعدادات." data-en="Logins: open “Logins”. Requests: “Client requests” + notify email in Settings.">تسجيل الدخول من قائمة «تسجيل الدخول». الطلبات من «طلبات العملاء» + بريد الإشعار في الإعدادات.</p>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn btn-primary" type="button" data-goto="activity" data-ar="فتح تسجيل الدخول" data-en="Open logins">فتح تسجيل الدخول</button>
+            <button class="btn btn-ghost" type="button" data-goto="leads" data-ar="فتح الطلبات" data-en="Open requests">فتح الطلبات</button>
+          </div>
+        </div>
+        <div class="activity-list" id="audienceActivityList" style="margin-top:12px"></div>
+      </div>
+      <div class="stats client-only">
+        <div class="stat"><div class="label" data-ar="خدمات متاحة" data-en="Available services">خدمات متاحة</div><div class="value" id="statClientProducts">0</div><div class="hint" data-ar="للطلب" data-en="to request">للطلب</div></div>
+        <div class="stat"><div class="label" data-ar="اقتراحات" data-en="Suggestions">اقتراحات</div><div class="value" id="statClientSuggestions">0</div><div class="hint" data-ar="جاهزة" data-en="ready">جاهزة</div></div>
+        <div class="stat"><div class="label" data-ar="طلباتي" data-en="My requests">طلباتي</div><div class="value" id="statClientRequests">0</div><div class="hint" data-ar="مرسلة" data-en="sent">مرسلة</div></div>
+        <div class="stat"><div class="label" data-ar="التغطية" data-en="Coverage">التغطية</div><div class="value" style="font-size:1.05rem" data-ar="إلكتروني" data-en="Digital">إلكتروني</div><div class="hint" data-ar="خدمات أونلاين حالياً" data-en="Online services for now">خدمات أونلاين حالياً</div></div>
+      </div>
+
+      <div class="grid-2 admin-only">
+        <div class="panel">
+          <h3 data-ar="آخر المبيعات" data-en="Recent sales">آخر المبيعات</h3>
+          <div id="recentSales"></div>
+        </div>
+        <div class="panel">
+          <h3 data-ar="اختصارات الإدارة" data-en="Admin shortcuts">اختصارات الإدارة</h3>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <button class="btn btn-primary" data-goto="pos" data-ar="طلب بيع جديد" data-en="New sales order">طلب بيع جديد</button>
+            <button class="btn btn-ghost" data-goto="products" data-ar="إدارة المنتجات" data-en="Manage products">إدارة المنتجات</button>
+            <button class="btn btn-ghost" data-goto="leads" data-ar="طلبات العملاء" data-en="Client requests">طلبات العملاء</button>
+            <a class="btn btn-ghost" href="/#products" data-ar="معاينة واجهة العميل" data-en="Preview client view">معاينة واجهة العميل</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2 client-only">
+        <div class="panel">
+          <h3 data-ar="اختصارات العميل" data-en="Client shortcuts">اختصارات العميل</h3>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <button class="btn btn-primary" data-goto="catalog" data-ar="تصفح الخدمات الإلكترونية" data-en="Browse digital services">تصفح الخدمات الإلكترونية</button>
+            <button class="btn btn-ghost" data-goto="suggestions" data-ar="عرض الاقتراحات" data-en="View suggestions">عرض الاقتراحات</button>
+            <button class="btn btn-ghost" data-goto="requests" data-ar="متابعة طلباتي" data-en="Track my requests">متابعة طلباتي</button>
+            <a class="btn btn-ghost" href="/#pay" data-ar="سداد عربون" data-en="Pay a deposit">سداد عربون</a>
+          </div>
+        </div>
+        <div class="panel">
+          <h3 data-ar="آخر طلباتي" data-en="Latest requests">آخر طلباتي</h3>
+          <div id="clientRecentRequests"></div>
+        </div>
+      </div>
+
+      <div class="panel" style="margin-top:16px">
+        <h3 data-ar="اقتراحات جاهزة" data-en="Ready suggestions">اقتراحات جاهزة</h3>
+        <p class="admin-only" style="color:var(--muted);font-size:.9rem;margin:6px 0 12px" data-ar="الباقات التالية ظاهرة للعميل. الإدارة فقط تعدّل الكتالوج." data-en="These packages are visible to clients. Only admin can edit the catalog.">الباقات التالية ظاهرة للعميل. الإدارة فقط تعدّل الكتالوج.</p>
+        <p class="client-only" style="color:var(--muted);font-size:.9rem;margin:6px 0 12px" data-ar="باقات إلكترونية جاهزة للبدء — اختر مساراً واطلب عرض سعر." data-en="Ready digital packages — pick a path and request a quote.">باقات إلكترونية جاهزة للبدء — اختر مساراً واطلب عرض سعر.</p>
+        <div class="suggest-mini" id="overviewSuggestions"></div>
+      </div>
+    </div>
+
+    <div class="page client-only" id="page-catalog">
+      <div class="topbar">
+        <div>
+          <h1 data-ar="الكتالوج" data-en="Catalog">الكتالوج</h1>
+          <div class="crumb"><span data-ar="راسخ" data-en="Raseekh">راسخ</span> <span>/</span> <span data-ar="خدمات إلكترونية" data-en="Digital services">خدمات إلكترونية</span></div>
+        </div>
+        <a class="btn btn-ghost" href="/" data-ar="← الرئيسية" data-en="← Home">← الرئيسية</a>
+      </div>
+      <div class="client-note" data-ar="حالياً نعرض خدمات إلكترونية أونلاين. الأسعار «حسب الطلب» بعد مراجعة احتياجكم." data-en="We currently list online digital services. Prices are quote-on-request after we review your needs.">حالياً نعرض خدمات إلكترونية أونلاين. الأسعار «حسب الطلب» بعد مراجعة احتياجكم.</div>
+      <div class="panel">
+        <input type="search" id="clientCatalogSearch" style="margin-bottom:14px;padding:12px 14px;width:100%;border:1px solid var(--line);border-radius:10px" data-ar-placeholder="ابحث..." data-en-placeholder="Search..." placeholder="ابحث...">
+        <div class="browse-grid" id="clientCatalogGrid"></div>
+      </div>
+    </div>
+
+    <div class="page client-only" id="page-suggestions">
+      <div class="topbar">
+        <div>
+          <h1 data-ar="الاقتراحات" data-en="Suggestions">الاقتراحات</h1>
+          <div class="crumb"><span data-ar="راسخ" data-en="Raseekh">راسخ</span> <span>/</span> <span data-ar="باقات مقترحة" data-en="Suggested packages">باقات مقترحة</span></div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="suggest-mini" id="clientSuggestionsList"></div>
+      </div>
+    </div>
+
+    <div class="page client-only" id="page-requests">
+      <div class="topbar">
+        <div>
+          <h1 data-ar="طلباتي" data-en="My requests">طلباتي</h1>
+          <div class="crumb"><span data-ar="راسخ" data-en="Raseekh">راسخ</span> <span>/</span> <span data-ar="متابعة" data-en="Tracking">متابعة</span></div>
+        </div>
+        <a class="btn btn-primary" href="/" data-ar="← الصفحة الرئيسية" data-en="← Home page">← الصفحة الرئيسية</a>
+      </div>
+      <div class="panel">
+        <h3 data-ar="الطلبات المرسلة" data-en="Submitted requests">الطلبات المرسلة</h3>
+        <div id="clientRequestsList" style="margin-top:12px"></div>
+      </div>
+    </div>
+
+    <div class="page admin-only" id="page-activity">
+      <div class="topbar">
+        <div>
+          <h1 data-ar="تسجيل الدخول والنشاط" data-en="Logins & activity">تسجيل الدخول والنشاط</h1>
+          <div class="crumb"><span data-ar="راسخ" data-en="Raseekh">راسخ</span> <span>/</span> <span data-ar="إدارة" data-en="Admin">إدارة</span></div>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn btn-ghost" type="button" id="refreshActivityBtn" data-ar="↻ تحديث" data-en="↻ Refresh">↻ تحديث</button>
+          <button class="btn btn-ghost" type="button" id="exportActivityBtn" data-ar="تصدير CSV" data-en="Export CSV">تصدير CSV</button>
+        </div>
+      </div>
+      <div class="stats admin-only">
+        <div class="stat"><div class="label" data-ar="حسابات سجّلت دخول" data-en="Accounts logged in">حسابات سجّلت دخول</div><div class="value" id="activityStatRegistered">0</div></div>
+        <div class="stat"><div class="label" data-ar="نشط الآن" data-en="Active now">نشط الآن</div><div class="value" id="activityStatActive">0</div></div>
+        <div class="stat"><div class="label" data-ar="دخول اليوم" data-en="Logins today">دخول اليوم</div><div class="value" id="activityStatToday">0</div></div>
+        <div class="stat"><div class="label" data-ar="إجمالي الدخول" data-en="Total logins">إجمالي الدخول</div><div class="value" id="activityStatTotal">0</div></div>
+      </div>
+      <div class="panel" style="margin-top:14px">
+        <h3 data-ar="سجل الدخول" data-en="Login log">سجل الدخول</h3>
+        <p style="color:var(--muted);font-size:.9rem;margin:4px 0 6px" data-ar="كل من دخل لحساب راسخ، ومن نشط خلال آخر 15 دقيقة. للمزامنة بين الأجهزة شغّل setup_all.sql." data-en="Everyone who signed into Raseekh, and who is active in the last 15 minutes. For cross-device sync run setup_all.sql.">كل من دخل لحساب راسخ، ومن نشط خلال آخر 15 دقيقة. للمزامنة بين الأجهزة شغّل setup_all.sql.</p>
+        <div id="activityCloudHint" style="font-size:.86rem;font-weight:700;margin-bottom:10px">—</div>
+        <div class="lead-filters" id="activityFilters">
+          <button type="button" class="active" data-activity-filter="all" data-ar="الكل" data-en="All">الكل</button>
+          <button type="button" data-activity-filter="active" data-ar="نشط الآن" data-en="Active now">نشط الآن</button>
+          <button type="button" data-activity-filter="today" data-ar="اليوم" data-en="Today">اليوم</button>
+          <button type="button" data-activity-filter="client" data-ar="عملاء" data-en="Clients">عملاء</button>
+        </div>
+        <div class="activity-list" id="activityFullList" style="margin-top:12px"></div>
+      </div>
+    </div>
+
+    <div class="page admin-only" id="page-leads">
+      <div class="topbar">
+        <div>
+          <h1 data-ar="طلبات العملاء" data-en="Client requests">طلبات العملاء</h1>
+          <div class="crumb"><span data-ar="راسخ" data-en="Raseekh">راسخ</span> <span>/</span> <span data-ar="إدارة" data-en="Admin">إدارة</span></div>
+        </div>
+      </div>
+      <div class="panel">
+        <h3 data-ar="صندوق طلبات العملاء" data-en="Client request inbox">صندوق طلبات العملاء</h3>
+        <p style="color:var(--muted);font-size:.9rem;margin-bottom:8px" data-ar="هنا تصلك طلبات نموذج الموقع + طلبات حساب العميل. لتصل من أي جهاز: فعّل جدول Supabase واحفظ بريد الإشعار من الإعدادات." data-en="Website form and client-account requests land here. To receive them on any device: enable the Supabase table and save a notify email in Settings.">هنا تصلك طلبات نموذج الموقع + طلبات حساب العميل. لتصل من أي جهاز: فعّل جدول Supabase واحفظ بريد الإشعار من الإعدادات.</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
+          <button class="btn btn-ghost" type="button" id="refreshLeadsBtn" data-ar="↻ تحديث من السحابة" data-en="↻ Refresh from cloud">↻ تحديث من السحابة</button>
+          <button class="btn btn-ghost" type="button" id="exportLeadsBtn" data-ar="تصدير CSV" data-en="Export CSV">تصدير CSV</button>
+          <a class="btn btn-ghost" href="#page-settings" id="gotoNotifySettings" data-ar="إعدادات وصول الطلبات" data-en="Request delivery settings">إعدادات وصول الطلبات</a>
+        </div>
+        <div class="delivery-status" id="leadsDeliveryHint">
+          <div class="row"><span data-ar="وصول الطلبات الآن" data-en="Delivery right now">وصول الطلبات الآن</span><span class="delivery-pill off" id="leadsDeliveryPill">—</span></div>
+        </div>
+        <div class="lead-filters" id="leadFilters">
+          <button type="button" class="active" data-lead-filter="all" data-ar="الكل" data-en="All">الكل</button>
+          <button type="button" data-lead-filter="new" data-ar="جديد" data-en="New">جديد</button>
+          <button type="button" data-lead-filter="in_progress" data-ar="قيد المعالجة" data-en="In progress">قيد المعالجة</button>
+          <button type="button" data-lead-filter="done" data-ar="مكتمل" data-en="Done">مكتمل</button>
+          <button type="button" data-lead-filter="closed" data-ar="مغلق" data-en="Closed">مغلق</button>
+        </div>
+        <div id="adminLeadsList" style="margin-top:12px"></div>
+      </div>
+    </div>
+
+    <div class="page admin-only" id="page-pos">
+      <div class="topbar">
+        <div>
+          <h1 data-ar="طلبات البيع" data-en="Sales desk">طلبات البيع</h1>
+          <div class="crumb"><span data-ar="راسخ" data-en="Raseekh">راسخ</span> <span>/</span> <span data-ar="طلبات البيع" data-en="Sales desk">طلبات البيع</span></div>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <select id="posCategory" style="padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--panel)">
+            <option value="all" data-ar="كل الأقسام" data-en="All categories">كل الأقسام</option>
+          </select>
+          <button class="btn btn-ghost" id="clearCartBtn" data-ar="تفريغ السلة" data-en="Clear cart">تفريغ السلة</button>
+        </div>
+      </div>
+      <div class="pos-layout">
+        <div>
+          <input type="search" id="posSearch" style="margin-bottom:12px;padding:12px 14px;width:100%;border:1px solid var(--line);border-radius:10px" data-ar-placeholder="ابحث عن منتج..." data-en-placeholder="Search products..." placeholder="ابحث عن منتج...">
+          <div class="pos-catalog" id="posCatalog"></div>
+        </div>
+        <aside class="cart">
+          <h3 data-ar="السلة" data-en="Cart">السلة</h3>
+          <div class="cart-lines" id="cartLines"></div>
+          <div class="cart-total"><span data-ar="الإجمالي" data-en="Total">الإجمالي</span><span id="cartTotal">0.00 SAR</span></div>
+          <div class="cart-actions">
+            <button class="btn btn-ghost" id="payCashBtn" style="border-color:rgba(255,255,255,.2);color:#fff" data-ar="نقداً" data-en="Cash">نقداً</button>
+            <button class="btn btn-brass" id="payCardBtn" data-ar="بطاقة" data-en="Card">بطاقة</button>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <div class="page admin-only" id="page-products">
+      <div class="topbar">
+        <div>
+          <h1 data-ar="إدارة المنتجات" data-en="Manage products">إدارة المنتجات</h1>
+          <div class="crumb"><span data-ar="راسخ" data-en="Raseekh">راسخ</span> <span>/</span> <span data-ar="إدارة فقط" data-en="Admin only">إدارة فقط</span></div>
+        </div>
+        <button class="btn btn-primary" id="addProductBtn" data-ar="+ منتج جديد" data-en="+ New product">+ منتج جديد</button>
+      </div>
+      <div class="client-note" data-ar="إدارة فقط. الأجهزة المادية حالياً للرياض ومخفية عن العميل. أظهر للعميل الخدمات الإلكترونية فقط." data-en="Admin only. Physical devices are Riyadh-only and hidden from clients for now. Show clients digital services only.">إدارة فقط. الأجهزة المادية حالياً للرياض ومخفية عن العميل. أظهر للعميل الخدمات الإلكترونية فقط.</div>
+      <div class="panel">
+        <div class="toolbar">
+          <h3 data-ar="كتالوج المنتجات" data-en="Product catalog">كتالوج المنتجات</h3>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+            <a class="btn btn-ghost" href="/#products" style="padding:10px 12px" data-ar="معاينة العميل" data-en="Client preview">معاينة العميل</a>
+            <input type="search" id="productSearch" style="padding:10px 12px;border:1px solid var(--line);border-radius:10px;min-width:200px" data-ar-placeholder="بحث..." data-en-placeholder="Search..." placeholder="بحث...">
+          </div>
+        </div>
+        <div style="overflow-x:auto">
+          <table class="product-table">
+            <thead>
+              <tr>
+                <th data-ar="الاسم" data-en="Name">الاسم</th>
+                <th data-ar="القسم" data-en="Category">القسم</th>
+                <th data-ar="السعر" data-en="Price">السعر</th>
+                <th data-ar="المخزون" data-en="Stock">المخزون</th>
+                <th data-ar="الحالة" data-en="Status">الحالة</th>
+                <th data-ar="إجراءات" data-en="Actions">إجراءات</th>
+              </tr>
+            </thead>
+            <tbody id="productsBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="page admin-only" id="page-sales">
+      <div class="topbar">
+        <div>
+          <h1 data-ar="المبيعات" data-en="Sales">المبيعات</h1>
+          <div class="crumb"><span data-ar="راسخ" data-en="Raseekh">راسخ</span> <span>/</span> <span data-ar="المبيعات" data-en="Sales">المبيعات</span></div>
+        </div>
+        <button class="btn btn-ghost" id="exportSalesBtn" data-ar="تصدير CSV" data-en="Export CSV">تصدير CSV</button>
+      </div>
+      <div class="panel">
+        <h3 data-ar="سجل الفواتير" data-en="Receipt history">سجل الفواتير</h3>
+        <div id="salesList"></div>
+      </div>
+    </div>
+
+    <div class="page" id="page-settings">
+      <div class="topbar">
+        <div>
+          <h1 data-ar="الإعدادات" data-en="Settings">الإعدادات</h1>
+          <div class="crumb"><span data-ar="راسخ" data-en="Raseekh">راسخ</span> <span>/</span> <span data-ar="الإعدادات" data-en="Settings">الإعدادات</span></div>
+        </div>
+      </div>
+      <div class="panel">
+        <h3 data-ar="بيانات الحساب" data-en="Account details">بيانات الحساب</h3>
+        <form class="form" id="settingsForm" style="max-width:480px">
+          <input type="email" id="settingsEmail" disabled>
+          <input type="text" id="settingsName" data-ar-placeholder="اسم العرض" data-en-placeholder="Display name" placeholder="اسم العرض">
+          <input type="password" id="settingsPassword" data-ar-placeholder="كلمة مرور جديدة (اختياري)" data-en-placeholder="New password (optional)" placeholder="كلمة مرور جديدة (اختياري)">
+          <button class="btn btn-primary" type="submit" style="width:fit-content" data-ar="حفظ التغييرات" data-en="Save changes">حفظ التغييرات</button>
+        </form>
+        <div class="msg" id="settingsMsg"></div>
+      </div>
+      <div class="panel admin-only" id="storeSettingsPanel">
+        <h3 data-ar="بيانات المتجر (إدارة)" data-en="Store details (admin)">بيانات المتجر (إدارة)</h3>
+        <form class="form" id="storeForm" style="max-width:480px">
+          <label class="field"><span data-ar="اسم المتجر" data-en="Store name">اسم المتجر</span>
+            <input type="text" id="storeName" data-ar-placeholder="اسم المتجر" data-en-placeholder="Store name" placeholder="اسم المتجر">
+          </label>
+          <label class="field"><span data-ar="هاتف المتجر" data-en="Store phone">هاتف المتجر</span>
+            <input type="text" id="storePhone" data-ar-placeholder="هاتف المتجر" data-en-placeholder="Store phone" placeholder="هاتف المتجر">
+          </label>
+          <label class="field"><span data-ar="بريد وصول الطلبات" data-en="Request notify email">بريد وصول الطلبات</span>
+            <input type="email" id="storeNotifyEmail" data-ar-placeholder="you@example.com" data-en-placeholder="you@example.com" placeholder="you@example.com" autocomplete="email">
+          </label>
+          <p style="color:var(--muted);font-size:.82rem" data-ar="يُرسل ملخص الطلبات الجديدة هنا (FormSubmit). أول مرة يؤكد FormSubmit البريد برسالة تفعيل. كذلك يُرسل تنبيه عند دخول عميل جديد (مرة كل ٦ ساعات لكل بريد)." data-en="New requests email a summary here (FormSubmit). First time needs activation. Client logins also notify here (once every 6 hours per email).">يُرسل ملخص الطلبات الجديدة هنا (FormSubmit). أول مرة يؤكد FormSubmit البريد برسالة تفعيل. كذلك يُرسل تنبيه عند دخول عميل جديد (مرة كل ٦ ساعات لكل بريد).</p>
+          <label class="check" style="align-items:center;margin:8px 0 12px">
+            <input type="checkbox" id="storeNotifyLogin" checked>
+            <span data-ar="أرسل تنبيه بريد عند تسجيل دخول عميل" data-en="Email me when a client signs in">أرسل تنبيه بريد عند تسجيل دخول عميل</span>
+          </label>
+          <label class="field"><span data-ar="Webhook للطلبات (اختياري)" data-en="Request webhook (optional)">Webhook للطلبات (اختياري)</span>
+            <input type="url" id="storeWebhook" data-ar-placeholder="https://hooks.example.com/..." data-en-placeholder="https://hooks.example.com/..." placeholder="https://hooks.example.com/...">
+          </label>
+          <p style="color:var(--muted);font-size:.82rem" data-ar="Webhook اختياري (Zapier/Make). للمزامنة بين الأجهزة: شغّل supabase/setup_all.sql مرة واحدة في Supabase، ثم احفظ البريد هنا." data-en="Webhook optional (Zapier/Make). For cross-device sync: run supabase/setup_all.sql once in Supabase, then save the email here.">Webhook اختياري (Zapier/Make). للمزامنة بين الأجهزة: شغّل supabase/setup_all.sql مرة واحدة في Supabase، ثم احفظ البريد هنا.</p>
+          <div class="delivery-status" id="deliveryStatusBox">
+            <div class="row"><span data-ar="حالة وصول الطلبات" data-en="Request delivery status">حالة وصول الطلبات</span><button type="button" class="btn btn-ghost" id="refreshDeliveryStatusBtn" style="padding:6px 10px;font-size:.78rem" data-ar="فحص" data-en="Check">فحص</button></div>
+            <div class="row"><span data-ar="البريد" data-en="Email">البريد</span><span class="delivery-pill off" id="deliveryEmailPill">—</span></div>
+            <div class="row"><span data-ar="طلبات العملاء (SQL)" data-en="Client requests (SQL)">طلبات العملاء (SQL)</span><span class="delivery-pill off" id="deliveryCloudPill">—</span></div>
+            <div class="row"><span data-ar="إعدادات الإشعار (SQL)" data-en="Notify settings (SQL)">إعدادات الإشعار (SQL)</span><span class="delivery-pill off" id="deliverySettingsPill">—</span></div>
+            <div class="row"><span data-ar="نشاط الدخول (SQL)" data-en="Login activity (SQL)">نشاط الدخول (SQL)</span><span class="delivery-pill off" id="deliveryActivityPill">—</span></div>
+            <div class="row"><span data-ar="قبول الشروط (SQL)" data-en="Terms acceptance (SQL)">قبول الشروط (SQL)</span><span class="delivery-pill off" id="deliveryTermsPill">—</span></div>
+            <div class="row"><span data-ar="Webhook" data-en="Webhook">Webhook</span><span class="delivery-pill off" id="deliveryWebhookPill">—</span></div>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn btn-primary" type="submit" style="width:fit-content" data-ar="حفظ بيانات المتجر" data-en="Save store details">حفظ بيانات المتجر</button>
+            <button class="btn btn-brass" type="button" id="testNotifyEmailBtn" style="width:fit-content" data-ar="إرسال طلب تجريبي للبريد" data-en="Send test email request">إرسال طلب تجريبي للبريد</button>
+          </div>
+        </form>
+        <div class="msg" id="storeMsg"></div>
+      </div>
+      <div class="panel client-only">
+        <h3 data-ar="عن حسابكم" data-en="About your account">عن حسابكم</h3>
+        <p style="color:var(--muted);font-size:.95rem" data-ar="من هنا تطلبون عرض سعر وتتابعون طلباتكم وتسدّدون العربون عند التفعيل." data-en="From here you can request quotes, track your requests, and pay a deposit when enabled.">من هنا تطلبون عرض سعر وتتابعون طلباتكم وتسدّدون العربون عند التفعيل.</p>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div class="modal-overlay" id="productModal">
+  <div class="modal">
+    <button class="modal-close no-print" id="productModalClose" type="button">×</button>
+    <h2 id="productModalTitle" style="margin-bottom:14px" data-ar="منتج جديد" data-en="New product">منتج جديد</h2>
+    <form class="form" id="productForm">
+      <input type="text" id="pName" required data-ar-placeholder="اسم المنتج" data-en-placeholder="Product name" placeholder="اسم المنتج">
+      <input type="text" id="pNameEn" data-ar-placeholder="الاسم بالإنجليزية (اختياري)" data-en-placeholder="English name (optional)" placeholder="الاسم بالإنجليزية (اختياري)">
+      <input type="text" id="pCategory" data-ar-placeholder="القسم بالعربية" data-en-placeholder="Category in Arabic" placeholder="القسم بالعربية">
+      <input type="text" id="pCategoryEn" data-ar-placeholder="القسم بالإنجليزية" data-en-placeholder="Category in English" placeholder="القسم بالإنجليزية">
+      <textarea id="pDesc" data-ar-placeholder="الوصف للعميل" data-en-placeholder="Client-facing description" placeholder="الوصف للعميل" style="min-height:70px"></textarea>
+      <textarea id="pDescEn" data-ar-placeholder="الوصف بالإنجليزية" data-en-placeholder="Description in English" placeholder="الوصف بالإنجليزية" style="min-height:70px"></textarea>
+      <select id="pKind">
+        <option value="product" data-ar="منتج" data-en="Product">منتج</option>
+        <option value="service" data-ar="خدمة" data-en="Service">خدمة</option>
+      </select>
+      <label class="check" style="align-items:center;gap:8px;margin:0">
+        <input type="checkbox" id="pQuote" checked>
+        <span data-ar="سعر حسب الطلب (بدون رقم ثابت)" data-en="Quote on request (no fixed price)">سعر حسب الطلب (بدون رقم ثابت)</span>
+      </label>
+      <label class="check" style="align-items:center;gap:8px;margin:0">
+        <input type="checkbox" id="pClientVisible" checked>
+        <span data-ar="ظاهر للعميل في الموقع والحساب" data-en="Visible to clients on site & account">ظاهر للعميل في الموقع والحساب</span>
+      </label>
+      <input type="text" id="pRegion" data-ar-placeholder="التغطية (online / riyadh)" data-en-placeholder="Coverage (online / riyadh)" placeholder="التغطية (online / riyadh)">
+      <input type="number" id="pPrice" min="0" step="0.01" data-ar-placeholder="السعر الثابت (إن وجد)" data-en-placeholder="Fixed price (if any)" placeholder="السعر الثابت (إن وجد)">
+      <input type="number" id="pStock" min="0" step="1" required data-ar-placeholder="المخزون" data-en-placeholder="Stock" placeholder="المخزون">
+      <button class="btn btn-primary" type="submit" data-ar="حفظ المنتج" data-en="Save product">حفظ المنتج</button>
+    </form>
+  </div>
+</div>
+
+<div class="modal-overlay" id="receiptModal">
+  <div class="modal" id="receiptPrintArea">
+    <button class="modal-close no-print" id="receiptClose" type="button">×</button>
+    <div class="receipt">
+      <div class="receipt-head">
+        <h2 id="receiptStore">راسخ</h2>
+        <div style="color:var(--muted);font-size:.82rem" id="receiptMeta"></div>
+      </div>
+      <div id="receiptLines"></div>
+      <div class="receipt-total"><span data-ar="الإجمالي" data-en="Total">الإجمالي</span><span id="receiptTotal">0</span></div>
+      <div class="no-print" style="display:flex;gap:8px;margin-top:18px;flex-wrap:wrap">
+        <button class="btn btn-primary" type="button" id="printReceiptBtn" data-ar="طباعة الإيصال" data-en="Print receipt">طباعة الإيصال</button>
+        <button class="btn btn-ghost" type="button" id="receiptDoneBtn" data-ar="تم" data-en="Done">تم</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="requestConfirmModal">
+  <div class="modal">
+    <button class="modal-close" id="requestConfirmClose" type="button" data-ar-aria="إغلاق" data-en-aria="Close" aria-label="إغلاق">×</button>
+    <h2 style="margin-bottom:8px" data-ar="تأكيد طلب عرض السعر" data-en="Confirm quote request">تأكيد طلب عرض السعر</h2>
+    <p id="requestConfirmTitle" style="color:var(--muted);font-size:.92rem;margin-bottom:14px"></p>
+    <form class="form" id="requestConfirmForm">
+      <label class="field"><span data-ar="رقم الجوال للتواصل" data-en="Phone for reply">رقم الجوال للتواصل</span>
+        <input type="tel" id="requestConfirmPhone" data-ar-placeholder="05xxxxxxxx" data-en-placeholder="05xxxxxxxx" placeholder="05xxxxxxxx" autocomplete="tel">
+      </label>
+      <label class="field"><span data-ar="ملاحظة إضافية (اختياري)" data-en="Extra note (optional)">ملاحظة إضافية (اختياري)</span>
+        <textarea id="requestConfirmNote" data-ar-placeholder="كمية، مواصفات، أو موعد مطلوب" data-en-placeholder="Qty, specs, or needed date" placeholder="كمية، مواصفات، أو موعد مطلوب" style="min-height:80px"></textarea>
+      </label>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-primary" type="submit" data-ar="إرسال الطلب" data-en="Send request">إرسال الطلب</button>
+        <button class="btn btn-ghost" type="button" id="requestConfirmCancel" data-ar="إلغاء" data-en="Cancel">إلغاء</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="terms-gate" id="termsGate" role="dialog" aria-modal="true" aria-labelledby="termsGateTitle" aria-hidden="true" tabindex="-1">
+  <div class="terms-gate-sheet">
+    <h2 id="termsGateTitle" style="margin-bottom:8px" data-ar="الشروط والأحكام" data-en="Terms & Conditions">الشروط والأحكام</h2>
+    <p style="color:var(--muted);font-size:.92rem;margin-bottom:12px" data-ar="لاكمال استخدام حساب العميل، اقرأوا الشروط ثم وافقوا للمتابعة." data-en="To continue using the client account, read the terms and accept to proceed.">لاكمال استخدام حساب العميل، اقرأوا الشروط ثم وافقوا للمتابعة.</p>
+    <div id="termsGateBody"></div>
+    <div class="terms-gate-actions">
+      <button type="button" class="btn btn-primary" id="acceptTermsBtn" data-ar="أوافق وأكمل" data-en="I agree & continue">أوافق وأكمل</button>
+      <a class="btn btn-ghost" href="/terms/" target="_blank" rel="noopener" data-ar="فتح كصفحة" data-en="Open as page">فتح كصفحة</a>
+      <button type="button" class="btn btn-ghost" id="termsGateCloseBtn" style="display:none" data-ar="إغلاق" data-en="Close">إغلاق</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  const DEMO_FLAG = 'raseekh_demo_session';
+  const Auth = window.RaseekhAuth;
+
+  function setDemoFlag(on){
+    try {
+      if (on) sessionStorage.setItem(DEMO_FLAG, '1');
+      else sessionStorage.removeItem(DEMO_FLAG);
+      localStorage.removeItem(DEMO_FLAG);
+    } catch (_) {}
+  }
+  function hasDemoFlag(){
+    try { return sessionStorage.getItem(DEMO_FLAG) === '1'; }
+    catch (_) { return false; }
+  }
+
+  let currentLang = localStorage.getItem('raseekh_lang') || 'ar';
+  let currentUser = null;
+  let authProvider = null;
+  let isDemo = false;
+  let isAdminUser = false;
+  let products = [];
+  let sales = [];
+  let clientRequests = [];
+  let cart = [];
+  let store = { name: 'راسخ', phone: '' };
+  let editingProductId = null;
+  let lastSale = null;
+  let toastTimer;
+  const Catalog = window.RaseekhCatalog;
+  const ADMIN_SALES_KEY = 'raseekh_admin_sales_v1';
+  const ADMIN_STORE_KEY = 'raseekh_admin_store_v1';
+  const CLIENT_REQUESTS_KEY = (Catalog && Catalog.CLIENT_REQUESTS_KEY) || 'raseekh_all_client_requests_v1';
+
+  function t(ar, en){ return currentLang === 'ar' ? ar : en; }
+  function uid(){ return 'id-' + Date.now() + '-' + Math.random().toString(36).slice(2,7); }
+  function money(n){ return (Number(n) || 0).toFixed(2) + ' SAR'; }
+  function priceLabel(p){
+    if (Catalog && Catalog.formatPrice) return Catalog.formatPrice(p, currentLang === 'en' ? 'en' : 'ar');
+    if (!p || !(Number(p.price) > 0) || p.priceMode === 'quote') return t('حسب الطلب', 'Quote on request');
+    return money(p.price);
+  }
+  function productLabel(p){ return currentLang === 'en' && p.name_en ? p.name_en : p.name; }
+  function categoryLabel(p){
+    if (!p) return '';
+    return currentLang === 'en' && p.category_en ? p.category_en : (p.category || t('عام','General'));
+  }
+  function escapeHtml(str){
+    const d = document.createElement('div');
+    d.textContent = str == null ? '' : String(str);
+    return d.innerHTML;
+  }
+  function showToast(msg){
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.classList.remove('show'), 2800);
+  }
+  function requireAdmin(action){
+    if (isAdminUser) return true;
+    showToast(t('التعديل متاح لحساب الإدارة فقط', 'Editing is available for the admin account only'));
+    if (action) console.warn('Blocked client action:', action);
+    return false;
+  }
+  function detectAdmin(user, demo){
+    if (demo) return false;
+    if (Auth && typeof Auth.isAdmin === 'function') return Auth.isAdmin(user);
+    const email = String(user?.email || '').trim().toLowerCase();
+    return email === 'ahmad00alahmadi@gmail.com';
+  }
+  function isAdminEmailFast(email){
+    if (Auth && typeof Auth.isAdminEmail === 'function') return Auth.isAdminEmail(email);
+    return String(email || '').trim().toLowerCase() === 'ahmad00alahmadi@gmail.com';
+  }
+  function applyRoleUI(){
+    document.body.classList.toggle('is-admin', isAdminUser);
+    document.body.classList.toggle('is-client', !isAdminUser);
+    const pill = document.getElementById('dashRolePill');
+    if (pill) {
+      pill.textContent = isAdminUser ? t('إدارة', 'Admin') : t('عميل', 'Client');
+      pill.classList.toggle('admin', isAdminUser);
+    }
+    document.getElementById('pageTitle').textContent = isAdminUser
+      ? t('لوحة الإدارة — راسخ', 'Admin dashboard — Raseekh')
+      : t('حساب العميل — راسخ', 'Client area — Raseekh');
+    const banner = document.getElementById('adminSetupBanner');
+    if (banner && !isAdminUser) banner.classList.remove('show', 'ok');
+  }
+
+  function loadProducts(){
+    if (!Catalog) { products = []; return; }
+    if (isAdminUser) {
+      products = Catalog.loadAdminProducts();
+      return;
+    }
+    products = Catalog.getClientProducts();
+  }
+  function saveProducts(){
+    if (!requireAdmin('saveProducts')) return;
+    if (Catalog) Catalog.saveAdminProducts(products);
+  }
+  function migrateLegacyKey(prefix, targetKey){
+    try {
+      const existing = localStorage.getItem(targetKey);
+      if (existing) return;
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (!key || key.indexOf(prefix) !== 0) continue;
+        const val = localStorage.getItem(key);
+        if (val) { localStorage.setItem(targetKey, val); return; }
+      }
+    } catch (_) {}
+  }
+  function loadSales(){
+    migrateLegacyKey('raseekh_sales_', ADMIN_SALES_KEY);
+    try { sales = JSON.parse(localStorage.getItem(ADMIN_SALES_KEY) || '[]'); }
+    catch (_) { sales = []; }
+  }
+  function saveSales(){
+    if (!requireAdmin('saveSales')) return;
+    localStorage.setItem(ADMIN_SALES_KEY, JSON.stringify(sales));
+  }
+  function loadStore(){
+    migrateLegacyKey('raseekh_store_', ADMIN_STORE_KEY);
+    try { store = Object.assign({ name: 'راسخ', phone: '', webhookUrl: '', notifyEmail: '', notifyOnLogin: true }, JSON.parse(localStorage.getItem(ADMIN_STORE_KEY) || '{}')); }
+    catch (_) { store = { name: 'راسخ', phone: '', webhookUrl: '', notifyEmail: '', notifyOnLogin: true }; }
+    if (typeof store.notifyOnLogin !== 'boolean') store.notifyOnLogin = true;
+  }
+  function saveStore(){
+    if (!requireAdmin('saveStore')) return;
+    localStorage.setItem(ADMIN_STORE_KEY, JSON.stringify(store));
+    if (Catalog && Catalog.publishPublicNotify) Catalog.publishPublicNotify(store);
+  }
+  let leadsFilter = 'all';
+  function updateLeadsBadge(){
+    loadClientRequests();
+    const n = clientRequests.filter((r) => (r.status || 'new') === 'new').length;
+    const badge = document.getElementById('leadsNavBadge');
+    if (!badge) return;
+    badge.textContent = String(n);
+    badge.classList.toggle('show', isAdminUser && n > 0);
+  }
+  function requestTitle(r){
+    if (r.title && !/^(electronics|maintenance|web-dev|programming|systems|api|system|site|product|suggestion)$/i.test(String(r.title))) {
+      return r.title;
+    }
+    const type = r.type || r.title || 'site';
+    if (Catalog && Catalog.requestTypeLabel) return Catalog.requestTypeLabel(type, currentLang);
+    return r.title || t('طلب', 'Request');
+  }
+  function loadClientRequests(){
+    if (Catalog && Catalog.getSharedRequests) {
+      clientRequests = Catalog.getSharedRequests();
+      return;
+    }
+    try { clientRequests = JSON.parse(localStorage.getItem(CLIENT_REQUESTS_KEY) || '[]'); }
+    catch (_) { clientRequests = []; }
+  }
+  async function refreshClientRequestsFromCloud(){
+    if (Catalog && Catalog.syncSharedRequestsFromCloud) {
+      try { clientRequests = await Catalog.syncSharedRequestsFromCloud(); }
+      catch (_) { loadClientRequests(); }
+    } else {
+      loadClientRequests();
+    }
+    return clientRequests;
+  }
+
+  async function renderDeliveryStatus(){
+    if (Catalog && Catalog.syncPublicNotifyFromCloud) {
+      try { await Catalog.syncPublicNotifyFromCloud(); } catch (_) {}
+    }
+    const status = Catalog && Catalog.getDeliveryStatus ? Catalog.getDeliveryStatus() : { hasEmail: false, hasWebhook: false, hasSupabaseClient: false, notifyEmail: '' };
+    let cloudOk = false;
+    let settingsOk = false;
+    let activityOk = false;
+    let termsOk = false;
+    let notifyPublished = false;
+    if (status.hasSupabaseClient) {
+      if (Catalog && Catalog.probeCloudRequests) {
+        const probe = await Catalog.probeCloudRequests();
+        cloudOk = !!(probe && probe.ok);
+      }
+      if (Catalog && Catalog.probePublicNotifyCloud) {
+        const pub = await Catalog.probePublicNotifyCloud();
+        settingsOk = !!(pub && pub.ok);
+        notifyPublished = !!(pub && pub.ok && pub.published);
+      }
+      if (Activity && Activity.probeCloud) {
+        const act = await Activity.probeCloud();
+        activityOk = !!(act && act.ok);
+      }
+      if (Terms && Terms.probeCloud) {
+        const tr = await Terms.probeCloud();
+        termsOk = !!(tr && tr.ok);
+      }
+    }
+    const setPill = (id, on, onText, offText) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.classList.toggle('on', !!on);
+      el.classList.toggle('off', !on);
+      el.textContent = on ? onText : offText;
+    };
+    let emailText = t('غير مضبوط', 'Not set');
+    if (status.hasEmail) {
+      emailText = notifyPublished
+        ? (status.notifyEmail + ' · ' + t('منشور للزوار', 'published'))
+        : (status.notifyEmail + ' · ' + t('محلي فقط — شغّل setup_all.sql', 'local only — run setup_all.sql'));
+    }
+    setPill('deliveryEmailPill', !!(status.hasEmail && notifyPublished), emailText, emailText);
+    const emailPill = document.getElementById('deliveryEmailPill');
+    if (emailPill && status.hasEmail && !notifyPublished) {
+      emailPill.classList.add('off');
+      emailPill.classList.remove('on');
+      emailPill.textContent = emailText;
+    }
+    setPill('deliveryCloudPill', cloudOk, t('جاهز', 'Ready'), status.hasSupabaseClient ? t('شغّل setup_all.sql', 'Run setup_all.sql') : t('غير متصل', 'Offline'));
+    setPill('deliverySettingsPill', settingsOk, notifyPublished ? t('منشور', 'Published') : t('الجدول موجود', 'Table ok'), t('شغّل setup_all.sql', 'Run setup_all.sql'));
+    setPill('deliveryActivityPill', activityOk, t('جاهز', 'Ready'), t('شغّل setup_all.sql', 'Run setup_all.sql'));
+    setPill('deliveryTermsPill', termsOk, t('جاهز', 'Ready'), t('شغّل setup_all.sql', 'Run setup_all.sql'));
+    setPill('deliveryWebhookPill', status.hasWebhook, t('مفعّل', 'On'), t('اختياري', 'Optional'));
+    const leadsPill = document.getElementById('leadsDeliveryPill');
+    if (leadsPill) {
+      const ready = notifyPublished || cloudOk;
+      leadsPill.classList.toggle('on', ready);
+      leadsPill.classList.toggle('off', !ready);
+      leadsPill.textContent = ready
+        ? (notifyPublished && cloudOk
+          ? t('بريد + سحابة', 'Email + cloud')
+          : (notifyPublished ? t('بريد منشور', 'Email published') : t('سحابة فقط', 'Cloud only')))
+        : t('اضبط البريد من الإعدادات', 'Set email in Settings');
+    }
+    updateAdminSetupBanner({ status, cloudOk, settingsOk, activityOk, termsOk, notifyPublished });
+    return { status, cloudOk, settingsOk, activityOk, termsOk, notifyPublished };
+  }
+
+  function updateAdminSetupBanner(info){
+    const banner = document.getElementById('adminSetupBanner');
+    const text = document.getElementById('adminSetupBannerText');
+    if (!banner || !isAdminUser) {
+      if (banner) banner.classList.remove('show', 'ok');
+      return;
+    }
+    const localSession = authProvider === 'local' || (currentUser && currentUser.app_metadata && currentUser.app_metadata.provider === 'local');
+    const ready = !!(info && info.cloudOk && info.settingsOk && info.activityOk && info.notifyPublished && !localSession);
+    banner.classList.add('show');
+    banner.classList.toggle('ok', ready);
+    if (!text) return;
+    if (ready) {
+      text.textContent = t('الإعداد مكتمل — الطلبات وتسجيل الدخول يصلانكم عبر السحابة والبريد.', 'Setup complete — requests and logins reach you via cloud and email.');
+    } else if (localSession) {
+      text.textContent = t('جلستكم محلية حالياً. اخرجوا ثم ادخلوا بحساب الإدارة السحابي بعد تشغيل SQL.', 'You are on a local session. Sign out and sign in with the cloud admin account after running SQL.');
+    } else if (!(info && info.cloudOk && info.settingsOk && info.activityOk)) {
+      text.textContent = t('الجداول السحابية غير جاهزة بعد. شغّلوا supabase/setup_all.sql ثم اضغطوا إعادة الفحص.', 'Cloud tables are not ready yet. Run supabase/setup_all.sql then tap Recheck.');
+    } else if (!(info && info.notifyPublished)) {
+      text.textContent = t('احفظوا بريد وصول الطلبات من الإعدادات حتى يُنشر للزوار، ثم فعّلوا FormSubmit.', 'Save the notify email in Settings so it publishes to visitors, then activate FormSubmit.');
+    } else {
+      text.textContent = t('أكملوا الخطوات أدناه مرة واحدة.', 'Complete the steps below once.');
+    }
+  }
+  function saveClientRequests(){
+    if (Catalog && Catalog.saveSharedRequests) {
+      Catalog.saveSharedRequests(clientRequests);
+      return;
+    }
+    localStorage.setItem(CLIENT_REQUESTS_KEY, JSON.stringify(clientRequests.slice(0, 200)));
+  }
+  function myRequests(){
+    const email = String(currentUser && currentUser.email ? currentUser.email : '').toLowerCase();
+    const id = currentUser && currentUser.id ? currentUser.id : '';
+    return clientRequests.filter(r => r.userId === id || (email && String(r.email || '').toLowerCase() === email));
+  }
+  function statusLabel(status){
+    if (status === 'in_progress') return t('قيد المعالجة', 'In progress');
+    if (status === 'done') return t('مكتمل', 'Done');
+    if (status === 'closed') return t('مغلق', 'Closed');
+    return t('جديد', 'New');
+  }
+  function addClientRequest(payload){
+    const row = Object.assign({
+      id: uid(),
+      at: new Date().toISOString(),
+      userId: currentUser && currentUser.id ? currentUser.id : '',
+      email: currentUser && currentUser.email ? currentUser.email : '',
+      name: (currentUser && currentUser.user_metadata && currentUser.user_metadata.full_name) || '',
+      phone: (currentUser && currentUser.user_metadata && currentUser.user_metadata.phone) || '',
+      status: 'new',
+      source: 'client'
+    }, payload);
+    if (Catalog && Catalog.addSharedRequest) {
+      const saved = Catalog.addSharedRequest(row);
+      loadClientRequests();
+      return saved;
+    }
+    clientRequests.unshift(row);
+    saveClientRequests();
+    return row;
+  }
+
+  function applyLang(lang){
+    currentLang = lang;
+    localStorage.setItem('raseekh_lang', lang);
+    document.documentElement.lang = lang;
+    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+    document.body.classList.toggle('lang-en', lang === 'en');
+    document.querySelectorAll('[data-ar]').forEach(el => {
+      const v = lang === 'ar' ? el.getAttribute('data-ar') : el.getAttribute('data-en');
+      if (v !== null) el.textContent = v;
+    });
+    document.querySelectorAll('[data-ar-html]').forEach(el => {
+      const v = lang === 'ar' ? el.getAttribute('data-ar-html') : el.getAttribute('data-en-html');
+      if (v !== null) el.innerHTML = v;
+    });
+    document.querySelectorAll('[data-ar-placeholder]').forEach(el => {
+      const v = lang === 'ar' ? el.getAttribute('data-ar-placeholder') : el.getAttribute('data-en-placeholder');
+      if (v !== null) el.setAttribute('placeholder', v);
+    });
+    document.querySelectorAll('[data-ar-aria]').forEach(el => {
+      const v = lang === 'ar' ? el.getAttribute('data-ar-aria') : el.getAttribute('data-en-aria');
+      if (v !== null) el.setAttribute('aria-label', v);
+    });
+    document.getElementById('loginLangBtn').textContent = lang === 'ar' ? 'EN' : 'AR';
+    document.getElementById('dashLangBtn').textContent = lang === 'ar' ? 'EN' : 'AR';
+    if (isDemo) {
+      document.getElementById('dashUserStatus').textContent = t('وضع تجريبي', 'Demo mode');
+    }
+    applyRoleUI();
+    renderAll();
+    fillCategoryFilter();
+    updateLeadsBadge();
+  }
+
+  document.getElementById('loginLangBtn').addEventListener('click', () => applyLang(currentLang === 'ar' ? 'en' : 'ar'));
+  document.getElementById('dashLangBtn').addEventListener('click', () => applyLang(currentLang === 'ar' ? 'en' : 'ar'));
+
+  function showAuthPanel(name){
+    ['loginPanel','registerPanel','forgotPanel'].forEach(id => document.getElementById(id).classList.remove('active'));
+    document.getElementById(name).classList.add('active');
+    document.getElementById('authTabsBar').style.display = name === 'forgotPanel' ? 'none' : 'flex';
+  }
+  document.getElementById('loginTabBtn').addEventListener('click', () => {
+    document.getElementById('loginTabBtn').classList.add('active');
+    document.getElementById('registerTabBtn').classList.remove('active');
+    showAuthPanel('loginPanel');
+  });
+  document.getElementById('registerTabBtn').addEventListener('click', () => {
+    document.getElementById('registerTabBtn').classList.add('active');
+    document.getElementById('loginTabBtn').classList.remove('active');
+    showAuthPanel('registerPanel');
+  });
+  document.getElementById('forgotLink').addEventListener('click', () => showAuthPanel('forgotPanel'));
+  document.getElementById('backLoginLink').addEventListener('click', () => {
+    document.getElementById('loginTabBtn').classList.add('active');
+    document.getElementById('registerTabBtn').classList.remove('active');
+    showAuthPanel('loginPanel');
+  });
+
+  function showLogin(){
+    isDemo = false;
+    isAdminUser = false;
+    currentUser = null;
+    dashBootKey = '';
+    dashBootAt = 0;
+    dashBooting = false;
+    clearInterval(heartbeatTimer);
+    termsGateMode = 'view';
+    const gate = document.getElementById('termsGate');
+    if (gate) {
+      gate.classList.remove('open');
+      gate.setAttribute('aria-hidden', 'true');
+    }
+    document.body.classList.remove('terms-locked');
+    const dash = document.getElementById('dashboardView');
+    if (dash) dash.classList.remove('terms-blocked');
+    setDemoFlag(false);
+    document.body.classList.remove('is-admin', 'is-client');
+    document.getElementById('loginView').classList.remove('hidden');
+    document.getElementById('dashboardView').classList.remove('active');
+  }
+
+  const Activity = window.RaseekhActivity;
+  const Terms = window.RaseekhTerms;
+  let heartbeatTimer = null;
+  let termsGateMode = 'accept'; // accept | view
+  let dashBootKey = '';
+  let dashBootAt = 0;
+  let dashBooting = false;
+
+  function setTermsBlocked(on){
+    const dash = document.getElementById('dashboardView');
+    if (dash) dash.classList.toggle('terms-blocked', !!on);
+    document.body.classList.toggle('terms-locked', !!on);
+  }
+  function openTermsGate(mode){
+    termsGateMode = mode || 'accept';
+    const gate = document.getElementById('termsGate');
+    const body = document.getElementById('termsGateBody');
+    const acceptBtn = document.getElementById('acceptTermsBtn');
+    const closeBtn = document.getElementById('termsGateCloseBtn');
+    if (Terms && body) {
+      Terms.renderInto(body);
+      applyLang(currentLang);
+    }
+    if (acceptBtn) acceptBtn.style.display = termsGateMode === 'accept' ? 'inline-flex' : 'none';
+    if (closeBtn) closeBtn.style.display = termsGateMode === 'view' ? 'inline-flex' : 'none';
+    if (gate) {
+      gate.classList.add('open');
+      gate.setAttribute('aria-hidden', 'false');
+      try { gate.focus({ preventScroll: true }); } catch (_) {}
+    }
+    setTermsBlocked(termsGateMode === 'accept');
+    if (acceptBtn && termsGateMode === 'accept') {
+      setTimeout(() => { try { acceptBtn.focus(); } catch (_) {} }, 30);
+    }
+  }
+  function closeTermsGate(){
+    const gate = document.getElementById('termsGate');
+    if (!gate) return;
+    // Do not dismiss required acceptance by accident.
+    if (termsGateMode === 'accept' && currentUser && !isAdminUser && !isDemo && Terms && !Terms.hasAccepted(currentUser)) {
+      return;
+    }
+    gate.classList.remove('open');
+    gate.setAttribute('aria-hidden', 'true');
+    setTermsBlocked(false);
+  }
+  async function ensureClientTerms(){
+    if (isAdminUser || isDemo || !currentUser || !Terms) {
+      termsGateMode = 'view';
+      const gate = document.getElementById('termsGate');
+      if (gate) {
+        gate.classList.remove('open');
+        gate.setAttribute('aria-hidden', 'true');
+      }
+      setTermsBlocked(false);
+      return true;
+    }
+    let ok = Terms.hasAccepted(currentUser);
+    if (!ok && Terms.syncAcceptance) {
+      try { ok = await Terms.syncAcceptance(currentUser); } catch (_) {}
+    }
+    if (ok) {
+      termsGateMode = 'view';
+      const gate = document.getElementById('termsGate');
+      if (gate) {
+        gate.classList.remove('open');
+        gate.setAttribute('aria-hidden', 'true');
+      }
+      setTermsBlocked(false);
+      return true;
+    }
+    openTermsGate('accept');
+    return false;
+  }
+  function startPresence(){
+    clearInterval(heartbeatTimer);
+    if (!Activity || !currentUser) return;
+    Activity.heartbeat(currentUser, isAdminUser ? 'admin' : 'client');
+    heartbeatTimer = setInterval(() => {
+      if (!currentUser) return;
+      Activity.heartbeat(currentUser, isAdminUser ? 'admin' : 'client');
+      if (isAdminUser) renderAudienceStats();
+    }, 60000);
+  }
+  let activityFilter = 'all';
+  let lastActivityStats = { users: [], registered: 0, activeNow: 0, loginsToday: 0, totalLogins: 0 };
+
+  function activityRowHtml(u, now, loc){
+    const active = Activity && typeof Activity.ACTIVE_MS === 'number'
+      ? (now - new Date(u.lastSeenAt || 0).getTime()) <= Activity.ACTIVE_MS
+      : false;
+    const label = escapeHtml(u.name || u.email || '—');
+    const email = escapeHtml(u.email || '');
+    const seen = u.lastSeenAt ? new Date(u.lastSeenAt).toLocaleString(loc) : '—';
+    const loginAt = u.lastLoginAt ? new Date(u.lastLoginAt).toLocaleString(loc) : '—';
+    const logins = Number(u.loginCount) || 0;
+    const role = u.role === 'admin' ? t('إدارة','Admin') : t('عميل','Client');
+    return `
+      <div class="activity-row">
+        <div>
+          <div style="font-weight:700">${label}</div>
+          <div class="meta">${email} · ${escapeHtml(role)} · ${escapeHtml(t('دخول','logins') + ': ' + logins)}</div>
+          <div class="meta">${escapeHtml(t('آخر دخول','Last login') + ': ' + loginAt)}</div>
+          <div class="meta">${escapeHtml(t('آخر ظهور','Last seen') + ': ' + seen)}</div>
+        </div>
+        <span class="activity-pill${active ? '' : ' off'}">${escapeHtml(active ? t('نشط الآن','Active now') : t('غير نشط','Idle'))}</span>
+      </div>
+    `;
+  }
+
+  function filterActivityUsers(users, filter){
+    const now = Date.now();
+    const start = new Date(); start.setHours(0,0,0,0);
+    const startMs = start.getTime();
+    return (users || []).filter((u) => {
+      if (filter === 'active') {
+        return Activity && (now - new Date(u.lastSeenAt || 0).getTime()) <= Activity.ACTIVE_MS;
+      }
+      if (filter === 'today') {
+        return new Date(u.lastLoginAt || 0).getTime() >= startMs;
+      }
+      if (filter === 'client') return u.role !== 'admin';
+      return true;
+    });
+  }
+
+  function updateActivityBadge(activeNow){
+    const badge = document.getElementById('activityNavBadge');
+    if (!badge) return;
+    const n = Number(activeNow) || 0;
+    badge.textContent = String(n);
+    badge.classList.toggle('show', n > 0);
+  }
+
+  async function renderAudienceStats(){
+    if (!isAdminUser || !Activity) return;
+    let stats = Activity.getStats();
+    try {
+      if (Activity.syncFromCloud) stats = await Activity.syncFromCloud();
+    } catch (_) {}
+    lastActivityStats = stats || lastActivityStats;
+    const set = (id, val) => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = String(val == null ? 0 : val);
+    };
+    set('statRegisteredUsers', stats.registered);
+    set('statActiveUsers', stats.activeNow);
+    set('statLoginsToday', stats.loginsToday);
+    set('statTotalLogins', stats.totalLogins);
+    set('activityStatRegistered', stats.registered);
+    set('activityStatActive', stats.activeNow);
+    set('activityStatToday', stats.loginsToday);
+    set('activityStatTotal', stats.totalLogins);
+    updateActivityBadge(stats.activeNow);
+
+    const hint = document.getElementById('activityCloudHint');
+    if (hint) {
+      try {
+        const localSession = authProvider === 'local' || (currentUser && currentUser.app_metadata && currentUser.app_metadata.provider === 'local');
+        if (localSession) {
+          hint.style.color = 'var(--danger)';
+          hint.textContent = t('⚠ جلسة محلية — اخرجوا ثم ادخلوا بحساب الإدارة السحابي للمزامنة', '⚠ Local session — sign out and sign in with the cloud admin account to sync');
+        } else if (Activity.probeCloud) {
+          const probe = await Activity.probeCloud();
+          if (probe && probe.ok) {
+            hint.style.color = 'var(--ok)';
+            hint.textContent = t('✓ مزامنة السحابة جاهزة — الدخول يظهر من أي جهاز', '✓ Cloud sync ready — logins appear across devices');
+          } else {
+            hint.style.color = 'var(--danger)';
+            hint.textContent = t('⚠ السحابة غير جاهزة — شغّل setup_all.sql ثم ادخل بحساب الإدارة', '⚠ Cloud not ready — run setup_all.sql then sign in as admin');
+          }
+        }
+      } catch (_) {
+        hint.style.color = 'var(--danger)';
+        hint.textContent = t('⚠ تعذّر فحص مزامنة الدخول', '⚠ Could not check login sync');
+      }
+    }
+
+    const now = Date.now();
+    const loc = currentLang === 'ar' ? 'ar-SA' : 'en-US';
+    const preview = document.getElementById('audienceActivityList');
+    if (preview) {
+      const rows = (stats.users || []).slice(0, 6);
+      preview.innerHTML = rows.length
+        ? rows.map((u) => activityRowHtml(u, now, loc)).join('')
+        : `<div class="empty">${t('لا يوجد نشاط دخول بعد — عندما يسجّل عميل دخوله يظهر هنا','No login activity yet — client sign-ins will appear here')}</div>`;
+    }
+    renderActivityPage(stats);
+  }
+
+  function renderActivityPage(stats){
+    if (!isAdminUser) return;
+    const data = stats || lastActivityStats || Activity.getStats();
+    const list = document.getElementById('activityFullList');
+    if (!list) return;
+    const now = Date.now();
+    const loc = currentLang === 'ar' ? 'ar-SA' : 'en-US';
+    const rows = filterActivityUsers(data.users || [], activityFilter);
+    if (!rows.length) {
+      list.innerHTML = `<div class="empty">${t('لا توجد نتائج ضمن هذا التصفية','No rows in this filter')}</div>`;
+      return;
+    }
+    list.innerHTML = rows.map((u) => activityRowHtml(u, now, loc)).join('');
+  }
+
+  async function showDashboard(user, demo){
+    const key = (demo ? 'demo:' : 'user:') + String((user && (user.email || user.id)) || '').toLowerCase();
+    const now = Date.now();
+    if (
+      dashBooting ||
+      (key && key === dashBootKey && (now - dashBootAt) < 1800 && document.getElementById('dashboardView').classList.contains('active'))
+    ) {
+      return;
+    }
+    dashBooting = true;
+    dashBootKey = key;
+    dashBootAt = now;
+
+    try {
+      currentUser = user;
+      isDemo = !!demo;
+      isAdminUser = detectAdmin(user, isDemo);
+      authProvider = demo ? 'demo' : (user && user.app_metadata && user.app_metadata.provider) || authProvider || null;
+      setDemoFlag(isDemo);
+
+      document.getElementById('loginView').classList.add('hidden');
+      document.getElementById('dashboardView').classList.add('active');
+
+      const name = user?.user_metadata?.full_name || user?.user_metadata?.display_name || (isDemo ? t('زائر تجريبي','Demo guest') : '');
+      const email = user?.email || (isDemo ? 'demo@raseekh.local' : '');
+      document.getElementById('dashUserLabel').textContent = name || email || '—';
+      document.getElementById('dashAvatar').textContent = (name || email || '?').trim().charAt(0).toUpperCase();
+      document.getElementById('settingsEmail').value = email;
+      document.getElementById('settingsName').value = isDemo ? t('زائر تجريبي','Demo guest') : (name || '');
+      document.getElementById('settingsPassword').disabled = isDemo;
+      document.getElementById('dashUserStatus').textContent = isDemo ? t('وضع تجريبي','Demo mode') : t('متصل','Online');
+
+      if (Activity && currentUser && !isDemo) {
+        Activity.recordLogin(currentUser, isAdminUser ? 'admin' : 'client');
+      }
+      startPresence();
+
+      loadProducts();
+      loadSales();
+      loadStore();
+      loadClientRequests();
+      document.getElementById('storeName').value = store.name || '';
+      document.getElementById('storePhone').value = store.phone || '';
+      const webhookEl = document.getElementById('storeWebhook');
+      if (webhookEl) webhookEl.value = store.webhookUrl || '';
+      const notifyEl = document.getElementById('storeNotifyEmail');
+      if (notifyEl) {
+        const fallbackEmail = (!store.notifyEmail && user && user.email && isAdminUser) ? String(user.email).toLowerCase() : '';
+        notifyEl.value = store.notifyEmail || fallbackEmail || '';
+        if (!store.notifyEmail && fallbackEmail) {
+          store.notifyEmail = fallbackEmail;
+          saveStore();
+        }
+      }
+      const notifyLoginEl = document.getElementById('storeNotifyLogin');
+      if (notifyLoginEl) notifyLoginEl.checked = store.notifyOnLogin !== false;
+
+      if (isAdminUser && Catalog) {
+        let cloudCfg = null;
+        try {
+          if (Catalog.syncPublicNotifyFromCloud) cloudCfg = await Catalog.syncPublicNotifyFromCloud();
+        } catch (_) {}
+        if (cloudCfg && (cloudCfg.notifyEmail || cloudCfg.webhookUrl)) {
+          // Cloud is source of truth when a published config exists.
+          store.notifyEmail = cloudCfg.notifyEmail || store.notifyEmail || '';
+          store.webhookUrl = cloudCfg.webhookUrl || store.webhookUrl || '';
+          store.notifyOnLogin = cloudCfg.notifyOnLogin !== false;
+          if (notifyEl) notifyEl.value = store.notifyEmail || '';
+          if (webhookEl) webhookEl.value = store.webhookUrl || '';
+          if (notifyLoginEl) notifyLoginEl.checked = store.notifyOnLogin !== false;
+          saveStore();
+        } else if (!store.notifyEmail && user && user.email) {
+          store.notifyEmail = String(user.email).toLowerCase();
+          if (notifyEl) notifyEl.value = store.notifyEmail;
+          saveStore();
+        }
+        // Publish only when we have something useful — never wipe cloud with blanks.
+        if ((store.notifyEmail || store.webhookUrl) && Catalog.publishPublicNotify) {
+          Catalog.publishPublicNotify(store);
+        }
+        renderDeliveryStatus();
+      }
+      cart = [];
+      applyLang(currentLang);
+      startClock();
+      await ensureClientTerms();
+      switchPage('overview');
+      if (isAdminUser) {
+        renderAudienceStats();
+        refreshClientRequestsFromCloud().then(() => {
+          updateLeadsBadge();
+          renderOverview();
+          if (document.getElementById('page-leads')?.classList.contains('active')) renderAdminLeads();
+        });
+      }
+    } finally {
+      dashBooting = false;
+    }
+  }
+
+  function enterDemo(){
+    showDashboard({
+      id: 'demo-user',
+      email: 'demo@raseekh.local',
+      user_metadata: { full_name: t('زائر تجريبي','Demo guest'), role: 'client' }
+    }, true);
+    showToast(t('دخلت كعميل تجريبي (بدون تعديل)','Entered as demo client (no editing)'));
+    switchPage('catalog');
+  }
+  document.getElementById('demoBtn').addEventListener('click', enterDemo);
+
+  function switchPage(page){
+    if (!isAdminUser && !isDemo && currentUser && Terms && !Terms.hasAccepted(currentUser)) {
+      openTermsGate('accept');
+      showToast(t('وافقوا على الشروط للمتابعة', 'Accept the terms to continue'));
+      return;
+    }
+    const adminPages = { pos:1, products:1, sales:1, leads:1, activity:1 };
+    const clientPages = { catalog:1, suggestions:1, requests:1 };
+    if (adminPages[page] && !isAdminUser) {
+      showToast(t('هذه الصفحة للإدارة فقط', 'This page is admin-only'));
+      page = 'overview';
+    }
+    if (clientPages[page] && isAdminUser) {
+      // admin can still open client pages if needed — allow catalog preview via site
+    }
+    document.querySelectorAll('.nav-item').forEach(b => b.classList.toggle('active', b.dataset.page === page));
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    const target = document.getElementById('page-' + page);
+    if (target) target.classList.add('active');
+    if (page === 'pos') renderPos();
+    if (page === 'products') renderProducts();
+    if (page === 'sales') renderSales();
+    if (page === 'overview') renderOverview();
+    if (page === 'catalog') renderClientCatalog();
+    if (page === 'suggestions') renderClientSuggestionsPage();
+    if (page === 'requests') renderClientRequestsPage();
+    if (page === 'leads') renderAdminLeads();
+    if (page === 'activity') renderAudienceStats();
+    if (page === 'settings' && isAdminUser) renderDeliveryStatus();
+  }
+  document.querySelectorAll('.nav-item').forEach(btn => btn.addEventListener('click', () => switchPage(btn.dataset.page)));
+  document.querySelectorAll('[data-goto]').forEach(el => el.addEventListener('click', () => switchPage(el.dataset.goto)));
+
+  function startClock(){
+    const tick = () => {
+      const el = document.getElementById('dashClock');
+      if (el) el.textContent = new Date().toLocaleString(currentLang === 'ar' ? 'ar-SA' : 'en-US');
+    };
+    tick();
+    clearInterval(window._raseekhClock);
+    window._raseekhClock = setInterval(tick, 1000);
+  }
+
+  document.getElementById('dashLoginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const msg = document.getElementById('dashLoginMsg');
+    if (!Auth) {
+      msg.style.color = 'var(--danger)';
+      msg.textContent = t('تعذّر تحميل نظام الحسابات', 'Auth system failed to load');
+      return;
+    }
+    msg.style.color = 'var(--muted)';
+    msg.textContent = t('جاري الدخول...', 'Signing in...');
+    const email = document.getElementById('dashLoginEmail').value.trim();
+    const password = document.getElementById('dashLoginPassword').value;
+    try {
+      const result = await Auth.signIn({ email, password });
+      authProvider = result.provider || (result.user && result.user.app_metadata && result.user.app_metadata.provider) || null;
+      msg.style.color = 'var(--ok)';
+      msg.textContent = t('تم الدخول بنجاح', 'Signed in');
+      if (authProvider === 'local' && isAdminEmailFast(email)) {
+        msg.style.color = 'var(--danger)';
+        msg.textContent = t('دخلتم بجلسة محلية — تحققوا من اتصال Supabase ثم ادخلوا مرة أخرى', 'Signed in locally — check Supabase then sign in again');
+      }
+      showDashboard(result.user, false);
+    } catch (err) {
+      msg.style.color = 'var(--danger)';
+      msg.textContent = Auth.friendlyError(err, currentLang);
+    }
+  });
+
+  document.getElementById('dashRegisterForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const msg = document.getElementById('dashRegisterMsg');
+    if (!Auth) {
+      msg.style.color = 'var(--danger)';
+      msg.textContent = t('تعذّر تحميل نظام الحسابات', 'Auth system failed to load');
+      return;
+    }
+    const termsCheck = document.getElementById('dashRegisterTermsCheck');
+    if (termsCheck && !termsCheck.checked) {
+      msg.style.color = 'var(--danger)';
+      msg.textContent = t('يجب الموافقة على الشروط والأحكام', 'You must accept the Terms & Conditions');
+      return;
+    }
+    const name = document.getElementById('dashRegisterName').value.trim();
+    const email = document.getElementById('dashRegisterEmail').value.trim();
+    const phone = document.getElementById('dashRegisterPhone').value.trim();
+    const password = document.getElementById('dashRegisterPassword').value;
+    msg.style.color = 'var(--muted)';
+    msg.textContent = t('جاري إنشاء الحساب...', 'Creating account...');
+    try {
+      const result = await Auth.signUp({ email, password, full_name: name, phone });
+      if (result && result.needsEmailConfirm) {
+        msg.style.color = 'var(--ok)';
+        msg.textContent = t('تم إنشاء الحساب — تحققوا من البريد لتفعيله ثم سجّلوا الدخول', 'Account created — check your email to activate, then sign in');
+        showAuthPanel('loginPanel');
+        return;
+      }
+      if (Terms && result.user) Terms.acceptTerms(result.user);
+      authProvider = result.provider || null;
+      msg.style.color = 'var(--ok)';
+      msg.textContent = t('تم إنشاء الحساب', 'Account created');
+      showDashboard(result.user, false);
+    } catch (err) {
+      msg.style.color = 'var(--danger)';
+      msg.textContent = Auth.friendlyError(err, currentLang);
+    }
+  });
+
+  document.getElementById('dashForgotForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const msg = document.getElementById('dashForgotMsg');
+    if (!Auth) return;
+    const email = document.getElementById('dashForgotEmail').value.trim();
+    msg.textContent = t('جاري الإرسال...', 'Sending...');
+    try {
+      const result = await Auth.resetPasswordRequest(email);
+      msg.style.color = 'var(--ok)';
+      if (result.provider === 'local') {
+        msg.textContent = t('تم التحقق — ارجع للموقع وعيّن كلمة مرور من نافذة الحساب', 'Verified — open account reset on the main site');
+        window.location.href = '/#reset';
+      } else {
+        msg.textContent = t('تم إرسال رابط إعادة التعيين', 'Reset link sent');
+      }
+    } catch (err) {
+      msg.style.color = 'var(--danger)';
+      msg.textContent = Auth.friendlyError(err, currentLang);
+    }
+  });
+
+  async function doLogout(){
+    if (!isDemo && Auth) await Auth.signOut();
+    currentUser = null;
+    showLogin();
+  }
+  document.getElementById('logoutBtn').addEventListener('click', doLogout);
+  document.getElementById('logoutBtnMobile').addEventListener('click', doLogout);
+
+  const acceptTermsBtn = document.getElementById('acceptTermsBtn');
+  if (acceptTermsBtn) {
+    acceptTermsBtn.addEventListener('click', () => {
+      if (!currentUser || !Terms) return;
+      Terms.acceptTerms(currentUser);
+      termsGateMode = 'view';
+      const gate = document.getElementById('termsGate');
+      if (gate) {
+        gate.classList.remove('open');
+        gate.setAttribute('aria-hidden', 'true');
+      }
+      setTermsBlocked(false);
+      showToast(t('تم قبول الشروط', 'Terms accepted'));
+    });
+  }
+  const termsGateCloseBtn = document.getElementById('termsGateCloseBtn');
+  if (termsGateCloseBtn) termsGateCloseBtn.addEventListener('click', () => {
+    if (termsGateMode === 'accept') return;
+    closeTermsGate();
+  });
+  const termsGateEl = document.getElementById('termsGate');
+  if (termsGateEl) {
+    termsGateEl.addEventListener('click', (e) => {
+      if (e.target !== termsGateEl) return;
+      if (termsGateMode === 'view') closeTermsGate();
+    });
+  }
+  const viewTermsBtn = document.getElementById('viewTermsBtn');
+  if (viewTermsBtn) {
+    viewTermsBtn.addEventListener('click', () => openTermsGate('view'));
+  }
+
+  function renderAll(){
+    if (!currentUser) return;
+    applyRoleUI();
+    renderOverview();
+    if (isAdminUser) {
+      renderProducts();
+      renderPos();
+      renderSales();
+      renderAdminLeads();
+    } else {
+      renderClientCatalog();
+      renderClientSuggestionsPage();
+      renderClientRequestsPage();
+    }
+  }
+
+  function todaySales(){
+    const day = new Date().toDateString();
+    return sales.filter(s => new Date(s.at).toDateString() === day);
+  }
+
+  function fillCategoryFilter(){
+    const select = document.getElementById('posCategory');
+    const current = select.value || 'all';
+    const cats = [...new Set(products.map(p => categoryLabel(p)).filter(Boolean))];
+    select.innerHTML = `<option value="all">${t('كل الأقسام','All categories')}</option>` +
+      cats.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
+    if ([...select.options].some(o => o.value === current)) select.value = current;
+  }
+
+  function renderOverview(){
+    const title = document.getElementById('overviewTitle');
+    if (title) {
+      title.textContent = isAdminUser
+        ? t('لوحة الإدارة', 'Admin dashboard')
+        : t('حساب العميل', 'Client area');
+    }
+
+    if (isAdminUser) {
+      const todays = todaySales();
+      const total = todays.reduce((s, x) => s + (x.total || 0), 0);
+      document.getElementById('statProducts').textContent = products.length;
+      document.getElementById('statToday').textContent = total.toFixed(0);
+      document.getElementById('statReceipts').textContent = todays.length;
+      loadClientRequests();
+      const newCount = clientRequests.filter((r) => (r.status || 'new') === 'new').length;
+      document.getElementById('statNewRequests').textContent = newCount;
+      const dup = document.getElementById('statNewRequestsDup');
+      if (dup) dup.textContent = newCount;
+      updateLeadsBadge();
+      renderAudienceStats();
+      renderDeliveryStatus();
+      const holder = document.getElementById('recentSales');
+      const recent = sales.slice(0, 5);
+      if (!recent.length) {
+        holder.innerHTML = `<div class="empty">${t('لا توجد مبيعات بعد — ابدأ من نقطة البيع','No sales yet — start from POS')}</div>`;
+      } else {
+        holder.innerHTML = recent.map(s => `
+          <div class="sale-row">
+            <div>
+              <div>${s.method === 'card' ? t('بطاقة','Card') : t('نقداً','Cash')} · ${s.items} ${t('صنف','items')}</div>
+              <div style="color:var(--muted);font-size:.78rem">${new Date(s.at).toLocaleString(currentLang === 'ar' ? 'ar-SA' : 'en-US')}</div>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center">
+              <strong>${money(s.total)}</strong>
+              <button class="btn btn-ghost" style="padding:6px 10px;font-size:.78rem" data-view-sale="${s.id}">${t('إيصال','Receipt')}</button>
+            </div>
+          </div>
+        `).join('');
+      }
+    } else {
+      const mine = myRequests();
+      const suggestions = Catalog ? Catalog.getClientSuggestions() : [];
+      document.getElementById('statClientProducts').textContent = products.length;
+      document.getElementById('statClientSuggestions').textContent = suggestions.length;
+      document.getElementById('statClientRequests').textContent = mine.length;
+      const recentBox = document.getElementById('clientRecentRequests');
+      if (!mine.length) {
+        recentBox.innerHTML = `<div class="empty">${t('لا توجد طلبات بعد — اطلب من الكتالوج أو الاقتراحات','No requests yet — order from catalog or suggestions')}</div>`;
+      } else {
+        recentBox.innerHTML = mine.slice(0, 5).map(r => `
+          <div class="sale-row">
+            <div>
+              <div>${escapeHtml(r.title || r.message || t('طلب','Request'))}</div>
+              <div style="color:var(--muted);font-size:.78rem">${new Date(r.at).toLocaleString(currentLang === 'ar' ? 'ar-SA' : 'en-US')}</div>
+            </div>
+            <strong>${escapeHtml(statusLabel(r.status))}</strong>
+          </div>
+        `).join('');
+      }
+    }
+
+    const suggestBox = document.getElementById('overviewSuggestions');
+    if (suggestBox && Catalog) {
+      const suggestions = Catalog.getClientSuggestions();
+      suggestBox.innerHTML = suggestions.map((s) => {
+        const titleText = Catalog.label(s, currentLang, 'title', 'title_en');
+        const items = Catalog.suggestionItems(s, products, currentLang).join(currentLang === 'ar' ? '، ' : ', ');
+        const priceText = Catalog.suggestionPriceLabel
+          ? Catalog.suggestionPriceLabel(s, products, currentLang === 'en' ? 'en' : 'ar')
+          : t('عرض سعر بعد المراجعة', 'Custom quote after review');
+        const action = isAdminUser
+          ? ''
+          : `<button class="btn btn-primary" style="margin-top:8px;padding:8px 12px;font-size:.82rem" data-client-suggest="${escapeHtml(s.id)}">${escapeHtml(t('اطلب عرض سعر','Request a quote'))}</button>`;
+        return `<div class="item"><strong>${escapeHtml(titleText)}</strong><span>${escapeHtml(items)}</span><div style="margin-top:6px;font-weight:700;color:var(--forest)">${escapeHtml(priceText)}</div>${action}</div>`;
+      }).join('');
+    }
+  }
+
+  function renderClientCatalog(){
+    const grid = document.getElementById('clientCatalogGrid');
+    if (!grid) return;
+    const q = (document.getElementById('clientCatalogSearch')?.value || '').trim().toLowerCase();
+    const list = products.filter(p => {
+      const blob = (p.name + ' ' + (p.name_en || '') + ' ' + (p.category || '')).toLowerCase();
+      return !q || blob.includes(q);
+    });
+    if (!list.length) {
+      grid.innerHTML = `<div class="empty" style="grid-column:1/-1">${t('لا توجد منتجات','No products')}</div>`;
+      return;
+    }
+    grid.innerHTML = list.map(p => `
+      <article class="browse-card">
+        <div style="color:var(--brass);font-size:.75rem;font-weight:700">${escapeHtml(categoryLabel(p))}</div>
+        <h4>${escapeHtml(productLabel(p))}</h4>
+        <p>${escapeHtml((currentLang === 'en' && p.desc_en) ? p.desc_en : (p.desc || t('متاح للطلب','Available to order')))}</p>
+        <div class="price">${escapeHtml(priceLabel(p))}</div>
+        <button type="button" class="btn btn-ghost" style="margin-top:6px" data-client-product="${escapeHtml(p.id)}">${escapeHtml(t('اطلب عرض سعر','Request a quote'))}</button>
+      </article>
+    `).join('');
+  }
+
+  function renderClientSuggestionsPage(){
+    const box = document.getElementById('clientSuggestionsList');
+    if (!box || !Catalog) return;
+    const suggestions = Catalog.getClientSuggestions();
+    box.innerHTML = suggestions.map((s) => {
+      const titleText = Catalog.label(s, currentLang, 'title', 'title_en');
+      const desc = Catalog.label(s, currentLang, 'desc', 'desc_en');
+      const items = Catalog.suggestionItems(s, products, currentLang).join(currentLang === 'ar' ? '، ' : ', ');
+      const priceText = Catalog.suggestionPriceLabel
+        ? Catalog.suggestionPriceLabel(s, products, currentLang === 'en' ? 'en' : 'ar')
+        : t('عرض سعر بعد المراجعة', 'Custom quote after review');
+      return `<div class="item">
+        <strong>${escapeHtml(titleText)}</strong>
+        <span>${escapeHtml(desc)}</span>
+        <span>${escapeHtml(items)}</span>
+        <div style="margin-top:6px;font-weight:700;color:var(--forest)">${escapeHtml(priceText)}</div>
+        <button class="btn btn-primary" style="margin-top:8px;padding:8px 12px;font-size:.82rem" data-client-suggest="${escapeHtml(s.id)}">${escapeHtml(t('اطلب عرض سعر','Request a quote'))}</button>
+      </div>`;
+    }).join('');
+  }
+
+  async function renderClientRequestsPage(){
+    const box = document.getElementById('clientRequestsList');
+    if (!box) return;
+    await refreshClientRequestsFromCloud();
+    const mine = myRequests();
+    if (!mine.length) {
+      box.innerHTML = `<div class="empty"><strong>${escapeHtml(t('لا توجد طلبات مرسلة بعد','No submitted requests yet'))}</strong>${escapeHtml(t('اطلب عرض سعر من الكتالوج أو الاقتراحات، وستظهر حالتها هنا.','Request a quote from catalog or suggestions — status will show here.'))}</div>`;
+      return;
+    }
+    box.innerHTML = mine.map(r => `
+      <div class="sale-row">
+        <div>
+          <div><strong>${escapeHtml(requestTitle(r))}</strong></div>
+          <div style="color:var(--muted);font-size:.86rem;white-space:pre-wrap">${escapeHtml(r.message || '')}</div>
+          <div style="color:var(--muted);font-size:.78rem;margin-top:4px">${new Date(r.at).toLocaleString(currentLang === 'ar' ? 'ar-SA' : 'en-US')}</div>
+        </div>
+        <span class="status-chip ${escapeHtml(r.status || 'new')}">${escapeHtml(statusLabel(r.status))}</span>
+      </div>
+    `).join('');
+  }
+
+  async function renderAdminLeads(){
+    const box = document.getElementById('adminLeadsList');
+    if (!box) return;
+    await refreshClientRequestsFromCloud();
+    let siteLeads = [];
+    try { siteLeads = JSON.parse(localStorage.getItem('raseekh_contact_leads') || '[]'); } catch (_) {}
+
+    // Import legacy site leads once — skip if already mirrored into shared requests
+    let changed = false;
+    siteLeads.forEach((r) => {
+      if (!r || r._imported) return;
+      const fingerprint = 'site:' + (r.at || '') + ':' + (r.message || '') + ':' + (r.phone || '') + ':' + (r.email || '');
+      const already = clientRequests.some((x) =>
+        x.fingerprint === fingerprint ||
+        (
+          String(x.message || '') === String(r.message || '') &&
+          String(x.at || '') === String(r.at || '') &&
+          String(x.phone || '') === String(r.phone || '') &&
+          String(x.email || '') === String(r.email || '')
+        )
+      );
+      r._imported = true;
+      changed = true;
+      if (already) return;
+      const title = Catalog && Catalog.requestTypeLabel
+        ? Catalog.requestTypeLabel(r.type || 'site', currentLang)
+        : (r.type || t('طلب موقع', 'Website request'));
+      clientRequests.unshift({
+        id: uid(),
+        at: r.at || new Date().toISOString(),
+        name: r.name || '',
+        phone: r.phone || '',
+        company: r.company || '',
+        email: r.email || '',
+        title,
+        message: r.message || '',
+        type: r.type || 'site',
+        source: 'site',
+        status: 'new',
+        fingerprint
+      });
+    });
+    if (changed) {
+      try { localStorage.setItem('raseekh_contact_leads', JSON.stringify(siteLeads)); } catch (_) {}
+      saveClientRequests();
+      loadClientRequests();
+    }
+    updateLeadsBadge();
+
+    await renderDeliveryStatus();
+    const filtered = clientRequests.filter((r) => leadsFilter === 'all' || (r.status || 'new') === leadsFilter);
+    if (!filtered.length) {
+      if (!clientRequests.length) {
+        box.innerHTML = `<div class="empty">
+          <strong>${escapeHtml(t('صندوق الطلبات فارغ','Request inbox is empty'))}</strong>
+          <div class="setup-steps">
+            <div><b>1.</b> ${escapeHtml(t('احفظ «بريد وصول الطلبات» من الإعدادات','Save “Request notify email” in Settings'))}</div>
+            <div><b>2.</b> ${escapeHtml(t('فعّل رسالة FormSubmit الأولى على بريدك','Activate the first FormSubmit email'))}</div>
+            <div><b>3.</b> ${escapeHtml(t('شغّل supabase/setup_all.sql مرة واحدة في Supabase','Run supabase/setup_all.sql once in Supabase'))}</div>
+            <div><b>4.</b> ${escapeHtml(t('أرسل طلب تجريبي من الصفحة الرئيسية','Send a test request from the homepage'))}</div>
+          </div>
+        </div>`;
+      } else {
+        box.innerHTML = `<div class="empty">${t('لا توجد طلبات ضمن هذا التصفية','No requests in this filter')}</div>`;
+      }
+      return;
+    }
+    const sorted = filtered.slice().sort((a, b) => {
+      const rank = (s) => (s === 'new' ? 0 : s === 'in_progress' ? 1 : 2);
+      const d = rank(a.status || 'new') - rank(b.status || 'new');
+      if (d !== 0) return d;
+      return new Date(b.at || 0) - new Date(a.at || 0);
+    });
+    box.innerHTML = sorted.slice(0, 80).map(r => `
+      <div class="sale-row" style="align-items:flex-start">
+        <div style="flex:1">
+          <div><strong>${escapeHtml(r.name || r.email || '—')}</strong> · <span style="color:var(--muted)">${escapeHtml(r.source === 'site' ? t('نموذج الموقع','Website form') : t('حساب عميل','Client account'))}</span>
+            <span class="status-chip ${escapeHtml(r.status || 'new')}" style="margin-inline-start:8px">${escapeHtml(statusLabel(r.status))}</span>
+          </div>
+          <div style="color:var(--muted);font-size:.86rem;margin-top:2px">
+            ${escapeHtml([r.phone, r.email, r.company].filter(Boolean).join(' · ') || t('بدون بيانات تواصل إضافية','No extra contact details'))}
+          </div>
+          <div style="font-size:.92rem;margin-top:6px"><strong>${escapeHtml(requestTitle(r))}</strong></div>
+          <div style="color:var(--muted);font-size:.86rem;white-space:pre-wrap">${escapeHtml(r.message || '')}</div>
+          <div style="color:var(--muted);font-size:.78rem;margin-top:4px">${new Date(r.at).toLocaleString(currentLang === 'ar' ? 'ar-SA' : 'en-US')}</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px;min-width:140px">
+          <select data-status-for="${escapeHtml(r.id)}" style="padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:#fff">
+            <option value="new" ${r.status === 'new' ? 'selected' : ''}>${escapeHtml(t('جديد','New'))}</option>
+            <option value="in_progress" ${r.status === 'in_progress' ? 'selected' : ''}>${escapeHtml(t('قيد المعالجة','In progress'))}</option>
+            <option value="done" ${r.status === 'done' ? 'selected' : ''}>${escapeHtml(t('مكتمل','Done'))}</option>
+            <option value="closed" ${r.status === 'closed' ? 'selected' : ''}>${escapeHtml(t('مغلق','Closed'))}</option>
+          </select>
+          <button type="button" class="btn btn-ghost" style="padding:8px 10px;font-size:.78rem" data-copy-lead="${escapeHtml(r.id)}">${escapeHtml(t('نسخ للتواصل','Copy contact'))}</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  const activityFilters = document.getElementById('activityFilters');
+  if (activityFilters) {
+    activityFilters.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-activity-filter]');
+      if (!btn) return;
+      activityFilter = btn.dataset.activityFilter || 'all';
+      activityFilters.querySelectorAll('button').forEach((b) => b.classList.toggle('active', b === btn));
+      renderActivityPage(lastActivityStats);
+    });
+  }
+  const refreshActivityBtn = document.getElementById('refreshActivityBtn');
+  if (refreshActivityBtn) {
+    refreshActivityBtn.addEventListener('click', () => {
+      renderAudienceStats().then(() => showToast(t('تم تحديث النشاط', 'Activity refreshed')));
+    });
+  }
+  const exportActivityBtn = document.getElementById('exportActivityBtn');
+  if (exportActivityBtn) {
+    exportActivityBtn.addEventListener('click', () => {
+      if (!requireAdmin('exportActivity')) return;
+      const rows = filterActivityUsers((lastActivityStats && lastActivityStats.users) || [], activityFilter);
+      const header = ['name','email','role','loginCount','lastLoginAt','lastSeenAt'];
+      const csv = [header.join(',')].concat(rows.map((u) => header.map((k) => {
+        const v = u[k] == null ? '' : String(u[k]);
+        return '"' + v.replace(/"/g, '""') + '"';
+      }).join(','))).join('\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'raseekh-logins.csv';
+      a.click();
+      URL.revokeObjectURL(a.href);
+    });
+  }
+
+  const leadFilters = document.getElementById('leadFilters');
+  if (leadFilters) {
+    leadFilters.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-lead-filter]');
+      if (!btn) return;
+      leadsFilter = btn.getAttribute('data-lead-filter') || 'all';
+      leadFilters.querySelectorAll('[data-lead-filter]').forEach((el) => el.classList.toggle('active', el === btn));
+      renderAdminLeads();
+    });
+  }
+  const statNewCard = document.getElementById('statNewRequestsCard');
+  if (statNewCard) {
+    const openNewLeads = () => {
+      leadsFilter = 'new';
+      if (leadFilters) {
+        leadFilters.querySelectorAll('[data-lead-filter]').forEach((el) => {
+          el.classList.toggle('active', el.getAttribute('data-lead-filter') === 'new');
+        });
+      }
+      switchPage('leads');
+    };
+    statNewCard.addEventListener('click', openNewLeads);
+    statNewCard.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openNewLeads(); }
+    });
+  }
+
+  const adminLeadsList = document.getElementById('adminLeadsList');
+  if (adminLeadsList) {
+    adminLeadsList.addEventListener('change', (e) => {
+      const sel = e.target.closest('[data-status-for]');
+      if (!sel || !requireAdmin('updateRequestStatus')) return;
+      const id = sel.getAttribute('data-status-for');
+      const status = sel.value;
+      if (Catalog && Catalog.updateSharedRequestStatus) {
+        Catalog.updateSharedRequestStatus(id, status);
+      } else {
+        const idx = clientRequests.findIndex(r => r.id === id);
+        if (idx > -1) {
+          clientRequests[idx].status = status;
+          saveClientRequests();
+        }
+      }
+      loadClientRequests();
+      showToast(t('تم تحديث حالة الطلب', 'Request status updated'));
+      renderAdminLeads();
+      renderOverview();
+    });
+    adminLeadsList.addEventListener('click', async (e) => {
+      const btn = e.target.closest('[data-copy-lead]');
+      if (!btn) return;
+      const id = btn.getAttribute('data-copy-lead');
+      const r = clientRequests.find((x) => x.id === id);
+      if (!r) return;
+      const text = [
+        r.name || '',
+        r.phone || '',
+        r.email || '',
+        r.company || '',
+        requestTitle(r),
+        r.message || ''
+      ].filter(Boolean).join('\n');
+      try {
+        await navigator.clipboard.writeText(text);
+        showToast(t('تم نسخ بيانات التواصل', 'Contact details copied'));
+      } catch (_) {
+        showToast(t('تعذّر النسخ', 'Could not copy'));
+      }
+    });
+  }
+
+  let pendingClientRequest = null;
+
+  function openRequestConfirm(draft){
+    pendingClientRequest = draft;
+    document.getElementById('requestConfirmTitle').textContent = draft.summary || draft.title || '';
+    const phoneEl = document.getElementById('requestConfirmPhone');
+    const metaPhone = currentUser && currentUser.user_metadata && currentUser.user_metadata.phone;
+    phoneEl.value = metaPhone || phoneEl.value || '';
+    document.getElementById('requestConfirmNote').value = '';
+    document.getElementById('requestConfirmModal').classList.add('open');
+    phoneEl.focus();
+  }
+  function closeRequestConfirm(){
+    pendingClientRequest = null;
+    document.getElementById('requestConfirmModal').classList.remove('open');
+  }
+  document.getElementById('requestConfirmClose').addEventListener('click', closeRequestConfirm);
+  document.getElementById('requestConfirmCancel').addEventListener('click', closeRequestConfirm);
+  document.getElementById('requestConfirmModal').addEventListener('click', (e) => {
+    if (e.target.id === 'requestConfirmModal') closeRequestConfirm();
+  });
+  document.getElementById('requestConfirmForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (!pendingClientRequest) return;
+    const phone = document.getElementById('requestConfirmPhone').value.trim();
+    const note = document.getElementById('requestConfirmNote').value.trim();
+    if (!phone && !(currentUser && currentUser.email)) {
+      showToast(t('أدخل رقم جوال للتواصل', 'Enter a phone number for reply'));
+      return;
+    }
+    const baseMsg = pendingClientRequest.message || '';
+    const message = note ? (baseMsg + '\n' + t('ملاحظة: ', 'Note: ') + note) : baseMsg;
+    const saved = addClientRequest(Object.assign({}, pendingClientRequest, {
+      phone: phone || pendingClientRequest.phone || '',
+      message
+    }));
+    closeRequestConfirm();
+    showToast(t('جاري إرسال الطلب...', 'Sending request...'));
+    const finish = (delivery) => {
+      if (delivery && delivery.delivered) {
+        showToast(t('تم إرسال طلب عرض السعر', 'Quote request sent'));
+      } else {
+        showToast(t('حُفظ الطلب محلياً — تأكدوا من بريد الإشعار/السحابة', 'Saved locally — check notify email/cloud setup'));
+      }
+      renderAll();
+      switchPage('requests');
+    };
+    if (saved && saved.deliveryPromise) {
+      saved.deliveryPromise.then(finish).catch(() => finish(null));
+    } else if (saved && Catalog && Catalog.deliverSharedRequest) {
+      Catalog.deliverSharedRequest(saved).then(finish).catch(() => finish(null));
+    } else {
+      finish({ delivered: false });
+    }
+  });
+
+  function requestProductAsClient(productId){
+    if (isAdminUser) {
+      showToast(t('أنت في حساب الإدارة — استخدم إدارة المنتجات للتعديل', 'You are admin — use product management to edit'));
+      return;
+    }
+    const p = products.find(x => x.id === productId);
+    if (!p) return;
+    const title = productLabel(p);
+    openRequestConfirm({
+      type: 'product',
+      title,
+      summary: title + ' — ' + priceLabel(p),
+      message: t('طلب عرض سعر لـ: ', 'Quote request for: ') + title + ' — ' + priceLabel(p),
+      productId: p.id,
+      priceMode: p.priceMode || 'quote',
+      price: Number(p.price) || 0
+    });
+  }
+
+  function requestSuggestionAsClient(suggestionId){
+    if (isAdminUser) return;
+    if (!Catalog) return;
+    const s = Catalog.getClientSuggestions().find(x => x.id === suggestionId);
+    if (!s) return;
+    const titleText = Catalog.label(s, currentLang, 'title', 'title_en');
+    const items = Catalog.suggestionItems(s, products, currentLang);
+    const priceText = Catalog.suggestionPriceLabel
+      ? Catalog.suggestionPriceLabel(s, products, currentLang === 'en' ? 'en' : 'ar')
+      : t('عرض سعر بعد المراجعة', 'Custom quote after review');
+    openRequestConfirm({
+      type: 'suggestion',
+      title: titleText,
+      summary: titleText + ' — ' + priceText,
+      message: t('طلب عرض سعر للاقتراح: ', 'Quote request for suggestion: ') + titleText + '\n' + items.join(currentLang === 'ar' ? '، ' : ', ') + '\n' + priceText,
+      suggestionId: s.id,
+      priceMode: 'quote',
+      price: 0
+    });
+  }
+
+  const clientCatalogSearch = document.getElementById('clientCatalogSearch');
+  if (clientCatalogSearch) clientCatalogSearch.addEventListener('input', renderClientCatalog);
+  const clientCatalogGrid = document.getElementById('clientCatalogGrid');
+  if (clientCatalogGrid) clientCatalogGrid.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-client-product]');
+    if (btn) requestProductAsClient(btn.dataset.clientProduct);
+  });
+  const clientSuggestionsList = document.getElementById('clientSuggestionsList');
+  if (clientSuggestionsList) clientSuggestionsList.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-client-suggest]');
+    if (btn) requestSuggestionAsClient(btn.dataset.clientSuggest);
+  });
+  const overviewSuggestions = document.getElementById('overviewSuggestions');
+  if (overviewSuggestions) overviewSuggestions.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-client-suggest]');
+    if (btn) requestSuggestionAsClient(btn.dataset.clientSuggest);
+  });
+
+  document.getElementById('recentSales').addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-view-sale]');
+    if (!btn) return;
+    const sale = sales.find(s => s.id === btn.dataset.viewSale);
+    if (sale) openReceipt(sale);
+  });
+
+  function renderProducts(){
+    const q = (document.getElementById('productSearch').value || '').trim().toLowerCase();
+    const list = products.filter(p => {
+      const blob = (p.name + ' ' + (p.name_en || '') + ' ' + (p.category || '')).toLowerCase();
+      return !q || blob.includes(q);
+    });
+    const body = document.getElementById('productsBody');
+    if (!list.length) {
+      body.innerHTML = `<tr><td colspan="6" class="empty">${t('لا توجد منتجات','No products')}</td></tr>`;
+      return;
+    }
+    body.innerHTML = list.map(p => `
+      <tr>
+        <td><strong>${escapeHtml(productLabel(p))}</strong></td>
+        <td>${escapeHtml(categoryLabel(p))}</td>
+        <td>${escapeHtml(priceLabel(p))}</td>
+        <td>${p.kind === 'service' ? '—' : p.stock}</td>
+        <td><span class="badge ${p.client === false ? 'low' : ''}">${
+          p.client === false
+            ? t('مخفي / الرياض', 'Hidden / Riyadh')
+            : (p.kind === 'service'
+              ? t('خدمة ظاهرة','Visible service')
+              : (p.stock <= 5 ? t('منخفض','Low') : t('متوفر','In stock')))
+        }</span></td>
+        <td>
+          <div class="row-actions">
+            <button class="btn btn-ghost" style="padding:6px 10px" data-edit="${p.id}">✎</button>
+            <button class="btn btn-ghost" style="padding:6px 10px" data-restock="${p.id}" title="+10">+10</button>
+            <button class="btn btn-danger" style="padding:6px 10px" data-del="${p.id}">×</button>
+          </div>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  document.getElementById('productSearch').addEventListener('input', renderProducts);
+  document.getElementById('productsBody').addEventListener('click', (e) => {
+    if (!requireAdmin('productsActions')) return;
+    const edit = e.target.closest('[data-edit]');
+    const del = e.target.closest('[data-del]');
+    const restock = e.target.closest('[data-restock]');
+    if (edit) openProductModal(edit.dataset.edit);
+    if (restock) {
+      const p = products.find(x => x.id === restock.dataset.restock);
+      if (p) { p.stock += 10; saveProducts(); renderAll(); showToast(t('تم تزويد المخزون','Stock restocked')); }
+    }
+    if (del) {
+      if (!confirm(t('حذف هذا المنتج؟','Delete this product?'))) return;
+      products = products.filter(p => p.id !== del.dataset.del);
+      saveProducts();
+      renderAll();
+      showToast(t('تم الحذف','Deleted'));
+    }
+  });
+
+  function openProductModal(id){
+    if (!requireAdmin('openProductModal')) return;
+    editingProductId = id || null;
+    const modal = document.getElementById('productModal');
+    const title = document.getElementById('productModalTitle');
+    if (id) {
+      const p = products.find(x => x.id === id);
+      if (!p) return;
+      title.textContent = t('تعديل منتج','Edit product');
+      document.getElementById('pName').value = p.name;
+      document.getElementById('pNameEn').value = p.name_en || '';
+      document.getElementById('pCategory').value = p.category || '';
+      document.getElementById('pCategoryEn').value = p.category_en || '';
+      document.getElementById('pDesc').value = p.desc || '';
+      document.getElementById('pDescEn').value = p.desc_en || '';
+      document.getElementById('pKind').value = p.kind === 'service' ? 'service' : 'product';
+      const quote = Catalog && Catalog.isQuote ? Catalog.isQuote(p) : !(Number(p.price) > 0);
+      document.getElementById('pQuote').checked = quote;
+      document.getElementById('pClientVisible').checked = p.client !== false;
+      document.getElementById('pRegion').value = p.region || (p.kind === 'service' ? 'online' : 'riyadh');
+      document.getElementById('pPrice').value = quote ? '' : p.price;
+      document.getElementById('pPrice').disabled = quote;
+      document.getElementById('pStock').value = p.stock;
+    } else {
+      title.textContent = t('منتج جديد','New product');
+      document.getElementById('productForm').reset();
+      document.getElementById('pKind').value = 'service';
+      document.getElementById('pQuote').checked = true;
+      document.getElementById('pClientVisible').checked = true;
+      document.getElementById('pRegion').value = 'online';
+      document.getElementById('pPrice').disabled = true;
+    }
+    modal.classList.add('open');
+  }
+  document.getElementById('pQuote').addEventListener('change', () => {
+    const quote = document.getElementById('pQuote').checked;
+    document.getElementById('pPrice').disabled = quote;
+    if (quote) document.getElementById('pPrice').value = '';
+  });
+  document.getElementById('addProductBtn').addEventListener('click', () => {
+    if (!requireAdmin('addProduct')) return;
+    openProductModal(null);
+  });
+  document.getElementById('productModalClose').addEventListener('click', () => document.getElementById('productModal').classList.remove('open'));
+  document.getElementById('productModal').addEventListener('click', (e) => { if (e.target.id === 'productModal') e.currentTarget.classList.remove('open'); });
+
+  document.getElementById('productForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (!requireAdmin('saveProductForm')) return;
+    const cat = document.getElementById('pCategory').value.trim() || t('عام','General');
+    const catEn = document.getElementById('pCategoryEn').value.trim() || cat;
+    const kind = document.getElementById('pKind').value === 'service' ? 'service' : 'product';
+    const quote = document.getElementById('pQuote').checked;
+    const fixedPrice = parseFloat(document.getElementById('pPrice').value) || 0;
+    const payload = {
+      name: document.getElementById('pName').value.trim(),
+      name_en: document.getElementById('pNameEn').value.trim(),
+      category: cat,
+      category_en: catEn,
+      desc: document.getElementById('pDesc').value.trim(),
+      desc_en: document.getElementById('pDescEn').value.trim(),
+      price: quote ? 0 : fixedPrice,
+      priceMode: quote || !(fixedPrice > 0) ? 'quote' : 'fixed',
+      stock: parseInt(document.getElementById('pStock').value, 10) || 0,
+      kind: kind,
+      client: document.getElementById('pClientVisible').checked,
+      region: (document.getElementById('pRegion').value || '').trim() || (kind === 'service' ? 'online' : 'riyadh')
+    };
+    if (editingProductId) {
+      const idx = products.findIndex(p => p.id === editingProductId);
+      if (idx > -1) products[idx] = { ...products[idx], ...payload };
+    } else {
+      products.unshift({ id: uid(), ...payload });
+    }
+    saveProducts();
+    document.getElementById('productModal').classList.remove('open');
+    fillCategoryFilter();
+    renderAll();
+    showToast(t('تم حفظ المنتج','Product saved'));
+  });
+
+  function renderPos(){
+    fillCategoryFilter();
+    const q = (document.getElementById('posSearch').value || '').trim().toLowerCase();
+    const cat = document.getElementById('posCategory').value;
+    const catalog = document.getElementById('posCatalog');
+    const list = products.filter(p => {
+      const blob = (p.name + ' ' + (p.name_en || '')).toLowerCase();
+      const catOk = cat === 'all' || categoryLabel(p) === cat;
+      const sellable = p.priceMode === 'fixed' && Number(p.price) > 0 && p.stock > 0;
+      return sellable && catOk && (!q || blob.includes(q));
+    });
+    if (!list.length) {
+      catalog.innerHTML = `<div class="empty" style="grid-column:1/-1">${t('لا توجد منتجات بسعر ثابت للبيع المباشر — حدّد سعراً من إدارة المنتجات','No fixed-price items for direct sale — set a price in product management')}</div>`;
+    } else {
+      catalog.innerHTML = list.map(p => `
+        <button type="button" class="pos-item" data-add="${p.id}">
+          <div class="cat">${escapeHtml(categoryLabel(p))}</div>
+          <h4>${escapeHtml(productLabel(p))}</h4>
+          <div class="price">${escapeHtml(priceLabel(p))}</div>
+          <div class="stock">${t('المتبقي','Left')}: ${p.stock}</div>
+        </button>
+      `).join('');
+    }
+    renderCart();
+  }
+  document.getElementById('posSearch').addEventListener('input', renderPos);
+  document.getElementById('posCategory').addEventListener('change', renderPos);
+  document.getElementById('posCatalog').addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-add]');
+    if (btn) addToCart(btn.dataset.add);
+  });
+
+  function addToCart(id){
+    const p = products.find(x => x.id === id);
+    if (!p || p.stock <= 0) return;
+    if (Catalog && Catalog.isQuote && Catalog.isQuote(p)) {
+      showToast(t('هذا البند بسعر حسب الطلب — عيّن سعراً ثابتاً أولاً', 'This item is quote-only — set a fixed price first'));
+      return;
+    }
+    const line = cart.find(c => c.id === id);
+    const qty = line ? line.qty + 1 : 1;
+    if (qty > p.stock) { showToast(t('المخزون غير كافٍ','Not enough stock')); return; }
+    if (line) line.qty = qty;
+    else cart.push({ id: p.id, name: p.name, name_en: p.name_en, price: p.price, qty: 1 });
+    renderCart();
+  }
+
+  function renderCart(){
+    const holder = document.getElementById('cartLines');
+    if (!cart.length) {
+      holder.innerHTML = `<div class="empty" style="color:#9BB8AC">${t('السلة فارغة','Cart is empty')}</div>`;
+      document.getElementById('cartTotal').textContent = money(0);
+      return;
+    }
+    holder.innerHTML = cart.map(line => `
+      <div class="cart-line">
+        <div>
+          <div>${escapeHtml(productLabel(line))}</div>
+          <div style="opacity:.7;font-size:.75rem">${money(line.price)}</div>
+        </div>
+        <div class="qty-ctrl">
+          <button type="button" data-dec="${line.id}">−</button>
+          <span>${line.qty}</span>
+          <button type="button" data-inc="${line.id}">+</button>
+        </div>
+        <strong>${money(line.price * line.qty)}</strong>
+      </div>
+    `).join('');
+    document.getElementById('cartTotal').textContent = money(cart.reduce((s, l) => s + l.price * l.qty, 0));
+  }
+
+  document.getElementById('cartLines').addEventListener('click', (e) => {
+    const inc = e.target.closest('[data-inc]');
+    const dec = e.target.closest('[data-dec]');
+    if (inc) {
+      const p = products.find(x => x.id === inc.dataset.inc);
+      const line = cart.find(c => c.id === inc.dataset.inc);
+      if (line && p && line.qty < p.stock) { line.qty++; renderCart(); }
+      else showToast(t('المخزون غير كافٍ','Not enough stock'));
+    }
+    if (dec) {
+      const line = cart.find(c => c.id === dec.dataset.dec);
+      if (!line) return;
+      line.qty--;
+      if (line.qty <= 0) cart = cart.filter(c => c.id !== line.id);
+      renderCart();
+    }
+  });
+  document.getElementById('clearCartBtn').addEventListener('click', () => { cart = []; renderCart(); });
+
+  function openReceipt(sale){
+    lastSale = sale;
+    document.getElementById('receiptStore').textContent = store.name || 'راسخ';
+    document.getElementById('receiptMeta').textContent =
+      `#${String(sale.id).slice(-6)} · ${sale.method === 'card' ? t('بطاقة','Card') : t('نقداً','Cash')} · ${new Date(sale.at).toLocaleString(currentLang === 'ar' ? 'ar-SA' : 'en-US')}` +
+      (store.phone ? ` · ${store.phone}` : '');
+    document.getElementById('receiptLines').innerHTML = (sale.lines || []).map(l => `
+      <div class="receipt-line">
+        <span>${escapeHtml(productLabel(l))} × ${l.qty}</span>
+        <span>${money(l.price * l.qty)}</span>
+      </div>
+    `).join('');
+    document.getElementById('receiptTotal').textContent = money(sale.total);
+    document.getElementById('receiptModal').classList.add('open');
+  }
+  document.getElementById('receiptClose').addEventListener('click', () => document.getElementById('receiptModal').classList.remove('open'));
+  document.getElementById('receiptDoneBtn').addEventListener('click', () => document.getElementById('receiptModal').classList.remove('open'));
+  document.getElementById('printReceiptBtn').addEventListener('click', () => window.print());
+  document.getElementById('receiptModal').addEventListener('click', (e) => {
+    if (e.target.id === 'receiptModal') e.currentTarget.classList.remove('open');
+  });
+
+  function checkout(method){
+    if (!requireAdmin('checkout')) return;
+    if (!cart.length) { showToast(t('السلة فارغة','Cart is empty')); return; }
+    for (const line of cart) {
+      const p = products.find(x => x.id === line.id);
+      if (!p || p.stock < line.qty) {
+        showToast(t('تعذّر إتمام البيع — تحقق من المخزون','Sale failed — check stock'));
+        return;
+      }
+    }
+    cart.forEach(line => {
+      const p = products.find(x => x.id === line.id);
+      if (p) p.stock -= line.qty;
+    });
+    const total = cart.reduce((s, l) => s + l.price * l.qty, 0);
+    const items = cart.reduce((s, l) => s + l.qty, 0);
+    const sale = {
+      id: uid(),
+      at: new Date().toISOString(),
+      method,
+      total,
+      items,
+      lines: cart.map(l => ({ ...l }))
+    };
+    sales.unshift(sale);
+    cart = [];
+    saveProducts();
+    saveSales();
+    renderAll();
+    openReceipt(sale);
+    showToast(method === 'card' ? t('تم البيع بالبطاقة','Card sale completed') : t('تم البيع نقداً','Cash sale completed'));
+  }
+  document.getElementById('payCashBtn').addEventListener('click', () => checkout('cash'));
+  document.getElementById('payCardBtn').addEventListener('click', () => checkout('card'));
+
+  function renderSales(){
+    const holder = document.getElementById('salesList');
+    if (!sales.length) {
+      holder.innerHTML = `<div class="empty">${t('لا يوجد سجل مبيعات بعد','No sales history yet')}</div>`;
+      return;
+    }
+    holder.innerHTML = sales.map(s => `
+      <div class="sale-row">
+        <div>
+          <div><strong>#${String(s.id).slice(-6)}</strong> · ${s.method === 'card' ? t('بطاقة','Card') : t('نقداً','Cash')}</div>
+          <div style="color:var(--muted);font-size:.78rem">${new Date(s.at).toLocaleString(currentLang === 'ar' ? 'ar-SA' : 'en-US')} · ${s.items} ${t('صنف','items')}</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <strong>${money(s.total)}</strong>
+          <button class="btn btn-ghost" style="padding:6px 10px;font-size:.78rem" data-view-sale="${s.id}">${t('إيصال','Receipt')}</button>
+        </div>
+      </div>
+    `).join('');
+  }
+  document.getElementById('salesList').addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-view-sale]');
+    if (!btn) return;
+    const sale = sales.find(s => s.id === btn.dataset.viewSale);
+    if (sale) openReceipt(sale);
+  });
+
+  document.getElementById('exportSalesBtn').addEventListener('click', () => {
+    if (!requireAdmin('exportSales')) return;
+    if (!sales.length) { showToast(t('لا توجد مبيعات للتصدير','No sales to export')); return; }
+    const rows = [['id','date','method','items','total']];
+    sales.forEach(s => rows.push([s.id, s.at, s.method, s.items, s.total]));
+    const csv = rows.map(r => r.join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'raseekh-sales.csv';
+    a.click();
+    URL.revokeObjectURL(a.href);
+    showToast(t('تم التصدير','Exported'));
+  });
+
+  document.getElementById('settingsForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const msg = document.getElementById('settingsMsg');
+    if (isDemo) {
+      msg.style.color = 'var(--muted)';
+      msg.textContent = t('الوضع التجريبي لا يحفظ على الحساب', 'Demo mode does not update account');
+      return;
+    }
+    if (!Auth) return;
+    const name = document.getElementById('settingsName').value.trim();
+    const pass = document.getElementById('settingsPassword').value;
+    try {
+      const user = await Auth.updateUser({ full_name: name, password: pass || undefined });
+      currentUser = user || currentUser;
+      document.getElementById('dashUserLabel').textContent = name || currentUser.email;
+      document.getElementById('settingsPassword').value = '';
+      msg.style.color = 'var(--ok)';
+      msg.textContent = t('تم الحفظ','Saved');
+    } catch (err) {
+      msg.style.color = 'var(--danger)';
+      msg.textContent = Auth.friendlyError(err, currentLang);
+    }
+  });
+
+  document.getElementById('storeForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (!requireAdmin('storeForm')) return;
+    store.name = document.getElementById('storeName').value.trim() || 'راسخ';
+    store.phone = document.getElementById('storePhone').value.trim();
+    store.webhookUrl = (document.getElementById('storeWebhook').value || '').trim();
+    store.notifyEmail = (document.getElementById('storeNotifyEmail').value || '').trim().toLowerCase();
+    const notifyLoginEl = document.getElementById('storeNotifyLogin');
+    store.notifyOnLogin = notifyLoginEl ? !!notifyLoginEl.checked : true;
+    saveStore();
+    if (Catalog && Catalog.publishPublicNotify) {
+      Catalog.publishPublicNotify(store, { allowEmpty: !store.notifyEmail && !store.webhookUrl, forceCloud: true });
+    }
+    renderDeliveryStatus();
+    document.getElementById('storeMsg').style.color = 'var(--ok)';
+    if (store.notifyEmail) {
+      document.getElementById('storeMsg').textContent = t(
+        'تم الحفظ — الطلبات وتسجيل دخول العملاء يصلان لهذا البريد (فعّل FormSubmit إن لزم)',
+        'Saved — requests and client logins email this address (activate FormSubmit if needed)'
+      );
+    } else if (store.webhookUrl) {
+      document.getElementById('storeMsg').textContent = t('تم الحفظ — إشعارات الطلبات مفعّلة عبر Webhook', 'Saved — request webhook notifications enabled');
+    } else {
+      document.getElementById('storeMsg').textContent = t('تم حفظ بيانات المتجر','Store details saved');
+    }
+  });
+
+  const testNotifyEmailBtn = document.getElementById('testNotifyEmailBtn');
+  if (testNotifyEmailBtn) {
+    testNotifyEmailBtn.addEventListener('click', async () => {
+      if (!requireAdmin('testNotifyEmail')) return;
+      const email = (document.getElementById('storeNotifyEmail').value || '').trim().toLowerCase();
+      if (!email) {
+        document.getElementById('storeMsg').style.color = 'var(--danger)';
+        document.getElementById('storeMsg').textContent = t('اكتب بريد وصول الطلبات أولاً', 'Enter a notify email first');
+        return;
+      }
+      store.notifyEmail = email;
+      saveStore();
+      document.getElementById('storeMsg').style.color = 'var(--muted)';
+      document.getElementById('storeMsg').textContent = t('جاري إرسال طلب تجريبي...', 'Sending test request...');
+      const sample = {
+        id: 'test-' + Date.now().toString(36),
+        at: new Date().toISOString(),
+        name: t('طلب تجريبي', 'Test request'),
+        phone: store.phone || '',
+        email: email,
+        company: store.name || 'راسخ',
+        title: t('اختبار وصول الطلبات', 'Request delivery test'),
+        message: t('هذا اختبار من لوحة راسخ — إذا وصلك فالبريد يعمل.', 'This is a Raseekh dashboard test — if you got it, email delivery works.'),
+        type: 'site',
+        source: 'admin-test',
+        status: 'new'
+      };
+      const result = Catalog && Catalog.notifyAdminEmail
+        ? await Catalog.notifyAdminEmail(sample, email)
+        : { ok: false };
+      document.getElementById('storeMsg').style.color = result && result.ok ? 'var(--ok)' : 'var(--danger)';
+      document.getElementById('storeMsg').textContent = result && result.ok
+        ? t('تم الإرسال — افحص البريد (والبريد المزعج). أول مرة تحتاج تفعيل FormSubmit.', 'Sent — check inbox (and spam). First time needs FormSubmit activation.')
+        : t('تعذّر الإرسال — تأكد من البريد أو جرّب لاحقاً', 'Send failed — check the email or try later');
+      renderDeliveryStatus();
+    });
+  }
+  const refreshDeliveryStatusBtn = document.getElementById('refreshDeliveryStatusBtn');
+  if (refreshDeliveryStatusBtn) {
+    refreshDeliveryStatusBtn.addEventListener('click', () => renderDeliveryStatus());
+  }
+  const recheckSetupBtn = document.getElementById('recheckSetupBtn');
+  if (recheckSetupBtn) {
+    recheckSetupBtn.addEventListener('click', async () => {
+      const info = await renderDeliveryStatus();
+      const ready = !!(info && info.cloudOk && info.settingsOk && info.activityOk && info.notifyPublished);
+      showToast(ready
+        ? t('الإعداد مكتمل', 'Setup complete')
+        : t('ما زال هناك إعداد ناقص — راجعوا الخطوات', 'Setup still incomplete — check the steps'));
+    });
+  }
+
+  const refreshLeadsBtn = document.getElementById('refreshLeadsBtn');
+  if (refreshLeadsBtn) {
+    refreshLeadsBtn.addEventListener('click', async () => {
+      showToast(t('جاري التحديث...', 'Refreshing...'));
+      await renderAdminLeads();
+      updateLeadsBadge();
+      showToast(t('تم تحديث صندوق الطلبات', 'Request inbox updated'));
+    });
+  }
+  const exportLeadsBtn = document.getElementById('exportLeadsBtn');
+  if (exportLeadsBtn) {
+    exportLeadsBtn.addEventListener('click', () => {
+      if (!requireAdmin('exportLeads')) return;
+      loadClientRequests();
+      if (!clientRequests.length) {
+        showToast(t('لا توجد طلبات للتصدير', 'No requests to export'));
+        return;
+      }
+      const header = ['id','at','status','source','name','phone','email','company','title','message'];
+      const lines = [header.join(',')].concat(clientRequests.map((r) => header.map((k) => {
+        const raw = String(r[k] == null ? '' : r[k]).replace(/"/g, '""');
+        return `"${raw}"`;
+      }).join(',')));
+      const blob = new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'raseekh-client-requests.csv';
+      a.click();
+      URL.revokeObjectURL(a.href);
+      showToast(t('تم تصدير الطلبات', 'Requests exported'));
+    });
+  }
+  const gotoNotifySettings = document.getElementById('gotoNotifySettings');
+  if (gotoNotifySettings) {
+    gotoNotifySettings.addEventListener('click', (e) => {
+      e.preventDefault();
+      switchPage('settings');
+      const panel = document.getElementById('storeSettingsPanel');
+      if (panel) panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  }
+
+  let leadsPollTimer = null;
+  function startLeadsPolling(){
+    clearInterval(leadsPollTimer);
+    leadsPollTimer = setInterval(async () => {
+      if (!isAdminUser || !document.getElementById('page-leads')?.classList.contains('active')) return;
+      await refreshClientRequestsFromCloud();
+      updateLeadsBadge();
+      renderAdminLeads();
+    }, 45000);
+  }
+  startLeadsPolling();
+
+  applyLang(currentLang);
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    const gate = document.getElementById('termsGate');
+    if (gate && gate.classList.contains('open')) {
+      if (termsGateMode === 'view') closeTermsGate();
+      return;
+    }
+    document.getElementById('productModal').classList.remove('open');
+    document.getElementById('receiptModal').classList.remove('open');
+    closeRequestConfirm();
+  });
+
+  (async function init(){
+    const params = new URLSearchParams(window.location.search);
+    const wantDemo = params.get('demo') === '1';
+
+    if (Catalog && Catalog.syncPublicNotifyFromCloud) {
+      Catalog.syncPublicNotifyFromCloud().catch(() => {});
+    }
+
+    if (Auth && Auth.supabase) {
+      Auth.supabase.auth.onAuthStateChange((event, session) => {
+        if (event === 'SIGNED_OUT' && !isDemo) {
+          authProvider = null;
+          showLogin();
+        }
+        if (event === 'SIGNED_IN' && session?.user) {
+          authProvider = 'supabase';
+          showDashboard(session.user, false);
+        }
+      });
+    }
+
+    // Real account always wins over sticky demo, unless ?demo=1 was requested.
+    if (Auth && !wantDemo) {
+      try {
+        const sessionInfo = await Auth.getSession();
+        if (sessionInfo && sessionInfo.user) {
+          authProvider = sessionInfo.provider || (sessionInfo.user.app_metadata && sessionInfo.user.app_metadata.provider) || null;
+          setDemoFlag(false);
+          showDashboard(sessionInfo.user, false);
+          return;
+        }
+      } catch (_) {}
+    }
+
+    if (wantDemo || hasDemoFlag()) {
+      enterDemo();
+      return;
+    }
+
+    showLogin();
+  })();
+
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js').catch(() => {});
+    });
+  }
+})();
+</script>
+</body>
+</html>

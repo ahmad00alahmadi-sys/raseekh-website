@@ -1,1119 +1,1509 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" id="htmlRoot">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>راسخ — تطوير أنظمة إدارة مخصصة</title>
-<meta name="description" content="راسخ لتطوير أنظمة إدارة مخصصة — أنظمة مخزون، عملاء، وحجوزات مصمّمة خصيصاً لتنمو مع أعمالكم.">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23181310'/%3E%3Ctext x='50' y='68' font-size='55' text-anchor='middle' fill='%23C9A24B' font-family='sans-serif'%3Eر%3C/text%3E%3C/svg%3E">
-<meta property="og:title" content="راسخ — تطوير أنظمة إدارة مخصصة">
-<meta property="og:description" content="أنظمة مخزون، عملاء، وحجوزات مصمّمة خصيصاً لتنمو مع أعمالكم.">
+<title>راسخ — منتجات إلكترونية وخدمات برمجة وأنظمة</title>
+<meta name="description" content="راسخ في السعودية: بيع إلكترونيات، صيانة مواقع، خدمات برمجة، وتطوير أنظمة ولوحات تحكم للعملاء.">
+<meta name="keywords" content="راسخ, خدمات برمجة, تطوير مواقع, صيانة مواقع, أنظمة ولوحات تحكم, منتجات إلكترونية, برمجة سعودية, Raseekh, website development Saudi, custom systems">
+<meta property="og:title" content="راسخ — إلكترونيات وخدمات تقنية">
+<meta property="og:description" content="منتجات إلكترونية، صيانة مواقع، برمجة، وأنظمة كاملة — بواجهة عربية وإنجليزية.">
+<meta name="theme-color" content="#10233A">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://raseekh.com/">
 <meta property="og:type" content="website">
+<meta property="og:url" content="https://raseekh.com/">
+<meta property="og:locale" content="ar_SA">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:image" content="https://raseekh.com/icon.svg">
+<meta name="twitter:card" content="summary">
+<link rel="alternate" hreflang="ar" href="https://raseekh.com/">
+<link rel="alternate" hreflang="en" href="https://raseekh.com/?lang=en">
+<link rel="alternate" hreflang="x-default" href="https://raseekh.com/">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='10' fill='%2310233A'/%3E%3Cpath d='M14 44V20h12.2c7.2 0 11.4 3.4 11.4 9.2 0 4.4-2.4 7.4-6.4 8.6L40 44h-7.2l-7.4-11.4H21V44H14zm7-17.2h4.8c3.2 0 5-1.4 5-4s-1.8-4-5-4H21v8z' fill='%23E8A05A'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='10' fill='%2310233A'/%3E%3Cpath d='M14 44V20h12.2c7.2 0 11.4 3.4 11.4 9.2 0 4.4-2.4 7.4-6.4 8.6L40 44h-7.2l-7.4-11.4H21V44H14zm7-17.2h4.8c3.2 0 5-1.4 5-4s-1.8-4-5-4H21v8z' fill='%23E8A05A'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://raseekh.com/#org",
+      "name": "راسخ",
+      "alternateName": "Raseekh",
+      "url": "https://raseekh.com/",
+      "description": "منتجات إلكترونية، صيانة مواقع، خدمات برمجة، وتطوير أنظمة ولوحات تحكم للعملاء.",
+      "areaServed": "SA",
+      "knowsLanguage": ["ar", "en"]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://raseekh.com/#website",
+      "url": "https://raseekh.com/",
+      "name": "راسخ",
+      "inLanguage": ["ar", "en"],
+      "publisher": { "@id": "https://raseekh.com/#org" }
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://raseekh.com/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "كيف أحصل على عرض سعر؟",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "اكتبوا احتياجكم من الصفحة أو حساب العميل. نراجع النطاق ونرد خلال يوم عمل."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "هل الأسعار ظاهرة على المنتجات؟",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "لا نعرض أسعاراً وهمية. معظم البنود حسب الطلب بعد التأكد من المواصفات والكمية."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "ما الفرق بين العميل والمدير؟",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "العميل يطلب ويتابع. المدير فقط يعدّل الكتالوج والمبيعات والطلبات."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "هل يمكن الدفع أونلاين؟",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "نعم — بعد تسجيل الدخول عبر Moyasar (بطاقة / Apple Pay)."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "هل تعملون عربي وإنجليزي؟",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "نعم. الموقع وحساب العميل يدعمون التبديل الفوري بين العربية والإنجليزية."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@500;700;800&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;500;600;700&family=Tajawal:wght@500;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap">
+<link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;500;600;700&family=Tajawal:wght@500;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.moyasar.com/mpf/1.12/moyasar.css">
 <script src="https://cdn.moyasar.com/mpf/1.12/moyasar.js"></script>
+<script src="/catalog.js"></script>
+<script src="/terms.js"></script>
+<script src="/activity.js"></script>
 <style>
-  :root{
-    --ink:#181310;
-    --panel:#231C17;
-    --panel-2:#2C231C;
-    --line:#40342A;
-    --copper:#C9A24B;
-    --teal:#7C9473;
-    --text:#F2ECE1;
-    --muted:#A99A85;
-  }
-  *{margin:0;padding:0;box-sizing:border-box;}
-  html{scroll-behavior:smooth;}
-  body{
-    background:var(--ink);
-    color:var(--text);
-    font-family:'IBM Plex Sans Arabic', sans-serif;
-    line-height:1.7;
-    overflow-x:hidden;
-  }
-  body::before{
-    content:"";
-    position:fixed; inset:0;
-    background-image:
-      linear-gradient(var(--line) 1px, transparent 1px),
-      linear-gradient(90deg, var(--line) 1px, transparent 1px);
-    background-size:48px 48px;
-    opacity:0.12;
-    pointer-events:none;
-    z-index:0;
-  }
-  .wrap{max-width:1120px;margin:0 auto;padding:0 24px;position:relative;z-index:1;}
-  h1,h2,h3{font-family:'Noto Kufi Arabic', sans-serif;}
-  .mono{font-family:'IBM Plex Mono', monospace; letter-spacing:0.02em;}
-  a{color:inherit;text-decoration:none;}
+:root{
+  --ink:#10233A;--navy:#16324F;--harbor:#2A6F7A;--copper:#C45C26;--sand:#E8A05A;
+  --bg:#E8EDF2;--panel:#F7F9FC;--mist:#D5DEE8;--line:#B8C4D1;
+  --muted:#5A6B7C;--danger:#B42318;--ok:#1F7A58;
+  --radius:6px;--shadow:0 18px 40px -28px rgba(16,35,58,.45);
+  --forest:var(--navy);--leaf:var(--harbor);--brass:var(--copper);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);color:var(--ink);
+  font-family:'Readex Pro','Tajawal',sans-serif;line-height:1.75;overflow-x:hidden;
+}
+body.lang-en{font-family:'Space Grotesk',sans-serif}
+body::before{
+  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 80% 50% at 100% -10%, rgba(196,92,38,.14), transparent 55%),
+    radial-gradient(ellipse 70% 45% at -10% 20%, rgba(42,111,122,.14), transparent 50%),
+    linear-gradient(165deg,#DCE4EC 0%, var(--bg) 42%, #F0F4F8 100%);
+}
+body::after{
+  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.22;
+  background-image:
+    linear-gradient(rgba(16,35,58,.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(16,35,58,.04) 1px, transparent 1px);
+  background-size:48px 48px;
+}
+.wrap{max-width:1180px;margin:0 auto;padding:0 28px;position:relative;z-index:1}
+h1,h2,h3,.logo,.brand-mark{font-family:'Tajawal',sans-serif;letter-spacing:-.02em}
+body.lang-en h1,body.lang-en h2,body.lang-en h3,body.lang-en .logo,body.lang-en .brand-mark{font-family:'Space Grotesk',sans-serif}
+a{color:inherit;text-decoration:none}
+button,input,select,textarea{font:inherit}
 
-  /* NAV */
-  header{
-    position:sticky; top:0; z-index:50;
-    background:rgba(15,27,43,0.85);
-    backdrop-filter:blur(10px);
-    border-bottom:1px solid var(--line);
-  }
-  nav{display:flex;align-items:center;justify-content:space-between;padding:18px 24px;max-width:1120px;margin:0 auto;}
-  .logo{font-family:'Noto Kufi Arabic',sans-serif;font-weight:700;font-size:22px;color:var(--text);}
-  .logo span{color:var(--copper);}
-  .nav-links{display:flex;gap:32px;font-size:15px;color:var(--muted);}
-  .nav-links a:hover{color:var(--teal);}
-  .nav-cta{
-    background:var(--copper); color:var(--ink); font-weight:600;
-    padding:10px 20px; border-radius:6px; font-size:14px;
-    white-space:nowrap;
-  }
-  .nav-toggle{display:none; flex-direction:column; gap:5px; cursor:pointer; background:none; border:none;}
-  .nav-toggle span{width:24px;height:2px;background:var(--text);display:block;}
+header{
+  position:sticky;top:0;z-index:80;
+  background:rgba(232,237,242,.88);backdrop-filter:blur(14px);
+  border-bottom:2px solid rgba(16,35,58,.08);
+}
+nav{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 0;max-width:1180px;margin:0 auto}
+.logo{font-weight:800;font-size:1.5rem}
+.logo em{font-style:normal;color:var(--copper)}
+.nav-links{display:flex;align-items:center;gap:24px;color:var(--muted);font-size:.92rem;font-weight:500}
+.nav-links a{position:relative}
+.nav-links a:hover{color:var(--navy)}
+.nav-links a::after{
+  content:"";position:absolute;inset-inline:0;bottom:-6px;height:2px;background:var(--copper);
+  transform:scaleX(0);transform-origin:right;transition:transform .25s ease;
+}
+.nav-links a:hover::after{transform:scaleX(1);transform-origin:left}
+.nav-actions{display:flex;align-items:center;gap:8px}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  border:none;border-radius:var(--radius);padding:12px 20px;cursor:pointer;
+  font-weight:700;font-size:.9rem;transition:transform .18s,background .18s,border-color .18s,color .18s;
+}
+.btn:hover{transform:translateY(-2px)}
+.btn-primary{background:var(--navy);color:#F4F7FA}
+.btn-primary:hover{background:#0C1B2E}
+.btn-ghost{background:rgba(247,249,252,.75);border:1.5px solid var(--line);color:var(--ink);padding:11px 18px}
+.btn-ghost:hover{border-color:var(--harbor);color:var(--harbor);background:#fff}
+.btn-brass{background:var(--copper);color:#fff}
+.lang-btn{
+  min-width:44px;padding:10px 12px;border-radius:var(--radius);border:1.5px solid var(--line);
+  background:rgba(247,249,252,.8);color:var(--ink);font-weight:700;cursor:pointer;font-size:.78rem;
+}
+.nav-toggle{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:6px}
+.nav-toggle span{width:22px;height:2px;background:var(--ink);display:block}
 
-  /* HERO */
-  .hero{padding:100px 0 80px; position:relative;}
-  .eyebrow{
-    display:inline-flex; align-items:center; gap:8px;
-    font-family:'IBM Plex Mono',monospace; font-size:13px; color:var(--teal);
-    border:1px solid var(--line); padding:6px 14px; border-radius:100px;
-    margin-bottom:28px;
-  }
-  .eyebrow::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--teal);}
-  .hero h1{
-    font-size:clamp(34px,5.5vw,58px); font-weight:800; line-height:1.25;
-    max-width:800px; margin-bottom:22px;
-  }
-  .hero h1 em{font-style:normal; color:var(--copper);}
-  .hero p{font-size:18px; color:var(--muted); max-width:560px; margin-bottom:36px;}
-  .btn-row{display:flex; gap:16px; flex-wrap:wrap; margin-bottom:80px;}
-  .btn-primary{
-    background:var(--copper); color:var(--ink); font-weight:700;
-    padding:15px 30px; border-radius:8px; font-size:15px;
-    box-shadow:0 8px 24px -8px rgba(198,139,76,0.5);
-  }
-  .btn-secondary{
-    border:1px solid var(--line); color:var(--text);
-    padding:15px 30px; border-radius:8px; font-size:15px;
-  }
-  .btn-secondary:hover{border-color:var(--teal); color:var(--teal);}
+.hero{
+  min-height:calc(100vh - 70px);display:grid;align-items:center;position:relative;overflow:hidden;
+}
+.hero-visual{
+  position:absolute;inset:0;z-index:0;
+  background:
+    linear-gradient(105deg, rgba(12,27,46,.96) 0%, rgba(16,35,58,.88) 38%, rgba(22,50,79,.55) 68%, rgba(42,111,122,.22) 100%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1600 1000' preserveAspectRatio='xMidYMid slice'%3E%3Cdefs%3E%3ClinearGradient id='sky' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%230C1B2E'/%3E%3Cstop offset='45%25' stop-color='%2316324F'/%3E%3Cstop offset='100%25' stop-color='%232A6F7A'/%3E%3C/linearGradient%3E%3ClinearGradient id='screen' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0%25' stop-color='%231E3A54'/%3E%3Cstop offset='100%25' stop-color='%2310233A'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='1600' height='1000' fill='url(%23sky)'/%3E%3Crect x='780' y='120' width='720' height='460' rx='18' fill='url(%23screen)' stroke='%23E8A05A' stroke-opacity='.35' stroke-width='3'/%3E%3Crect x='804' y='156' width='672' height='392' rx='8' fill='%230C1B2E'/%3E%3Cg fill='none' stroke='%232A6F7A' stroke-opacity='.55' stroke-width='3'%3E%3Cpath d='M840 220 H1180'/%3E%3Cpath d='M840 270 H1320'/%3E%3Cpath d='M840 320 H1100'/%3E%3Cpath d='M840 370 H1260'/%3E%3Cpath d='M840 420 H1020'/%3E%3C/g%3E%3Cg stroke='%23C45C26' stroke-opacity='.45' stroke-width='2' fill='none'%3E%3Cpath d='M860 480 H980 M1000 480 H1140'/%3E%3C/g%3E%3Crect x='980' y='620' width='320' height='18' rx='4' fill='%23C45C26' opacity='.35'/%3E%3Ccircle cx='220' cy='760' r='260' fill='%23C45C26' opacity='.16'/%3E%3Ccircle cx='380' cy='820' r='140' fill='%23E8A05A' opacity='.1'/%3E%3Cpath d='M120 180 C260 120 340 260 480 200' fill='none' stroke='%23E8A05A' stroke-opacity='.18' stroke-width='2'/%3E%3C/svg%3E") center/cover no-repeat;
+  transform-origin:60% 40%;
+  animation:heroDrift 18s ease-in-out infinite alternate;
+}
+.hero-visual::before{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(90deg, rgba(12,27,46,.55) 0%, transparent 58%);
+  animation:heroWash 10s ease-in-out infinite alternate;
+}
+.hero-visual::after{
+  content:"";position:absolute;inset:auto 0 0 0;height:110px;
+  background:linear-gradient(180deg, transparent, var(--bg));
+}
+@keyframes heroDrift{from{transform:scale(1) translate3d(0,0,0)}to{transform:scale(1.06) translate3d(-1.2%,-1%,0)}}
+@keyframes heroWash{from{opacity:.55}to{opacity:.9}}
+.hero-content{
+  position:relative;z-index:1;padding:110px 0 96px;color:#F4F7FA;max-width:720px;
+}
+.brand-mark{
+  font-size:clamp(4.2rem,11vw,7.2rem);font-weight:800;line-height:.88;margin-bottom:20px;
+  letter-spacing:-.04em;text-shadow:0 18px 40px rgba(0,0,0,.28);
+  animation:rise .95s cubic-bezier(.2,.75,.2,1) both;
+}
+.brand-mark span{color:var(--sand)}
+.hero h1{
+  font-size:clamp(1.35rem,3vw,2rem);font-weight:600;line-height:1.35;margin-bottom:12px;max-width:22ch;
+  animation:rise .95s .1s cubic-bezier(.2,.75,.2,1) both;
+}
+.hero > .wrap > p,
+.hero-content > p{
+  font-size:1.08rem;color:rgba(232,237,242,.9);max-width:38ch;margin-bottom:26px;
+  animation:rise .95s .2s cubic-bezier(.2,.75,.2,1) both;
+}
+.hero-cta-block{animation:rise .95s .3s cubic-bezier(.2,.75,.2,1) both}
+.hero .btn-primary{background:var(--copper);color:#fff}
+.hero .btn-primary:hover{background:#A84C1E}
+.hero .btn-ghost{border-color:rgba(244,247,250,.4);color:#F4F7FA;background:transparent}
+.hero-quote{
+  display:grid;grid-template-columns:minmax(132px,.85fr) 1.55fr auto;gap:10px;max-width:640px;
+}
+.hero-quote select,.hero-quote input{
+  width:100%;padding:14px 15px;border:1.5px solid rgba(244,247,250,.3);border-radius:var(--radius);
+  background:rgba(12,27,46,.55);color:#F4F7FA;backdrop-filter:blur(10px);
+}
+.hero-quote select option{color:var(--ink);background:#fff}
+.hero-quote input::placeholder{color:rgba(244,247,250,.55)}
+.hero-quote select:focus,.hero-quote input:focus{outline:2px solid rgba(232,160,90,.5);border-color:var(--sand)}
+.hero-quote .btn{white-space:nowrap;min-height:52px}
+.hero-note{
+  margin-top:14px;display:flex;flex-wrap:wrap;align-items:center;gap:14px;
+  color:rgba(232,237,242,.78);font-size:.92rem;
+}
+.hero-note a{color:#fff;font-weight:700;border-bottom:1.5px solid rgba(232,160,90,.7);padding-bottom:1px}
+.hero-note a:hover{color:var(--sand)}
+.btn.sent{background:var(--ok)!important;pointer-events:none}
+.msg.ok-pulse{animation:okPulse .55s ease}
+@keyframes okPulse{0%{opacity:.35;transform:translateY(4px)}100%{opacity:1;transform:none}}
+.form label.field{display:flex;flex-direction:column;gap:6px;font-size:.8rem;font-weight:700;color:var(--muted)}
+.form label.field > span{padding-inline-start:2px}
+.hint-inline{font-size:.8rem;color:var(--muted);margin-top:-4px}
+.faq-list{display:flex;flex-direction:column;gap:10px;max-width:820px}
+.faq-item{
+  border:1.5px solid var(--line);border-radius:var(--radius);background:rgba(247,249,252,.85);overflow:hidden;
+}
+.faq-item summary{
+  cursor:pointer;list-style:none;padding:16px 18px;font-weight:700;color:var(--navy);
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+}
+.faq-item summary::-webkit-details-marker{display:none}
+.faq-item summary::after{content:"+";color:var(--copper);font-weight:800;font-size:1.2rem}
+.faq-item[open] summary::after{content:"–"}
+.faq-item p{padding:0 18px 16px;color:var(--muted);font-size:.95rem}
+.news-list{display:flex;flex-direction:column;gap:0;border-top:1.5px solid var(--line)}
+.news-item{
+  display:grid;grid-template-columns:110px 1fr;gap:18px;padding:18px 0;border-bottom:1.5px solid var(--line);
+}
+.news-item time{color:var(--copper);font-weight:700;font-size:.86rem}
+.news-item h3{font-size:1.05rem;margin-bottom:4px}
+.news-item p{color:var(--muted);font-size:.92rem}
+@keyframes rise{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:none}}
 
-  /* BEDROCK — عنصر الطبقات الراسخة */
-  .bedrock{
-    position:relative; background:var(--panel);
-    border:1px solid var(--line); border-radius:16px;
-    padding:44px 36px 28px; overflow:hidden;
-    display:flex; flex-direction:column;
-  }
-  .bedrock-labels{
-    display:flex; justify-content:space-between; align-items:flex-start;
-    margin-bottom:28px; position:relative; z-index:2;
-  }
-  .bedrock-labels .bl-item{font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--muted);}
-  .bedrock-labels .bl-item b{display:block; color:var(--text); font-size:15px; font-family:'IBM Plex Sans Arabic',sans-serif; font-weight:600; margin-top:4px;}
-  .strata{position:relative; height:180px;}
-  .stratum{
-    position:absolute; right:0; left:0; border-radius:3px;
-    background:var(--panel-2); border:1px solid var(--line);
-    display:flex; align-items:center; padding:0 18px;
-    font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--muted);
-    opacity:0; transform:translateY(14px);
-    animation:settle 0.7s ease forwards;
-  }
-  .stratum.s1{top:0; height:38px; animation-delay:0.1s;}
-  .stratum.s2{top:46px; height:38px; animation-delay:0.28s;}
-  .stratum.s3{top:92px; height:38px; animation-delay:0.46s; background:var(--panel-2);}
-  .stratum.s4{
-    top:138px; height:42px; animation-delay:0.64s;
-    background:var(--copper); border-color:var(--copper); color:var(--ink);
-    font-weight:600; justify-content:center; letter-spacing:0.04em;
-  }
-  @keyframes settle{to{opacity:1; transform:translateY(0);}}
-  .root-line{
-    position:absolute; bottom:0; right:50%; width:2px; height:0;
-    background:var(--teal); animation:grow-root 1s ease 0.9s forwards;
-  }
-  @keyframes grow-root{to{height:34px;}}
+section{padding:100px 0;position:relative;z-index:1}
+.section-head{max-width:580px;margin-bottom:42px}
+.eyebrow{
+  display:inline-block;font-size:.74rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--copper);margin-bottom:12px;padding-bottom:6px;border-bottom:2px solid var(--sand);
+}
+.section-head h2{font-size:clamp(1.8rem,3.5vw,2.55rem);line-height:1.2;margin-bottom:12px}
+.section-head p{color:var(--muted);font-size:1.05rem}
 
-  /* SECTION shared */
-  section{padding:90px 0; position:relative;}
-  .section-head{max-width:600px; margin-bottom:56px;}
-  .section-head .eyebrow{margin-bottom:18px;}
-  .section-head h2{font-size:clamp(28px,4vw,38px); font-weight:800; margin-bottom:14px;}
-  .section-head p{color:var(--muted); font-size:16px;}
+.services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.services-grid.four{grid-template-columns:repeat(2,1fr)}
+.service-block{
+  background:rgba(247,249,252,.82);border:1.5px solid var(--line);border-radius:var(--radius);
+  padding:28px 22px;transition:border-color .2s,transform .2s,background .2s;
+}
+.service-block:hover{border-color:var(--harbor);transform:translateY(-4px);background:#fff}
+.service-block.featured{
+  background:linear-gradient(145deg,#10233A 0%, #16324F 55%, #1D4A58 100%);
+  color:#F4F7FA;border-color:transparent;
+}
+.service-block.featured p{color:rgba(244,247,250,.82)}
+.service-block.featured .service-code{color:var(--sand)}
+.service-code{font-size:.72rem;font-weight:700;letter-spacing:.1em;color:var(--copper);margin-bottom:14px;display:block}
+.service-block h3{font-size:1.2rem;margin-bottom:10px}
+.service-block p{color:var(--muted);font-size:.94rem}
+.service-list{margin-top:14px;display:flex;flex-direction:column;gap:8px;padding:0;list-style:none}
+.service-list li{color:var(--muted);font-size:.9rem;padding-inline-start:16px;position:relative}
+.service-list li::before{
+  content:"";position:absolute;inset-inline-start:0;top:.65em;width:8px;height:2px;background:var(--harbor);
+}
+.service-block.featured .service-list li{color:rgba(244,247,250,.86)}
+.service-block.featured .service-list li::before{background:var(--sand)}
 
-  /* SERVICES */
-  .services-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:24px;}
-  .service-card{
-    background:var(--panel); border:1px solid var(--line); border-radius:14px;
-    padding:32px 26px; transition:border-color 0.25s, transform 0.25s;
-  }
-  .service-card:hover{border-color:var(--teal); transform:translateY(-4px);}
-  .service-tag{
-    font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--copper);
-    display:block; margin-bottom:18px;
-  }
-  .service-card h3{font-size:20px; margin-bottom:12px; font-weight:700;}
-  .service-card p{color:var(--muted); font-size:15px;}
+.products-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.product-item{
+  background:rgba(247,249,252,.88);border:1.5px solid var(--line);border-radius:var(--radius);
+  padding:22px 18px;display:flex;flex-direction:column;gap:8px;min-height:200px;
+  transition:border-color .2s,transform .2s;
+}
+.product-item:hover{border-color:var(--copper);transform:translateY(-3px)}
+.product-item .tag{font-size:.72rem;font-weight:700;color:var(--harbor);letter-spacing:.06em}
+.product-item h3{font-size:1.05rem}
+.product-item p{color:var(--muted);font-size:.88rem;flex:1}
+.product-item .price{font-weight:800;color:var(--navy);margin-top:4px}
+.product-item .meta{font-size:.78rem;color:var(--muted)}
+.product-item .btn{margin-top:10px;align-self:flex-start;padding:9px 14px;font-size:.85rem}
 
-  /* PROCESS */
-  .process-list{display:flex; flex-direction:column;}
-  .process-item{
-    display:grid; grid-template-columns:80px 1fr; gap:24px;
-    padding:28px 0; border-bottom:1px solid var(--line);
-  }
-  .process-item:first-child{border-top:1px solid var(--line);}
-  .process-num{font-family:'IBM Plex Mono',monospace; font-size:14px; color:var(--teal);}
-  .process-item h3{font-size:19px; margin-bottom:8px; font-weight:700;}
-  .process-item p{color:var(--muted); font-size:15px; max-width:560px;}
+.suggest-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:18px}
+.suggest-card{
+  background:linear-gradient(150deg,#10233A 0%, #16324F 50%, #21485A 100%);
+  color:#F4F7FA;padding:28px 24px;border-radius:var(--radius);border-inline-start:4px solid var(--copper);
+  display:flex;flex-direction:column;gap:10px;min-height:230px;
+}
+.suggest-card .badge{
+  align-self:flex-start;font-size:.72rem;font-weight:700;letter-spacing:.05em;
+  color:#fff;background:var(--copper);padding:5px 10px;border-radius:2px;
+}
+.suggest-card h3{font-size:1.22rem}
+.suggest-card p{color:rgba(244,247,250,.8);font-size:.92rem;flex:1}
+.suggest-card .items{font-size:.88rem;color:rgba(244,247,250,.9);line-height:1.7}
+.suggest-card .total{font-weight:800;font-size:1.05rem;color:var(--sand)}
+.suggest-card .btn{align-self:flex-start;margin-top:4px}
+.suggest-card .btn-primary{background:var(--copper);color:#fff}
+.suggest-card .btn-primary:hover{background:#A84C1E}
 
-  /* TEAM */
-  .team-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:24px;}
-  .team-card{
-    background:var(--panel-2); border:1px solid var(--line); border-radius:14px;
-    padding:30px 24px;
-  }
-  .team-icon{
-    width:44px;height:44px;border-radius:10px;background:var(--ink);
-    display:flex;align-items:center;justify-content:center;
-    color:var(--teal); font-family:'IBM Plex Mono',monospace; font-size:13px;
-    margin-bottom:18px; border:1px solid var(--line);
-  }
-  .team-card h3{font-size:17px; margin-bottom:8px;}
-  .team-card p{color:var(--muted); font-size:14px;}
+.work-list{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:0;
+  border:1.5px solid var(--line);background:rgba(247,249,252,.65);border-radius:var(--radius);overflow:hidden;
+}
+.work-item{padding:28px 22px;border-inline-end:1.5px solid var(--line)}
+.work-item:last-child{border-inline-end:none}
+.work-item .num{color:var(--copper);font-weight:800;font-size:.9rem;margin-bottom:12px}
+.work-item h3{font-size:1.05rem;margin-bottom:8px}
+.work-item p{color:var(--muted);font-size:.9rem}
 
-  /* CONTACT */
-  .contact-box{
-    background:var(--panel); border:1px solid var(--line); border-radius:18px;
-    padding:56px 40px; display:grid; grid-template-columns:1fr 1fr; gap:48px;
-  }
-  .contact-box h2{font-size:30px; margin-bottom:14px; font-weight:800;}
-  .contact-box p{color:var(--muted); margin-bottom:26px;}
-  .contact-info{display:flex; flex-direction:column; gap:14px; font-size:15px;}
-  .contact-info .mono{color:var(--teal);}
-  form{display:flex; flex-direction:column; gap:14px;}
-  input,select,textarea{
-    background:var(--ink); border:1px solid var(--line); color:var(--text);
-    padding:13px 16px; border-radius:8px; font-family:inherit; font-size:14px;
-  }
-  input:focus,select:focus,textarea:focus{outline:2px solid var(--teal); border-color:transparent;}
-  textarea{resize:vertical; min-height:90px;}
-  .submit-btn{
-    background:var(--copper); color:var(--ink); font-weight:700;
-    padding:14px; border:none; border-radius:8px; cursor:pointer; font-size:15px;
-    font-family:inherit;
-  }
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.panel{
+  background:rgba(247,249,252,.9);border:1.5px solid var(--line);border-radius:var(--radius);
+  padding:34px 28px;box-shadow:var(--shadow);
+}
+.panel h2{font-size:1.45rem;margin-bottom:10px}
+.panel > p{color:var(--muted);margin-bottom:20px}
+.form{display:flex;flex-direction:column;gap:12px}
+.form input,.form select,.form textarea{
+  width:100%;padding:13px 14px;border:1.5px solid var(--line);border-radius:var(--radius);
+  background:#fff;color:var(--ink);
+}
+.form input:focus,.form select:focus,.form textarea:focus{outline:2px solid rgba(42,111,122,.28);border-color:var(--harbor)}
+.form textarea{min-height:110px;resize:vertical}
+.msg{min-height:18px;font-size:.88rem;font-weight:600}
+.locked{text-align:center;padding:28px 12px;display:flex;flex-direction:column;align-items:center;gap:12px}
+.locked p{color:var(--muted);max-width:36ch}
+.pay-amount{display:flex;align-items:center;gap:10px}
+.pay-amount span{color:var(--copper);font-weight:700;white-space:nowrap}
+.pay-summary{
+  display:flex;justify-content:space-between;align-items:center;background:var(--mist);
+  border:1.5px solid var(--line);border-radius:var(--radius);padding:12px 14px;margin-bottom:14px;
+}
+.pay-summary b{color:var(--navy)}
+.pay-step{display:none}.pay-step.active{display:block}
+.pay-status{display:none;text-align:center;padding:28px 10px}.pay-status.active{display:block}
+.linkish{background:none;border:none;color:var(--muted);text-decoration:underline;cursor:pointer;font-size:.85rem;padding:0}
 
-  footer{
-    border-top:1px solid var(--line); padding:32px 0; text-align:center;
-    color:var(--muted); font-size:14px;
-  }
+.modal-overlay{position:fixed;inset:0;background:rgba(16,35,58,.62);backdrop-filter:blur(6px);z-index:200;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.open{display:flex}
+.modal{
+  background:var(--panel);border:1.5px solid var(--line);border-radius:10px;width:100%;max-width:420px;
+  padding:30px;position:relative;box-shadow:var(--shadow);animation:rise .35s ease;max-height:90vh;overflow-y:auto;
+}
+.modal-close{position:absolute;top:14px;inset-inline-start:14px;border:none;background:none;font-size:1.3rem;color:var(--muted);cursor:pointer}
+.tabs{display:flex;border:1.5px solid var(--line);border-radius:var(--radius);overflow:hidden;margin-bottom:18px;background:var(--bg)}
+.tab{flex:1;border:none;background:transparent;color:var(--muted);padding:11px;cursor:pointer;font-weight:700}
+.tab.active{background:var(--navy);color:#F4F7FA}
+.panel-auth{display:none}.panel-auth.active{display:block}
+.panel-auth h3{font-size:1.25rem;margin-bottom:14px}
+.check{display:flex;gap:8px;align-items:flex-start;font-size:.82rem;color:var(--muted)}
+.check input{margin-top:4px}.check a{color:var(--harbor);text-decoration:underline}
 
-  @media (max-width:860px){
-    .nav-links{display:none;}
-    .nav-toggle{display:flex;}
-    .services-grid, .team-grid{grid-template-columns:1fr;}
-    .contact-box{grid-template-columns:1fr; padding:36px 24px;}
-    .process-item{grid-template-columns:50px 1fr;}
-  }
-  @media (prefers-reduced-motion:reduce){
-    .diagram-path{animation:none; stroke-dashoffset:0;}
-    .service-card{transition:none;}
-  }
+.site-note{border-top:1.5px solid var(--line);padding:14px 18px;text-align:center;font-size:.84rem;color:var(--muted);position:relative;z-index:1;background:rgba(247,249,252,.5)}
+footer{border-top:1.5px solid var(--line);padding:36px 0 48px;text-align:center;color:var(--muted);font-size:.92rem;position:relative;z-index:1}
+.footer-brand{font-family:'Tajawal',sans-serif;font-weight:800;color:var(--ink);font-size:1.2rem;margin-bottom:8px}
+body.lang-en .footer-brand{font-family:'Space Grotesk',sans-serif}
+.footer-links{display:flex;gap:18px;justify-content:center;margin-top:12px;flex-wrap:wrap}
+.footer-links a:hover{color:var(--copper)}
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .75s ease,transform .75s ease}
+.reveal.in{opacity:1;transform:none}
+.service-block,.product-item,.suggest-card,.price-card,.trust-item{
+  transition:transform .25s ease,border-color .25s ease,box-shadow .25s ease;
+}
+.service-block:hover,.product-item:hover,.price-card:hover,.trust-item:hover{
+  box-shadow:0 14px 28px -22px rgba(16,35,58,.55);
+}
 
-  /* ACCOUNT BUTTON */
-  .nav-account{
-    background:transparent; border:1px solid var(--line); color:var(--text);
-    font-weight:600; padding:9px 18px; border-radius:6px; font-size:14px;
-    cursor:pointer; font-family:inherit; white-space:nowrap;
-  }
-  .nav-account:hover{border-color:var(--teal); color:var(--teal);}
+.stats-strip{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:14px;position:relative;z-index:2;
+}
+.stat-card{
+  background:var(--panel);border:1.5px solid var(--line);border-radius:var(--radius);
+  padding:18px 16px;border-inline-start:3px solid var(--copper);
+}
+.stat-card strong{display:block;font-size:1.55rem;color:var(--navy);margin-bottom:4px;font-family:'Tajawal',sans-serif}
+body.lang-en .stat-card strong{font-family:'Space Grotesk',sans-serif}
+.stat-card span{color:var(--muted);font-size:.86rem}
 
-  /* AUTH MODAL */
-  .modal-overlay{
-    position:fixed; inset:0; background:rgba(15,27,43,0.75);
-    backdrop-filter:blur(4px); z-index:200; display:none;
-    align-items:center; justify-content:center; padding:20px;
-  }
-  .modal-overlay.open{display:flex;}
-  .modal-box{
-    background:var(--panel); border:1px solid var(--line); border-radius:16px;
-    padding:36px 32px; width:100%; max-width:400px; position:relative;
-  }
-  .modal-close{
-    position:absolute; top:16px; left:16px; background:none; border:none;
-    color:var(--muted); font-size:20px; cursor:pointer; line-height:1;
-  }
-  .modal-close:hover{color:var(--text);}
-  .modal-tabs{display:flex; margin-bottom:24px; border:1px solid var(--line); border-radius:8px; overflow:hidden;}
-  .modal-tab-btn{
-    flex:1; padding:11px; background:var(--ink); color:var(--muted); border:none;
-    cursor:pointer; font-size:14px; font-weight:600; font-family:inherit; transition:all 0.2s;
-  }
-  .modal-tab-btn.active{background:var(--copper); color:var(--ink);}
-  .modal-panel{display:none;}
-  .modal-panel.active{display:block;}
-  .modal-panel h3{font-size:20px; margin-bottom:18px; font-weight:700;}
-  .modal-panel form{gap:12px;}
-  .forgot-link{
-    background:none; border:none; color:var(--muted); font-size:12.5px;
-    cursor:pointer; font-family:inherit; text-decoration:underline;
-    display:block; margin-top:12px; padding:0;
-  }
-  .forgot-link:hover{color:var(--copper);}
-  .modal-msg{margin-top:12px; font-size:13.5px; font-weight:600; min-height:18px;}
-  .account-panel{display:none; flex-direction:column; gap:14px; align-items:center; text-align:center;}
-  .account-panel.active{display:flex;}
-  .account-panel .avatar{
-    width:56px; height:56px; border-radius:50%; background:var(--copper);
-    color:var(--ink); display:flex; align-items:center; justify-content:center;
-    font-weight:700; font-size:22px; font-family:'Noto Kufi Arabic',sans-serif;
-  }
-  .account-panel .acc-name{font-size:17px; font-weight:700;}
-  .account-panel .acc-email{color:var(--muted); font-size:13.5px;}
-  .logout-btn{
-    background:transparent; border:1px solid var(--line); color:var(--text);
-    padding:10px 22px; border-radius:8px; cursor:pointer; font-family:inherit; font-size:14px;
-  }
-  .logout-btn:hover{border-color:#f87171; color:#f87171;}
+.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.price-card{
+  background:rgba(247,249,252,.9);border:1.5px solid var(--line);border-radius:var(--radius);
+  padding:26px 22px;display:flex;flex-direction:column;gap:10px;min-height:280px;
+}
+.price-card.featured{
+  background:linear-gradient(150deg,#10233A,#16324F);color:#F4F7FA;border-color:transparent;
+  transform:translateY(-6px);
+}
+.price-card.featured p,.price-card.featured li{color:rgba(244,247,250,.82)}
+.price-card .plan{font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--copper)}
+.price-card.featured .plan{color:var(--sand)}
+.price-card h3{font-size:1.35rem}
+.price-card .tagline{font-size:.92rem;color:var(--muted);flex:1}
+.price-card ul{list-style:none;display:flex;flex-direction:column;gap:8px;margin:4px 0 12px;padding:0}
+.price-card li{font-size:.9rem;padding-inline-start:14px;position:relative;color:var(--muted)}
+.price-card li::before{content:"";position:absolute;inset-inline-start:0;top:.7em;width:7px;height:2px;background:var(--harbor)}
+.price-card.featured li::before{background:var(--sand)}
 
-  /* ENGLISH TYPE MODE */
-  body.lang-en{font-family:'Inter', sans-serif;}
-  body.lang-en h1, body.lang-en h2, body.lang-en h3{font-family:'Cormorant Garamond', serif;}
-  body.lang-en .logo{font-family:'Cormorant Garamond', serif; letter-spacing:0.01em;}
-  body.lang-en .account-panel .avatar{font-family:'Cormorant Garamond', serif;}
+.trust-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.trust-item{
+  border:1.5px dashed var(--line);border-radius:var(--radius);padding:22px 12px;text-align:center;
+  background:rgba(247,249,252,.7);color:var(--muted);font-weight:700;font-size:.92rem;
+}
+.trust-note{text-align:center;margin-top:18px;color:var(--muted);font-size:.95rem}
+.terms-teaser{
+  background:rgba(247,249,252,.9);border:1.5px solid var(--line);border-radius:var(--radius);
+  padding:28px 22px;border-top:4px solid var(--copper);
+}
+.terms-teaser p{color:var(--muted);margin:10px 0 18px}
+.terms-overlay{
+  position:fixed;inset:0;z-index:220;display:none;align-items:center;justify-content:center;
+  padding:18px;background:rgba(16,35,58,.72);backdrop-filter:blur(8px);
+}
+.terms-overlay.open{display:flex}
+body.terms-locked{overflow:hidden}
+.terms-sheet{
+  width:min(820px,100%);max-height:min(88vh,900px);overflow:auto;background:var(--panel);
+  border:1.5px solid var(--line);border-radius:10px;padding:22px 20px 18px;box-shadow:var(--shadow);
+  border-top:4px solid var(--copper);position:relative;
+}
+.terms-sheet .terms-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;position:sticky;bottom:0;background:linear-gradient(180deg,transparent,var(--panel) 28%);padding-top:18px}
+.terms-doc .eyebrow{color:var(--copper);font-weight:700;font-size:.8rem;margin-bottom:8px}
+.terms-doc-head h2{font-size:clamp(1.5rem,3vw,2rem);color:var(--navy);margin-bottom:10px}
+.terms-doc-head p{color:var(--muted);margin-bottom:8px}
+.terms-updated{color:var(--copper);font-weight:700;font-size:.82rem;margin-bottom:14px}
+.terms-list{display:flex;flex-direction:column}
+.terms-item{padding:14px 0;border-bottom:1.5px solid var(--line)}
+.terms-item:last-child{border-bottom:none}
+.terms-item h3{color:var(--navy);font-size:1.02rem;margin-bottom:8px}
+.terms-item p{margin:0;line-height:1.8;color:var(--muted);font-size:.94rem}
 
-  /* LANGUAGE TOGGLE */
-  .lang-toggle{
-    background:transparent; border:1px solid var(--line); color:var(--muted);
-    font-family:'IBM Plex Mono',monospace; font-size:12.5px; font-weight:500;
-    padding:8px 14px; border-radius:6px; cursor:pointer; white-space:nowrap;
-    letter-spacing:0.03em;
-  }
-  .lang-toggle:hover{border-color:var(--copper); color:var(--copper);}
-
-  /* PAYMENT SECTION */
-  .pay-box{
-    background:var(--panel); border:1px solid var(--line); border-radius:18px;
-    padding:48px 40px; max-width:520px; margin:0 auto;
-  }
-  .pay-box .pay-step{display:flex; flex-direction:column; gap:14px;}
-  .pay-box label{font-size:13px; color:var(--muted); font-family:'IBM Plex Mono',monospace; margin-bottom:-6px;}
-  .pay-amount-row{display:flex; align-items:center; gap:10px;}
-  .pay-amount-row input{flex:1;}
-  .pay-currency{
-    font-family:'IBM Plex Mono',monospace; color:var(--copper); font-weight:600;
-    font-size:14px; white-space:nowrap;
-  }
-  .pay-continue-btn{
-    background:var(--copper); color:var(--ink); font-weight:700;
-    padding:14px; border:none; border-radius:8px; cursor:pointer; font-size:15px;
-    font-family:inherit; margin-top:8px;
-  }
-  .pay-continue-btn:hover{background:#DCB05F;}
-  .pay-back-btn{
-    background:transparent; border:none; color:var(--muted); cursor:pointer;
-    font-family:inherit; font-size:13px; text-decoration:underline; align-self:flex-start;
-    padding:0; margin-bottom:6px;
-  }
-  .pay-back-btn:hover{color:var(--teal);}
-  #paymentFormStep{display:none;}
-  #paymentFormStep.active{display:block;}
-  .pay-summary{
-    background:var(--panel-2); border:1px solid var(--line); border-radius:10px;
-    padding:14px 18px; margin-bottom:20px; font-size:14px; display:flex;
-    justify-content:space-between; align-items:center;
-  }
-  .pay-summary .amount{color:var(--copper); font-weight:700; font-family:'IBM Plex Mono',monospace; font-size:17px;}
-  .pay-status{
-    text-align:center; padding:40px 20px; display:none; flex-direction:column;
-    align-items:center; gap:14px;
-  }
-  .pay-status.active{display:flex;}
-  .pay-status .pay-icon{font-size:44px;}
-  .pay-status h3{font-size:20px;}
-  .pay-status p{color:var(--muted); font-size:14.5px; max-width:380px;}
-  .pay-note{
-    font-size:12.5px; color:var(--muted); margin-top:20px; text-align:center; line-height:1.6;
-  }
-  .pay-locked{
-    background:var(--panel); border:1px solid var(--line); border-radius:18px;
-    max-width:520px; margin:0 auto; padding:48px 32px; text-align:center;
-    display:flex; flex-direction:column; align-items:center; gap:14px;
-  }
-  .pay-locked .pay-icon{font-size:36px;}
-  .pay-locked p{color:var(--muted); font-size:14.5px; max-width:380px;}
-
-  /* شريط تحت التجربة */
-  .beta-banner{
-    background:#3A2E1A; border-top:1px solid var(--line); border-bottom:1px solid var(--line);
-    padding:14px 24px; display:flex; align-items:center; justify-content:center;
-    gap:12px; flex-wrap:wrap; text-align:center;
-  }
-  .beta-banner span:not(.beta-badge){font-size:13px; color:#D9C9A3;}
-  .beta-badge{
-    background:var(--copper); color:var(--ink); font-weight:700; font-size:11px;
-    padding:3px 10px; border-radius:5px; letter-spacing:0.05em;
-  }
-
-  /* الشروط والأحكام */
-  .terms-content h3{
-    font-family:'Noto Kufi Arabic',sans-serif; font-size:16px; margin:26px 0 8px;
-    color:var(--copper);
-  }
-  .terms-content h3:first-child{margin-top:0;}
-  .terms-content p{color:var(--muted); font-size:14.5px; line-height:1.9;}
-  .footer-links{
-    display:flex; gap:18px; justify-content:center; margin-top:10px; flex-wrap:wrap;
-  }
-  .footer-links a{color:var(--muted); font-size:13px; text-decoration:underline;}
-  .footer-links a:hover{color:var(--copper);}
-  .checkbox-row{
-    display:flex; align-items:flex-start; gap:8px; font-size:12.5px; color:var(--muted);
-    line-height:1.6; margin-top:2px;
-  }
-  .checkbox-row input{width:auto; margin:2px 0 0; flex-shrink:0;}
-  .checkbox-row a{color:var(--copper); text-decoration:underline;}
+@media (max-width:960px){
+  .nav-links{display:none;position:absolute;top:66px;inset-inline:16px;flex-direction:column;background:rgba(247,249,252,.98);border:1.5px solid var(--line);padding:16px;border-radius:10px;box-shadow:var(--shadow);gap:14px;z-index:90}
+  .nav-links.open{display:flex}
+  .nav-toggle{display:flex}
+  .services-grid,.services-grid.four,.products-grid,.suggest-grid,.pricing-grid,.stats-strip,.trust-row{grid-template-columns:1fr 1fr}
+  .work-list,.two-col{grid-template-columns:1fr}
+  .work-item{border-inline-end:none;border-bottom:1.5px solid var(--line)}
+  .hero{min-height:auto;align-items:end}
+  .hero-content{padding:88px 0 72px;max-width:100%}
+  .price-card.featured{transform:none}
+  .hero-quote{grid-template-columns:1fr}
+  .hero-quote .btn{width:100%}
+  .news-item{grid-template-columns:1fr;gap:6px}
+}
+@media (max-width:560px){
+  .services-grid,.products-grid,.suggest-grid,.pricing-grid,.stats-strip,.trust-row{grid-template-columns:1fr}
+  .wrap{padding:0 18px}
+  .brand-mark{font-size:clamp(3.6rem,18vw,5rem)}
+  .hero h1{max-width:100%}
+}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
 
 <header>
   <nav class="wrap">
-    <div class="logo" data-ar-html='را<span>سخ</span>' data-en-html='Ra<span>seekh</span>'>را<span>سخ</span></div>
-    <div class="nav-links">
+    <a class="logo" href="/" data-ar-html='را<em>سخ</em>' data-en-html='Ra<em>seekh</em>'>را<em>سخ</em></a>
+    <div class="nav-links" id="navLinks">
       <a href="#services" data-ar="خدماتنا" data-en="Services">خدماتنا</a>
-      <a href="#process" data-ar="منهجية العمل" data-en="Our Process">منهجية العمل</a>
-      <a href="#team" data-ar="فريق العمل" data-en="Our Team">فريق العمل</a>
-      <a href="#contact" data-ar="تواصل معنا" data-en="Contact">تواصل معنا</a>
+      <a href="#programming" data-ar="خدمات البرمجة" data-en="Programming">خدمات البرمجة</a>
+      <a href="#products" data-ar="الخدمات" data-en="Services">الخدمات</a>
+      <a href="#suggestions" data-ar="الاقتراحات" data-en="Suggestions">الاقتراحات</a>
+      <a href="#pricing" data-ar="الأسعار" data-en="Pricing">الأسعار</a>
+      <a href="#faq" data-ar="أسئلة" data-en="FAQ">أسئلة</a>
+      <a href="#contact" data-ar="تواصل" data-en="Contact">تواصل</a>
     </div>
-    <button class="nav-account" id="accountBtn" type="button" data-ar="حساب العميل" data-en="Client Account">حساب العميل</button>
-    <button class="lang-toggle" id="langToggle" type="button">EN</button>
-    <button class="nav-toggle" aria-label="فتح القائمة" id="navToggle">
-      <span></span><span></span><span></span>
-    </button>
+    <div class="nav-actions">
+      <button class="lang-btn" id="langToggle" type="button">EN</button>
+      <button class="btn btn-primary" id="accountBtn" type="button" data-ar="تسجيل الدخول" data-en="Log in">تسجيل الدخول</button>
+      <button class="nav-toggle" id="navToggle" type="button" aria-controls="navLinks" aria-expanded="false" data-ar-aria="القائمة" data-en-aria="Menu" aria-label="القائمة"><span></span><span></span><span></span></button>
+    </div>
   </nav>
 </header>
 
-<!-- نافذة تسجيل الدخول / إنشاء حساب / معلومات الحساب -->
-<div class="modal-overlay" id="authModal">
-  <div class="modal-box">
-    <button class="modal-close" id="modalCloseBtn" aria-label="إغلاق">✕</button>
-
+<div class="modal-overlay" id="authModal" role="dialog" aria-modal="true" aria-labelledby="authModalTitle" aria-hidden="true">
+  <div class="modal">
+    <button class="modal-close" id="modalCloseBtn" type="button" data-ar-aria="إغلاق" data-en-aria="Close" aria-label="إغلاق">×</button>
     <div id="authTabs">
-      <div class="modal-tabs">
-        <button type="button" class="modal-tab-btn active" id="modalLoginTabBtn" data-ar="تسجيل دخول" data-en="Login">تسجيل دخول</button>
-        <button type="button" class="modal-tab-btn" id="modalRegisterTabBtn" data-ar="إنشاء حساب" data-en="Sign Up">إنشاء حساب</button>
+      <div class="tabs" id="modalTabsBar">
+        <button type="button" class="tab active" id="modalLoginTabBtn" data-ar="دخول" data-en="Login">دخول</button>
+        <button type="button" class="tab" id="modalRegisterTabBtn" data-ar="حساب جديد" data-en="Sign up">حساب جديد</button>
       </div>
-
-      <div class="modal-panel active" id="modalLoginPanel">
-        <h3 data-ar="تسجيل دخول" data-en="Login">تسجيل دخول</h3>
-        <form id="loginForm">
-          <input type="email" id="loginEmail" placeholder="البريد الإلكتروني" data-ar-placeholder="البريد الإلكتروني" data-en-placeholder="Email" required>
-          <input type="password" id="loginPassword" placeholder="كلمة المرور" data-ar-placeholder="كلمة المرور" data-en-placeholder="Password" required>
-          <button type="submit" class="submit-btn" data-ar="دخول" data-en="Log In">دخول</button>
+      <div class="panel-auth active" id="modalLoginPanel">
+        <h3 id="authModalTitle" data-ar="تسجيل الدخول" data-en="Sign in to your account">تسجيل الدخول</h3>
+        <form class="form" id="loginForm">
+          <input type="email" id="loginEmail" required data-ar-placeholder="البريد الإلكتروني" data-en-placeholder="Email" placeholder="البريد الإلكتروني">
+          <input type="password" id="loginPassword" required data-ar-placeholder="كلمة المرور" data-en-placeholder="Password" placeholder="كلمة المرور">
+          <button class="btn btn-primary" type="submit" data-ar="دخول" data-en="Log in">دخول</button>
         </form>
-        <button type="button" class="forgot-link" id="forgotPasswordLink" data-ar="نسيت كلمة المرور؟" data-en="Forgot password?">نسيت كلمة المرور؟</button>
-        <div class="modal-msg" id="loginMsg"></div>
+        <button type="button" class="linkish" id="forgotPasswordLink" style="margin-top:12px" data-ar="نسيت كلمة المرور؟" data-en="Forgot password?">نسيت كلمة المرور؟</button>
+        <div class="msg" id="loginMsg"></div>
       </div>
-
-      <div class="modal-panel" id="modalRegisterPanel">
-        <h3 data-ar="إنشاء حساب جديد" data-en="Create New Account">إنشاء حساب جديد</h3>
-        <form id="registerForm">
-          <input type="text" id="registerName" placeholder="الاسم الكامل" data-ar-placeholder="الاسم الكامل" data-en-placeholder="Full Name" required>
-          <input type="email" id="registerEmail" placeholder="البريد الإلكتروني" data-ar-placeholder="البريد الإلكتروني" data-en-placeholder="Email" required>
-          <input type="tel" id="registerPhone" placeholder="رقم الجوال (اختياري)" data-ar-placeholder="رقم الجوال (اختياري)" data-en-placeholder="Phone (optional)">
-          <input type="password" id="registerPassword" placeholder="كلمة المرور (6 أحرف على الأقل)" data-ar-placeholder="كلمة المرور (6 أحرف على الأقل)" data-en-placeholder="Password (min 6 characters)" minlength="6" required>
-          <label class="checkbox-row">
+      <div class="panel-auth" id="modalRegisterPanel">
+        <h3 data-ar="إنشاء حساب عميل" data-en="Create client account">إنشاء حساب عميل</h3>
+        <form class="form" id="registerForm">
+          <input type="text" id="registerName" required data-ar-placeholder="الاسم الكامل" data-en-placeholder="Full name" placeholder="الاسم الكامل">
+          <input type="email" id="registerEmail" required data-ar-placeholder="البريد الإلكتروني" data-en-placeholder="Email" placeholder="البريد الإلكتروني">
+          <input type="tel" id="registerPhone" data-ar-placeholder="رقم الجوال (اختياري)" data-en-placeholder="Phone (optional)" placeholder="رقم الجوال (اختياري)">
+          <input type="password" id="registerPassword" minlength="6" required data-ar-placeholder="كلمة المرور (6 أحرف على الأقل)" data-en-placeholder="Password (min 6 chars)" placeholder="كلمة المرور (6 أحرف على الأقل)">
+          <label class="check">
             <input type="checkbox" id="registerTermsCheck" required>
-            <span>
-              <span data-ar="أوافق على" data-en="I agree to the">أوافق على</span>
-              <a href="#terms" data-ar="الشروط والأحكام" data-en="Terms & Conditions">الشروط والأحكام</a>
-            </span>
+            <span><span data-ar="أوافق على" data-en="I agree to the">أوافق على</span> <a href="/terms/" id="registerTermsLink" data-ar="الشروط والأحكام" data-en="Terms">الشروط والأحكام</a></span>
           </label>
-          <button type="submit" class="submit-btn" data-ar="إنشاء الحساب" data-en="Create Account">إنشاء الحساب</button>
+          <button class="btn btn-primary" type="submit" data-ar="إنشاء الحساب" data-en="Create account">إنشاء الحساب</button>
         </form>
-        <div class="modal-msg" id="registerMsg"></div>
+        <div class="msg" id="registerMsg"></div>
       </div>
-
-      <!-- طلب رابط إعادة تعيين كلمة المرور -->
-      <div class="modal-panel" id="modalForgotPanel">
-        <h3 data-ar="إعادة تعيين كلمة المرور" data-en="Reset Password">إعادة تعيين كلمة المرور</h3>
-        <p class="pay-note" style="text-align:right; margin-bottom:16px;" data-ar="أدخل بريدك الإلكتروني وسنرسل لك رابطاً لإعادة تعيين كلمة المرور." data-en="Enter your email and we'll send you a password reset link.">أدخل بريدك الإلكتروني وسنرسل لك رابطاً لإعادة تعيين كلمة المرور.</p>
-        <form id="forgotForm">
-          <input type="email" id="forgotEmail" placeholder="البريد الإلكتروني" data-ar-placeholder="البريد الإلكتروني" data-en-placeholder="Email" required>
-          <button type="submit" class="submit-btn" data-ar="إرسال رابط إعادة التعيين" data-en="Send Reset Link">إرسال رابط إعادة التعيين</button>
+      <div class="panel-auth" id="modalForgotPanel">
+        <h3 data-ar="إعادة تعيين كلمة المرور" data-en="Reset password">إعادة تعيين كلمة المرور</h3>
+        <p style="color:var(--muted);font-size:.9rem;margin-bottom:12px" data-ar="أدخل بريدك وسنرسل رابط إعادة التعيين." data-en="Enter your email and we'll send a reset link.">أدخل بريدك وسنرسل رابط إعادة التعيين.</p>
+        <form class="form" id="forgotForm">
+          <input type="email" id="forgotEmail" required data-ar-placeholder="البريد الإلكتروني" data-en-placeholder="Email" placeholder="البريد الإلكتروني">
+          <button class="btn btn-primary" type="submit" data-ar="إرسال الرابط" data-en="Send link">إرسال الرابط</button>
         </form>
-        <button type="button" class="forgot-link" id="backToLoginLink" data-ar="← رجوع لتسجيل الدخول" data-en="← Back to login">← رجوع لتسجيل الدخول</button>
-        <div class="modal-msg" id="forgotMsg"></div>
+        <button type="button" class="linkish" id="backToLoginLink" style="margin-top:12px" data-ar="رجوع لتسجيل الدخول" data-en="Back to login">رجوع لتسجيل الدخول</button>
+        <div class="msg" id="forgotMsg"></div>
       </div>
-
-      <!-- تعيين كلمة مرور جديدة (يظهر تلقائياً من رابط الإيميل) -->
-      <div class="modal-panel" id="modalResetPanel">
-        <h3 data-ar="تعيين كلمة مرور جديدة" data-en="Set New Password">تعيين كلمة مرور جديدة</h3>
-        <form id="resetForm">
-          <input type="password" id="resetPassword" placeholder="كلمة المرور الجديدة (6 أحرف على الأقل)" data-ar-placeholder="كلمة المرور الجديدة (6 أحرف على الأقل)" data-en-placeholder="New password (min 6 characters)" minlength="6" required>
-          <button type="submit" class="submit-btn" data-ar="حفظ كلمة المرور" data-en="Save Password">حفظ كلمة المرور</button>
+      <div class="panel-auth" id="modalResetPanel">
+        <h3 data-ar="كلمة مرور جديدة" data-en="New password">كلمة مرور جديدة</h3>
+        <form class="form" id="resetForm">
+          <input type="password" id="resetPassword" minlength="6" required data-ar-placeholder="كلمة المرور الجديدة" data-en-placeholder="New password" placeholder="كلمة المرور الجديدة">
+          <button class="btn btn-primary" type="submit" data-ar="حفظ" data-en="Save">حفظ</button>
         </form>
-        <div class="modal-msg" id="resetMsg"></div>
+        <div class="msg" id="resetMsg"></div>
       </div>
-    </div>
-
-    <div class="account-panel" id="accountPanel">
-      <div class="avatar" id="accountAvatar">؟</div>
-      <div class="acc-name" id="accountName"></div>
-      <div class="acc-email" id="accountEmail"></div>
-      <button class="logout-btn" id="logoutBtn" data-ar="تسجيل الخروج" data-en="Log Out">تسجيل الخروج</button>
     </div>
   </div>
 </div>
 
 <section class="hero">
-  <div class="wrap">
-    <span class="eyebrow mono" data-ar="RSKH / أنظمة مصمّمة للاستمرارية" data-en="RSKH / Systems built to last">RSKH / أنظمة مصمّمة للاستمرارية</span>
-    <h1 data-ar-html='لا نبني أنظمة تحتاج إلى تغيير كل عام، بل أنظمة <em>راسخة</em> تنمو مع نمو منشأتكم' data-en-html='We don&rsquo;t build systems you&rsquo;ll replace next year &mdash; we build systems <em>rooted</em> deep enough to grow with your business'>لا نبني أنظمة تحتاج إلى تغيير كل عام، بل أنظمة <em>راسخة</em> تنمو مع نمو منشأتكم</h1>
-    <p data-ar="نصمم ونطوّر أنظمة إدارة مخصصة — للمخزون، والعملاء، والحجوزات — على أساس متين يستوعب نمو شركتكم، من خلال فريق متكامل يجمع بين هندسة البرمجيات وأنظمة المعلومات والشبكات." data-en="We design and build custom management systems — inventory, customers, bookings — on a foundation solid enough to carry your company's growth, by a team spanning software engineering, information systems, and networks.">نصمم ونطوّر أنظمة إدارة مخصصة — للمخزون، والعملاء، والحجوزات — على أساس متين يستوعب نمو شركتكم، من خلال فريق متكامل يجمع بين هندسة البرمجيات وأنظمة المعلومات والشبكات.</p>
-    <div class="btn-row">
-      <a href="#contact" class="btn-primary" data-ar="طلب استشارة مجانية" data-en="Book a Free Consultation">طلب استشارة مجانية</a>
-      <a href="#services" class="btn-secondary" data-ar="عرض خدماتنا" data-en="View Our Services">عرض خدماتنا</a>
+  <div class="hero-visual" aria-hidden="true"></div>
+  <div class="wrap hero-content">
+    <div class="brand-mark" data-ar-html='را<span>سخ</span>' data-en-html='Ra<span>seekh</span>'>را<span>سخ</span></div>
+    <h1 data-ar="من الطلب… إلى نظام يعمل" data-en="From request… to a running system">من الطلب… إلى نظام يعمل</h1>
+    <p data-ar="برمجة، مواقع، وأنظمة حسب احتياجكم — بعرض سعر حقيقي بعد المراجعة." data-en="Programming, websites, and systems to your need — with a real quote after review.">برمجة، مواقع، وأنظمة حسب احتياجكم — بعرض سعر حقيقي بعد المراجعة.</p>
+    <div class="hero-cta-block">
+      <form class="hero-quote" id="heroQuoteForm" autocomplete="off">
+        <select id="heroQuoteType" data-ar-aria="نوع الخدمة" data-en-aria="Service type" aria-label="نوع الخدمة">
+          <option value="maintenance" data-ar="صيانة مواقع" data-en="Maintenance">صيانة مواقع</option>
+          <option value="programming" data-ar="برمجة" data-en="Programming" selected>برمجة</option>
+          <option value="web-dev" data-ar="تطوير مواقع" data-en="Website development">تطوير مواقع</option>
+          <option value="systems" data-ar="أنظمة" data-en="Systems">أنظمة</option>
+          <option value="system" data-ar="نظام كامل" data-en="Full system">نظام كامل</option>
+        </select>
+        <input type="text" id="heroQuoteMsg" required maxlength="220" data-ar-placeholder="صف طلبكم في سطر واحد" data-en-placeholder="Describe your request in one line" placeholder="صف طلبكم في سطر واحد" data-ar-aria="وصف الطلب" data-en-aria="Request summary" aria-label="وصف الطلب">
+        <button class="btn btn-primary" type="submit" id="heroQuoteBtn" data-ar="اطلب عرض سعر" data-en="Request a quote">اطلب عرض سعر</button>
+      </form>
+      <div class="hero-note">
+        <a href="#contact" data-ar="أو افتحوا النموذج الكامل" data-en="Or open the full form">أو افتحوا النموذج الكامل</a>
+        <span aria-hidden="true">·</span>
+        <a href="#pricing" data-ar="قارنوا الباقات" data-en="Compare plans">قارنوا الباقات</a>
+      </div>
     </div>
+  </div>
+</section>
 
-    <div class="bedrock">
-      <div class="bedrock-labels">
-        <div class="bl-item">RSKH-01<b data-ar="يُبنى على أساس متين" data-en="Built on a foundation">يُبنى على أساس متين</b></div>
-        <div class="bl-item" style="text-align:left"><span data-ar="طبقة تلو أخرى" data-en="Layer by layer">طبقة تلو أخرى</span><b data-ar="لا دفعة واحدة" data-en="Not all at once">لا دفعة واحدة</b></div>
-      </div>
-      <div class="strata">
-        <div class="root-line"></div>
-        <div class="stratum s1" data-ar="الواجهة التي يستخدمها فريقكم يومياً" data-en="The interface your team uses every day">الواجهة التي يستخدمها فريقكم يومياً</div>
-        <div class="stratum s2" data-ar="المنطق البرمجي الذي يُشغّل أعمالكم" data-en="The logic that runs your business">المنطق البرمجي الذي يُشغّل أعمالكم</div>
-        <div class="stratum s3" data-ar="قاعدة البيانات التي تحفظ جميع المعلومات بأمان" data-en="The database that keeps everything safe">قاعدة البيانات التي تحفظ جميع المعلومات بأمان</div>
-        <div class="stratum s4" data-ar="الأساس الراسخ" data-en="The Bedrock">الأساس الراسخ</div>
-      </div>
+<section style="padding-top:48px;padding-bottom:48px">
+  <div class="wrap">
+    <div class="stats-strip reveal">
+      <div class="stat-card"><strong>+40</strong><span data-ar="مشروع تقني" data-en="Tech projects">مشروع تقني</span></div>
+      <div class="stat-card"><strong>+25</strong><span data-ar="عميل نشط" data-en="Active clients">عميل نشط</span></div>
+      <div class="stat-card"><strong>24س</strong><span data-ar="رد أولي سريع" data-en="Fast first reply">رد أولي سريع</span></div>
+      <div class="stat-card"><strong>Beta</strong><span data-ar="منصة العميل" data-en="Client platform">منصة العميل</span></div>
     </div>
   </div>
 </section>
 
 <section id="services">
   <div class="wrap">
-    <div class="section-head">
-      <span class="eyebrow" data-ar="خدماتنا" data-en="Services">خدماتنا</span>
-      <h2 data-ar="أنظمة نصمّمها وفق احتياجاتكم" data-en="Systems built around your needs">أنظمة نصمّمها وفق احتياجاتكم</h2>
-      <p data-ar="لا نقدّم قوالب جاهزة؛ فكل نظام يُصمَّم خصيصاً ليلائم طبيعة أعمالكم منذ البداية." data-en="We don't sell off-the-shelf templates. Every system is designed to fit your business from day one.">لا نقدّم قوالب جاهزة؛ فكل نظام يُصمَّم خصيصاً ليلائم طبيعة أعمالكم منذ البداية.</p>
+    <div class="section-head reveal">
+      <div class="eyebrow" data-ar="خدماتنا" data-en="Services">خدماتنا</div>
+      <h2 data-ar="ثلاث خدمات أساسية" data-en="Three core services">ثلاث خدمات أساسية</h2>
+      <p data-ar="صيانة، برمجة، وأنظمة كاملة — بوضوح وبدون تعقيد." data-en="Maintenance, coding, and full systems — clear and simple.">صيانة، برمجة، وأنظمة كاملة — بوضوح وبدون تعقيد.</p>
     </div>
-    <div class="services-grid">
-      <div class="service-card">
-        <span class="service-tag">SYS-01</span>
-        <h3 data-ar="نظام المخزون والمبيعات" data-en="Inventory & Sales System">نظام المخزون والمبيعات</h3>
-        <p data-ar="متابعة الكميات والفواتير والتقارير في الوقت الفعلي، دون الحاجة إلى دفاتر أو ملفات إكسل متفرقة." data-en="Track stock, invoices, and reports in real time — no more scattered notebooks or spreadsheets.">متابعة الكميات والفواتير والتقارير في الوقت الفعلي، دون الحاجة إلى دفاتر أو ملفات إكسل متفرقة.</p>
-      </div>
-      <div class="service-card">
-        <span class="service-tag">SYS-02</span>
-        <h3 data-ar="نظام إدارة العملاء" data-en="Customer Management System">نظام إدارة العملاء</h3>
-        <p data-ar="تنظيم بيانات العملاء، ومتابعة التواصل والمبيعات، في مكان واحد يتيح لفريقكم بأكمله الاطلاع عليها." data-en="Keep customer data, communication, and sales in one place your whole team can see.">تنظيم بيانات العملاء، ومتابعة التواصل والمبيعات، في مكان واحد يتيح لفريقكم بأكمله الاطلاع عليها.</p>
-      </div>
-      <div class="service-card">
-        <span class="service-tag">SYS-03</span>
-        <h3 data-ar="نظام الحجوزات" data-en="Booking System">نظام الحجوزات</h3>
-        <p data-ar="جدولة المواعيد والحجوزات عبر الإنترنت دون تعارض، مع إرسال تذكيرات تلقائية للعملاء." data-en="Schedule appointments and bookings online without conflicts, with automatic reminders for customers.">جدولة المواعيد والحجوزات عبر الإنترنت دون تعارض، مع إرسال تذكيرات تلقائية للعملاء.</p>
-      </div>
+    <div class="services-grid reveal">
+      <article class="service-block">
+        <span class="service-code">SRV-01</span>
+        <h3 data-ar="صيانة المواقع" data-en="Website maintenance">صيانة المواقع</h3>
+        <p data-ar="إصلاح، تحديث، وأمان بشكل دوري." data-en="Fixes, updates, and security on a schedule.">إصلاح، تحديث، وأمان بشكل دوري.</p>
+      </article>
+      <a class="service-block featured" href="#programming" style="text-decoration:none;color:inherit;display:block">
+        <span class="service-code">SRV-02</span>
+        <h3 data-ar="خدمات البرمجة" data-en="Programming services">خدمات البرمجة</h3>
+        <p data-ar="مواقع، تعديلات، وأنظمة حسب طلبكم." data-en="Sites, edits, and systems built to request.">مواقع، تعديلات، وأنظمة حسب طلبكم.</p>
+      </a>
+      <article class="service-block">
+        <span class="service-code">SRV-03</span>
+        <h3 data-ar="نظام كامل للعملاء" data-en="Complete client systems">نظام كامل للعملاء</h3>
+        <p data-ar="من الفكرة إلى التشغيل الجاهز." data-en="From idea to a ready-to-run system.">من الفكرة إلى التشغيل الجاهز.</p>
+      </article>
     </div>
   </div>
 </section>
 
-<section id="pay">
+<section id="programming">
   <div class="wrap">
-    <div class="section-head">
-      <span class="eyebrow" data-ar="الدفع الإلكتروني" data-en="Pay Now">الدفع الإلكتروني</span>
-      <h2 data-ar="سداد عربون أو دفعة مقدّمة" data-en="Pay a Deposit or Down Payment">سداد عربون أو دفعة مقدّمة</h2>
-      <p data-ar="يُرجى تحديد المبلغ المتفق عليه، ثم السداد مباشرة عبر مدى أو البطاقات البنكية أو Apple Pay." data-en="Enter the agreed amount and pay directly with mada, cards, or Apple Pay.">يُرجى تحديد المبلغ المتفق عليه، ثم السداد مباشرة عبر مدى أو البطاقات البنكية أو Apple Pay.</p>
+    <div class="section-head reveal">
+      <div class="eyebrow" data-ar="خدمات البرمجة" data-en="Programming services">خدمات البرمجة</div>
+      <h2 data-ar="برمجة عملية حسب طلبكم" data-en="Practical coding to your request">برمجة عملية حسب طلبكم</h2>
+      <p data-ar="مواقع، تعديلات، أنظمة، وربط تقني — بسطرين واضحين لكل خدمة." data-en="Sites, edits, systems, and integrations — two clear lines each.">مواقع، تعديلات، أنظمة، وربط تقني — بسطرين واضحين لكل خدمة.</p>
     </div>
-
-    <div class="pay-locked" id="payLockedMessage">
-      <div class="pay-icon">🔒</div>
-      <h3 data-ar="سجّل دخولك أولاً" data-en="Please log in first">سجّل دخولك أولاً</h3>
-      <p data-ar="خيار الدفع متاح للعملاء المسجّلين فقط. يُرجى تسجيل الدخول أو إنشاء حساب للمتابعة." data-en="Payment is available to registered clients only. Please log in or create an account to continue.">خيار الدفع متاح للعملاء المسجّلين فقط. يُرجى تسجيل الدخول أو إنشاء حساب للمتابعة.</p>
-      <button type="button" class="pay-continue-btn" id="payLoginBtn" style="width:auto; padding:12px 28px;" data-ar="تسجيل الدخول" data-en="Log In">تسجيل الدخول</button>
+    <div class="services-grid four reveal">
+      <article class="service-block">
+        <span class="service-code">DEV-01</span>
+        <h3 data-ar="تطوير مواقع" data-en="Website development">تطوير مواقع</h3>
+        <p data-ar="مواقع شركات ومتاجر عربية/إنجليزية جاهزة للتشغيل." data-en="AR/EN company and store sites ready to launch.">مواقع شركات ومتاجر عربية/إنجليزية جاهزة للتشغيل.</p>
+      </article>
+      <article class="service-block">
+        <span class="service-code">DEV-02</span>
+        <h3 data-ar="تعديل برمجة" data-en="Code changes">تعديل برمجة</h3>
+        <p data-ar="إصلاح أخطاء وإضافة مزايا على مشروعكم الحالي." data-en="Bug fixes and new features on your existing project.">إصلاح أخطاء وإضافة مزايا على مشروعكم الحالي.</p>
+      </article>
+      <article class="service-block">
+        <span class="service-code">DEV-03</span>
+        <h3 data-ar="أنظمة ولوحات" data-en="Systems & dashboards">أنظمة ولوحات</h3>
+        <p data-ar="إدارة، مخزون، وعملاء مع صلاحيات وتقارير." data-en="Ops, inventory, and CRM with roles and reports.">إدارة، مخزون، وعملاء مع صلاحيات وتقارير.</p>
+      </article>
+      <article class="service-block">
+        <span class="service-code">DEV-04</span>
+        <h3 data-ar="ربط API" data-en="API integrations">ربط API</h3>
+        <p data-ar="دفع، رسائل، ومزامنة بين أنظمتكم." data-en="Payments, messaging, and system sync.">دفع، رسائل، ومزامنة بين أنظمتكم.</p>
+      </article>
     </div>
+    <div class="reveal" style="margin-top:28px">
+      <a class="btn btn-primary" href="#contact" data-ar="اطلب عرض سعر برمجة" data-en="Request a coding quote">اطلب عرض سعر برمجة</a>
+    </div>
+  </div>
+</section>
 
-    <div class="pay-box" id="payBoxContent" style="display:none">
-      <!-- خطوة إدخال البيانات -->
-      <div class="pay-step active" id="payDetailsStep">
-        <label data-ar="الاسم الكامل" data-en="Full Name">الاسم الكامل</label>
-        <input type="text" id="payName" data-ar-placeholder="يُرجى إدخال الاسم الكامل" data-en-placeholder="Your name" placeholder="يُرجى إدخال الاسم الكامل">
+<section id="products">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow" data-ar="خدمات إلكترونية" data-en="Digital services">خدمات إلكترونية</div>
+      <h2 data-ar="اختر خدمة واطلب عرض سعر" data-en="Choose a service and request a quote">اختر خدمة واطلب عرض سعر</h2>
+      <p data-ar="حالياً نعرض خدمات أونلاين فقط. التسعير بعد مراجعة احتياجكم — بدون أرقام وهمية." data-en="We currently list online services only. Quoting after review — no fake prices.">حالياً نعرض خدمات أونلاين فقط. التسعير بعد مراجعة احتياجكم — بدون أرقام وهمية.</p>
+    </div>
+    <div class="products-grid reveal" id="clientProductsGrid"></div>
+  </div>
+</section>
 
-        <label data-ar="المبلغ المطلوب دفعه" data-en="Amount to Pay">المبلغ المطلوب دفعه</label>
-        <div class="pay-amount-row">
-          <input type="number" id="payAmount" min="1" step="0.01" placeholder="0.00">
-          <span class="pay-currency">SAR ﷼</span>
+<section id="suggestions">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow" data-ar="الاقتراحات" data-en="Suggestions">الاقتراحات</div>
+      <h2 data-ar="باقات جاهزة للبدء" data-en="Ready packages to start">باقات جاهزة للبدء</h2>
+      <p data-ar="اختر مساراً، ونرسل عرضاً حقيقياً حسب نطاق العمل." data-en="Pick a path — we send a real quote by scope.">اختر مساراً، ونرسل عرضاً حقيقياً حسب نطاق العمل.</p>
+    </div>
+    <div class="suggest-grid reveal" id="clientSuggestionsGrid"></div>
+  </div>
+</section>
+
+<section id="pricing">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow" data-ar="الأسعار" data-en="Pricing">الأسعار</div>
+      <h2 data-ar="قارن الباقات بوضوح" data-en="Compare plans clearly">قارن الباقات بوضوح</h2>
+      <p data-ar="ثلاث مسارات — السعر النهائي حسب نطاق مشروعكم." data-en="Three paths — final price depends on your project scope.">ثلاث مسارات — السعر النهائي حسب نطاق مشروعكم.</p>
+    </div>
+    <div class="pricing-grid reveal">
+      <article class="price-card">
+        <div class="plan" data-ar="ابدأ" data-en="Start">ابدأ</div>
+        <h3 data-ar="أساسي" data-en="Basic">أساسي</h3>
+        <p class="tagline" data-ar="مناسب لطلب صغير أو تعديل محدود." data-en="Best for a small request or limited change.">مناسب لطلب صغير أو تعديل محدود.</p>
+        <ul>
+          <li data-ar="استشارة أولية" data-en="Initial consult">استشارة أولية</li>
+          <li data-ar="تعديل برمجة بسيط" data-en="Simple code change">تعديل برمجة بسيط</li>
+          <li data-ar="عرض سعر خلال يوم عمل" data-en="Quote within one business day">عرض سعر خلال يوم عمل</li>
+        </ul>
+        <a class="btn btn-ghost" href="#contact" data-ar="ابدأ أساسي" data-en="Start Basic">ابدأ أساسي</a>
+      </article>
+      <article class="price-card featured">
+        <div class="plan" data-ar="احترافي" data-en="Pro">احترافي</div>
+        <h3 data-ar="احترافي" data-en="Pro">احترافي</h3>
+        <p class="tagline" data-ar="للمواقع والأنظمة متوسطة الحجم." data-en="For mid-size websites and systems.">للمواقع والأنظمة متوسطة الحجم.</p>
+        <ul>
+          <li data-ar="تطوير موقع أو لوحة" data-en="Website or dashboard build">تطوير موقع أو لوحة</li>
+          <li data-ar="صيانة بعد التسليم" data-en="Post-launch care">صيانة بعد التسليم</li>
+          <li data-ar="تحديثات مرحلية" data-en="Staged updates">تحديثات مرحلية</li>
+          <li data-ar="دعم عبر حساب العميل" data-en="Support via client account">دعم عبر حساب العميل</li>
+        </ul>
+        <a class="btn btn-primary" href="#contact" data-ar="اطلب احترافي" data-en="Choose Pro">اطلب احترافي</a>
+      </article>
+      <article class="price-card">
+        <div class="plan" data-ar="فرق" data-en="Teams">فرق</div>
+        <h3 data-ar="مؤسسات" data-en="Teams">مؤسسات</h3>
+        <p class="tagline" data-ar="لنظام كامل أو عمل متعدد الأقسام." data-en="For a full system or multi-team work.">لنظام كامل أو عمل متعدد الأقسام.</p>
+        <ul>
+          <li data-ar="نظام مخصص كامل" data-en="Complete custom system">نظام مخصص كامل</li>
+          <li data-ar="ربط API وتكاملات" data-en="API & integrations">ربط API وتكاملات</li>
+          <li data-ar="صلاحيات وتقارير" data-en="Roles and reports">صلاحيات وتقارير</li>
+          <li data-ar="متابعة أولوية" data-en="Priority follow-up">متابعة أولوية</li>
+        </ul>
+        <a class="btn btn-ghost" href="#contact" data-ar="تحدث مع راسخ" data-en="Talk to Raseekh">تحدث مع راسخ</a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="trust">
+  <div class="wrap">
+    <div class="section-head reveal" style="margin-inline:auto;text-align:center;max-width:640px">
+      <div class="eyebrow" data-ar="الثقة" data-en="Trust">الثقة</div>
+      <h2 data-ar="نخدم منشآت في السعودية" data-en="Serving organizations across Saudi Arabia">نخدم منشآت في السعودية</h2>
+      <p data-ar="مكاتب، متاجر، وفرق تقنية تثق براسخ للتنفيذ والدعم." data-en="Offices, stores, and tech teams trust Raseekh to deliver and support.">مكاتب، متاجر، وفرق تقنية تثق براسخ للتنفيذ والدعم.</p>
+    </div>
+    <div class="trust-row reveal">
+      <div class="trust-item" data-ar="مكاتب أعمال" data-en="Business offices">مكاتب أعمال</div>
+      <div class="trust-item" data-ar="متاجر ومحلات" data-en="Stores & shops">متاجر ومحلات</div>
+      <div class="trust-item" data-ar="فرق تقنية" data-en="Tech teams">فرق تقنية</div>
+      <div class="trust-item" data-ar="منشآت ناشئة" data-en="Growing businesses">منشآت ناشئة</div>
+    </div>
+    <p class="trust-note reveal" data-ar="موثوق من عملاء في السعودية" data-en="Trusted by clients across Saudi Arabia">موثوق من عملاء في السعودية</p>
+  </div>
+</section>
+
+<section id="whats-new">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow" data-ar="التحديثات" data-en="Updates">التحديثات</div>
+      <h2 data-ar="ما الجديد في راسخ" data-en="What's new at Raseekh">ما الجديد في راسخ</h2>
+      <p data-ar="تحسينات واضحة على الواجهة وحساب العميل." data-en="Clear upgrades to the site and client account.">تحسينات واضحة على الواجهة وحساب العميل.</p>
+    </div>
+    <div class="news-list reveal">
+      <article class="news-item">
+        <time datetime="2026-07">2026-07</time>
+        <div>
+          <h3 data-ar="عروض سعر بدون أرقام وهمية" data-en="Quotes without fake prices">عروض سعر بدون أرقام وهمية</h3>
+          <p data-ar="الكتالوج يعرض «حسب الطلب» — السعر الحقيقي بعد مراجعة النطاق." data-en="Catalog shows “on request” — real pricing after scope review.">الكتالوج يعرض «حسب الطلب» — السعر الحقيقي بعد مراجعة النطاق.</p>
         </div>
-
-        <label data-ar="ملاحظة (اختياري)" data-en="Note (optional)">ملاحظة (اختياري)</label>
-        <input type="text" id="payNote" data-ar-placeholder="مثال: عربون نظام إدارة المخزون" data-en-placeholder="e.g. Deposit for inventory system" placeholder="مثال: عربون نظام إدارة المخزون">
-
-        <button type="button" class="pay-continue-btn" id="payContinueBtn" data-ar="المتابعة إلى الدفع" data-en="Continue to Payment">المتابعة إلى الدفع</button>
-        <div class="modal-msg" id="payValidationMsg"></div>
-      </div>
-
-      <!-- خطوة نموذج الدفع -->
-      <div id="paymentFormStep">
-        <button type="button" class="pay-back-btn" id="payBackBtn" data-ar="← الرجوع لتعديل المبلغ" data-en="← Back and edit amount">← الرجوع لتعديل المبلغ</button>
-        <div class="pay-summary">
-          <span data-ar="المبلغ المطلوب" data-en="Amount due">المبلغ المطلوب</span>
-          <span class="amount" id="paySummaryAmount">0.00 SAR</span>
+      </article>
+      <article class="news-item">
+        <time datetime="2026-07">2026-07</time>
+        <div>
+          <h3 data-ar="حساب عميل ومتابعة الطلبات" data-en="Client account & request tracking">حساب عميل ومتابعة الطلبات</h3>
+          <p data-ar="سجّل دخولك لتتبع الطلبات والدفع عبر Moyasar." data-en="Sign in to track requests and pay via Moyasar.">سجّل دخولك لتتبع الطلبات والدفع عبر Moyasar.</p>
         </div>
-        <div id="mysr-form"></div>
-      </div>
-
-      <!-- حالة النجاح -->
-      <div class="pay-status" id="payStatusSuccess">
-        <div class="pay-icon">✅</div>
-        <h3 data-ar="تم استلام الدفعة بنجاح" data-en="Payment received successfully">تم استلام الدفعة بنجاح</h3>
-        <p data-ar="نشكر لكم ثقتكم، وسيتواصل معكم فريقنا لتأكيد التفاصيل خلال يوم عمل واحد." data-en="Thank you! Our team will reach out to confirm the details within one business day.">نشكر لكم ثقتكم، وسيتواصل معكم فريقنا لتأكيد التفاصيل خلال يوم عمل واحد.</p>
-      </div>
-
-      <!-- حالة الفشل -->
-      <div class="pay-status" id="payStatusFailed">
-        <div class="pay-icon">❌</div>
-        <h3 data-ar="لم تتم عملية الدفع" data-en="Payment was not completed">لم تتم عملية الدفع</h3>
-        <p data-ar="حدث خطأ أثناء معالجة عملية الدفع، أو تم إلغاؤها. يمكنكم المحاولة مرة أخرى." data-en="Something went wrong or the payment was cancelled. You can try again.">حدث خطأ أثناء معالجة عملية الدفع، أو تم إلغاؤها. يمكنكم المحاولة مرة أخرى.</p>
-        <button type="button" class="pay-continue-btn" id="payRetryBtn" data-ar="إعادة المحاولة" data-en="Try Again" style="width:auto; padding:12px 28px;">إعادة المحاولة</button>
-      </div>
-
-      <p class="pay-note" data-ar="تُعالَج عملية الدفع بشكل آمن عبر بوابة Moyasar المرخّصة من مؤسسة النقد السعودي (ساما)." data-en="Payments are securely processed via Moyasar, licensed by the Saudi Central Bank (SAMA).">تُعالَج عملية الدفع بشكل آمن عبر بوابة Moyasar المرخّصة من مؤسسة النقد السعودي (ساما).</p>
+      </article>
+      <article class="news-item">
+        <time datetime="2026-07">2026-07</time>
+        <div>
+          <h3 data-ar="واجهة عربية / إنجليزية" data-en="Arabic / English interface">واجهة عربية / إنجليزية</h3>
+          <p data-ar="تبديل لغة فوري على الموقع وحساب العميل." data-en="Instant language switch on the site and client area.">تبديل لغة فوري على الموقع وحساب العميل.</p>
+        </div>
+      </article>
     </div>
   </div>
 </section>
 
 <section id="process">
   <div class="wrap">
-    <div class="section-head">
-      <span class="eyebrow" data-ar="منهجية العمل" data-en="Our Process">منهجية العمل</span>
-      <h2 data-ar="من الفكرة إلى التشغيل، في أربع خطوات" data-en="From idea to launch, in four steps">من الفكرة إلى التشغيل، في أربع خطوات</h2>
+    <div class="section-head reveal">
+      <div class="eyebrow" data-ar="طريقة العمل" data-en="Process">طريقة العمل</div>
+      <h2 data-ar="أربع خطوات فقط" data-en="Only four steps">أربع خطوات فقط</h2>
     </div>
-    <div class="process-list">
-      <div class="process-item">
-        <span class="process-num mono">01</span>
-        <div><h3 data-ar="فهم طبيعة العمل" data-en="We Understand Your Business">فهم طبيعة العمل</h3><p data-ar="جلسة قصيرة نتعرّف من خلالها على احتياجاتكم الفعلية، دون استخدام مصطلحات تقنية معقدة." data-en="A short session to understand what you actually need — no complicated tech jargon.">جلسة قصيرة نتعرّف من خلالها على احتياجاتكم الفعلية، دون استخدام مصطلحات تقنية معقدة.</p></div>
+    <div class="work-list reveal">
+      <div class="work-item">
+        <div class="num">01</div>
+        <h3 data-ar="الطلب" data-en="Request">الطلب</h3>
+        <p data-ar="تصفون احتياجكم باختصار." data-en="Briefly describe what you need.">تصفون احتياجكم باختصار.</p>
       </div>
-      <div class="process-item">
-        <span class="process-num mono">02</span>
-        <div><h3 data-ar="تصميم النظام" data-en="We Design the System">تصميم النظام</h3><p data-ar="إعداد مخطط واضح لكل شاشة ووظيفة قبل البدء في كتابة أي سطر من الكود." data-en="A clear blueprint for every screen and function before we write a single line of code.">إعداد مخطط واضح لكل شاشة ووظيفة قبل البدء في كتابة أي سطر من الكود.</p></div>
+      <div class="work-item">
+        <div class="num">02</div>
+        <h3 data-ar="العرض" data-en="Quote">العرض</h3>
+        <p data-ar="نحدد النطاق والتكلفة والمدة." data-en="We set scope, cost, and timeline.">نحدد النطاق والتكلفة والمدة.</p>
       </div>
-      <div class="process-item">
-        <span class="process-num mono">03</span>
-        <div><h3 data-ar="البرمجة والتطوير" data-en="We Build & Develop">البرمجة والتطوير</h3><p data-ar="يبني فريقنا النظام على مراحل، بحيث تتابعون تقدّم العمل خطوة بخطوة." data-en="Our team builds the system in stages, so you see progress every step of the way.">يبني فريقنا النظام على مراحل، بحيث تتابعون تقدّم العمل خطوة بخطوة.</p></div>
+      <div class="work-item">
+        <div class="num">03</div>
+        <h3 data-ar="التنفيذ" data-en="Build">التنفيذ</h3>
+        <p data-ar="نبني على مراحل مع تحديثات." data-en="We build in stages with updates.">نبني على مراحل مع تحديثات.</p>
       </div>
-      <div class="process-item">
-        <span class="process-num mono">04</span>
-        <div><h3 data-ar="التسليم والدعم" data-en="We Deliver & Support">التسليم والدعم</h3><p data-ar="تشغيل كامل للنظام، مع ضمان دعم فني لمدة 30 يوماً بعد التسليم." data-en="Full rollout of your system, with a 30-day support guarantee after delivery.">تشغيل كامل للنظام، مع ضمان دعم فني لمدة 30 يوماً بعد التسليم.</p></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section id="team">
-  <div class="wrap">
-    <div class="section-head">
-      <span class="eyebrow" data-ar="فريق العمل" data-en="Our Team">فريق العمل</span>
-      <h2 data-ar="فريق متكامل من ثلاثة تخصصات" data-en="A team built from three disciplines">فريق متكامل من ثلاثة تخصصات</h2>
-      <p data-ar="لا نعتمد على تخصص واحد؛ فكل نظام يمر بثلاث زوايا نظر مختلفة لضمان جودته." data-en="We don't rely on a single skill set. Every system passes through three different perspectives.">لا نعتمد على تخصص واحد؛ فكل نظام يمر بثلاث زوايا نظر مختلفة لضمان جودته.</p>
-    </div>
-    <div class="team-grid">
-      <div class="team-card">
-        <div class="team-icon mono">CIS</div>
-        <h3 data-ar="أنظمة المعلومات" data-en="Information Systems">أنظمة المعلومات</h3>
-        <p data-ar="يُعنى بفهم كيفية إدارة بيانات شركتكم وترجمتها إلى نظام يخدم أعمالكم فعلياً." data-en="Understands how your company's data is managed and translates it into a system that actually serves your business.">يُعنى بفهم كيفية إدارة بيانات شركتكم وترجمتها إلى نظام يخدم أعمالكم فعلياً.</p>
-      </div>
-      <div class="team-card">
-        <div class="team-icon mono">SE</div>
-        <h3 data-ar="هندسة البرمجيات" data-en="Software Engineering">هندسة البرمجيات</h3>
-        <p data-ar="يتولّى بناء الأنظمة باحترافية وجودة عالية، على أسس برمجية سليمة تدوم." data-en="Builds systems with professional craftsmanship, on solid code that lasts.">يتولّى بناء الأنظمة باحترافية وجودة عالية، على أسس برمجية سليمة تدوم.</p>
-      </div>
-      <div class="team-card">
-        <div class="team-icon mono">NET</div>
-        <h3 data-ar="الشبكات والبنية التقنية" data-en="Networks & Infrastructure">الشبكات والبنية التقنية</h3>
-        <p data-ar="يتولّى تجهيز البيئة التقنية التي يعمل عليها نظامكم بأمان واستقرار." data-en="Sets up the technical environment your system runs on, safely and reliably.">يتولّى تجهيز البيئة التقنية التي يعمل عليها نظامكم بأمان واستقرار.</p>
+      <div class="work-item">
+        <div class="num">04</div>
+        <h3 data-ar="التسليم" data-en="Deliver">التسليم</h3>
+        <p data-ar="تشغيل جاهز ودعم بعد الإطلاق." data-en="Ready launch with post-go-live support.">تشغيل جاهز ودعم بعد الإطلاق.</p>
       </div>
     </div>
   </div>
 </section>
 
-<section id="contact">
+<section id="faq">
   <div class="wrap">
-    <div class="contact-box">
-      <div>
-        <h2 data-ar="هل أنتم مستعدون للبدء؟" data-en="Ready to start?">هل أنتم مستعدون للبدء؟</h2>
-        <p data-ar="يُرجى تعبئة البيانات، وسيتواصل معكم فريقنا خلال يوم عمل واحد." data-en="Fill in your details and our team will reach out within one business day.">يُرجى تعبئة البيانات، وسيتواصل معكم فريقنا خلال يوم عمل واحد.</p>
-        <div class="contact-info">
-          <div><span class="mono" data-ar="واتساب:" data-en="WhatsApp:">واتساب:</span> XXX-XXX-XXXX</div>
-          <div><span class="mono" data-ar="البريد الإلكتروني:" data-en="Email:">البريد الإلكتروني:</span> hello@raseekh.example</div>
+    <div class="section-head reveal">
+      <div class="eyebrow" data-ar="أسئلة شائعة" data-en="FAQ">أسئلة شائعة</div>
+      <h2 data-ar="إجابات سريعة قبل الطلب" data-en="Quick answers before you request">إجابات سريعة قبل الطلب</h2>
+      <p data-ar="ما تحتاجونه لبدء عرض السعر بوضوح." data-en="What you need to start a clear quote.">ما تحتاجونه لبدء عرض السعر بوضوح.</p>
+    </div>
+    <div class="faq-list reveal">
+      <details class="faq-item">
+        <summary data-ar="كيف أحصل على عرض سعر؟" data-en="How do I get a quote?">كيف أحصل على عرض سعر؟</summary>
+        <p data-ar="اكتبوا احتياجكم من الصفحة أو حساب العميل. نراجع النطاق ونرد خلال يوم عمل." data-en="Send your need from the site or client account. We review scope and reply within one business day.">اكتبوا احتياجكم من الصفحة أو حساب العميل. نراجع النطاق ونرد خلال يوم عمل.</p>
+      </details>
+      <details class="faq-item">
+        <summary data-ar="هل الأسعار ظاهرة على المنتجات؟" data-en="Are product prices listed?">هل الأسعار ظاهرة على المنتجات؟</summary>
+        <p data-ar="لا نعرض أسعاراً وهمية. معظم البنود «حسب الطلب» بعد التأكد من المواصفات والكمية." data-en="We don’t show fake prices. Most items are “on request” after specs and quantity are clear.">لا نعرض أسعاراً وهمية. معظم البنود «حسب الطلب» بعد التأكد من المواصفات والكمية.</p>
+      </details>
+      <details class="faq-item">
+        <summary data-ar="ما الفرق بين العميل والمدير؟" data-en="What’s the difference between client and admin?">ما الفرق بين العميل والمدير؟</summary>
+        <p data-ar="العميل يطلب ويتابع. المدير فقط يعدّل الكتالوج والمبيعات والطلبات." data-en="Clients request and track. Only admin edits catalog, sales, and leads.">العميل يطلب ويتابع. المدير فقط يعدّل الكتالوج والمبيعات والطلبات.</p>
+      </details>
+      <details class="faq-item">
+        <summary data-ar="هل يمكن الدفع أونلاين؟" data-en="Can I pay online?">هل يمكن الدفع أونلاين؟</summary>
+        <p data-ar="نعم — بعد تسجيل الدخول عبر Moyasar (بطاقة / Apple Pay)." data-en="Yes — after sign-in via Moyasar (card / Apple Pay).">نعم — بعد تسجيل الدخول عبر Moyasar (بطاقة / Apple Pay).</p>
+      </details>
+      <details class="faq-item">
+        <summary data-ar="هل تعملون عربي وإنجليزي؟" data-en="Do you support Arabic and English?">هل تعملون عربي وإنجليزي؟</summary>
+        <p data-ar="نعم. الموقع وحساب العميل يدعمون التبديل الفوري بين العربية والإنجليزية." data-en="Yes. The site and client account support instant AR/EN switching.">نعم. الموقع وحساب العميل يدعمون التبديل الفوري بين العربية والإنجليزية.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section id="pay">
+  <div class="wrap two-col">
+    <div class="panel reveal">
+      <h2 data-ar="سداد عربون أو دفعة" data-en="Pay a deposit">سداد عربون أو دفعة</h2>
+      <p data-ar="للعملاء المسجّلين — عبر مدى / بطاقة / Apple Pay." data-en="For registered clients — mada / card / Apple Pay.">للعملاء المسجّلين — عبر مدى / بطاقة / Apple Pay.</p>
+      <div class="locked" id="payLockedMessage">
+        <h3 data-ar="سجّل دخولك أولاً" data-en="Please log in first">سجّل دخولك أولاً</h3>
+        <p data-ar="الدفع متاح بعد تسجيل الدخول أو إنشاء حساب." data-en="Payment unlocks after you sign in or create an account.">الدفع متاح بعد تسجيل الدخول أو إنشاء حساب.</p>
+        <button type="button" class="btn btn-primary" id="payLoginBtn" data-ar="تسجيل الدخول" data-en="Log in">تسجيل الدخول</button>
+      </div>
+      <div id="payBoxContent" style="display:none">
+        <div class="pay-step active" id="payDetailsStep">
+          <form class="form" onsubmit="return false">
+            <input type="text" id="payName" data-ar-placeholder="الاسم الكامل" data-en-placeholder="Full name" placeholder="الاسم الكامل">
+            <div class="pay-amount">
+              <input type="number" id="payAmount" min="1" step="0.01" placeholder="0.00">
+              <span>SAR</span>
+            </div>
+            <input type="text" id="payNote" data-ar-placeholder="ملاحظة (اختياري)" data-en-placeholder="Note (optional)" placeholder="ملاحظة (اختياري)">
+            <button type="button" class="btn btn-primary" id="payContinueBtn" data-ar="المتابعة للدفع" data-en="Continue to pay">المتابعة للدفع</button>
+            <div class="msg" id="payValidationMsg"></div>
+          </form>
+        </div>
+        <div class="pay-step" id="paymentFormStep">
+          <button type="button" class="linkish" id="payBackBtn" data-ar="← تعديل المبلغ" data-en="← Edit amount">← تعديل المبلغ</button>
+          <div class="pay-summary"><span data-ar="المبلغ" data-en="Amount">المبلغ</span><b id="paySummaryAmount">0.00 SAR</b></div>
+          <div id="mysr-form"></div>
+        </div>
+        <div class="pay-status" id="payStatusSuccess">
+          <h3 data-ar="تم استلام الدفعة" data-en="Payment received">تم استلام الدفعة</h3>
+          <p data-ar="سيتواصل معكم الفريق خلال يوم عمل." data-en="Our team will contact you within one business day.">سيتواصل معكم الفريق خلال يوم عمل.</p>
+        </div>
+        <div class="pay-status" id="payStatusFailed">
+          <h3 data-ar="لم تتم العملية" data-en="Payment failed">لم تتم العملية</h3>
+          <p data-ar="حاول مرة أخرى أو تواصل معنا." data-en="Try again or contact us.">حاول مرة أخرى أو تواصل معنا.</p>
+          <button type="button" class="btn btn-primary" id="payRetryBtn" data-ar="إعادة المحاولة" data-en="Retry">إعادة المحاولة</button>
         </div>
       </div>
-      <form onsubmit="event.preventDefault(); alert(currentLang === 'ar' ? 'تم إرسال طلبكم بنجاح، وسيتواصل معكم فريقنا في أقرب وقت.' : 'Your request has been sent — we will be in touch soon!');">
-        <input type="text" data-ar-placeholder="الاسم الكامل" data-en-placeholder="Full Name" placeholder="الاسم الكامل" required>
-        <input type="text" data-ar-placeholder="اسم الشركة أو المنشأة" data-en-placeholder="Company / Business Name" placeholder="اسم الشركة أو المنشأة">
-        <select>
-          <option data-ar="نوع النظام المطلوب" data-en="System Type Needed">نوع النظام المطلوب</option>
-          <option data-ar="نظام مخزون ومبيعات" data-en="Inventory & Sales System">نظام مخزون ومبيعات</option>
-          <option data-ar="نظام إدارة عملاء" data-en="Customer Management System">نظام إدارة عملاء</option>
-          <option data-ar="نظام حجوزات" data-en="Booking System">نظام حجوزات</option>
-          <option data-ar="نظام آخر" data-en="Something Else">نظام آخر</option>
-        </select>
-        <textarea data-ar-placeholder="يُرجى وصف احتياجكم باختصار" data-en-placeholder="Briefly describe what you need" placeholder="يُرجى وصف احتياجكم باختصار"></textarea>
-        <button type="submit" class="submit-btn" data-ar="إرسال الطلب" data-en="Submit Request">إرسال الطلب</button>
+    </div>
+
+    <div class="panel reveal" id="contact">
+      <h2 data-ar="اطلب عرض سعر" data-en="Request a quote">اطلب عرض سعر</h2>
+      <p data-ar="سطرين عن احتياجكم — نرد خلال يوم عمل." data-en="Two lines about your need — reply within one business day.">سطرين عن احتياجكم — نرد خلال يوم عمل.</p>
+      <form class="form" id="contactForm">
+        <label class="field"><span data-ar="الاسم الكامل" data-en="Full name">الاسم الكامل</span>
+          <input type="text" required data-ar-placeholder="الاسم الكامل" data-en-placeholder="Full name" placeholder="الاسم الكامل" id="contactName" autocomplete="name">
+        </label>
+        <label class="field"><span data-ar="البريد الإلكتروني" data-en="Email">البريد الإلكتروني</span>
+          <input type="email" data-ar-placeholder="name@example.com" data-en-placeholder="name@example.com" placeholder="name@example.com" id="contactEmail" autocomplete="email">
+        </label>
+        <label class="field"><span data-ar="رقم الجوال" data-en="Phone">رقم الجوال</span>
+          <input type="tel" data-ar-placeholder="05xxxxxxxx" data-en-placeholder="05xxxxxxxx" placeholder="05xxxxxxxx" id="contactPhone" autocomplete="tel">
+        </label>
+        <p class="hint-inline" data-ar="يلزم بريد أو جوال واحد على الأقل للتواصل." data-en="Provide at least an email or phone so we can reply.">يلزم بريد أو جوال واحد على الأقل للتواصل.</p>
+        <label class="field"><span data-ar="اسم الشركة (اختياري)" data-en="Company (optional)">اسم الشركة (اختياري)</span>
+          <input type="text" data-ar-placeholder="اسم الشركة" data-en-placeholder="Company name" placeholder="اسم الشركة" id="contactCompany" autocomplete="organization">
+        </label>
+        <label class="field"><span data-ar="نوع الطلب" data-en="Request type">نوع الطلب</span>
+          <select id="contactType">
+            <option value="maintenance" data-ar="صيانة مواقع" data-en="Website maintenance">صيانة مواقع</option>
+            <option value="web-dev" data-ar="تطوير مواقع" data-en="Website development">تطوير مواقع</option>
+            <option value="programming" data-ar="خدمات البرمجة / تعديل كود" data-en="Programming / code changes">خدمات البرمجة / تعديل كود</option>
+            <option value="systems" data-ar="برمجة أنظمة ولوحات" data-en="Systems & dashboards">برمجة أنظمة ولوحات</option>
+            <option value="api" data-ar="ربط API وأنظمة" data-en="API & integrations">ربط API وأنظمة</option>
+            <option value="system" data-ar="نظام كامل" data-en="Complete system">نظام كامل</option>
+            <option value="electronics" data-ar="أجهزة (الرياض فقط)" data-en="Hardware (Riyadh only)">أجهزة (الرياض فقط)</option>
+          </select>
+        </label>
+        <label class="field"><span data-ar="تفاصيل الطلب" data-en="Request details">تفاصيل الطلب</span>
+          <textarea required data-ar-placeholder="صف طلبكم باختصار" data-en-placeholder="Briefly describe your request" placeholder="صف طلبكم باختصار" id="contactMsg"></textarea>
+        </label>
+        <button class="btn btn-primary" type="submit" data-ar="إرسال الطلب" data-en="Send request">إرسال الطلب</button>
+        <div class="msg" id="contactResult"></div>
       </form>
     </div>
   </div>
 </section>
 
 <section id="terms">
-  <div class="wrap" style="max-width:760px;">
-    <div class="section-head" style="margin-bottom:32px;">
-      <span class="eyebrow" data-ar="الشروط والأحكام" data-en="Terms & Conditions">الشروط والأحكام</span>
+  <div class="wrap" style="max-width:760px">
+    <div class="terms-teaser reveal">
+      <div class="eyebrow" data-ar="الشروط" data-en="Terms">الشروط</div>
       <h2 data-ar="الشروط والأحكام" data-en="Terms & Conditions">الشروط والأحكام</h2>
-    </div>
-    <div class="terms-content">
-      <h3 data-ar="١. طبيعة الخدمة" data-en="1. Nature of Service">١. طبيعة الخدمة</h3>
-      <p data-ar="تقدّم راسخ خدمات تصميم وتطوير أنظمة إدارة مخصصة (مخزون، عملاء، حجوزات) للمنشآت والأفراد، وفق ما يتم الاتفاق عليه مع كل عميل بشكل منفصل." data-en="Raseekh provides design and development services for custom management systems (inventory, customers, bookings) for businesses and individuals, as agreed separately with each client.">تقدّم راسخ خدمات تصميم وتطوير أنظمة إدارة مخصصة (مخزون، عملاء، حجوزات) للمنشآت والأفراد، وفق ما يتم الاتفاق عليه مع كل عميل بشكل منفصل.</p>
-
-      <h3 data-ar="٢. الحسابات والتسجيل" data-en="2. Accounts & Registration">٢. الحسابات والتسجيل</h3>
-      <p data-ar="عند إنشاء حساب، يتعهّد العميل بتقديم معلومات صحيحة ودقيقة، ويكون مسؤولاً عن سرية بيانات دخوله وعن أي نشاط يتم من خلال حسابه." data-en="When creating an account, the client undertakes to provide accurate information, and is responsible for the confidentiality of their login credentials and any activity under their account.">عند إنشاء حساب، يتعهّد العميل بتقديم معلومات صحيحة ودقيقة، ويكون مسؤولاً عن سرية بيانات دخوله وعن أي نشاط يتم من خلال حسابه.</p>
-
-      <h3 data-ar="٣. الدفع والمبالغ المسدَّدة" data-en="3. Payments">٣. الدفع والمبالغ المسدَّدة</h3>
-      <p data-ar="تتم عمليات الدفع عبر بوابة دفع خارجية مرخّصة (Moyasar). المبالغ المدفوعة كعربون أو دفعة مقدّمة غير قابلة للاسترداد إلا وفق ما يتم الاتفاق عليه كتابياً بين الطرفين." data-en="Payments are processed via a licensed external payment gateway (Moyasar). Deposits or advance payments are non-refundable except as agreed in writing between both parties.">تتم عمليات الدفع عبر بوابة دفع خارجية مرخّصة (Moyasar). المبالغ المدفوعة كعربون أو دفعة مقدّمة غير قابلة للاسترداد إلا وفق ما يتم الاتفاق عليه كتابياً بين الطرفين.</p>
-
-      <h3 data-ar="٤. حماية البيانات" data-en="4. Data Protection">٤. حماية البيانات</h3>
-      <p data-ar="نلتزم بحماية بيانات العملاء المسجَّلة لدينا، ولا نشاركها مع أي طرف ثالث إلا في حدود ما يخدم تقديم الخدمة (مثل بوابة الدفع)، أو ما يقتضيه النظام." data-en="We are committed to protecting client data on file, and do not share it with third parties except as necessary to provide the service (such as the payment gateway), or as required by law.">نلتزم بحماية بيانات العملاء المسجَّلة لدينا، ولا نشاركها مع أي طرف ثالث إلا في حدود ما يخدم تقديم الخدمة (مثل بوابة الدفع)، أو ما يقتضيه النظام.</p>
-
-      <h3 data-ar="٥. التعديلات على الخدمة" data-en="5. Changes to the Service">٥. التعديلات على الخدمة</h3>
-      <p data-ar="الموقع لا يزال تحت التجربة، وقد تطرأ تعديلات على مزاياه أو محتواه دون إشعار مسبق." data-en="This website is still under testing, and its features or content may change without prior notice.">الموقع لا يزال تحت التجربة، وقد تطرأ تعديلات على مزاياه أو محتواه دون إشعار مسبق.</p>
-
-      <h3 data-ar="٦. التواصل" data-en="6. Contact">٦. التواصل</h3>
-      <p data-ar="لأي استفسار بخصوص هذه الشروط، يمكن التواصل معنا عبر البيانات الموجودة في قسم «تواصل معنا»." data-en="For any inquiries about these terms, please contact us via the details in the 'Contact Us' section.">لأي استفسار بخصوص هذه الشروط، يمكن التواصل معنا عبر البيانات الموجودة في قسم «تواصل معنا».</p>
-
-      <p class="pay-note" style="text-align:right; margin-top:28px;" data-ar="* هذه الشروط نموذجية عامة، ويُنصح بمراجعتها من مختص قانوني لتخصيصها لنشاطكم قبل الاعتماد النهائي." data-en="* These are general template terms — we recommend legal review before final adoption.">* هذه الشروط نموذجية عامة، ويُنصح بمراجعتها من مختص قانوني لتخصيصها لنشاطكم قبل الاعتماد النهائي.</p>
+      <p data-ar="الشروط في صفحة مستقلة. يمكنكم قراءتها كاملة، وتظهر كغطاء للعميل عند الحاجة داخل الحساب." data-en="Terms live on a dedicated page. You can read them fully, and they appear as a client overlay in the account when needed.">الشروط في صفحة مستقلة. يمكنكم قراءتها كاملة، وتظهر كغطاء للعميل عند الحاجة داخل الحساب.</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button type="button" class="btn btn-primary" id="openTermsOverlayBtn" data-ar="عرض الشروط" data-en="View terms">عرض الشروط</button>
+        <a class="btn btn-ghost" href="/terms/" data-ar="فتح صفحة الشروط" data-en="Open terms page">فتح صفحة الشروط</a>
+      </div>
     </div>
   </div>
 </section>
 
-<div class="beta-banner">
-  <span class="beta-badge mono">BETA</span>
-  <span data-ar="هذا الموقع لا يزال تحت التجربة، وقد تحدث بعض الأخطاء أو التغييرات مؤقتاً." data-en="This website is still under testing — some errors or temporary changes may occur.">هذا الموقع لا يزال تحت التجربة، وقد تحدث بعض الأخطاء أو التغييرات مؤقتاً.</span>
+<div class="terms-overlay" id="termsOverlay" role="dialog" aria-modal="true" aria-labelledby="termsOverlayTitle" aria-hidden="true">
+  <div class="terms-sheet">
+    <h2 id="termsOverlayTitle" class="visually-hidden" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">الشروط والأحكام</h2>
+    <div id="termsOverlayBody"></div>
+    <div class="terms-actions">
+      <button type="button" class="btn btn-primary" id="closeTermsOverlayBtn" data-ar="إغلاق" data-en="Close">إغلاق</button>
+      <a class="btn btn-ghost" href="/terms/" data-ar="فتح كصفحة كاملة" data-en="Open full page">فتح كصفحة كاملة</a>
+    </div>
+  </div>
 </div>
 
+<div class="site-note"><span data-ar="راسخ — منتجات إلكترونية وخدمات تقنية للعملاء." data-en="Raseekh — electronics and technical services for clients.">راسخ — منتجات إلكترونية وخدمات تقنية للعملاء.</span></div>
+
 <footer>
-  <div class="wrap" data-ar="راسخ — تطوير أنظمة إدارة مخصصة © 2026" data-en="Raseekh — Custom Management Systems © 2026">راسخ — تطوير أنظمة إدارة مخصصة © 2026</div>
-  <div class="footer-links">
-    <a href="#terms" data-ar="الشروط والأحكام" data-en="Terms & Conditions">الشروط والأحكام</a>
+  <div class="wrap">
+    <div class="footer-brand" data-ar-html='را<em style="color:var(--copper);font-style:normal">سخ</em>' data-en-html='Ra<em style="color:var(--copper);font-style:normal">seekh</em>'>را<em style="color:var(--copper);font-style:normal">سخ</em></div>
+    <div data-ar="منتجات إلكترونية وخدمات تقنية © 2026" data-en="Electronics & Technical Services © 2026">منتجات إلكترونية وخدمات تقنية © 2026</div>
+    <div class="footer-links">
+      <a href="#services" data-ar="الخدمات" data-en="Services">الخدمات</a>
+      <a href="#programming" data-ar="خدمات البرمجة" data-en="Programming">خدمات البرمجة</a>
+      <a href="#products" data-ar="الخدمات" data-en="Services">الخدمات</a>
+      <a href="#pricing" data-ar="الأسعار" data-en="Pricing">الأسعار</a>
+      <a href="#faq" data-ar="أسئلة" data-en="FAQ">أسئلة</a>
+      <a href="/terms/" data-ar="الشروط" data-en="Terms">الشروط</a>
+      <a href="/dashboard/" data-ar="حساب العميل" data-en="Client area">حساب العميل</a>
+    </div>
   </div>
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="/auth.js"></script>
 <script>
-  document.getElementById('navToggle').addEventListener('click', function(){
-    const links = document.querySelector('.nav-links');
-    const visible = links.style.display === 'flex';
-    links.style.display = visible ? 'none' : 'flex';
-    links.style.flexDirection = 'column';
-    links.style.position = 'absolute';
-    links.style.top = '64px';
-    links.style.right = '24px';
-    links.style.background = '#16233A';
-    links.style.border = '1px solid #2A3B58';
-    links.style.borderRadius = '10px';
-    links.style.padding = '16px 24px';
-    links.style.gap = '14px';
-  });
-
-  /* ==================== إعداد Supabase ==================== */
-  const SUPABASE_URL = 'https://dupdkohciluepwrfuhod.supabase.co';
-  const SUPABASE_ANON_KEY = 'sb_publishable_UVbMT7eplHHBNdZbOpLssw_UUEYTxFA';
-  let supabaseClient = null;
-  try {
-    if (window.supabase) {
-      supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    } else {
-      console.warn('تعذّر تحميل مكتبة Supabase — ميزة الحسابات معطّلة مؤقتاً.');
-    }
-  } catch (e) {
-    console.warn('خطأ بتهيئة Supabase:', e);
-  }
-
-  /* ==================== عناصر النافذة ==================== */
-  const authModal = document.getElementById('authModal');
-  const accountBtn = document.getElementById('accountBtn');
-  const modalCloseBtn = document.getElementById('modalCloseBtn');
-  const authTabs = document.getElementById('authTabs');
-  const accountPanel = document.getElementById('accountPanel');
-
-  const modalLoginTabBtn = document.getElementById('modalLoginTabBtn');
-  const modalRegisterTabBtn = document.getElementById('modalRegisterTabBtn');
-  const modalLoginPanel = document.getElementById('modalLoginPanel');
-  const modalRegisterPanel = document.getElementById('modalRegisterPanel');
-  const modalForgotPanel = document.getElementById('modalForgotPanel');
-  const modalResetPanel = document.getElementById('modalResetPanel');
-  const modalTabsBar = document.querySelector('.modal-tabs');
-
-  const loginForm = document.getElementById('loginForm');
-  const registerForm = document.getElementById('registerForm');
-  const forgotForm = document.getElementById('forgotForm');
-  const resetForm = document.getElementById('resetForm');
-  const loginMsg = document.getElementById('loginMsg');
-  const registerMsg = document.getElementById('registerMsg');
-  const forgotMsg = document.getElementById('forgotMsg');
-  const resetMsg = document.getElementById('resetMsg');
-  const forgotPasswordLink = document.getElementById('forgotPasswordLink');
-  const backToLoginLink = document.getElementById('backToLoginLink');
-
-  const accountAvatar = document.getElementById('accountAvatar');
-  const accountName = document.getElementById('accountName');
-  const accountEmail = document.getElementById('accountEmail');
-  const logoutBtn = document.getElementById('logoutBtn');
-
-  function openModal(){ authModal.classList.add('open'); }
-  function closeModal(){
-    authModal.classList.remove('open');
-    loginMsg.textContent=''; registerMsg.textContent=''; forgotMsg.textContent=''; resetMsg.textContent='';
-    if (!accountPanel.classList.contains('active')) {
-      modalLoginTabBtn.classList.add('active'); modalRegisterTabBtn.classList.remove('active');
-      showAuthPanel(modalLoginPanel);
-    }
-  }
-
-  accountBtn.addEventListener('click', openModal);
-  modalCloseBtn.addEventListener('click', closeModal);
-  authModal.addEventListener('click', function(e){ if (e.target === authModal) closeModal(); });
-
-  function showAuthPanel(panel){
-    [modalLoginPanel, modalRegisterPanel, modalForgotPanel, modalResetPanel].forEach(function(p){
-      p.classList.remove('active');
-    });
-    panel.classList.add('active');
-    // شريط التبويبات (دخول/تسجيل) يظهر بس بهاتين الحالتين
-    modalTabsBar.style.display = (panel === modalLoginPanel || panel === modalRegisterPanel) ? 'flex' : 'none';
-  }
-
-  modalLoginTabBtn.addEventListener('click', function(){
-    modalLoginTabBtn.classList.add('active'); modalRegisterTabBtn.classList.remove('active');
-    showAuthPanel(modalLoginPanel);
-  });
-  modalRegisterTabBtn.addEventListener('click', function(){
-    modalRegisterTabBtn.classList.add('active'); modalLoginTabBtn.classList.remove('active');
-    showAuthPanel(modalRegisterPanel);
-  });
-
-  forgotPasswordLink.addEventListener('click', function(){
-    showAuthPanel(modalForgotPanel);
-  });
-  backToLoginLink.addEventListener('click', function(){
-    modalLoginTabBtn.classList.add('active'); modalRegisterTabBtn.classList.remove('active');
-    showAuthPanel(modalLoginPanel);
-  });
-
-  /* ==================== طلب رابط إعادة تعيين كلمة المرور ==================== */
-  forgotForm.addEventListener('submit', async function(e){
-    e.preventDefault();
-
-    if (!supabaseClient) {
-      forgotMsg.style.color = '#f87171';
-      forgotMsg.textContent = currentLang === 'ar' ? 'تعذّر الاتصال بخدمة الحسابات، يُرجى تحديث الصفحة.' : 'Could not connect to the accounts service, please refresh the page.';
-      return;
-    }
-
-    const email = document.getElementById('forgotEmail').value.trim();
-    forgotMsg.style.color = '#93A0B4';
-    forgotMsg.textContent = currentLang === 'ar' ? 'جاري إرسال الرابط...' : 'Sending link...';
-
-    const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
-      redirectTo: window.location.origin + window.location.pathname
-    });
-
-    if (error) {
-      forgotMsg.style.color = '#f87171';
-      forgotMsg.textContent = currentLang === 'ar' ? 'حدث خطأ، يُرجى المحاولة مرة أخرى.' : 'Something went wrong, please try again.';
-      return;
-    }
-
-    forgotMsg.style.color = '#4FD1C5';
-    forgotMsg.textContent = currentLang === 'ar'
-      ? '📩 تم إرسال رابط إعادة التعيين إلى بريدكم الإلكتروني.'
-      : '📩 A password reset link has been sent to your email.';
-    forgotForm.reset();
-  });
-
-  /* ==================== تعيين كلمة مرور جديدة (من رابط الإيميل) ==================== */
-  resetForm.addEventListener('submit', async function(e){
-    e.preventDefault();
-
-    if (!supabaseClient) return;
-
-    const newPassword = document.getElementById('resetPassword').value;
-    resetMsg.style.color = '#93A0B4';
-    resetMsg.textContent = currentLang === 'ar' ? 'جاري الحفظ...' : 'Saving...';
-
-    const { error } = await supabaseClient.auth.updateUser({ password: newPassword });
-
-    if (error) {
-      resetMsg.style.color = '#f87171';
-      resetMsg.textContent = currentLang === 'ar' ? 'تعذّر حفظ كلمة المرور، حاول مرة أخرى.' : 'Could not save the password, please try again.';
-      return;
-    }
-
-    resetMsg.style.color = '#4FD1C5';
-    resetMsg.textContent = currentLang === 'ar' ? '✅ تم تحديث كلمة المرور بنجاح.' : '✅ Password updated successfully.';
-    resetForm.reset();
-  });
-
-  /* الاستماع لحالة "استرجاع كلمة المرور" القادمة من رابط الإيميل */
-  if (supabaseClient) {
-    supabaseClient.auth.onAuthStateChange(function(event, session){
-      if (event === 'PASSWORD_RECOVERY') {
-        openModal();
-        modalTabsBar.style.display = 'none';
-        showAuthPanel(modalResetPanel);
-      }
-    });
-  }
-
-  /* ==================== إنشاء حساب ==================== */
-  registerForm.addEventListener('submit', async function(e){
-    e.preventDefault();
-
-    if (!supabaseClient) {
-      registerMsg.style.color = '#f87171';
-      registerMsg.textContent = currentLang === 'ar' ? 'تعذّر الاتصال بخدمة الحسابات، يُرجى تحديث الصفحة.' : 'Could not connect to the accounts service, please refresh the page.';
-      return;
-    }
-
-    const name = document.getElementById('registerName').value.trim();
-    const email = document.getElementById('registerEmail').value.trim();
-    const phone = document.getElementById('registerPhone').value.trim();
-    const password = document.getElementById('registerPassword').value;
-
-    registerMsg.style.color = '#93A0B4';
-    registerMsg.textContent = 'جاري إنشاء الحساب...';
-
-    const { data, error } = await supabaseClient.auth.signUp({
-      email: email,
-      password: password,
-      options: { data: { full_name: name, phone: phone } }
-    });
-
-    if (error) {
-      registerMsg.style.color = '#f87171';
-      registerMsg.textContent = 'خطأ: ' + (error.message.includes('already registered') ? 'هذا البريد مسجل مسبقاً' : error.message);
-      return;
-    }
-
-    // حفظ بيانات إضافية بجدول profiles (يشتغل تلقائياً بعد تفعيل RLS المناسب)
-    if (data.user) {
-      await supabaseClient.from('profiles').upsert({
-        id: data.user.id, full_name: name, phone: phone, email: email
-      });
-    }
-
-    registerMsg.style.color = '#4FD1C5';
-    registerMsg.textContent = data.session ? '🎉 تم إنشاء الحساب وتسجيل الدخول بنجاح!' : '🎉 تم إنشاء الحساب! يُرجى تفعيله عبر البريد الإلكتروني.';
-    registerForm.reset();
-
-    if (data.session) {
-      setTimeout(() => showAccount(data.user), 900);
-    }
-  });
-
-  /* ==================== تسجيل الدخول ==================== */
-  loginForm.addEventListener('submit', async function(e){
-    e.preventDefault();
-
-    if (!supabaseClient) {
-      loginMsg.style.color = '#f87171';
-      loginMsg.textContent = currentLang === 'ar' ? 'تعذّر الاتصال بخدمة الحسابات، يُرجى تحديث الصفحة.' : 'Could not connect to the accounts service, please refresh the page.';
-      return;
-    }
-
-    const email = document.getElementById('loginEmail').value.trim();
-    const password = document.getElementById('loginPassword').value;
-
-    loginMsg.style.color = '#93A0B4';
-    loginMsg.textContent = 'جاري تسجيل الدخول...';
-
-    const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
-
-    if (error) {
-      loginMsg.style.color = '#f87171';
-      loginMsg.textContent = 'خطأ: البريد الإلكتروني أو كلمة المرور غير صحيحة';
-      return;
-    }
-
-    loginMsg.style.color = '#4FD1C5';
-    loginMsg.textContent = '🎉 تم تسجيل الدخول بنجاح!';
-    loginForm.reset();
-    setTimeout(() => showAccount(data.user), 600);
-  });
-
-  /* ==================== تسجيل الخروج ==================== */
-  logoutBtn.addEventListener('click', async function(){
-    if (supabaseClient) await supabaseClient.auth.signOut();
-    location.reload();
-  });
-
-  /* ==================== عرض حالة الحساب المسجّل ==================== */
-  function showAccount(user){
-    // تسجيل الدخول ناجح — ننتقل مباشرة إلى لوحة تحكم العميل
-    window.location.href = '/dashboard/';
-  }
-
-  document.getElementById('payLoginBtn').addEventListener('click', openModal);
-
-  /* التحقق من وجود جلسة مسجّلة عند تحميل الصفحة */
-  if (supabaseClient) {
-    supabaseClient.auth.getSession().then(({ data: { session } }) => {
-      if (session && session.user) showAccount(session.user);
-    });
-  }
-
-  /* ==================== تبديل اللغة (عربي / English) ==================== */
+(function(){
+  const DASHBOARD_URL = '/dashboard/';
+  const MOYASAR_PUBLISHABLE_KEY = 'pk_live_U94Vg5e2kjJY557CU8qjnxv83shQJx6o125RrRey';
+  const Auth = window.RaseekhAuth;
+  const Catalog = window.RaseekhCatalog;
   let currentLang = localStorage.getItem('raseekh_lang') || 'ar';
+  let loggedInUser = null;
+  let clientProducts = [];
+  let clientSuggestions = [];
+
+  const authModal = document.getElementById('authModal');
+  const modalTabsBar = document.getElementById('modalTabsBar');
+  const panels = {
+    login: document.getElementById('modalLoginPanel'),
+    register: document.getElementById('modalRegisterPanel'),
+    forgot: document.getElementById('modalForgotPanel'),
+    reset: document.getElementById('modalResetPanel')
+  };
+
+  function t(ar, en){ return currentLang === 'ar' ? ar : en; }
 
   function applyLang(lang){
     currentLang = lang;
     localStorage.setItem('raseekh_lang', lang);
-
-    document.documentElement.setAttribute('lang', lang === 'ar' ? 'ar' : 'en');
-    document.documentElement.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+    document.documentElement.lang = lang;
+    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
     document.body.classList.toggle('lang-en', lang === 'en');
-
-    // نصوص عادية
-    document.querySelectorAll('[data-ar]').forEach(function(el){
-      const val = lang === 'ar' ? el.getAttribute('data-ar') : el.getAttribute('data-en');
-      if (val !== null) el.textContent = val;
+    document.querySelectorAll('[data-ar]').forEach(el => {
+      const v = lang === 'ar' ? el.getAttribute('data-ar') : el.getAttribute('data-en');
+      if (v !== null) el.textContent = v;
     });
-
-    // نصوص فيها وسوم HTML (مثل <em>)
-    document.querySelectorAll('[data-ar-html]').forEach(function(el){
-      const val = lang === 'ar' ? el.getAttribute('data-ar-html') : el.getAttribute('data-en-html');
-      if (val !== null) el.innerHTML = val;
+    document.querySelectorAll('[data-ar-html]').forEach(el => {
+      const v = lang === 'ar' ? el.getAttribute('data-ar-html') : el.getAttribute('data-en-html');
+      if (v !== null) el.innerHTML = v;
     });
-
-    // Placeholders
-    document.querySelectorAll('[data-ar-placeholder]').forEach(function(el){
-      const val = lang === 'ar' ? el.getAttribute('data-ar-placeholder') : el.getAttribute('data-en-placeholder');
-      if (val !== null) el.setAttribute('placeholder', val);
+    document.querySelectorAll('[data-ar-placeholder]').forEach(el => {
+      const v = lang === 'ar' ? el.getAttribute('data-ar-placeholder') : el.getAttribute('data-en-placeholder');
+      if (v !== null) el.setAttribute('placeholder', v);
     });
-
-    // إذا ما فيه مستخدم مسجل دخول، رجّع نص زر الحساب لوضعه الافتراضي
-    if (!accountPanel.classList.contains('active')) {
-      accountBtn.textContent = lang === 'ar' ? 'حساب العميل' : 'Client Account';
-    }
-
-    langToggle.textContent = lang === 'ar' ? 'EN' : 'AR';
+    document.querySelectorAll('[data-ar-aria]').forEach(el => {
+      const v = lang === 'ar' ? el.getAttribute('data-ar-aria') : el.getAttribute('data-en-aria');
+      if (v !== null) el.setAttribute('aria-label', v);
+    });
+    document.getElementById('langToggle').textContent = lang === 'ar' ? 'EN' : 'AR';
+    const title = lang === 'ar' ? 'راسخ — منتجات إلكترونية وخدمات تقنية' : 'Raseekh — Electronics & Technical Services';
+    const desc = lang === 'ar'
+      ? 'راسخ في السعودية: بيع إلكترونيات، صيانة مواقع، خدمات برمجة، وتطوير أنظمة ولوحات تحكم للعملاء.'
+      : 'Raseekh in Saudi Arabia: electronics, website maintenance, programming services, and custom client systems.';
+    document.title = title;
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) metaDesc.setAttribute('content', desc);
+    const ogTitle = document.querySelector('meta[property="og:title"]');
+    if (ogTitle) ogTitle.setAttribute('content', lang === 'ar' ? 'راسخ — إلكترونيات وخدمات تقنية' : 'Raseekh — Electronics & Technical Services');
+    const ogDesc = document.querySelector('meta[property="og:description"]');
+    if (ogDesc) ogDesc.setAttribute('content', desc);
+    const ogLocale = document.querySelector('meta[property="og:locale"]');
+    if (ogLocale) ogLocale.setAttribute('content', lang === 'ar' ? 'ar_SA' : 'en_US');
+    if (loggedInUser) document.getElementById('accountBtn').textContent = t('حسابي', 'My account');
+    else document.getElementById('accountBtn').textContent = t('تسجيل الدخول', 'Log in');
+    renderClientCatalog();
   }
 
-  const langToggle = document.getElementById('langToggle');
-  langToggle.addEventListener('click', function(){
-    applyLang(currentLang === 'ar' ? 'en' : 'ar');
+  function escapeHtml(str){
+    const d = document.createElement('div');
+    d.textContent = str == null ? '' : String(str);
+    return d.innerHTML;
+  }
+
+  function requestFromCatalog(opts){
+    const typeEl = document.getElementById('contactType');
+    const msgEl = document.getElementById('contactMsg');
+    const nameEl = document.getElementById('contactName');
+    if (opts.type && typeEl) typeEl.value = opts.type;
+    if (msgEl) msgEl.value = opts.message || '';
+    document.getElementById('contact').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const focusEl = (nameEl && !nameEl.value.trim()) ? nameEl : msgEl;
+    focusEl && focusEl.focus();
+  }
+
+  document.getElementById('heroQuoteForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const type = document.getElementById('heroQuoteType').value;
+    const message = document.getElementById('heroQuoteMsg').value.trim();
+    if (!message) return;
+    requestFromCatalog({ type, message });
+    const btn = document.getElementById('heroQuoteBtn');
+    const prevAr = btn.getAttribute('data-ar') || 'اطلب عرض سعر';
+    const prevEn = btn.getAttribute('data-en') || 'Request a quote';
+    btn.classList.remove('sent');
+    btn.textContent = t('أكمل النموذج ↓', 'Continue below ↓');
+    setTimeout(() => {
+      btn.setAttribute('data-ar', prevAr);
+      btn.setAttribute('data-en', prevEn);
+      applyLang(currentLang);
+    }, 2200);
   });
 
-  applyLang(currentLang);
+  function typeForProduct(p){
+    const cat = (p.category_en || p.category || '').toLowerCase();
+    if (cat.includes('programming') || cat.includes('برمجة')) return 'programming';
+    if (cat.includes('service') || cat.includes('خدمات') || p.kind === 'service') {
+      if ((p.name_en || '').toLowerCase().includes('maintenance') || (p.name || '').includes('صيانة')) return 'maintenance';
+      if ((p.name_en || '').toLowerCase().includes('system') || (p.name || '').includes('نظام')) return 'system';
+      return 'programming';
+    }
+    return 'electronics';
+  }
 
-  /* ==================== نظام الدفع (Moyasar) ==================== */
-  const MOYASAR_PUBLISHABLE_KEY = 'pk_live_U94Vg5e2kjJY557CU8qjnxv83shQJx6o125RrRey';
+  function renderClientCatalog(){
+    if (!Catalog) return;
+    clientProducts = Catalog.getClientProducts();
+    clientSuggestions = Catalog.getClientSuggestions();
+    if (!localStorage.getItem('raseekh_client_catalog_v1')) {
+      Catalog.publishClientCatalog(clientProducts, clientSuggestions);
+    }
+
+    const grid = document.getElementById('clientProductsGrid');
+    const suggestGrid = document.getElementById('clientSuggestionsGrid');
+    if (!grid || !suggestGrid) return;
+
+    if (!clientProducts.length) {
+      grid.innerHTML = `<div class="product-item"><p>${escapeHtml(t('لا توجد منتجات حالياً','No products yet'))}</p></div>`;
+    } else {
+      grid.innerHTML = clientProducts.map((p) => {
+        const name = Catalog.label(p, currentLang, 'name', 'name_en');
+        const desc = Catalog.label(p, currentLang, 'desc', 'desc_en') || t('متاح للطلب','Available to order');
+        const cat = Catalog.label(p, currentLang, 'category', 'category_en');
+        const status = p.kind === 'service'
+          ? t('خدمة متاحة','Service available')
+          : (p.stock > 0 ? t('متوفر','In stock') : t('غير متوفر','Out of stock'));
+        return `
+          <article class="product-item">
+            <span class="tag">${escapeHtml(cat || (p.kind === 'service' ? t('خدمة','Service') : t('منتج','Product')))}</span>
+            <h3>${escapeHtml(name)}</h3>
+            <p>${escapeHtml(desc)}</p>
+            <div class="meta">${escapeHtml(status)}</div>
+            <div class="price">${escapeHtml(Catalog.formatPrice ? Catalog.formatPrice(p, currentLang) : t('حسب الطلب','Quote on request'))}</div>
+            <button type="button" class="btn btn-ghost" data-request-product="${escapeHtml(p.id)}">${escapeHtml(t('اطلب عرض سعر','Request a quote'))}</button>
+          </article>
+        `;
+      }).join('');
+    }
+
+    suggestGrid.innerHTML = clientSuggestions.map((s) => {
+      const title = Catalog.label(s, currentLang, 'title', 'title_en');
+      const desc = Catalog.label(s, currentLang, 'desc', 'desc_en');
+      const badge = Catalog.label(s, currentLang, 'badge', 'badge_en');
+      const items = Catalog.suggestionItems(s, clientProducts, currentLang);
+      const priceText = Catalog.suggestionPriceLabel
+        ? Catalog.suggestionPriceLabel(s, clientProducts, currentLang)
+        : t('عرض سعر بعد المراجعة', 'Custom quote after review');
+      return `
+        <article class="suggest-card">
+          <span class="badge">${escapeHtml(badge)}</span>
+          <h3>${escapeHtml(title)}</h3>
+          <p>${escapeHtml(desc)}</p>
+          <div class="items">${escapeHtml(items.join(currentLang === 'ar' ? ' • ' : ' • '))}</div>
+          <div class="total">${escapeHtml(priceText)}</div>
+          <button type="button" class="btn btn-primary" data-request-suggestion="${escapeHtml(s.id)}">${escapeHtml(t('اطلب عرض سعر','Request a quote'))}</button>
+        </article>
+      `;
+    }).join('');
+  }
+
+  document.getElementById('clientProductsGrid').addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-request-product]');
+    if (!btn || !Catalog) return;
+    const p = clientProducts.find((x) => x.id === btn.dataset.requestProduct);
+    if (!p) return;
+    const name = Catalog.label(p, currentLang, 'name', 'name_en');
+    requestFromCatalog({
+      type: typeForProduct(p),
+      message: t(
+        'أرغب بطلب عرض سعر لـ: ' + name + ' — ' + (Catalog.formatPrice ? Catalog.formatPrice(p, 'ar') : 'حسب الطلب'),
+        'I would like a quote for: ' + name + ' — ' + (Catalog.formatPrice ? Catalog.formatPrice(p, 'en') : 'on request')
+      )
+    });
+  });
+
+  document.getElementById('clientSuggestionsGrid').addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-request-suggestion]');
+    if (!btn || !Catalog) return;
+    const s = clientSuggestions.find((x) => x.id === btn.dataset.requestSuggestion);
+    if (!s) return;
+    const title = Catalog.label(s, currentLang, 'title', 'title_en');
+    const items = Catalog.suggestionItems(s, clientProducts, currentLang);
+    const priceText = Catalog.suggestionPriceLabel
+      ? Catalog.suggestionPriceLabel(s, clientProducts, currentLang)
+      : t('عرض سعر بعد المراجعة', 'Custom quote after review');
+    requestFromCatalog({
+      type: 'programming',
+      message: t(
+        'أرغب بطلب عرض سعر للاقتراح: ' + title + '\nيشمل: ' + items.join('، ') + '\n' + priceText,
+        'I would like a quote for suggestion: ' + title + '\nIncludes: ' + items.join(', ') + '\n' + priceText
+      )
+    });
+  });
+
+  document.getElementById('langToggle').addEventListener('click', () => applyLang(currentLang === 'ar' ? 'en' : 'ar'));
+  (function bootLang(){
+    const q = new URLSearchParams(location.search).get('lang');
+    if (q === 'en' || q === 'ar') currentLang = q;
+    applyLang(currentLang);
+  })();
+
+  const navToggle = document.getElementById('navToggle');
+  const navLinks = document.getElementById('navLinks');
+  function setNavOpen(open){
+    navLinks.classList.toggle('open', open);
+    navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+  navToggle.addEventListener('click', () => setNavOpen(!navLinks.classList.contains('open')));
+  navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => setNavOpen(false)));
+
+  let lastFocusBeforeAuth = null;
+  function openModal(){
+    lastFocusBeforeAuth = document.activeElement;
+    authModal.classList.add('open');
+    authModal.setAttribute('aria-hidden', 'false');
+    const focusEl = document.querySelector('#authModal .panel-auth.active input') || document.getElementById('modalCloseBtn');
+    setTimeout(() => focusEl && focusEl.focus(), 20);
+  }
+  function closeModal(){
+    authModal.classList.remove('open');
+    authModal.setAttribute('aria-hidden', 'true');
+    ['loginMsg','registerMsg','forgotMsg','resetMsg'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = ''; });
+    if (lastFocusBeforeAuth && typeof lastFocusBeforeAuth.focus === 'function') lastFocusBeforeAuth.focus();
+  }
+  function showAuthPanel(name){
+    Object.values(panels).forEach(p => p.classList.remove('active'));
+    panels[name].classList.add('active');
+    modalTabsBar.style.display = (name === 'login' || name === 'register') ? 'flex' : 'none';
+    if (name === 'login') { document.getElementById('modalLoginTabBtn').classList.add('active'); document.getElementById('modalRegisterTabBtn').classList.remove('active'); }
+    if (name === 'register') { document.getElementById('modalRegisterTabBtn').classList.add('active'); document.getElementById('modalLoginTabBtn').classList.remove('active'); }
+    const titleEl = document.getElementById('authModalTitle');
+    if (titleEl) {
+      const heading = panels[name] && panels[name].querySelector('h3');
+      if (heading) {
+        titleEl.setAttribute('data-ar', heading.getAttribute('data-ar') || heading.textContent);
+        titleEl.setAttribute('data-en', heading.getAttribute('data-en') || heading.textContent);
+        titleEl.textContent = currentLang === 'ar'
+          ? (heading.getAttribute('data-ar') || heading.textContent)
+          : (heading.getAttribute('data-en') || heading.textContent);
+      }
+    }
+  }
+
+  document.getElementById('accountBtn').addEventListener('click', () => {
+    if (loggedInUser) { window.location.href = DASHBOARD_URL; return; }
+    showAuthPanel('login'); openModal();
+  });
+  document.getElementById('modalCloseBtn').addEventListener('click', closeModal);
+  authModal.addEventListener('click', e => { if (e.target === authModal) closeModal(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && authModal.classList.contains('open')) closeModal(); });
+  document.getElementById('modalLoginTabBtn').addEventListener('click', () => showAuthPanel('login'));
+  document.getElementById('modalRegisterTabBtn').addEventListener('click', () => showAuthPanel('register'));
+  document.getElementById('forgotPasswordLink').addEventListener('click', () => showAuthPanel('forgot'));
+  document.getElementById('backToLoginLink').addEventListener('click', () => showAuthPanel('login'));
+  document.getElementById('payLoginBtn').addEventListener('click', () => { showAuthPanel('login'); openModal(); });
+  function goDashboard(){ window.location.href = DASHBOARD_URL; }
+
+  function setPayUnlocked(user){
+    loggedInUser = user || null;
+    const locked = document.getElementById('payLockedMessage');
+    const box = document.getElementById('payBoxContent');
+    const accountBtn = document.getElementById('accountBtn');
+    if (user) {
+      locked.style.display = 'none';
+      box.style.display = 'block';
+      accountBtn.classList.remove('btn-ghost');
+      accountBtn.classList.add('btn-primary');
+      accountBtn.textContent = t('حسابي', 'My account');
+      const fullName = user.user_metadata && user.user_metadata.full_name;
+      const phone = user.user_metadata && user.user_metadata.phone;
+      if (fullName) {
+        document.getElementById('payName').value = fullName;
+        if (!document.getElementById('contactName').value) document.getElementById('contactName').value = fullName;
+      }
+      if (phone && !document.getElementById('contactPhone').value) document.getElementById('contactPhone').value = phone;
+      if (user.email && !document.getElementById('contactEmail').value) document.getElementById('contactEmail').value = user.email;
+    } else {
+      locked.style.display = 'flex';
+      box.style.display = 'none';
+      accountBtn.classList.add('btn-primary');
+      accountBtn.textContent = t('تسجيل الدخول', 'Log in');
+    }
+  }
+
+  document.getElementById('loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const msg = document.getElementById('loginMsg');
+    if (!Auth) { msg.style.color = 'var(--danger)'; msg.textContent = t('تعذّر تحميل نظام الحسابات', 'Auth system failed to load'); return; }
+    msg.style.color = 'var(--muted)'; msg.textContent = t('جاري تسجيل الدخول...', 'Signing in...');
+    try {
+      const result = await Auth.signIn({ email: document.getElementById('loginEmail').value.trim(), password: document.getElementById('loginPassword').value });
+      msg.style.color = 'var(--ok)'; msg.textContent = t('تم الدخول — جاري التحويل...', 'Signed in — redirecting...');
+      setPayUnlocked(result.user);
+      const role = (Auth.isAdmin && Auth.isAdmin(result.user)) ? 'admin' : 'client';
+      if (window.RaseekhActivity) RaseekhActivity.recordLogin(result.user, role);
+      setTimeout(goDashboard, 400);
+    } catch (err) { msg.style.color = 'var(--danger)'; msg.textContent = Auth.friendlyError(err, currentLang); }
+  });
+
+  document.getElementById('registerForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const msg = document.getElementById('registerMsg');
+    if (!Auth) { msg.style.color = 'var(--danger)'; msg.textContent = t('تعذّر تحميل نظام الحسابات', 'Auth system failed to load'); return; }
+    msg.style.color = 'var(--muted)'; msg.textContent = t('جاري إنشاء الحساب...', 'Creating account...');
+    try {
+      const result = await Auth.signUp({
+        email: document.getElementById('registerEmail').value.trim(),
+        password: document.getElementById('registerPassword').value,
+        full_name: document.getElementById('registerName').value.trim(),
+        phone: document.getElementById('registerPhone').value.trim()
+      });
+      if (result && result.needsEmailConfirm) {
+        msg.style.color = 'var(--ok)';
+        msg.textContent = t('تم إنشاء الحساب — تحققوا من البريد لتفعيله ثم سجّلوا الدخول', 'Account created — check your email to activate, then sign in');
+        showAuthPanel('login');
+        return;
+      }
+      msg.style.color = 'var(--ok)'; msg.textContent = t('تم إنشاء الحساب — جاري التحويل...', 'Account created — redirecting...');
+      setPayUnlocked(result.user);
+      if (window.RaseekhTerms && result.user) RaseekhTerms.acceptTerms(result.user);
+      if (window.RaseekhActivity) RaseekhActivity.recordLogin(result.user, 'client');
+      setTimeout(goDashboard, 400);
+    } catch (err) { msg.style.color = 'var(--danger)'; msg.textContent = Auth.friendlyError(err, currentLang); }
+  });
+
+  document.getElementById('forgotForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const msg = document.getElementById('forgotMsg');
+    if (!Auth) return;
+    msg.textContent = t('جاري الإرسال...', 'Sending...');
+    try {
+      const result = await Auth.resetPasswordRequest(document.getElementById('forgotEmail').value.trim());
+      msg.style.color = 'var(--ok)';
+      if (result.provider === 'local') { msg.textContent = t('تم التحقق — عيّن كلمة مرور جديدة الآن', 'Verified — set a new password now'); showAuthPanel('reset'); }
+      else msg.textContent = t('تم إرسال رابط إعادة التعيين', 'Reset link sent');
+    } catch (err) { msg.style.color = 'var(--danger)'; msg.textContent = Auth.friendlyError(err, currentLang); }
+  });
+
+  document.getElementById('resetForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const msg = document.getElementById('resetMsg');
+    if (!Auth) return;
+    try {
+      await Auth.completePasswordReset(document.getElementById('resetPassword').value);
+      msg.style.color = 'var(--ok)'; msg.textContent = t('تم تحديث كلمة المرور', 'Password updated');
+    } catch (err) { msg.style.color = 'var(--danger)'; msg.textContent = Auth.friendlyError(err, currentLang); }
+  });
+
+  if (Auth) {
+    Auth.getSession().then(({ user }) => {
+      if (user) setPayUnlocked(user);
+      if (location.hash === '#reset') { openModal(); showAuthPanel('reset'); }
+    });
+    if (Auth.supabase) {
+      Auth.supabase.auth.onAuthStateChange((event, session) => {
+        if (event === 'PASSWORD_RECOVERY' || (event === 'SIGNED_IN' && location.hash === '#reset')) { openModal(); showAuthPanel('reset'); }
+        if (event === 'SIGNED_OUT') setPayUnlocked(null);
+        if (event === 'SIGNED_IN' && session?.user && location.hash !== '#reset') setPayUnlocked(session.user);
+      });
+    }
+  }
+
+  document.getElementById('contactForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const result = document.getElementById('contactResult');
+    const emailVal = document.getElementById('contactEmail').value.trim();
+    const phoneVal = document.getElementById('contactPhone').value.trim();
+    const sessionEmail = loggedInUser && loggedInUser.email ? loggedInUser.email : '';
+    const email = emailVal || sessionEmail;
+    if (!email && !phoneVal) {
+      result.style.color = 'var(--danger)';
+      result.textContent = t('أدخل بريداً أو رقم جوال للتواصل', 'Enter an email or phone number so we can reply');
+      (emailVal ? document.getElementById('contactPhone') : document.getElementById('contactEmail')).focus();
+      return;
+    }
+    const payload = {
+      name: document.getElementById('contactName').value.trim(),
+      phone: phoneVal,
+      company: document.getElementById('contactCompany').value.trim(),
+      type: document.getElementById('contactType').value,
+      message: document.getElementById('contactMsg').value.trim(),
+      at: new Date().toISOString(),
+      email: email,
+      userId: loggedInUser && loggedInUser.id ? loggedInUser.id : ''
+    };
+    const typeTitle = Catalog && Catalog.requestTypeLabel
+      ? Catalog.requestTypeLabel(payload.type, currentLang)
+      : payload.type;
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    if (submitBtn) submitBtn.disabled = true;
+    result.style.color = 'var(--muted)';
+    result.textContent = t('جاري الإرسال...', 'Sending...');
+    let delivery = null;
+    let saved = null;
+    try {
+      if (Catalog && Catalog.addSharedRequest) {
+        saved = Catalog.addSharedRequest({
+          name: payload.name,
+          phone: payload.phone,
+          company: payload.company,
+          email: payload.email,
+          userId: payload.userId,
+          title: typeTitle,
+          message: payload.message,
+          type: payload.type,
+          source: loggedInUser ? 'client' : 'site',
+          status: 'new',
+          fingerprint: 'site:' + payload.at + ':' + payload.message + ':' + payload.phone + ':' + payload.email
+        });
+        if (saved && saved.deliveryPromise) delivery = await saved.deliveryPromise;
+      }
+    } catch (_) {}
+    const ok = !!(delivery && delivery.delivered);
+    result.style.color = ok ? 'var(--ok)' : 'var(--danger)';
+    result.classList.remove('ok-pulse');
+    void result.offsetWidth;
+    if (ok) result.classList.add('ok-pulse');
+    result.textContent = ok
+      ? (loggedInUser
+        ? t('✓ تم إرسال طلبكم إلى راسخ — تابعوه من حساب العميل', '✓ Request sent to Raseekh — track it in your client account')
+        : t('✓ تم إرسال طلبكم إلى راسخ — سنراجع ونرد', '✓ Request sent to Raseekh — we will review and reply'))
+      : t('تعذّر إيصال الطلب الآن. حاولوا مرة أخرى أو تواصلوا لاحقاً.', 'Could not deliver the request now. Please try again later.');
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      if (ok) {
+        submitBtn.classList.add('sent');
+        const prev = submitBtn.textContent;
+        submitBtn.textContent = t('تم الإرسال', 'Sent');
+        setTimeout(() => { submitBtn.classList.remove('sent'); submitBtn.textContent = prev; applyLang(currentLang); }, 1800);
+      }
+    }
+    if (ok) {
+      e.target.reset();
+      const hq = document.getElementById('heroQuoteMsg');
+      if (hq) hq.value = '';
+      if (loggedInUser) {
+        const fullName = loggedInUser.user_metadata && loggedInUser.user_metadata.full_name;
+        const phone = loggedInUser.user_metadata && loggedInUser.user_metadata.phone;
+        if (fullName) document.getElementById('contactName').value = fullName;
+        if (phone) document.getElementById('contactPhone').value = phone;
+        if (loggedInUser.email) document.getElementById('contactEmail').value = loggedInUser.email;
+      }
+    }
+  });
 
   const payDetailsStep = document.getElementById('payDetailsStep');
   const paymentFormStep = document.getElementById('paymentFormStep');
   const payStatusSuccess = document.getElementById('payStatusSuccess');
   const payStatusFailed = document.getElementById('payStatusFailed');
-  const payContinueBtn = document.getElementById('payContinueBtn');
-  const payBackBtn = document.getElementById('payBackBtn');
-  const payRetryBtn = document.getElementById('payRetryBtn');
-  const payAmountInput = document.getElementById('payAmount');
-  const payNameInput = document.getElementById('payName');
-  const payNoteInput = document.getElementById('payNote');
-  const payValidationMsg = document.getElementById('payValidationMsg');
-  const paySummaryAmount = document.getElementById('paySummaryAmount');
-
   function showPayStep(step){
-    [payDetailsStep, paymentFormStep, payStatusSuccess, payStatusFailed].forEach(function(el){
-      el.classList.remove('active');
-    });
+    [payDetailsStep, paymentFormStep, payStatusSuccess, payStatusFailed].forEach(el => el.classList.remove('active'));
     step.classList.add('active');
   }
-
-  payContinueBtn.addEventListener('click', function(){
-    const amount = parseFloat(payAmountInput.value);
-    const name = payNameInput.value.trim();
-
-    if (!name) {
-      payValidationMsg.style.color = '#f87171';
-      payValidationMsg.textContent = currentLang === 'ar' ? 'الرجاء كتابة الاسم' : 'Please enter your name';
-      return;
-    }
-    if (!amount || amount < 1) {
-      payValidationMsg.style.color = '#f87171';
-      payValidationMsg.textContent = currentLang === 'ar' ? 'الرجاء إدخال مبلغ صحيح (1 ريال على الأقل)' : 'Please enter a valid amount (minimum 1 SAR)';
-      return;
-    }
-    payValidationMsg.textContent = '';
-
-    if (typeof Moyasar === 'undefined') {
-      payValidationMsg.style.color = '#f87171';
-      payValidationMsg.textContent = currentLang === 'ar' ? 'تعذّر تحميل بوابة الدفع، يُرجى التحقق من الاتصال بالإنترنت وتحديث الصفحة.' : 'Could not load the payment gateway, check your connection and refresh the page.';
-      return;
-    }
-
-    const amountHalalas = Math.round(amount * 100);
-    paySummaryAmount.textContent = amount.toFixed(2) + ' SAR';
-
-    // تفريغ نموذج الدفع القديم إن وجد (لإعادة الإنشاء بمبلغ جديد)
-    const mysrContainer = document.getElementById('mysr-form');
-    mysrContainer.innerHTML = '';
-
-    const note = payNoteInput.value.trim();
-    const description = (note ? note + ' — ' : '') + name;
-
+  document.getElementById('payContinueBtn').addEventListener('click', () => {
+    const amount = parseFloat(document.getElementById('payAmount').value);
+    const name = document.getElementById('payName').value.trim();
+    const msg = document.getElementById('payValidationMsg');
+    if (!name) { msg.style.color = 'var(--danger)'; msg.textContent = t('الرجاء كتابة الاسم', 'Please enter your name'); return; }
+    if (!amount || amount < 1) { msg.style.color = 'var(--danger)'; msg.textContent = t('أدخل مبلغاً صحيحاً', 'Enter a valid amount'); return; }
+    msg.textContent = '';
+    if (typeof Moyasar === 'undefined') { msg.style.color = 'var(--danger)'; msg.textContent = t('تعذّر تحميل بوابة الدفع', 'Payment gateway failed to load'); return; }
+    document.getElementById('paySummaryAmount').textContent = amount.toFixed(2) + ' SAR';
+    document.getElementById('mysr-form').innerHTML = '';
+    const note = document.getElementById('payNote').value.trim();
     Moyasar.init({
-      element: '.mysr-form, #mysr-form',
-      amount: amountHalalas,
+      element: '#mysr-form',
+      amount: Math.round(amount * 100),
       currency: 'SAR',
-      description: description,
+      description: (note ? note + ' — ' : '') + name,
       publishable_api_key: MOYASAR_PUBLISHABLE_KEY,
       callback_url: window.location.origin + window.location.pathname + '#pay',
       methods: ['creditcard', 'applepay'],
-      on_completed: function(payment){
-        // ينفذ هذا عند نجاح أو فشل الدفع داخل نفس الصفحة (بدون تحويل)
-        if (payment && payment.status === 'paid') {
-          showPayStep(payStatusSuccess);
-        } else {
-          showPayStep(payStatusFailed);
-        }
-        return true;
-      }
+      on_completed: function(payment){ showPayStep(payment && payment.status === 'paid' ? payStatusSuccess : payStatusFailed); return true; }
     });
-
     showPayStep(paymentFormStep);
   });
-
-  payBackBtn.addEventListener('click', function(){
-    showPayStep(payDetailsStep);
-  });
-
-  payRetryBtn.addEventListener('click', function(){
-    showPayStep(payDetailsStep);
-  });
-
-  /* التحقق من رجوع Moyasar بعد الدفع عبر الرابط (id و status بالـ query string) */
+  document.getElementById('payBackBtn').addEventListener('click', () => showPayStep(payDetailsStep));
+  document.getElementById('payRetryBtn').addEventListener('click', () => showPayStep(payDetailsStep));
   (function checkPaymentReturn(){
-    const params = new URLSearchParams(window.location.search);
-    const status = params.get('status');
-    if (status === 'paid') {
-      showPayStep(payStatusSuccess);
-      document.getElementById('pay').scrollIntoView();
-    } else if (status === 'failed') {
-      showPayStep(payStatusFailed);
-      document.getElementById('pay').scrollIntoView();
-    }
+    const status = new URLSearchParams(window.location.search).get('status');
+    if (status === 'paid') { document.getElementById('payBoxContent').style.display = 'block'; document.getElementById('payLockedMessage').style.display = 'none'; showPayStep(payStatusSuccess); document.getElementById('pay').scrollIntoView(); }
+    if (status === 'failed') { document.getElementById('payBoxContent').style.display = 'block'; document.getElementById('payLockedMessage').style.display = 'none'; showPayStep(payStatusFailed); document.getElementById('pay').scrollIntoView(); }
   })();
-</script>
 
+  const revealEls = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => { if (entry.isIntersecting) { entry.target.classList.add('in'); io.unobserve(entry.target); } });
+    }, { threshold: 0.14, rootMargin: '0px 0px -40px 0px' });
+    revealEls.forEach((el) => io.observe(el));
+  } else revealEls.forEach((el) => el.classList.add('in'));
+
+  const Terms = window.RaseekhTerms;
+  const termsOverlay = document.getElementById('termsOverlay');
+  const termsBody = document.getElementById('termsOverlayBody');
+  function openTermsOverlay(e){
+    if (e) e.preventDefault();
+    if (Terms && termsBody && !termsBody.dataset.ready) {
+      Terms.renderInto(termsBody);
+      termsBody.dataset.ready = '1';
+      applyLang(currentLang);
+    }
+    if (termsOverlay) {
+      termsOverlay.classList.add('open');
+      termsOverlay.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('terms-locked');
+    }
+  }
+  function closeTermsOverlay(){
+    if (!termsOverlay) return;
+    termsOverlay.classList.remove('open');
+    termsOverlay.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('terms-locked');
+  }
+  const openTermsBtn = document.getElementById('openTermsOverlayBtn');
+  if (openTermsBtn) openTermsBtn.addEventListener('click', openTermsOverlay);
+  const regTermsLink = document.getElementById('registerTermsLink');
+  if (regTermsLink) regTermsLink.addEventListener('click', openTermsOverlay);
+  const closeTermsBtn = document.getElementById('closeTermsOverlayBtn');
+  if (closeTermsBtn) closeTermsBtn.addEventListener('click', closeTermsOverlay);
+  if (termsOverlay) {
+    termsOverlay.addEventListener('click', (e) => { if (e.target === termsOverlay) closeTermsOverlay(); });
+  }
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && termsOverlay && termsOverlay.classList.contains('open')) closeTermsOverlay();
+  });
+
+  if (window.RaseekhCatalog && RaseekhCatalog.syncPublicNotifyFromCloud) {
+    RaseekhCatalog.syncPublicNotifyFromCloud().catch(() => {});
+  }
+
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js').catch(() => {});
+    });
+  }
+})();
+</script>
 </body>
 </html>
