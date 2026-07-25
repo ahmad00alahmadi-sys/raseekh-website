@@ -29,6 +29,7 @@ body::before{
 body.lang-en .logo{font-family:'Space Grotesk',sans-serif}
 .logo em{font-style:normal;color:var(--copper)}
 .actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.nav-prefs{display:inline-flex;align-items:center;gap:6px}
 .btn{
   display:inline-flex;align-items:center;justify-content:center;
   border:none;border-radius:var(--radius);padding:11px 16px;cursor:pointer;font-weight:700;text-decoration:none;

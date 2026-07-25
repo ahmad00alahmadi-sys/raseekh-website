@@ -49,7 +49,8 @@ body::before{
 .logo{font-family:'Tajawal',sans-serif;font-size:1.6rem;font-weight:800;color:var(--navy);text-decoration:none}
 body.lang-en .logo{font-family:'Space Grotesk',sans-serif}
 .logo em{font-style:normal;color:var(--copper)}
-.actions{display:flex;gap:8px;align-items:center}
+.actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.nav-prefs{display:inline-flex;align-items:center;gap:6px}
 .btn{
   display:inline-flex;align-items:center;justify-content:center;
   border:none;border-radius:var(--radius);padding:11px 16px;cursor:pointer;font-weight:700;text-decoration:none;
@@ -88,8 +89,10 @@ body.lang-en h1,body.lang-en h2,body.lang-en h3{font-family:'Space Grotesk',sans
     <div class="top">
       <a class="logo" href="/" data-ar-html='را<em>سخ</em>' data-en-html='Ra<em>seekh</em>'>را<em>سخ</em></a>
       <div class="actions">
-                <button class="theme-btn" type="button" data-theme-toggle data-ar="ليلي" data-en="Night" aria-pressed="true" aria-label="تفعيل النظام الليلي">ليلي</button>
+      <div class="nav-prefs" role="group" data-ar-aria="اللغة والمظهر" data-en-aria="Language and theme" aria-label="اللغة والمظهر">
         <button class="lang-btn" id="langToggle" type="button">EN</button>
+        <button class="lang-btn theme-btn" type="button" data-theme-toggle data-ar="ليلي" data-en="Night" aria-pressed="true" aria-label="تفعيل النظام الليلي">ليلي</button>
+      </div>
         <a class="btn btn-ghost" href="/terms/" data-ar="الشروط" data-en="Terms">الشروط</a>
         <a class="btn btn-ghost" href="/security/" data-ar="الأمان" data-en="Security">الأمان</a>
         <a class="btn btn-ghost" href="/" data-ar="الرئيسية" data-en="Home">الرئيسية</a>
