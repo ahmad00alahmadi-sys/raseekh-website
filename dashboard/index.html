@@ -15,6 +15,8 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="/auth.js"></script>
 <script src="/catalog.js"></script>
+<script src="/terms.js"></script>
+<script src="/activity.js"></script>
 <style>
 :root{
   --ink:#10233A;--navy:#16324F;--harbor:#2A6F7A;--copper:#C45C26;--sand:#E8A05A;
@@ -101,6 +103,27 @@ a{color:inherit;text-decoration:none}
 .status-chip.closed{background:var(--mist);color:var(--muted)}
 .setup-steps{display:flex;flex-direction:column;gap:8px;text-align:start;margin-top:12px;color:var(--muted);font-size:.9rem}
 .setup-steps b{color:var(--navy)}
+.terms-gate{
+  position:fixed;inset:0;z-index:300;display:none;align-items:center;justify-content:center;
+  padding:16px;background:rgba(16,35,58,.78);backdrop-filter:blur(8px);
+}
+.terms-gate.open{display:flex}
+.terms-gate-sheet{
+  width:min(840px,100%);max-height:min(90vh,920px);overflow:auto;background:var(--panel);
+  border:1.5px solid var(--line);border-radius:10px;padding:22px 18px 16px;box-shadow:var(--shadow);
+  border-top:4px solid var(--copper);
+}
+.terms-gate-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;position:sticky;bottom:0;background:linear-gradient(180deg,transparent,var(--panel) 30%);padding-top:16px}
+.terms-doc .eyebrow{color:var(--copper);font-weight:700;font-size:.8rem;margin-bottom:8px}
+.terms-doc-head h2{font-size:clamp(1.4rem,2.8vw,1.9rem);color:var(--navy);margin-bottom:8px}
+.terms-doc-head p{color:var(--muted);margin-bottom:8px}
+.terms-updated{color:var(--copper);font-weight:700;font-size:.82rem;margin-bottom:12px}
+.terms-list{display:flex;flex-direction:column}
+.terms-item{padding:12px 0;border-bottom:1.5px solid var(--line)}
+.terms-item:last-child{border-bottom:none}
+.terms-item h3{color:var(--navy);font-size:1rem;margin-bottom:6px}
+.terms-item p{color:var(--muted);font-size:.92rem;line-height:1.75}
+.audience-stats{margin-top:14px}
 .btn{
   display:inline-flex;align-items:center;justify-content:center;gap:8px;
   border:none;border-radius:var(--radius);padding:12px 18px;cursor:pointer;font-weight:700;
@@ -432,6 +455,7 @@ body.is-admin .client-only{display:none!important}
     <div class="top-actions" style="justify-content:flex-end;margin-bottom:8px">
       <div class="clock" id="dashClock">—</div>
       <button class="lang-btn" id="dashLangBtn" type="button">EN</button>
+      <button class="btn btn-ghost client-only" id="viewTermsBtn" type="button" data-ar="الشروط" data-en="Terms">الشروط</button>
       <a class="btn btn-ghost" href="/" data-ar="الصفحة الرئيسية" data-en="Home">الصفحة الرئيسية</a>
       <button class="btn btn-ghost mobile-logout" id="logoutBtnMobile" type="button" data-ar="خروج" data-en="Log out">خروج</button>
     </div>
@@ -455,6 +479,12 @@ body.is-admin .client-only{display:none!important}
           <div class="value" id="statNewRequests">0</div>
           <div class="hint" data-ar="بانتظار المتابعة" data-en="awaiting follow-up">بانتظار المتابعة</div>
         </div>
+      </div>
+      <div class="stats admin-only audience-stats">
+        <div class="stat"><div class="label" data-ar="سجّلوا دخول" data-en="Logged-in users">سجّلوا دخول</div><div class="value" id="statRegisteredUsers">0</div><div class="hint" data-ar="حسابات فريدة" data-en="unique accounts">حسابات فريدة</div></div>
+        <div class="stat"><div class="label" data-ar="نشط الآن" data-en="Active now">نشط الآن</div><div class="value" id="statActiveUsers">0</div><div class="hint" data-ar="آخر 15 دقيقة" data-en="last 15 minutes">آخر 15 دقيقة</div></div>
+        <div class="stat"><div class="label" data-ar="دخول اليوم" data-en="Logins today">دخول اليوم</div><div class="value" id="statLoginsToday">0</div><div class="hint" data-ar="حسابات نشطة اليوم" data-en="accounts active today">حسابات نشطة اليوم</div></div>
+        <div class="stat"><div class="label" data-ar="إجمالي الدخول" data-en="Total logins">إجمالي الدخول</div><div class="value" id="statTotalLogins">0</div><div class="hint" data-ar="كل الجلسات" data-en="all sessions">كل الجلسات</div></div>
       </div>
       <div class="stats client-only">
         <div class="stat"><div class="label" data-ar="خدمات متاحة" data-en="Available services">خدمات متاحة</div><div class="value" id="statClientProducts">0</div><div class="hint" data-ar="للطلب" data-en="to request">للطلب</div></div>
@@ -776,6 +806,19 @@ body.is-admin .client-only{display:none!important}
   </div>
 </div>
 
+<div class="terms-gate" id="termsGate" role="dialog" aria-modal="true" aria-labelledby="termsGateTitle" aria-hidden="true">
+  <div class="terms-gate-sheet">
+    <h2 id="termsGateTitle" style="margin-bottom:8px" data-ar="الشروط والأحكام" data-en="Terms & Conditions">الشروط والأحكام</h2>
+    <p style="color:var(--muted);font-size:.92rem;margin-bottom:12px" data-ar="لاكمال استخدام حساب العميل، اقرأوا الشروط ثم وافقوا للمتابعة." data-en="To continue using the client account, read the terms and accept to proceed.">لاكمال استخدام حساب العميل، اقرأوا الشروط ثم وافقوا للمتابعة.</p>
+    <div id="termsGateBody"></div>
+    <div class="terms-gate-actions">
+      <button type="button" class="btn btn-primary" id="acceptTermsBtn" data-ar="أوافق وأكمل" data-en="I agree & continue">أوافق وأكمل</button>
+      <a class="btn btn-ghost" href="/terms/" target="_blank" rel="noopener" data-ar="فتح كصفحة" data-en="Open as page">فتح كصفحة</a>
+      <button type="button" class="btn btn-ghost" id="termsGateCloseBtn" style="display:none" data-ar="إغلاق" data-en="Close">إغلاق</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -1070,10 +1113,79 @@ body.is-admin .client-only{display:none!important}
   function showLogin(){
     isDemo = false;
     isAdminUser = false;
+    currentUser = null;
+    clearInterval(heartbeatTimer);
+    closeTermsGate();
     setDemoFlag(false);
     document.body.classList.remove('is-admin', 'is-client');
     document.getElementById('loginView').classList.remove('hidden');
     document.getElementById('dashboardView').classList.remove('active');
+  }
+
+  const Activity = window.RaseekhActivity;
+  const Terms = window.RaseekhTerms;
+  let heartbeatTimer = null;
+  let termsGateMode = 'accept'; // accept | view
+
+  function openTermsGate(mode){
+    termsGateMode = mode || 'accept';
+    const gate = document.getElementById('termsGate');
+    const body = document.getElementById('termsGateBody');
+    const acceptBtn = document.getElementById('acceptTermsBtn');
+    const closeBtn = document.getElementById('termsGateCloseBtn');
+    if (Terms && body) {
+      Terms.renderInto(body);
+      applyLang(currentLang);
+    }
+    if (acceptBtn) acceptBtn.style.display = termsGateMode === 'accept' ? 'inline-flex' : 'none';
+    if (closeBtn) closeBtn.style.display = termsGateMode === 'view' ? 'inline-flex' : 'none';
+    if (gate) {
+      gate.classList.add('open');
+      gate.setAttribute('aria-hidden', 'false');
+    }
+  }
+  function closeTermsGate(){
+    const gate = document.getElementById('termsGate');
+    if (!gate) return;
+    gate.classList.remove('open');
+    gate.setAttribute('aria-hidden', 'true');
+  }
+  function ensureClientTerms(){
+    if (isAdminUser || isDemo || !currentUser || !Terms) {
+      closeTermsGate();
+      return true;
+    }
+    if (Terms.hasAccepted(currentUser)) {
+      closeTermsGate();
+      return true;
+    }
+    openTermsGate('accept');
+    return false;
+  }
+  function startPresence(){
+    clearInterval(heartbeatTimer);
+    if (!Activity || !currentUser) return;
+    Activity.heartbeat(currentUser, isAdminUser ? 'admin' : 'client');
+    heartbeatTimer = setInterval(() => {
+      if (!currentUser) return;
+      Activity.heartbeat(currentUser, isAdminUser ? 'admin' : 'client');
+      if (isAdminUser) renderAudienceStats();
+    }, 60000);
+  }
+  async function renderAudienceStats(){
+    if (!isAdminUser || !Activity) return;
+    let stats = Activity.getStats();
+    try {
+      if (Activity.syncFromCloud) stats = await Activity.syncFromCloud();
+    } catch (_) {}
+    const set = (id, val) => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = String(val == null ? 0 : val);
+    };
+    set('statRegisteredUsers', stats.registered);
+    set('statActiveUsers', stats.activeNow);
+    set('statLoginsToday', stats.loginsToday);
+    set('statTotalLogins', stats.totalLogins);
   }
 
   function showDashboard(user, demo){
@@ -1093,6 +1205,11 @@ body.is-admin .client-only{display:none!important}
     document.getElementById('settingsName').value = isDemo ? t('زائر تجريبي','Demo guest') : (name || '');
     document.getElementById('settingsPassword').disabled = isDemo;
     document.getElementById('dashUserStatus').textContent = isDemo ? t('وضع تجريبي','Demo mode') : t('متصل','Online');
+
+    if (Activity && currentUser && !isDemo) {
+      Activity.recordLogin(currentUser, isAdminUser ? 'admin' : 'client');
+    }
+    startPresence();
 
     loadProducts();
     loadSales();
@@ -1117,7 +1234,9 @@ body.is-admin .client-only{display:none!important}
     applyLang(currentLang);
     startClock();
     switchPage('overview');
+    ensureClientTerms();
     if (isAdminUser) {
+      renderAudienceStats();
       refreshClientRequestsFromCloud().then(() => {
         updateLeadsBadge();
         renderOverview();
@@ -1251,6 +1370,22 @@ body.is-admin .client-only{display:none!important}
   document.getElementById('logoutBtn').addEventListener('click', doLogout);
   document.getElementById('logoutBtnMobile').addEventListener('click', doLogout);
 
+  const acceptTermsBtn = document.getElementById('acceptTermsBtn');
+  if (acceptTermsBtn) {
+    acceptTermsBtn.addEventListener('click', () => {
+      if (!currentUser || !Terms) return;
+      Terms.acceptTerms(currentUser);
+      closeTermsGate();
+      showToast(t('تم قبول الشروط', 'Terms accepted'));
+    });
+  }
+  const termsGateCloseBtn = document.getElementById('termsGateCloseBtn');
+  if (termsGateCloseBtn) termsGateCloseBtn.addEventListener('click', closeTermsGate);
+  const viewTermsBtn = document.getElementById('viewTermsBtn');
+  if (viewTermsBtn) {
+    viewTermsBtn.addEventListener('click', () => openTermsGate('view'));
+  }
+
   function renderAll(){
     if (!currentUser) return;
     applyRoleUI();
@@ -1299,6 +1434,7 @@ body.is-admin .client-only{display:none!important}
       const newCount = clientRequests.filter((r) => (r.status || 'new') === 'new').length;
       document.getElementById('statNewRequests').textContent = newCount;
       updateLeadsBadge();
+      renderAudienceStats();
       const holder = document.getElementById('recentSales');
       const recent = sales.slice(0, 5);
       if (!recent.length) {
