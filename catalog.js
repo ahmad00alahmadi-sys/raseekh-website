@@ -770,14 +770,17 @@
     }
     const fingerprint = row.paymentId
       ? 'moyasar:' + row.paymentId
-      : [
-          'pay',
-          Math.floor(Date.now() / (5 * 60 * 1000)),
-          String(row.total || 0),
-          String(row.method || ''),
-          String(row.email || row.userId || '').trim().toLowerCase(),
-          String(row.note || '').trim().toLowerCase().replace(/\s+/g, ' ')
-        ].join(':');
+      : (row.source === 'admin-pos' || row.source === 'admin-manual')
+        ? ['pay', row.source, row.id, String(row.total || 0), String(row.method || '')].join(':')
+        : [
+            'pay',
+            row.id,
+            Math.floor(Date.now() / (5 * 60 * 1000)),
+            String(row.total || 0),
+            String(row.method || ''),
+            String(row.email || row.userId || '').trim().toLowerCase(),
+            String(row.note || '').trim().toLowerCase().replace(/\s+/g, ' ')
+          ].join(':');
     row.fingerprint = fingerprint;
     const existing = list.find((x) =>
       (x.paymentId && row.paymentId && x.paymentId === row.paymentId) ||

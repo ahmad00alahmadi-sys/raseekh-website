@@ -1686,6 +1686,13 @@ body.terms-locked,body.auth-locked{overflow:hidden}
   function setPaySuccessCopy(delivery){
     const msg = document.getElementById('paySuccessMsg');
     if (!msg) return;
+    if (!delivery) {
+      msg.textContent = t(
+        'الدفع نجح عند البوابة لكن تعذّر تسجيل العربون محلياً — احتفظوا برقم العملية وتواصلوا مع راسخ.',
+        'Gateway payment succeeded but the deposit was not recorded here — keep the payment id and contact Raseekh.'
+      );
+      return;
+    }
     if (delivery && delivery.delivered) {
       msg.textContent = t('تم تسجيل العربون وسيتواصل معكم الفريق خلال يوم عمل.', 'Deposit recorded — our team will contact you within one business day.');
     } else if (delivery && delivery.pendingNotify) {
@@ -2208,6 +2215,8 @@ body.terms-locked,body.auth-locked{overflow:hidden}
     step.classList.add('active');
   }
   document.getElementById('payContinueBtn').addEventListener('click', async () => {
+    const btn = document.getElementById('payContinueBtn');
+    if (btn && btn.dataset.submitting === '1') return;
     const amount = parseFloat(document.getElementById('payAmount').value);
     const name = document.getElementById('payName').value.trim();
     const msg = document.getElementById('payValidationMsg');
@@ -2225,73 +2234,86 @@ body.terms-locked,body.auth-locked{overflow:hidden}
     if (!name) { msg.style.color = 'var(--danger)'; msg.textContent = t('الرجاء كتابة الاسم', 'Please enter your name'); return; }
     if (!amount || amount < 1) { msg.style.color = 'var(--danger)'; msg.textContent = t('أدخل مبلغاً صحيحاً', 'Enter a valid amount'); return; }
     if (amount > 100000) { msg.style.color = 'var(--danger)'; msg.textContent = t('الحد الأقصى للمبلغ 100,000 ر.س', 'Maximum amount is 100,000 SAR'); return; }
+    if (btn) {
+      btn.dataset.submitting = '1';
+      btn.disabled = true;
+      btn.setAttribute('aria-busy', 'true');
+    }
     msg.style.color = 'var(--muted)';
     msg.textContent = t('جاري تحميل بوابة الدفع...', 'Loading payment gateway...');
-    try { await loadMoyasar(); } catch (_) {
-      msg.style.color = 'var(--danger)';
-      msg.textContent = t('تعذّر تحميل بوابة الدفع', 'Payment gateway failed to load');
-      return;
-    }
-    if (typeof Moyasar === 'undefined') {
-      msg.style.color = 'var(--danger)';
-      msg.textContent = t('تعذّر تحميل بوابة الدفع', 'Payment gateway failed to load');
-      return;
-    }
-    msg.textContent = '';
-    document.getElementById('paySummaryAmount').textContent = amount.toFixed(2) + ' SAR';
-    document.getElementById('mysr-form').innerHTML = '';
-    const note = document.getElementById('payNote').value.trim();
     try {
-      sessionStorage.setItem('raseekh_pending_pay', JSON.stringify({
-        amount,
-        name,
-        note,
-        email: (loggedInUser && loggedInUser.email) || '',
-        userId: (loggedInUser && loggedInUser.id) || '',
-        at: Date.now()
-      }));
-    } catch (_) {}
-    async function recordMoyasarPayment(payment){
-      if (!Catalog || !Catalog.addPaymentRecord || !payment || payment.status !== 'paid') return null;
-      const paymentId = payment.id || '';
-      if (paymentId && wasProcessedPay(paymentId)) return null;
-      const payAmount = typeof payment.amount === 'number' ? payment.amount / 100 : amount;
-      if (!(payAmount > 0) || payAmount > 100000) return null;
-      if (Math.abs(payAmount - amount) > 0.05) return null;
-      if (paymentId) markProcessedPay(paymentId);
-      const row = Catalog.addPaymentRecord({
-        method: 'card',
-        total: amount,
-        items: 1,
-        note: note || t('عربون عبر الموقع', 'Site deposit'),
-        name: name,
-        email: (loggedInUser && loggedInUser.email) || '',
-        userId: (loggedInUser && loggedInUser.id) || '',
-        source: 'moyasar',
-        paymentId
-      });
-      try { sessionStorage.removeItem('raseekh_pending_pay'); } catch (_) {}
-      let delivery = null;
-      try { if (row && row.deliveryPromise) delivery = await row.deliveryPromise; } catch (_) {}
-      return delivery;
-    }
-    Moyasar.init({
-      element: '#mysr-form',
-      amount: Math.round(amount * 100),
-      currency: 'SAR',
-      description: (note ? note + ' — ' : '') + name,
-      publishable_api_key: MOYASAR_PUBLISHABLE_KEY,
-      callback_url: window.location.origin + window.location.pathname + '?pay=1',
-      methods: ['creditcard', 'applepay'],
-      on_completed: function(payment){
-        if (payment && payment.status === 'paid') {
-          showPayStep(payStatusSuccess);
-          recordMoyasarPayment(payment).then(setPaySuccessCopy).catch(() => setPaySuccessCopy(null));
-        } else showPayStep(payStatusFailed);
-        return true;
+      try { await loadMoyasar(); } catch (_) {
+        msg.style.color = 'var(--danger)';
+        msg.textContent = t('تعذّر تحميل بوابة الدفع', 'Payment gateway failed to load');
+        return;
       }
-    });
-    showPayStep(paymentFormStep);
+      if (typeof Moyasar === 'undefined') {
+        msg.style.color = 'var(--danger)';
+        msg.textContent = t('تعذّر تحميل بوابة الدفع', 'Payment gateway failed to load');
+        return;
+      }
+      msg.textContent = '';
+      document.getElementById('paySummaryAmount').textContent = amount.toFixed(2) + ' SAR';
+      document.getElementById('mysr-form').innerHTML = '';
+      const note = document.getElementById('payNote').value.trim();
+      try {
+        sessionStorage.setItem('raseekh_pending_pay', JSON.stringify({
+          amount,
+          name,
+          note,
+          email: (loggedInUser && loggedInUser.email) || '',
+          userId: (loggedInUser && loggedInUser.id) || '',
+          at: Date.now()
+        }));
+      } catch (_) {}
+      async function recordMoyasarPayment(payment){
+        if (!Catalog || !Catalog.addPaymentRecord || !payment || payment.status !== 'paid') return null;
+        const paymentId = payment.id || '';
+        if (paymentId && wasProcessedPay(paymentId)) return { delivered: true, cloud: true, duplicate: true };
+        const payAmount = typeof payment.amount === 'number' ? payment.amount / 100 : amount;
+        if (!(payAmount > 0) || payAmount > 100000) return null;
+        if (Math.abs(payAmount - amount) > 0.05) return null;
+        if (paymentId) markProcessedPay(paymentId);
+        const row = Catalog.addPaymentRecord({
+          method: 'card',
+          total: amount,
+          items: 1,
+          note: note || t('عربون عبر الموقع', 'Site deposit'),
+          name: name,
+          email: (loggedInUser && loggedInUser.email) || '',
+          userId: (loggedInUser && loggedInUser.id) || '',
+          source: 'moyasar',
+          paymentId
+        });
+        try { sessionStorage.removeItem('raseekh_pending_pay'); } catch (_) {}
+        let delivery = null;
+        try { if (row && row.deliveryPromise) delivery = await row.deliveryPromise; } catch (_) {}
+        return delivery || { delivered: false, cloud: false };
+      }
+      Moyasar.init({
+        element: '#mysr-form',
+        amount: Math.round(amount * 100),
+        currency: 'SAR',
+        description: (note ? note + ' — ' : '') + name,
+        publishable_api_key: MOYASAR_PUBLISHABLE_KEY,
+        callback_url: window.location.origin + window.location.pathname + '?pay=1',
+        methods: ['creditcard', 'applepay'],
+        on_completed: function(payment){
+          if (payment && payment.status === 'paid') {
+            showPayStep(payStatusSuccess);
+            recordMoyasarPayment(payment).then(setPaySuccessCopy).catch(() => setPaySuccessCopy(null));
+          } else showPayStep(payStatusFailed);
+          return true;
+        }
+      });
+      showPayStep(paymentFormStep);
+    } finally {
+      if (btn) {
+        btn.dataset.submitting = '0';
+        btn.disabled = false;
+        btn.removeAttribute('aria-busy');
+      }
+    }
   });
   document.getElementById('payBackBtn').addEventListener('click', () => showPayStep(payDetailsStep));
   document.getElementById('payRetryBtn').addEventListener('click', () => showPayStep(payDetailsStep));
