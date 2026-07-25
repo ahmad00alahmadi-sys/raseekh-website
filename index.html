@@ -384,6 +384,12 @@ section{padding:100px 0;position:relative;z-index:1}
 
 .services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
 .services-grid.four{grid-template-columns:repeat(2,1fr)}
+/* Services: grid on desktop, swipe rail on mobile */
+#services .services-rail.catalog-rail{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:16px;
+  overflow:visible;scroll-snap-type:none;padding:0;touch-action:auto;
+}
+#services .services-rail-wrap .catalog-nav{display:none}
 .service-block{
   background:var(--ghost-bg);border:1.5px solid var(--line);border-radius:var(--radius);
   padding:28px 22px;border-top:3px solid transparent;transition:border-color .25s,transform .25s,background .25s;
@@ -757,6 +763,16 @@ body.terms-locked,body.auth-locked{overflow:hidden}
   .nav-links.open{display:flex}
   .nav-toggle{display:flex}
   .services-grid,.services-grid.four,.pricing-grid,.trust-proof{grid-template-columns:1fr 1fr}
+  #services .services-rail.catalog-rail{
+    display:flex;grid-template-columns:none;gap:14px;
+    overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scroll-behavior:smooth;
+    padding:10px 4px 20px;-webkit-overflow-scrolling:touch;scrollbar-width:none;touch-action:pan-x;
+  }
+  #services .services-rail.catalog-rail::-webkit-scrollbar{display:none}
+  #services .services-rail .service-block{
+    flex:0 0 min(82vw,300px);scroll-snap-align:center;scroll-snap-stop:always;min-height:190px;
+  }
+  #services .services-rail-wrap .catalog-nav{display:inline-flex}
   .work-list,.two-col{grid-template-columns:1fr}
   .work-item::after{display:none}
   .hero{min-height:auto;align-items:end}
@@ -770,7 +786,7 @@ body.terms-locked,body.auth-locked{overflow:hidden}
 @media (max-width:560px){
   .nav-prefs{gap:4px}
   #accountBtn{padding:10px 12px;font-size:.8rem}
-  .services-grid,.pricing-grid,.trust-proof{grid-template-columns:1fr}
+  .services-grid:not(.services-rail),.pricing-grid,.trust-proof{grid-template-columns:1fr}
   .wrap{padding:0 18px}
   .brand-mark{font-size:clamp(3.6rem,18vw,5rem)}
   .hero h1{max-width:100%}
@@ -998,38 +1014,41 @@ body.pay-paused .pay-public-entry{display:none!important}
       <h2 data-ar="صيانة، برمجة، مخزون، وأنظمة" data-en="Maintenance, coding, inventory, and systems">صيانة، برمجة، مخزون، وأنظمة</h2>
       <p data-ar="مسار واحد واضح — التفاصيل في البنود أدناه." data-en="One clear path — details in the items below.">مسار واحد واضح — التفاصيل في البنود أدناه.</p>
     </div>
-    <div class="services-grid four reveal stagger" id="programming">
-      <article class="service-block">
+    <div class="catalog-rail-wrap services-rail-wrap reveal">
+      <button type="button" class="catalog-nav catalog-nav-prev" id="servicesPrev" data-ar-aria="السابق" data-en-aria="Previous" aria-label="السابق">‹</button>
+      <div class="services-grid four catalog-rail services-rail" id="programming" tabindex="0" role="list" data-ar-aria="خدماتنا" data-en-aria="Our services" aria-label="خدماتنا">
+      <article class="service-block" role="listitem">
         <h3 data-ar="صيانة المواقع" data-en="Website maintenance">صيانة المواقع</h3>
         <p data-ar="متابعة دورية لموقعكم الحالي بدون إعادة بناء." data-en="Ongoing care for your current site — no rebuild required.">متابعة دورية لموقعكم الحالي بدون إعادة بناء.</p>
       </article>
-      <article class="service-block">
+      <article class="service-block" role="listitem">
         <h3 data-ar="تطوير مواقع" data-en="Website development">تطوير مواقع</h3>
         <p data-ar="موقع جديد جاهز للتشغيل — متجاوب ونماذج تواصل." data-en="A new site ready to launch — responsive with contact forms.">موقع جديد جاهز للتشغيل — متجاوب ونماذج تواصل.</p>
       </article>
-      <article class="service-block">
+      <article class="service-block" role="listitem">
         <h3 data-ar="تعديل برمجة" data-en="Code changes">تعديل برمجة</h3>
         <p data-ar="إصلاحات ومزايا على مشروعكم بعد مراجعة الكود." data-en="Fixes and features on your project after a code review.">إصلاحات ومزايا على مشروعكم بعد مراجعة الكود.</p>
       </article>
-      <article class="service-block">
+      <article class="service-block" role="listitem">
         <h3 data-ar="تطبيق مخزون" data-en="Inventory app">تطبيق مخزون</h3>
         <p data-ar="منتجات وكميات وحركات وتنبيهات نقص حسب نشاطكم." data-en="Products, quantities, movements, and low-stock alerts for your workflow.">منتجات وكميات وحركات وتنبيهات نقص حسب نشاطكم.</p>
       </article>
-      <article class="service-block">
+      <article class="service-block" role="listitem">
         <h3 data-ar="أنظمة ولوحات" data-en="Systems & dashboards">أنظمة ولوحات</h3>
         <p data-ar="إدارة وتقارير وصلاحيات مستخدمين واضحة." data-en="Ops, reports, and clear user roles.">إدارة وتقارير وصلاحيات مستخدمين واضحة.</p>
       </article>
-      <article class="service-block">
+      <article class="service-block" role="listitem">
         <h3 data-ar="ربط API" data-en="API integrations">ربط API</h3>
         <p data-ar="دفع ورسائل ومزامنة مع أنظمتكم الخارجية." data-en="Payments, messaging, and sync with your external systems.">دفع ورسائل ومزامنة مع أنظمتكم الخارجية.</p>
       </article>
-      <a class="service-block featured" href="#contact" data-quote-type="business" data-quote-msg-ar="أرغب بنسخة للمؤسسات — موقع/نظام/مخزون حسب نشاط مؤسستنا." data-quote-msg-en="I want the Institution edition — site/system/inventory for our organization." style="text-decoration:none;color:inherit;display:block">
+      <a class="service-block featured" role="listitem" href="#contact" data-quote-type="business" data-quote-msg-ar="أرغب بنسخة للمؤسسات — موقع/نظام/مخزون حسب نشاط مؤسستنا." data-quote-msg-en="I want the Institution edition — site/system/inventory for our organization." style="text-decoration:none;color:inherit;display:block">
         <h3 data-ar="نسخة للمؤسسات" data-en="Institution edition">نسخة للمؤسسات</h3>
         <p data-ar="تشغيل ومخزون وصلاحيات أقسام حسب الهيكل." data-en="Ops, inventory, and department roles by structure.">تشغيل ومخزون وصلاحيات أقسام حسب الهيكل.</p>
       </a>
+      </div>
+      <button type="button" class="catalog-nav catalog-nav-next" id="servicesNext" data-ar-aria="التالي" data-en-aria="Next" aria-label="التالي">›</button>
     </div>
     <div class="reveal" style="margin-top:22px">
-      <a class="btn btn-primary quote-cta-dup" href="#contact" data-ar="اطلب عرض سعر" data-en="Request a quote">اطلب عرض سعر</a>
       <a class="btn btn-ghost" href="/features/" data-ar="صفحات المزايا" data-en="Feature pages">صفحات المزايا</a>
     </div>
   </div>
@@ -1039,8 +1058,8 @@ body.pay-paused .pay-public-entry{display:none!important}
   <div class="wrap">
     <div class="section-head reveal">
       <div class="eyebrow" data-ar="الكتالوج" data-en="Catalog">الكتالوج</div>
-      <h2 data-ar="تصفّحوا الخدمات واطلبوا عرض سعر" data-en="Browse services and request a quote">تصفّحوا الخدمات واطلبوا عرض سعر</h2>
-      <p data-ar="كل بطاقة خيار مستقل — اختاروا النوع ثم اطلبوا عرض سعر." data-en="Each card is its own option — pick a type, then request a quote.">كل بطاقة خيار مستقل — اختاروا النوع ثم اطلبوا عرض سعر.</p>
+      <h2 data-ar="خدمات منشورة للطلب من الإدارة" data-en="Published services to request from admin">خدمات منشورة للطلب من الإدارة</h2>
+      <p data-ar="بطاقات حيّة من لوحة المالك — غير قائمة «خدماتنا» الثابتة أعلاه." data-en="Live cards from the owner dashboard — separate from the fixed Services list above.">بطاقات حيّة من لوحة المالك — غير قائمة «خدماتنا» الثابتة أعلاه.</p>
     </div>
     <div class="catalog-rail-wrap reveal">
       <button type="button" class="catalog-nav catalog-nav-prev" id="productsPrev" data-ar-aria="السابق" data-en-aria="Previous" aria-label="السابق">‹</button>
@@ -1109,24 +1128,7 @@ body.pay-paused .pay-public-entry{display:none!important}
         <a class="btn btn-ghost" href="#contact" data-quote-type="business" data-quote-msg-ar="أرغب بنسخة للمؤسسات — حلول تشغيلية حسب نشاط مؤسستنا." data-quote-msg-en="I want the Institution edition — operational solutions for our organization." data-ar="اطلب نسخة المؤسسات" data-en="Request Institution edition">اطلب نسخة المؤسسات</a>
       </article>
     </div>
-    <p class="hint-inline reveal" id="pricingClarityNote" style="margin-top:16px;margin-bottom:0" data-ar="يشمل العرض المكتوب: النطاق والسعر والمدة. لا يشمل: أعمال خارج النطاق أو تراخيص طرف ثالث ما لم يُذكر." data-en="The written quote covers: scope, price, and timeline. It does not cover: out-of-scope work or third-party licenses unless stated.">يشمل العرض المكتوب: النطاق والسعر والمدة. لا يشمل: أعمال خارج النطاق أو تراخيص طرف ثالث ما لم يُذكر.</p>
-    <div class="plan-guide reveal">
-      <article class="service-block">
-        <h3 data-ar="إذا الطلب صغير أو تعديل محدود" data-en="If the request is small or a limited change">إذا الطلب صغير أو تعديل محدود</h3>
-        <p data-ar="ابدأوا بباقة أساسي — استشارة وتعديل واضح خلال أيام إلى أسبوعين غالباً." data-en="Start with Basic — a clear consult and change, often days to two weeks.">ابدأوا بباقة أساسي — استشارة وتعديل واضح خلال أيام إلى أسبوعين غالباً.</p>
-        <a class="btn btn-ghost" href="#contact" data-quote-type="programming" data-ar="اختر أساسي" data-en="Choose Basic">اختر أساسي</a>
-      </article>
-      <article class="service-block">
-        <h3 data-ar="إذا عندكم فرع أو مخزون يومي" data-en="If you have a branch or daily stock">إذا عندكم فرع أو مخزون يومي</h3>
-        <p data-ar="باقة احترافي تناسب موقع/لوحة أو تطبيق مخزون متوسط مع صيانة بعد التسليم." data-en="Pro fits a mid site/dashboard or inventory app with post-launch care.">باقة احترافي تناسب موقع/لوحة أو تطبيق مخزون متوسط مع صيانة بعد التسليم.</p>
-        <a class="btn btn-primary" href="#contact" data-quote-type="inventory" data-ar="اختر احترافي" data-en="Choose Pro">اختر احترافي</a>
-      </article>
-      <article class="service-block">
-        <h3 data-ar="إذا شركة أو عدة أقسام / فروع" data-en="If a company with departments / branches">إذا شركة أو عدة أقسام / فروع</h3>
-        <p data-ar="نسخة للمؤسسات: صلاحيات، تقارير، وتكاملات حسب الهيكل." data-en="Institution edition: roles, reports, and integrations by structure.">نسخة للمؤسسات: صلاحيات، تقارير، وتكاملات حسب الهيكل.</p>
-        <a class="btn btn-ghost" href="#contact" data-quote-type="business" data-ar="اختر المؤسسات" data-en="Choose Institutions">اختر المؤسسات</a>
-      </article>
-    </div>
+    <p class="hint-inline reveal" id="pricingClarityNote" style="margin-top:16px;margin-bottom:0" data-ar="يشمل العرض المكتوب: النطاق والسعر والمدة. لا يشمل: أعمال خارج النطاق أو تراخيص طرف ثالث ما لم يُذكر. اختاروا المسار الأنسب أعلاه ثم أرسلوا الطلب من النموذج." data-en="The written quote covers: scope, price, and timeline. It does not cover: out-of-scope work or third-party licenses unless stated. Pick the best path above, then send the request from the form.">يشمل العرض المكتوب: النطاق والسعر والمدة. لا يشمل: أعمال خارج النطاق أو تراخيص طرف ثالث ما لم يُذكر. اختاروا المسار الأنسب أعلاه ثم أرسلوا الطلب من النموذج.</p>
   </div>
 </section>
 
@@ -1526,7 +1528,6 @@ body.pay-paused .pay-public-entry{display:none!important}
       </article>
     </div>
     <div class="reveal" style="margin-top:22px">
-      <a class="btn btn-primary quote-cta-dup" href="#contact" data-ar="اطلب عرض سعر" data-en="Request a quote">اطلب عرض سعر</a>
       <a class="btn btn-ghost" href="/industries/" data-ar="حلول القطاعات" data-en="Industry solutions">حلول القطاعات</a>
     </div>
   </div>
@@ -1690,7 +1691,7 @@ body.pay-paused .pay-public-entry{display:none!important}
     </div>
     <div class="reveal" style="margin-top:22px;text-align:center">
       <a class="btn btn-primary" href="/dashboard/?demo=1" data-ar="جرّبوا اللوحة الآن" data-en="Try the board now">جرّبوا اللوحة الآن</a>
-      <a class="btn btn-ghost" href="#contact" data-ar="اطلب عرض سعر" data-en="Request a quote">اطلب عرض سعر</a>
+      <a class="btn btn-ghost" href="#faq" data-ar="أسئلة قبل الطلب" data-en="Questions before requesting">أسئلة قبل الطلب</a>
     </div>
   </div>
 </section>
@@ -1698,11 +1699,11 @@ body.pay-paused .pay-public-entry{display:none!important}
 <div class="mid-cta" role="region" aria-label="Next steps">
   <div class="wrap">
     <div>
-      <h3 data-ar="مخزون أو نسخة مؤسسات — نبدأ بنطاق مكتوب" data-en="Inventory or Institution edition — we start with written scope">مخزون أو نسخة مؤسسات — نبدأ بنطاق مكتوب</h3>
-      <p data-ar="راجعوا المزايا أو المساعدة، ثم أرسلوا الطلب من النموذج." data-en="Review features or help, then send the request from the form.">راجعوا المزايا أو المساعدة، ثم أرسلوا الطلب من النموذج.</p>
+      <h3 data-ar="جاهزون للخطوة التالية؟" data-en="Ready for the next step?">جاهزون للخطوة التالية؟</h3>
+      <p data-ar="راجعوا المزايا أو المساعدة، ثم أكملوا النموذج أسفل الصفحة." data-en="Review features or help, then complete the form at the bottom of the page.">راجعوا المزايا أو المساعدة، ثم أكملوا النموذج أسفل الصفحة.</p>
     </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
-      <a class="btn btn-primary quote-cta-dup" href="#contact" data-ar="اطلب عرض سعر" data-en="Request a quote">اطلب عرض سعر</a>
+      <a class="btn btn-primary" href="#contact" data-ar="إلى نموذج الطلب" data-en="Go to request form">إلى نموذج الطلب</a>
       <a class="btn btn-ghost" href="/features/" data-ar="صفحات المزايا" data-en="Feature pages">صفحات المزايا</a>
       <a class="btn btn-ghost" href="/help/" data-ar="المساعدة" data-en="Help">المساعدة</a>
     </div>
@@ -2633,6 +2634,7 @@ body.pay-paused .pay-public-entry{display:none!important}
   }
 
   function catalogSlideSelector(rail){
+    if (rail && rail.id === 'programming') return '.service-block';
     return rail.id === 'clientSuggestionsGrid' ? '.suggest-card, .product-item' : '.product-item, .suggest-card';
   }
 
@@ -2670,6 +2672,13 @@ body.pay-paused .pay-public-entry{display:none!important}
       });
     }
   }
+
+  // Bind services rail once (static markup).
+  bindCatalogRail(
+    document.getElementById('programming'),
+    document.getElementById('servicesPrev'),
+    document.getElementById('servicesNext')
+  );
 
   function renderClientCatalog(){
     if (!Catalog) return;
