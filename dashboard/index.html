@@ -392,6 +392,7 @@ body.is-admin .client-only{display:none!important}
 </style>
 </head>
 <body>
+<div class="site-banner" id="offlineBanner" role="status" style="display:none;position:sticky;top:0;z-index:90;padding:10px 16px;text-align:center;font-size:.88rem;font-weight:700;background:var(--navy);color:#F4F7FA;border-bottom:2px solid var(--copper)" data-ar="لا يوجد اتصال — أُرسل الطلبات عند عودة الشبكة" data-en="You are offline — send requests when back online">لا يوجد اتصال — أُرسل الطلبات عند عودة الشبكة</div>
 
 <div id="loginView">
   <div class="login-card">
@@ -1045,7 +1046,12 @@ body.is-admin .client-only{display:none!important}
   function loadProducts(){
     if (!Catalog) { products = []; return; }
     if (isAdminUser) {
+      const before = parseInt(localStorage.getItem('raseekh_catalog_version') || '0', 10) || 0;
       products = Catalog.loadAdminProducts();
+      // After a seed bump, admin cloud session should republish so other devices converge.
+      if (before < (Catalog.CATALOG_VERSION || 0) && authProvider === 'supabase' && Catalog.publishClientCatalog) {
+        Catalog.publishClientCatalog(products, Catalog.getClientSuggestions(), { cloud: true });
+      }
       return;
     }
     products = Catalog.getClientProducts();
@@ -1779,13 +1785,16 @@ body.is-admin .client-only{display:none!important}
     msg.textContent = t('جاري إنشاء الحساب...', 'Creating account...');
     try {
       const result = await Auth.signUp({ email, password, full_name: name, phone });
+      if (Terms) {
+        if (result && result.user) Terms.acceptTerms(result.user);
+        else if (Terms.acceptTermsByEmail) Terms.acceptTermsByEmail(email);
+      }
       if (result && result.needsEmailConfirm) {
         msg.style.color = 'var(--ok)';
         msg.textContent = t('تم إنشاء الحساب — تحققوا من البريد لتفعيله ثم سجّلوا الدخول', 'Account created — check your email to activate, then sign in');
         showAuthPanel('loginPanel');
         return;
       }
-      if (Terms && result.user) Terms.acceptTerms(result.user);
       authProvider = result.provider || null;
       msg.style.color = 'var(--ok)';
       msg.textContent = t('تم إنشاء الحساب', 'Account created');
@@ -1983,12 +1992,12 @@ body.is-admin .client-only{display:none!important}
       return !q || blob.includes(q);
     });
     if (!list.length) {
-      grid.innerHTML = `<div class="empty" style="grid-column:1/-1">${t('لا توجد منتجات','No products')}</div>`;
+      grid.innerHTML = `<div class="empty" style="grid-column:1/-1"><strong>${t('لا توجد خدمات ظاهرة','No services shown')}</strong><p>${t('اطلبوا عرض سعر مباشرة، بما في ذلك تطبيق مخزون.','Request a quote directly — including an inventory app.')}</p></div>`;
       return;
     }
     grid.innerHTML = list.map(p => `
       <article class="browse-card">
-        <div style="color:var(--brass);font-size:.75rem;font-weight:700">${escapeHtml(categoryLabel(p))}</div>
+        <div style="color:var(--copper);font-size:.75rem;font-weight:700">${escapeHtml(categoryLabel(p))}</div>
         <h4>${escapeHtml(productLabel(p))}</h4>
         <p>${escapeHtml((currentLang === 'en' && p.desc_en) ? p.desc_en : (p.desc || t('متاح للطلب','Available to order')))}</p>
         <div class="price">${escapeHtml(priceLabel(p))}</div>
@@ -2001,6 +2010,10 @@ body.is-admin .client-only{display:none!important}
     const box = document.getElementById('clientSuggestionsList');
     if (!box || !Catalog) return;
     const suggestions = Catalog.getClientSuggestions();
+    if (!suggestions.length) {
+      box.innerHTML = `<div class="empty"><strong>${t('لا توجد اقتراحات حالياً','No suggestions right now')}</strong><p>${t('اطلبوا عرض سعر من الكتالوج أو لتطبيق مخزون.','Request a quote from the catalog or for an inventory app.')}</p></div>`;
+      return;
+    }
     box.innerHTML = suggestions.map((s) => {
       const titleText = Catalog.label(s, currentLang, 'title', 'title_en');
       const desc = Catalog.label(s, currentLang, 'desc', 'desc_en');
@@ -2012,7 +2025,7 @@ body.is-admin .client-only{display:none!important}
         <strong>${escapeHtml(titleText)}</strong>
         <span>${escapeHtml(desc)}</span>
         <span>${escapeHtml(items)}</span>
-        <div style="margin-top:6px;font-weight:700;color:var(--forest)">${escapeHtml(priceText)}</div>
+        <div style="margin-top:6px;font-weight:700;color:var(--harbor)">${escapeHtml(priceText)}</div>
         <button class="btn btn-primary" style="margin-top:8px;padding:8px 12px;font-size:.82rem" data-client-suggest="${escapeHtml(s.id)}">${escapeHtml(t('اطلب عرض سعر','Request a quote'))}</button>
       </div>`;
     }).join('');
@@ -2268,6 +2281,10 @@ body.is-admin .client-only{display:none!important}
   document.getElementById('requestConfirmForm').addEventListener('submit', (e) => {
     e.preventDefault();
     if (!pendingClientRequest) return;
+    if (!navigator.onLine) {
+      showToast(t('أنتم غير متصلين — أعيدوا الإرسال بعد عودة الشبكة', 'You are offline — send again when back online'));
+      return;
+    }
     const phone = document.getElementById('requestConfirmPhone').value.trim();
     const note = document.getElementById('requestConfirmNote').value.trim();
     if (!phone && !(currentUser && currentUser.email)) {

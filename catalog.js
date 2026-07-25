@@ -203,10 +203,9 @@
   function ensureCatalogVersion(products) {
     const current = parseInt(localStorage.getItem(VERSION_KEY) || '0', 10) || 0;
     if (current < CATALOG_VERSION) {
-      const seedIds = new Set(DEFAULT_PRODUCTS.map((p) => p.id));
-      const custom = (products || []).filter((p) => p && !seedIds.has(p.id) && !/^p\d+$/.test(p.id));
       localStorage.setItem(VERSION_KEY, String(CATALOG_VERSION));
-      return cloneList(DEFAULT_PRODUCTS).concat(custom);
+      // Merge seed text/new items while preserving admin price/stock/custom rows.
+      return mergeProducts(products && products.length ? products : cloneList(DEFAULT_PRODUCTS));
     }
     return mergeProducts(products);
   }
@@ -262,9 +261,13 @@
   function getClientProducts() {
     const current = parseInt(localStorage.getItem(VERSION_KEY) || '0', 10) || 0;
     if (current < CATALOG_VERSION) {
-      const refreshed = loadAdminProducts().filter((p) => p && p.client !== false);
+      // Public seed bump: refresh local public catalog without inventing admin storage on visitor browsers.
+      const adminStored = readJson(ADMIN_PRODUCTS_KEY, null);
+      const ensured = ensureCatalogVersion(adminStored && adminStored.length ? adminStored : cloneList(DEFAULT_PRODUCTS));
+      if (adminStored && adminStored.length) writeJson(ADMIN_PRODUCTS_KEY, ensured);
       ensureSuggestionsVersion();
-      publishClientCatalog(refreshed, getClientSuggestions(), { cloud: false });
+      const refreshed = ensured.filter((p) => p && p.client !== false);
+      publishClientCatalog(ensured, getClientSuggestions(), { cloud: false });
       return refreshed;
     }
     const stored = readJson(PUBLIC_KEY, null);

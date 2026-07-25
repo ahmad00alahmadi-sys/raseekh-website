@@ -101,12 +101,18 @@
     const row = {
       version: TERMS_VERSION,
       at: new Date().toISOString(),
-      email: user.email || ''
+      email: (user && user.email) || key
     };
     map[key] = row;
     writeAcceptMap(map);
     pushAcceptance(user, row);
     return true;
+  }
+
+  function acceptTermsByEmail(email) {
+    const key = String(email || '').trim().toLowerCase();
+    if (!key) return false;
+    return acceptTerms({ email: key, id: '' });
   }
 
   async function pushAcceptance(user, row) {
@@ -175,6 +181,7 @@
     renderInto,
     hasAccepted,
     acceptTerms,
+    acceptTermsByEmail,
     syncAcceptance,
     probeCloud,
     userKey

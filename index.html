@@ -599,20 +599,20 @@ body.terms-locked{overflow:hidden}
       <div class="panel-auth active" id="modalLoginPanel">
         <h3 id="authModalTitle" data-ar="تسجيل الدخول" data-en="Sign in to your account">تسجيل الدخول</h3>
         <form class="form" id="loginForm">
-          <input type="email" id="loginEmail" required data-ar-placeholder="البريد الإلكتروني" data-en-placeholder="Email" placeholder="البريد الإلكتروني">
-          <input type="password" id="loginPassword" required data-ar-placeholder="كلمة المرور" data-en-placeholder="Password" placeholder="كلمة المرور">
+          <input type="email" id="loginEmail" required autocomplete="email" data-ar-placeholder="البريد الإلكتروني" data-en-placeholder="Email" placeholder="البريد الإلكتروني">
+          <input type="password" id="loginPassword" required autocomplete="current-password" data-ar-placeholder="كلمة المرور" data-en-placeholder="Password" placeholder="كلمة المرور">
           <button class="btn btn-primary" type="submit" data-ar="دخول" data-en="Log in">دخول</button>
         </form>
         <button type="button" class="linkish" id="forgotPasswordLink" style="margin-top:12px" data-ar="نسيت كلمة المرور؟" data-en="Forgot password?">نسيت كلمة المرور؟</button>
-        <div class="msg" id="loginMsg"></div>
+        <div class="msg" id="loginMsg" role="status" aria-live="polite"></div>
       </div>
       <div class="panel-auth" id="modalRegisterPanel">
         <h3 data-ar="إنشاء حساب عميل" data-en="Create client account">إنشاء حساب عميل</h3>
         <form class="form" id="registerForm">
-          <input type="text" id="registerName" required data-ar-placeholder="الاسم الكامل" data-en-placeholder="Full name" placeholder="الاسم الكامل">
-          <input type="email" id="registerEmail" required data-ar-placeholder="البريد الإلكتروني" data-en-placeholder="Email" placeholder="البريد الإلكتروني">
-          <input type="tel" id="registerPhone" data-ar-placeholder="رقم الجوال (اختياري)" data-en-placeholder="Phone (optional)" placeholder="رقم الجوال (اختياري)">
-          <input type="password" id="registerPassword" minlength="6" required data-ar-placeholder="كلمة المرور (6 أحرف على الأقل)" data-en-placeholder="Password (min 6 chars)" placeholder="كلمة المرور (6 أحرف على الأقل)">
+          <input type="text" id="registerName" required autocomplete="name" data-ar-placeholder="الاسم الكامل" data-en-placeholder="Full name" placeholder="الاسم الكامل">
+          <input type="email" id="registerEmail" required autocomplete="email" data-ar-placeholder="البريد الإلكتروني" data-en-placeholder="Email" placeholder="البريد الإلكتروني">
+          <input type="tel" id="registerPhone" autocomplete="tel" data-ar-placeholder="رقم الجوال (اختياري)" data-en-placeholder="Phone (optional)" placeholder="رقم الجوال (اختياري)">
+          <input type="password" id="registerPassword" minlength="6" required autocomplete="new-password" data-ar-placeholder="كلمة المرور (6 أحرف على الأقل)" data-en-placeholder="Password (min 6 chars)" placeholder="كلمة المرور (6 أحرف على الأقل)">
           <label class="check" for="registerTermsCheck">
             <input type="checkbox" id="registerTermsCheck" required>
             <span class="check-text">
@@ -623,25 +623,25 @@ body.terms-locked{overflow:hidden}
           </label>
           <button class="btn btn-primary" type="submit" data-ar="إنشاء الحساب" data-en="Create account">إنشاء الحساب</button>
         </form>
-        <div class="msg" id="registerMsg"></div>
+        <div class="msg" id="registerMsg" role="status" aria-live="polite"></div>
       </div>
       <div class="panel-auth" id="modalForgotPanel">
         <h3 data-ar="إعادة تعيين كلمة المرور" data-en="Reset password">إعادة تعيين كلمة المرور</h3>
         <p style="color:var(--muted);font-size:.9rem;margin-bottom:12px" data-ar="أدخل بريدك وسنرسل رابط إعادة التعيين." data-en="Enter your email and we'll send a reset link.">أدخل بريدك وسنرسل رابط إعادة التعيين.</p>
         <form class="form" id="forgotForm">
-          <input type="email" id="forgotEmail" required data-ar-placeholder="البريد الإلكتروني" data-en-placeholder="Email" placeholder="البريد الإلكتروني">
+          <input type="email" id="forgotEmail" required autocomplete="email" data-ar-placeholder="البريد الإلكتروني" data-en-placeholder="Email" placeholder="البريد الإلكتروني">
           <button class="btn btn-primary" type="submit" data-ar="إرسال الرابط" data-en="Send link">إرسال الرابط</button>
         </form>
         <button type="button" class="linkish" id="backToLoginLink" style="margin-top:12px" data-ar="رجوع لتسجيل الدخول" data-en="Back to login">رجوع لتسجيل الدخول</button>
-        <div class="msg" id="forgotMsg"></div>
+        <div class="msg" id="forgotMsg" role="status" aria-live="polite"></div>
       </div>
       <div class="panel-auth" id="modalResetPanel">
         <h3 data-ar="كلمة مرور جديدة" data-en="New password">كلمة مرور جديدة</h3>
         <form class="form" id="resetForm">
-          <input type="password" id="resetPassword" minlength="6" required data-ar-placeholder="كلمة المرور الجديدة" data-en-placeholder="New password" placeholder="كلمة المرور الجديدة">
+          <input type="password" id="resetPassword" minlength="6" required autocomplete="new-password" data-ar-placeholder="كلمة المرور الجديدة" data-en-placeholder="New password" placeholder="كلمة المرور الجديدة">
           <button class="btn btn-primary" type="submit" data-ar="حفظ" data-en="Save">حفظ</button>
         </form>
-        <div class="msg" id="resetMsg"></div>
+        <div class="msg" id="resetMsg" role="status" aria-live="polite"></div>
       </div>
     </div>
   </div>
@@ -792,11 +792,11 @@ body.terms-locked{overflow:hidden}
         <p class="tagline" data-ar="للمواقع والأنظمة متوسطة الحجم." data-en="For mid-size websites and systems.">للمواقع والأنظمة متوسطة الحجم.</p>
         <ul>
           <li data-ar="تطوير موقع أو لوحة" data-en="Website or dashboard build">تطوير موقع أو لوحة</li>
+          <li data-ar="تطبيق مخزون أو نظام تشغيلي متوسط" data-en="Inventory app or mid-size ops system">تطبيق مخزون أو نظام تشغيلي متوسط</li>
           <li data-ar="صيانة بعد التسليم" data-en="Post-launch care">صيانة بعد التسليم</li>
-          <li data-ar="تحديثات مرحلية" data-en="Staged updates">تحديثات مرحلية</li>
           <li data-ar="دعم عبر حساب العميل" data-en="Support via client account">دعم عبر حساب العميل</li>
         </ul>
-        <a class="btn btn-primary" href="#contact" data-quote-type="web-dev" data-quote-msg-ar="أرغب بباقة احترافي — موقع أو لوحة متوسطة." data-quote-msg-en="I want the Pro plan — mid-size site or dashboard." data-ar="اطلب احترافي" data-en="Choose Pro">اطلب احترافي</a>
+        <a class="btn btn-primary" href="#contact" data-quote-type="inventory" data-quote-msg-ar="أرغب بباقة احترافي — موقع أو تطبيق مخزون / لوحة متوسطة." data-quote-msg-en="I want the Pro plan — mid-size site, inventory app, or dashboard." data-ar="اطلب احترافي" data-en="Choose Pro">اطلب احترافي</a>
       </article>
       <article class="price-card">
         <div class="plan" data-ar="فرق" data-en="Teams">فرق</div>
@@ -804,8 +804,8 @@ body.terms-locked{overflow:hidden}
         <p class="tagline" data-ar="لنظام كامل أو عمل متعدد الأقسام." data-en="For a full system or multi-team work.">لنظام كامل أو عمل متعدد الأقسام.</p>
         <ul>
           <li data-ar="نظام مخصص كامل" data-en="Complete custom system">نظام مخصص كامل</li>
+          <li data-ar="مخزون وتشغيل متعدد الأقسام" data-en="Inventory & multi-team operations">مخزون وتشغيل متعدد الأقسام</li>
           <li data-ar="ربط API وتكاملات" data-en="API & integrations">ربط API وتكاملات</li>
-          <li data-ar="صلاحيات وتقارير" data-en="Roles and reports">صلاحيات وتقارير</li>
           <li data-ar="متابعة أولوية" data-en="Priority follow-up">متابعة أولوية</li>
         </ul>
         <a class="btn btn-ghost" href="#contact" data-quote-type="system" data-quote-msg-ar="أرغب بباقة مؤسسات — نظام كامل أو عمل متعدد الأقسام." data-quote-msg-en="I want the Teams plan — full system or multi-team work." data-ar="تحدث مع راسخ" data-en="Talk to Raseekh">تحدث مع راسخ</a>
@@ -881,7 +881,7 @@ body.terms-locked{overflow:hidden}
       <article class="now-item">
         <span class="now-label" data-ar="عرض سعر" data-en="Quote">عرض سعر</span>
         <h3 data-ar="طلب واضح بدون تسعير مبهم" data-en="A clear request — no vague pricing">طلب واضح بدون تسعير مبهم</h3>
-        <p data-ar="من الصفحة أو حساب العميل. نراجع النطاق ونرسل عرض السعر خلال يوم عمل." data-en="From the site or client account. We review scope and send a quote within one business day.">من الصفحة أو حساب العميل. نراجع النطاق ونرسل عرض السعر خلال يوم عمل.</p>
+        <p data-ar="برمجة، مواقع، تطبيقات مخزون، أو أنظمة — من الصفحة أو حساب العميل خلال يوم عمل." data-en="Coding, sites, inventory apps, or systems — from the site or client account within one business day.">برمجة، مواقع، تطبيقات مخزون، أو أنظمة — من الصفحة أو حساب العميل خلال يوم عمل.</p>
       </article>
       <article class="now-item">
         <span class="now-label" data-ar="متابعة" data-en="Tracking">متابعة</span>
@@ -900,7 +900,7 @@ body.terms-locked{overflow:hidden}
       </article>
     </div>
     <div class="now-foot reveal">
-      <a class="btn btn-primary" href="#contact" data-ar="اطلب عرض سعر" data-en="Request a quote">اطلب عرض سعر</a>
+      <a class="btn btn-primary" href="#contact" data-quote-type="inventory" data-quote-msg-ar="أرغب بتطبيق مخزون حسب نشاطنا." data-quote-msg-en="I want an inventory app for our workflow." data-ar="اطلب تطبيق مخزون" data-en="Request inventory app">اطلب تطبيق مخزون</a>
       <a class="btn btn-ghost" href="/dashboard/" data-ar="دخول حساب العميل" data-en="Open client account">دخول حساب العميل</a>
     </div>
   </div>
@@ -962,7 +962,7 @@ body.terms-locked{overflow:hidden}
             </div>
             <input type="text" id="payNote" data-ar-placeholder="ملاحظة (اختياري)" data-en-placeholder="Note (optional)" placeholder="ملاحظة (اختياري)">
             <button type="button" class="btn btn-primary" id="payContinueBtn" data-ar="المتابعة للدفع" data-en="Continue to pay">المتابعة للدفع</button>
-            <div class="msg" id="payValidationMsg"></div>
+            <div class="msg" id="payValidationMsg" role="status" aria-live="polite"></div>
           </form>
         </div>
         <div class="pay-step" id="paymentFormStep">
@@ -1019,7 +1019,7 @@ body.terms-locked{overflow:hidden}
           <textarea required data-ar-placeholder="صف طلبكم باختصار" data-en-placeholder="Briefly describe your request" placeholder="صف طلبكم باختصار" id="contactMsg"></textarea>
         </label>
         <button class="btn btn-primary" type="submit" data-ar="إرسال الطلب" data-en="Send request">إرسال الطلب</button>
-        <div class="msg" id="contactResult"></div>
+        <div class="msg" id="contactResult" role="status" aria-live="polite"></div>
         <div id="contactSuccessActions" style="display:none;margin-top:12px"></div>
       </form>
     </div>
@@ -1312,25 +1312,29 @@ body.terms-locked{overflow:hidden}
       }).join('');
     }
 
-    suggestGrid.innerHTML = clientSuggestions.map((s) => {
-      const title = Catalog.label(s, currentLang, 'title', 'title_en');
-      const desc = Catalog.label(s, currentLang, 'desc', 'desc_en');
-      const badge = Catalog.label(s, currentLang, 'badge', 'badge_en');
-      const items = Catalog.suggestionItems(s, clientProducts, currentLang);
-      const priceText = Catalog.suggestionPriceLabel
-        ? Catalog.suggestionPriceLabel(s, clientProducts, currentLang)
-        : t('عرض سعر بعد المراجعة', 'Custom quote after review');
-      return `
-        <article class="suggest-card">
-          <span class="badge">${escapeHtml(badge)}</span>
-          <h3>${escapeHtml(title)}</h3>
-          <p>${escapeHtml(desc)}</p>
-          <div class="items">${escapeHtml(items.join(currentLang === 'ar' ? ' • ' : ' • '))}</div>
-          <div class="total">${escapeHtml(priceText)}</div>
-          <button type="button" class="btn btn-primary" data-request-suggestion="${escapeHtml(s.id)}">${escapeHtml(t('اطلب عرض سعر','Request a quote'))}</button>
-        </article>
-      `;
-    }).join('');
+    if (!clientSuggestions.length) {
+      suggestGrid.innerHTML = `<article class="suggest-card"><h3>${escapeHtml(t('الاقتراحات تُجهَّز','Suggestions are being prepared'))}</h3><p>${escapeHtml(t('يمكنكم طلب عرض سعر مباشرة، بما في ذلك تطبيق مخزون.','You can request a quote directly — including an inventory app.'))}</p><a class="btn btn-primary" href="#contact" data-quote-type="inventory">${escapeHtml(t('اطلب عرض سعر','Request a quote'))}</a></article>`;
+    } else {
+      suggestGrid.innerHTML = clientSuggestions.map((s) => {
+        const title = Catalog.label(s, currentLang, 'title', 'title_en');
+        const desc = Catalog.label(s, currentLang, 'desc', 'desc_en');
+        const badge = Catalog.label(s, currentLang, 'badge', 'badge_en');
+        const items = Catalog.suggestionItems(s, clientProducts, currentLang);
+        const priceText = Catalog.suggestionPriceLabel
+          ? Catalog.suggestionPriceLabel(s, clientProducts, currentLang)
+          : t('عرض سعر بعد المراجعة', 'Custom quote after review');
+        return `
+          <article class="suggest-card">
+            <span class="badge">${escapeHtml(badge)}</span>
+            <h3>${escapeHtml(title)}</h3>
+            <p>${escapeHtml(desc)}</p>
+            <div class="items">${escapeHtml(items.join(currentLang === 'ar' ? ' • ' : ' • '))}</div>
+            <div class="total">${escapeHtml(priceText)}</div>
+            <button type="button" class="btn btn-primary" data-request-suggestion="${escapeHtml(s.id)}">${escapeHtml(t('اطلب عرض سعر','Request a quote'))}</button>
+          </article>
+        `;
+      }).join('');
+    }
   }
 
   document.getElementById('clientProductsGrid').addEventListener('click', (e) => {
@@ -1466,7 +1470,6 @@ body.terms-locked{overflow:hidden}
   });
   document.getElementById('modalCloseBtn').addEventListener('click', closeModal);
   authModal.addEventListener('click', e => { if (e.target === authModal) closeModal(); });
-  document.addEventListener('keydown', e => { if (e.key === 'Escape' && authModal.classList.contains('open')) closeModal(); });
   document.getElementById('modalLoginTabBtn').addEventListener('click', () => showAuthPanel('login'));
   document.getElementById('modalRegisterTabBtn').addEventListener('click', () => showAuthPanel('register'));
   document.getElementById('forgotPasswordLink').addEventListener('click', () => showAuthPanel('forgot'));
@@ -1665,14 +1668,19 @@ body.terms-locked{overflow:hidden}
       termsCheck.focus();
       return;
     }
+    const registerEmail = document.getElementById('registerEmail').value.trim();
     msg.style.color = 'var(--muted)'; msg.textContent = t('جاري إنشاء الحساب...', 'Creating account...');
     try {
       const result = await Auth.signUp({
-        email: document.getElementById('registerEmail').value.trim(),
+        email: registerEmail,
         password: document.getElementById('registerPassword').value,
         full_name: document.getElementById('registerName').value.trim(),
         phone: document.getElementById('registerPhone').value.trim()
       });
+      if (window.RaseekhTerms) {
+        if (result && result.user) RaseekhTerms.acceptTerms(result.user);
+        else if (RaseekhTerms.acceptTermsByEmail) RaseekhTerms.acceptTermsByEmail(registerEmail);
+      }
       if (result && result.needsEmailConfirm) {
         msg.style.color = 'var(--ok)';
         msg.textContent = t('تم إنشاء الحساب — تحققوا من البريد لتفعيله ثم سجّلوا الدخول', 'Account created — check your email to activate, then sign in');
@@ -1687,7 +1695,6 @@ body.terms-locked{overflow:hidden}
           ? t('تم إنشاء حساب محلي — يلزم دخول سحابي لإكمال السداد', 'Local account created — cloud sign-in is required to pay')
           : t('تم إنشاء الحساب — يمكنكم إكمال السداد', 'Account created — continue to payment'))
         : t('تم إنشاء الحساب — جاري التحويل...', 'Account created — redirecting...');
-      if (window.RaseekhTerms && result.user) RaseekhTerms.acceptTerms(result.user);
       if (window.RaseekhActivity) RaseekhActivity.recordLogin(result.user, 'client');
       afterAuthSuccess(result.user, result.provider);
     } catch (err) { msg.style.color = 'var(--danger)'; msg.textContent = Auth.friendlyError(err, currentLang); }
@@ -2032,22 +2039,34 @@ body.terms-locked{overflow:hidden}
   const termsBody = document.getElementById('termsOverlayBody');
   function openTermsOverlay(e){
     if (e) e.preventDefault();
-    if (Terms && termsBody && !termsBody.dataset.ready) {
-      Terms.renderInto(termsBody);
-      termsBody.dataset.ready = '1';
-      applyLang(currentLang);
+    if (Terms && termsBody) {
+      const ver = Terms.TERMS_VERSION || '1';
+      if (termsBody.dataset.ready !== ver) {
+        Terms.renderInto(termsBody);
+        termsBody.dataset.ready = ver;
+        applyLang(currentLang);
+      }
     }
     if (termsOverlay) {
       termsOverlay.classList.add('open');
       termsOverlay.setAttribute('aria-hidden', 'false');
       document.body.classList.add('terms-locked');
+      const closeBtn = document.getElementById('closeTermsOverlayBtn');
+      setTimeout(() => { try { closeBtn && closeBtn.focus(); } catch (_) {} }, 30);
     }
   }
   function closeTermsOverlay(){
     if (!termsOverlay) return;
     termsOverlay.classList.remove('open');
     termsOverlay.setAttribute('aria-hidden', 'true');
-    document.body.classList.remove('terms-locked');
+    // Keep body locked if auth modal is still open underneath.
+    if (!(authModal && authModal.classList.contains('open'))) {
+      document.body.classList.remove('terms-locked');
+    }
+    const link = document.getElementById('registerTermsLink');
+    if (link && authModal && authModal.classList.contains('open')) {
+      try { link.focus(); } catch (_) {}
+    }
   }
   const openTermsBtn = document.getElementById('openTermsOverlayBtn');
   if (openTermsBtn) openTermsBtn.addEventListener('click', openTermsOverlay);
@@ -2057,9 +2076,25 @@ body.terms-locked{overflow:hidden}
   if (closeTermsBtn) closeTermsBtn.addEventListener('click', closeTermsOverlay);
   if (termsOverlay) {
     termsOverlay.addEventListener('click', (e) => { if (e.target === termsOverlay) closeTermsOverlay(); });
+    termsOverlay.addEventListener('keydown', (e) => {
+      if (e.key !== 'Tab' || !termsOverlay.classList.contains('open')) return;
+      const focusables = Array.from(termsOverlay.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'))
+        .filter((el) => !el.disabled && el.offsetParent !== null);
+      if (!focusables.length) return;
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    });
   }
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && termsOverlay && termsOverlay.classList.contains('open')) closeTermsOverlay();
+    if (e.key !== 'Escape') return;
+    if (termsOverlay && termsOverlay.classList.contains('open')) {
+      e.preventDefault();
+      closeTermsOverlay();
+      return;
+    }
+    if (authModal && authModal.classList.contains('open')) closeModal();
   });
 
   if (window.RaseekhCatalog && RaseekhCatalog.syncPublicNotifyFromCloud) {
