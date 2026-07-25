@@ -2315,6 +2315,13 @@ body.is-client .home-bar{
       openTermsGate('view', 'purchase');
     });
   }
+  const requestPurchaseTermsCheck = document.getElementById('requestPurchaseTermsCheck');
+  if (requestPurchaseTermsCheck) {
+    requestPurchaseTermsCheck.addEventListener('change', () => {
+      if (!Terms || !Terms.setPurchaseAcceptedSession) return;
+      Terms.setPurchaseAcceptedSession(!!requestPurchaseTermsCheck.checked);
+    });
+  }
 
   function renderAll(){
     if (!currentUser) return;
