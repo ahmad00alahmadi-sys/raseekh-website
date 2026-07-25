@@ -813,9 +813,9 @@ body.pay-paused .pay-public-entry{display:none!important}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
 </head>
-<body>
+<body class="pay-paused">
 <a class="skip-link" href="#services" data-ar="تخطّ إلى المحتوى" data-en="Skip to content">تخطّ إلى المحتوى</a>
-<div class="site-banner" id="offlineBanner" role="status" data-ar="لا يوجد اتصال — أُرسل الطلبات والدفع عند عودة الشبكة" data-en="You are offline — requests and payments need a network connection">لا يوجد اتصال — أُرسل الطلبات والدفع عند عودة الشبكة</div>
+<div class="site-banner" id="offlineBanner" role="status" data-ar="لا يوجد اتصال — أُرسل الطلبات عند عودة الشبكة" data-en="You are offline — requests need a network connection">لا يوجد اتصال — أُرسل الطلبات عند عودة الشبكة</div>
 <div class="site-banner update" id="updateBanner" role="status" hidden>
   <span data-ar="يتوفر تحديث للموقع" data-en="A site update is available">يتوفر تحديث للموقع</span>
   <button type="button" class="btn btn-primary" id="reloadUpdateBtn" style="margin-inline-start:10px;padding:6px 12px;font-size:.8rem" data-ar="إعادة التحميل" data-en="Reload">إعادة التحميل</button>
@@ -1171,10 +1171,10 @@ body.pay-paused .pay-public-entry{display:none!important}
         <h3 data-ar="حالة الطلب ظاهرة في حسابكم" data-en="Request status visible in your account">حالة الطلب ظاهرة في حسابكم</h3>
         <p data-ar="بدل الرسائل المتفرقة — تدخلون وترون الجديد وقيد المعالجة والمكتمل." data-en="Instead of scattered chats — sign in and see new, in progress, and done.">بدل الرسائل المتفرقة — تدخلون وترون الجديد وقيد المعالجة والمكتمل.</p>
       </article>
-      <article class="now-item pay-public-entry">
-        <span class="now-label" data-ar="سداد" data-en="Pay">سداد</span>
-        <h3 data-ar="عربون آمن بعد تسجيل الدخول" data-en="Secure deposit after sign-in">عربون آمن بعد تسجيل الدخول</h3>
-        <p data-ar="عبر بوابة دفع مرخّصة — للعملاء المسجّلين عند تفعيل السداد." data-en="Via a licensed payment gateway — for signed-in clients when checkout is enabled.">عبر بوابة دفع مرخّصة — للعملاء المسجّلين عند تفعيل السداد.</p>
+      <article class="now-item">
+        <span class="now-label" data-ar="اتفاق" data-en="Agreement">اتفاق</span>
+        <h3 data-ar="عربون وفق العرض المكتوب" data-en="Deposit per the written quote">عربون وفق العرض المكتوب</h3>
+        <p data-ar="طريقة الدفع تُتفق في العرض — السداد الإلكتروني العام من الموقع متوقف مؤقتاً." data-en="Payment method is agreed in the quote — public online checkout is temporarily paused.">طريقة الدفع تُتفق في العرض — السداد الإلكتروني العام من الموقع متوقف مؤقتاً.</p>
       </article>
     </div>
     <div class="now-foot reveal">
@@ -1549,10 +1549,6 @@ body.pay-paused .pay-public-entry{display:none!important}
     </div>
     <div class="services-grid four reveal stagger">
       <article class="service-block">
-        <h3 data-ar="بوابات دفع عند الحاجة" data-en="Payment gateways when needed">بوابات دفع عند الحاجة</h3>
-        <p data-ar="ربط بوابة دفع مرخّصة ضمن نطاق المشروع عند الاتفاق — السداد العام من الموقع متوقف مؤقتاً." data-en="Link a licensed payment gateway within project scope when agreed — public site checkout is temporarily paused.">ربط بوابة دفع مرخّصة ضمن نطاق المشروع عند الاتفاق — السداد العام من الموقع متوقف مؤقتاً.</p>
-      </article>
-      <article class="service-block">
         <h3 data-ar="مسار فوترة جاهز لـ ZATCA" data-en="ZATCA-ready invoicing path">مسار فوترة جاهز لـ ZATCA</h3>
         <p data-ar="تهيئة مسار فوترة إلكترونية متوافق عند الحاجة — حسب نطاق الامتثال المتفق عليه." data-en="An e-invoicing path prepared for compliance when needed — per agreed compliance scope.">تهيئة مسار فوترة إلكترونية متوافق عند الحاجة — حسب نطاق الامتثال المتفق عليه.</p>
       </article>
@@ -1563,6 +1559,10 @@ body.pay-paused .pay-public-entry{display:none!important}
       <article class="service-block">
         <h3 data-ar="Odoo / محاسبة عبر API" data-en="Odoo / accounting APIs">Odoo / محاسبة عبر API</h3>
         <p data-ar="ربط أنظمة محاسبية أو Odoo عبر واجهات برمجة حسب البيانات المطلوبة." data-en="Link accounting systems or Odoo via APIs for the data you need.">ربط أنظمة محاسبية أو Odoo عبر واجهات برمجة حسب البيانات المطلوبة.</p>
+      </article>
+      <article class="service-block">
+        <h3 data-ar="تكامل دفع ضمن المشروع" data-en="In-project payment integration">تكامل دفع ضمن المشروع</h3>
+        <p data-ar="ربط بوابة دفع مرخّصة داخل نطاق النظام المتفق عليه — وليس كسداد عام من صفحة الموقع حالياً." data-en="Link a licensed gateway inside the agreed system scope — not as public site checkout right now.">ربط بوابة دفع مرخّصة داخل نطاق النظام المتفق عليه — وليس كسداد عام من صفحة الموقع حالياً.</p>
       </article>
     </div>
   </div>
@@ -1908,7 +1908,9 @@ body.pay-paused .pay-public-entry{display:none!important}
   let clientProducts = [];
   let clientSuggestions = [];
 
-  if (!PUBLIC_PAY_ENABLED) {
+  if (PUBLIC_PAY_ENABLED) {
+    document.body.classList.remove('pay-paused');
+  } else {
     document.body.classList.add('pay-paused');
     try { sessionStorage.removeItem('raseekh_pending_pay'); } catch (_) {}
     try {
@@ -1919,6 +1921,22 @@ body.pay-paused .pay-public-entry{display:none!important}
         history.replaceState(null, '', url.pathname + url.search + '#contact');
       }
     } catch (_) {}
+    const redirectPayHash = () => {
+      if (location.hash === '#pay') {
+        try {
+          const url = new URL(location.href);
+          history.replaceState(null, '', url.pathname + url.search + '#contact');
+        } catch (_) {
+          location.hash = '#contact';
+        }
+        const contact = document.getElementById('contact');
+        if (contact) setTimeout(() => {
+          try { contact.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (_) {}
+        }, 40);
+      }
+    };
+    window.addEventListener('hashchange', redirectPayHash);
+    window.addEventListener('popstate', redirectPayHash);
   }
 
   function isLocalAuthUser(user){

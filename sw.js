@@ -1,5 +1,5 @@
 /* Lightweight offline shell for Raseekh marketing site (dashboard excluded). */
-const CACHE = 'raseekh-shell-v69';
+const CACHE = 'raseekh-shell-v70';
 const ASSETS = [
   '/', '/index.html', '/catalog.js', '/auth.js', '/terms.js', '/activity.js', '/shared-page.css', '/shared-page.js',
   '/terms/', '/terms/index.html', '/privacy/', '/privacy/index.html',

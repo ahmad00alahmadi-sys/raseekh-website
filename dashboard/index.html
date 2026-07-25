@@ -212,7 +212,7 @@ body.terms-locked{overflow:hidden}
 }
 .role-pill.admin{background:rgba(196,92,38,.18);color:#8A3E14}
 body.is-client .admin-only{display:none!important}
-.pay-public-entry{display:none!important}
+/* Public site checkout is paused — keep client pay entry hidden until a shared flag is restored. */
 body.is-admin .client-only{display:none!important}
 body.is-admin .sidebar{
   background:linear-gradient(180deg,#1A120C 0%, #3A2418 55%, #16324F 100%);
@@ -643,7 +643,7 @@ body.is-client .home-bar{
             <button class="btn btn-primary" data-goto="catalog" data-ar="تصفح الخدمات الإلكترونية" data-en="Browse digital services">تصفح الخدمات الإلكترونية</button>
             <button class="btn btn-ghost" data-goto="suggestions" data-ar="عرض الاقتراحات" data-en="View suggestions">عرض الاقتراحات</button>
             <button class="btn btn-ghost" data-goto="requests" data-ar="متابعة طلباتي" data-en="Track my requests">متابعة طلباتي</button>
-            <a class="btn btn-ghost pay-public-entry" href="/#pay" data-ar="سداد عربون" data-en="Pay a deposit" hidden>سداد عربون</a>
+            <a class="btn btn-ghost" href="/#contact" data-ar="طلب عرض سعر" data-en="Request a quote">طلب عرض سعر</a>
             <a class="btn btn-ghost" href="/dashboard/?demo=1" data-ar="وضع التجربة" data-en="Demo mode">وضع التجربة</a>
             <a class="btn btn-ghost" href="/industries/" data-ar="حلول القطاعات" data-en="Industry solutions">حلول القطاعات</a>
             <a class="btn btn-ghost" href="/blog/" data-ar="مدونة راسخ" data-en="Raseekh blog">مدونة راسخ</a>
@@ -1182,11 +1182,15 @@ body.is-client .home-bar{
     if (demo) return false;
     if (Auth && typeof Auth.isAdmin === 'function') return Auth.isAdmin(user);
     const email = String(user?.email || '').trim().toLowerCase();
-    return email === 'ahmad00alahmadi@gmail.com';
+    const admins = (Auth && Auth.ADMIN_EMAILS) || [];
+    if (admins.length) return admins.map((e) => String(e).trim().toLowerCase()).indexOf(email) !== -1;
+    return false;
   }
   function isAdminEmailFast(email){
     if (Auth && typeof Auth.isAdminEmail === 'function') return Auth.isAdminEmail(email);
-    return String(email || '').trim().toLowerCase() === 'ahmad00alahmadi@gmail.com';
+    const admins = (Auth && Auth.ADMIN_EMAILS) || [];
+    const n = String(email || '').trim().toLowerCase();
+    return admins.map((e) => String(e).trim().toLowerCase()).indexOf(n) !== -1;
   }
   function applyRoleUI(){
     document.body.classList.toggle('is-admin', isAdminUser);
