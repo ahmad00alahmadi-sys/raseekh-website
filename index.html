@@ -511,11 +511,19 @@ section{padding:100px 0;position:relative;z-index:1}
 .tour-nav{display:flex;flex-direction:column;gap:8px}
 .tour-nav span{height:12px;border-radius:4px;background:rgba(244,247,250,.12)}
 .tour-nav span.active{background:rgba(196,92,38,.75)}
-.tour-panel{position:relative;overflow:hidden;border-radius:8px;background:rgba(244,247,250,.06);border:1px solid rgba(244,247,250,.1);padding:14px}
-.tour-slide{position:absolute;inset:14px;opacity:0;transform:translateY(10px);animation:tourCycle 12s infinite}
+.tour-panel{
+  position:relative;overflow:hidden;border-radius:8px;
+  background:rgba(244,247,250,.06);border:1px solid rgba(244,247,250,.1);
+  padding:14px;min-height:200px;
+}
+/* Slides are absolute overlays — panel min-height keeps them visible (without it the box collapses). */
+.tour-slide{
+  position:absolute;inset:14px;opacity:0;transform:translateY(8px);
+  animation:tourCycle 12s infinite;
+}
 .tour-slide:nth-child(1){animation-delay:0s}
-.tour-slide:nth-child(2){animation-delay:4s}
-.tour-slide:nth-child(3){animation-delay:8s}
+.tour-slide:nth-child(2){animation-delay:-4s}
+.tour-slide:nth-child(3){animation-delay:-8s}
 .tour-slide h3{color:#F4F7FA;font-size:1rem;margin-bottom:8px}
 .tour-slide p{color:rgba(244,247,250,.78);font-size:.86rem;margin-bottom:10px}
 .tour-bars{display:flex;align-items:flex-end;gap:8px;height:70px}
@@ -525,15 +533,18 @@ section{padding:100px 0;position:relative;z-index:1}
 .tour-rows span{display:block;height:12px;border-radius:4px;background:rgba(244,247,250,.14)}
 .tour-rows span:nth-child(1){width:92%}.tour-rows span:nth-child(2){width:78%}.tour-rows span:nth-child(3){width:86%}
 @keyframes tourCycle{
-  0%,8%{opacity:0;transform:translateY(10px)}
-  12%,30%{opacity:1;transform:translateY(0)}
-  36%,100%{opacity:0;transform:translateY(-8px)}
+  0%,30%{opacity:1;transform:translateY(0)}
+  34%,100%{opacity:0;transform:translateY(-6px)}
 }
-@media (prefers-reduced-motion:reduce){.tour-slide{animation:none;opacity:0}.tour-slide:first-child{opacity:1;position:relative}}
+@media (prefers-reduced-motion:reduce){
+  .tour-slide{animation:none!important;opacity:0;transform:none}
+  .tour-slide:first-child{opacity:1;position:relative;inset:auto}
+}
 @media (max-width:760px){
   .tour-screen{grid-template-columns:1fr}
   .tour-nav{flex-direction:row}
   .tour-nav span{flex:1;height:8px}
+  .tour-panel{min-height:220px}
 }
 .estimate-box{
   max-width:820px;margin:0 auto;padding:28px 22px;border-radius:12px;
