@@ -574,9 +574,13 @@ body.is-client .home-bar{
           <li data-ar="ادخلوا بحساب الإدارة السحابي (ليس جلسة محلية)" data-en="Sign in with the cloud admin account (not a local session)">ادخلوا بحساب الإدارة السحابي (ليس جلسة محلية)</li>
         </ol>
         <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <button class="btn btn-primary" type="button" data-goto="settings" data-ar="فتح الإعدادات" data-en="Open settings">فتح الإعدادات</button>
+          <button class="btn btn-primary" type="button" id="copySetupSqlBtn" data-ar="نسخ أوامر SQL" data-en="Copy SQL script">نسخ أوامر SQL</button>
+          <a class="btn btn-ghost" id="openSetupSqlBtn" href="https://raw.githubusercontent.com/ahmad00alahmadi-sys/raseekh-website/main/supabase/setup_all.sql" target="_blank" rel="noopener" data-ar="فتح ملف SQL" data-en="Open SQL file">فتح ملف SQL</a>
+          <a class="btn btn-ghost" href="https://supabase.com/dashboard" target="_blank" rel="noopener" data-ar="فتح Supabase" data-en="Open Supabase">فتح Supabase</a>
+          <button class="btn btn-ghost" type="button" data-goto="settings" data-ar="فتح الإعدادات" data-en="Open settings">فتح الإعدادات</button>
           <button class="btn btn-ghost" type="button" id="recheckSetupBtn" data-ar="إعادة الفحص" data-en="Recheck">إعادة الفحص</button>
         </div>
+        <p id="copySetupSqlMsg" style="color:var(--muted);font-size:.82rem;margin:8px 0 0" hidden></p>
       </div>
 
       <div class="stats admin-only">
