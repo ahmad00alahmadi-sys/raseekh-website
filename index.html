@@ -27,7 +27,7 @@
 <link rel="apple-touch-icon" href="/icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <script>
-(function(){try{var t=localStorage.getItem('raseekh_theme');document.documentElement.setAttribute('data-theme',t==='night'||t==='dark'?'night':'base');}catch(e){document.documentElement.setAttribute('data-theme','base');}})();
+(function(){try{var t=localStorage.getItem('raseekh_theme');document.documentElement.setAttribute('data-theme',t==='soft'?'soft':'base');}catch(e){document.documentElement.setAttribute('data-theme','base');}})();
 </script>
 <script type="application/ld+json">
 {
@@ -229,6 +229,10 @@ nav{display:flex;align-items:center;justify-content:space-between;gap:16px;paddi
 .nav-links a:hover::after,.nav-links a.is-active::after{transform:scaleX(1);transform-origin:left}
 .nav-actions{display:flex;align-items:center;gap:8px}
 .nav-prefs{display:inline-flex;align-items:center;gap:6px;flex:0 0 auto}
+.theme-switch{display:inline-flex;align-items:stretch;border:1.5px solid var(--line);border-radius:var(--radius);background:var(--ghost-bg,rgba(247,249,252,.8));overflow:hidden;padding:2px;gap:2px}
+.theme-switch [data-theme-set]{border:0;background:transparent;color:var(--muted);font:inherit;font-size:.74rem;font-weight:700;padding:7px 10px;border-radius:calc(var(--radius) - 2px);cursor:pointer;min-width:3.4rem}
+.theme-switch [data-theme-set].is-active,.theme-switch [data-theme-set][aria-pressed="true"]{background:var(--panel);color:var(--harbor);box-shadow:0 1px 0 rgba(16,35,58,.06)}
+
 .nav-prefs .lang-btn,.nav-prefs .theme-btn{
   min-width:44px;padding:10px 12px;border-radius:var(--radius);border:1.5px solid var(--line);
   background:var(--ghost-bg,rgba(247,249,252,.8));color:var(--ink);font-weight:700;cursor:pointer;font-size:.78rem;
@@ -760,6 +764,7 @@ body.terms-locked,body.auth-locked{overflow:hidden}
 @media (max-width:560px){
   .nav-prefs{gap:4px}
   .nav-prefs .lang-btn,.nav-prefs .theme-btn{min-width:40px;padding:9px 10px}
+  .theme-switch [data-theme-set]{min-width:0;padding:7px 8px;font-size:.7rem}
   #accountBtn{padding:10px 12px;font-size:.8rem}
   .services-grid,.pricing-grid,.trust-proof{grid-template-columns:1fr}
   .wrap{padding:0 18px}
@@ -856,7 +861,10 @@ body.pay-paused .pay-public-entry{display:none!important}
     <div class="nav-actions">
       <div class="nav-prefs" role="group" data-ar-aria="اللغة والمظهر" data-en-aria="Language and theme" aria-label="اللغة والمظهر">
         <button class="lang-btn" id="langToggle" type="button">EN</button>
-        <button class="lang-btn theme-btn" type="button" data-theme-toggle data-ar="ليلي" data-en="Night" aria-pressed="true" aria-label="تفعيل النظام الليلي">ليلي</button>
+        <div class="theme-switch" role="group" data-ar-aria="اختيار المظهر" data-en-aria="Choose look" aria-label="اختيار المظهر">
+          <button type="button" data-theme-set="base" class="is-active" aria-pressed="true" data-ar="أساسي" data-en="Base">أساسي</button>
+          <button type="button" data-theme-set="soft" aria-pressed="false" data-ar="ناعم" data-en="Soft">ناعم</button>
+        </div>
       </div>
       <button class="btn btn-primary" id="accountBtn" type="button" data-ar="تسجيل الدخول" data-en="Log in">تسجيل الدخول</button>
       <button class="nav-toggle" id="navToggle" type="button" aria-controls="navLinks" aria-expanded="false" data-ar-aria="القائمة" data-en-aria="Menu" aria-label="القائمة"><span></span><span></span><span></span></button>

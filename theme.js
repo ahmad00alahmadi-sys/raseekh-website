@@ -1,45 +1,59 @@
-/* Raseekh theme: base (default) + night — client chooses. */
+/* Raseekh theme: base (default) + soft — segmented choice beside language. */
 (function (global) {
   const KEY = 'raseekh_theme';
   const DEFAULT = 'base';
+  const THEMES = ['base', 'soft'];
 
   function normalize(theme) {
-    if (theme === 'night' || theme === 'dark') return 'night';
-    // white / soft / light / anything else → base
+    if (theme === 'soft') return 'soft';
+    // night/dark/white/light → base (drop night as a client option)
     return 'base';
   }
 
   function get() {
     try {
       const q = new URLSearchParams(location.search).get('theme');
-      if (q === 'night' || q === 'dark' || q === 'base' || q === 'light' || q === 'white') {
-        return normalize(q);
-      }
+      if (q === 'soft' || q === 'base' || q === 'white' || q === 'light') return normalize(q);
     } catch (_) {}
     try { return normalize(localStorage.getItem(KEY) || DEFAULT); }
     catch (_) { return DEFAULT; }
   }
 
-  function labelFor(theme, lang) {
-    // Button shows the mode you can switch TO
-    const toNight = theme === 'base';
-    if (lang === 'en') return toNight ? 'Night' : 'Base';
-    return toNight ? 'ليلي' : 'أساسي';
+  function labels(lang) {
+    if (lang === 'en') return { base: 'Base', soft: 'Soft' };
+    return { base: 'أساسي', soft: 'ناعم' };
   }
 
-  function syncToggleButtons(theme) {
+  function syncControls(theme) {
     const lang = (document.documentElement.lang === 'en') ? 'en' : 'ar';
+    const L = labels(lang);
+
+    document.querySelectorAll('[data-theme-set]').forEach((btn) => {
+      const value = normalize(btn.getAttribute('data-theme-set'));
+      const on = value === theme;
+      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+      btn.classList.toggle('is-active', on);
+      btn.textContent = L[value] || value;
+      btn.setAttribute('data-ar', labels('ar')[value]);
+      btn.setAttribute('data-en', labels('en')[value]);
+      const arAria = value === 'base' ? 'المظهر الأساسي' : 'المظهر الناعم';
+      const enAria = value === 'base' ? 'Base look' : 'Soft look';
+      btn.setAttribute('data-ar-aria', arAria);
+      btn.setAttribute('data-en-aria', enAria);
+      btn.setAttribute('aria-label', lang === 'en' ? enAria : arAria);
+      btn.title = lang === 'en' ? enAria : arAria;
+    });
+
+    // Legacy single toggle buttons (if any remain)
     document.querySelectorAll('[data-theme-toggle]').forEach((btn) => {
-      const isBase = theme === 'base';
-      btn.setAttribute('aria-pressed', isBase ? 'true' : 'false');
-      const ar = isBase ? 'تفعيل النظام الليلي' : 'تفعيل النظام الأساسي';
-      const en = isBase ? 'Switch to night mode' : 'Switch to base mode';
-      btn.setAttribute('data-ar', labelFor(theme, 'ar'));
-      btn.setAttribute('data-en', labelFor(theme, 'en'));
-      btn.setAttribute('data-ar-aria', ar);
-      btn.setAttribute('data-en-aria', en);
+      const toSoft = theme === 'base';
+      btn.setAttribute('aria-pressed', theme === 'base' ? 'true' : 'false');
+      btn.textContent = toSoft ? L.soft : L.base;
+      btn.setAttribute('data-ar', toSoft ? labels('ar').soft : labels('ar').base);
+      btn.setAttribute('data-en', toSoft ? labels('en').soft : labels('en').base);
+      const ar = toSoft ? 'تفعيل المظهر الناعم' : 'تفعيل المظهر الأساسي';
+      const en = toSoft ? 'Switch to soft look' : 'Switch to base look';
       btn.setAttribute('aria-label', lang === 'en' ? en : ar);
-      btn.textContent = labelFor(theme, lang);
       btn.title = lang === 'en' ? en : ar;
     });
   }
@@ -49,8 +63,8 @@
     document.documentElement.setAttribute('data-theme', next);
     try { localStorage.setItem(KEY, next); } catch (_) {}
     const meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.setAttribute('content', next === 'base' ? '#ffffff' : '#0B1219');
-    syncToggleButtons(next);
+    if (meta) meta.setAttribute('content', next === 'base' ? '#ffffff' : '#E8EDF2');
+    syncControls(next);
     try {
       document.dispatchEvent(new CustomEvent('raseekh:theme', { detail: { theme: next } }));
     } catch (_) {}
@@ -58,10 +72,18 @@
   }
 
   function toggle() {
-    return apply(get() === 'base' ? 'night' : 'base');
+    return apply(get() === 'base' ? 'soft' : 'base');
   }
 
   function bind() {
+    document.querySelectorAll('[data-theme-set]').forEach((btn) => {
+      if (btn.dataset.themeBound === '1') return;
+      btn.dataset.themeBound = '1';
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        apply(btn.getAttribute('data-theme-set'));
+      });
+    });
     document.querySelectorAll('[data-theme-toggle]').forEach((btn) => {
       if (btn.dataset.themeBound === '1') return;
       btn.dataset.themeBound = '1';
@@ -79,7 +101,7 @@
     apply: apply,
     toggle: toggle,
     bind: bind,
-    themes: ['base', 'night']
+    themes: THEMES
   };
 
   try { apply(get()); } catch (_) {}

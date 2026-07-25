@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl" id="htmlRoot">
 <head>
 <script>
-(function(){try{var t=localStorage.getItem("raseekh_theme");document.documentElement.setAttribute("data-theme",t==="night"||t==="dark"?"night":"base");}catch(e){document.documentElement.setAttribute("data-theme","base");}})();
+(function(){try{var t=localStorage.getItem("raseekh_theme");document.documentElement.setAttribute("data-theme",t==="soft"?"soft":"base");}catch(e){document.documentElement.setAttribute("data-theme","base");}})();
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -51,6 +51,9 @@ body.lang-en .logo{font-family:'Space Grotesk',sans-serif}
 .logo em{font-style:normal;color:var(--copper)}
 .actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .nav-prefs{display:inline-flex;align-items:center;gap:6px}
+.theme-switch{display:inline-flex;align-items:stretch;border:1.5px solid var(--line);border-radius:var(--radius);background:var(--ghost-bg,#fff);overflow:hidden;padding:2px;gap:2px}
+.theme-switch [data-theme-set]{border:0;background:transparent;color:var(--muted);font:inherit;font-size:.74rem;font-weight:700;padding:7px 10px;border-radius:4px;cursor:pointer}
+.theme-switch [data-theme-set].is-active{background:var(--panel);color:var(--harbor)}
 .btn{
   display:inline-flex;align-items:center;justify-content:center;
   border:none;border-radius:var(--radius);padding:11px 16px;cursor:pointer;font-weight:700;text-decoration:none;
@@ -91,7 +94,10 @@ body.lang-en h1,body.lang-en h2,body.lang-en h3{font-family:'Space Grotesk',sans
       <div class="actions">
       <div class="nav-prefs" role="group" data-ar-aria="اللغة والمظهر" data-en-aria="Language and theme" aria-label="اللغة والمظهر">
         <button class="lang-btn" id="langToggle" type="button">EN</button>
-        <button class="lang-btn theme-btn" type="button" data-theme-toggle data-ar="ليلي" data-en="Night" aria-pressed="true" aria-label="تفعيل النظام الليلي">ليلي</button>
+        <div class="theme-switch" role="group" data-ar-aria="اختيار المظهر" data-en-aria="Choose look" aria-label="اختيار المظهر">
+          <button type="button" data-theme-set="base" class="is-active" aria-pressed="true" data-ar="أساسي" data-en="Base">أساسي</button>
+          <button type="button" data-theme-set="soft" aria-pressed="false" data-ar="ناعم" data-en="Soft">ناعم</button>
+        </div>
       </div>
         <a class="btn btn-ghost" href="/privacy/" data-ar="الخصوصية" data-en="Privacy">الخصوصية</a>
         <a class="btn btn-ghost" href="/security/" data-ar="الأمان" data-en="Security">الأمان</a>

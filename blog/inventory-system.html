@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <script>
-(function(){try{var t=localStorage.getItem("raseekh_theme");document.documentElement.setAttribute("data-theme",t==="night"||t==="dark"?"night":"base");}catch(e){document.documentElement.setAttribute("data-theme","base");}})();
+(function(){try{var t=localStorage.getItem("raseekh_theme");document.documentElement.setAttribute("data-theme",t==="soft"?"soft":"base");}catch(e){document.documentElement.setAttribute("data-theme","base");}})();
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,7 +23,10 @@
       <div class="actions">
       <div class="nav-prefs" role="group" data-ar-aria="اللغة والمظهر" data-en-aria="Language and theme" aria-label="اللغة والمظهر">
         <button class="lang-btn" id="langToggle" type="button">EN</button>
-        <button class="lang-btn theme-btn" type="button" data-theme-toggle data-ar="ليلي" data-en="Night" aria-pressed="true" aria-label="تفعيل النظام الليلي">ليلي</button>
+        <div class="theme-switch" role="group" data-ar-aria="اختيار المظهر" data-en-aria="Choose look" aria-label="اختيار المظهر">
+          <button type="button" data-theme-set="base" class="is-active" aria-pressed="true" data-ar="أساسي" data-en="Base">أساسي</button>
+          <button type="button" data-theme-set="soft" aria-pressed="false" data-ar="ناعم" data-en="Soft">ناعم</button>
+        </div>
       </div>
         <a class="btn btn-ghost" href="/blog/" data-ar="المدونة" data-en="Blog">المدونة</a>
         <a class="btn btn-primary" href="/#contact" data-quote-type="inventory" data-ar="اطلب مخزوناً" data-en="Request inventory">اطلب مخزوناً</a>
