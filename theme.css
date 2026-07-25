@@ -152,7 +152,12 @@ html[data-theme="soft"] .theme-switch{
 html[data-theme="soft"] .theme-switch [data-theme-set].is-active,
 html[data-theme="soft"] .theme-switch [data-theme-set][aria-pressed="true"]{
   background:#fff;
-  color:var(--copper);
+}
+html[data-theme="soft"] .theme-switch [data-theme-set="base"].is-active{
+  color:#C45C26;
+}
+html[data-theme="soft"] .theme-switch [data-theme-set="soft"].is-active{
+  color:#2A6F7A;
 }
 
 /* Soft remaps for hardcoded light-only surfaces */
