@@ -289,6 +289,73 @@ html[data-theme="dark"] .tab.active{
   color:var(--on-dark) !important;
 }
 
+html[data-theme="night"] .band-mist,
+html[data-theme="dark"] .band-mist{
+  background:rgba(26,36,48,.55) !important;
+}
+html[data-theme="night"] .nav-links,
+html[data-theme="dark"] .nav-links{
+  background:var(--panel);
+  border-color:var(--line);
+}
+html[data-theme="night"] .ui-mock,
+html[data-theme="dark"] .ui-mock,
+html[data-theme="night"] .ui-mock-kpis b,
+html[data-theme="dark"] .ui-mock-kpis b,
+html[data-theme="night"] .ui-mock-table span,
+html[data-theme="dark"] .ui-mock-table span{
+  background:var(--panel) !important;
+  border-color:var(--line) !important;
+  color:var(--ink);
+}
+html[data-theme="night"] .ui-mock-side i,
+html[data-theme="dark"] .ui-mock-side i{
+  background:rgba(255,255,255,.12) !important;
+}
+html[data-theme="night"] .product-card,
+html[data-theme="dark"] .product-card,
+html[data-theme="night"] .catalog-card,
+html[data-theme="dark"] .catalog-card,
+html[data-theme="night"] .rail-card,
+html[data-theme="dark"] .rail-card,
+html[data-theme="night"] .now-item,
+html[data-theme="dark"] .now-item,
+html[data-theme="night"] .work-item,
+html[data-theme="dark"] .work-item,
+html[data-theme="night"] footer,
+html[data-theme="dark"] footer,
+html[data-theme="night"] .site-foot,
+html[data-theme="dark"] .site-foot,
+html[data-theme="night"] .page-legal-foot,
+html[data-theme="dark"] .page-legal-foot{
+  border-color:var(--line);
+  color:var(--ink);
+}
+html[data-theme="night"] .msg,
+html[data-theme="dark"] .msg,
+html[data-theme="night"] .hint-inline,
+html[data-theme="dark"] .hint-inline,
+html[data-theme="night"] .crumb,
+html[data-theme="dark"] .crumb,
+html[data-theme="night"] .lead,
+html[data-theme="dark"] .lead{
+  color:var(--muted);
+}
+html[data-theme="night"] .faq-item summary,
+html[data-theme="dark"] .faq-item summary,
+html[data-theme="night"] .voice-who h3,
+html[data-theme="dark"] .voice-who h3{
+  color:var(--ink) !important;
+}
+html[data-theme="night"] .carousel-btn,
+html[data-theme="dark"] .carousel-btn,
+html[data-theme="night"] .snap-arrow,
+html[data-theme="dark"] .snap-arrow{
+  background:var(--panel) !important;
+  border-color:var(--line) !important;
+  color:var(--ink) !important;
+}
+
 /* Smooth theme crossfade on root surfaces */
 html{transition:color .2s ease, background-color .2s ease}
 body,header,.panel,.card,.login-card,.btn-ghost,.lang-btn,.theme-btn,input,textarea,select{

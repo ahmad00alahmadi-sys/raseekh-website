@@ -3,6 +3,8 @@
   --bg:#FFFFFF;--panel:#FFFFFF;--line:#E4E8EE;--muted:#5A6B7C;--radius:6px;
   --shadow:0 14px 34px -26px rgba(16,35,58,.28);
   --header-bg:rgba(255,255,255,.92);--surface-tint:#FAFBFC;--mist:#F2F4F7;
+  --ghost-bg:rgba(247,249,252,.8);--elevated:#FFFFFF;--chip:#F2F4F7;--table-head:#F7F9FC;
+  --hairline:rgba(16,35,58,.08);
 }
 *{margin:0;padding:0;box-sizing:border-box}
 body{
