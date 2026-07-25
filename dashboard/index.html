@@ -1030,6 +1030,14 @@ body.is-client .home-bar{
       <label class="field"><span data-ar="ملاحظة إضافية (اختياري)" data-en="Extra note (optional)">ملاحظة إضافية (اختياري)</span>
         <textarea id="requestConfirmNote" data-ar-placeholder="كمية، مواصفات، أو موعد مطلوب" data-en-placeholder="Qty, specs, or needed date" placeholder="كمية، مواصفات، أو موعد مطلوب" style="min-height:80px"></textarea>
       </label>
+      <label class="check" for="requestPurchaseTermsCheck">
+        <input type="checkbox" id="requestPurchaseTermsCheck" required>
+        <span class="check-text">
+          <span data-ar="أوافق على " data-en="I agree to the ">أوافق على </span>
+          <a href="/terms/#purchase" id="requestPurchaseTermsLink" data-ar="شروط شراء المنتجات" data-en="product purchase terms">شروط شراء المنتجات</a>
+          <span data-ar="." data-en=".">.</span>
+        </span>
+      </label>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
         <button class="btn btn-primary" type="submit" data-ar="إرسال الطلب" data-en="Send request">إرسال الطلب</button>
         <button class="btn btn-ghost" type="button" id="requestConfirmCancel" data-ar="إلغاء" data-en="Cancel">إلغاء</button>
@@ -1608,7 +1616,7 @@ body.is-client .home-bar{
   }
   function openTermsGate(mode, view){
     termsGateMode = mode || 'accept';
-    const termsView = view === 'auth' ? 'auth' : 'full';
+    const termsView = view === 'auth' ? 'auth' : (view === 'purchase' ? 'purchase' : 'full');
     const gate = document.getElementById('termsGate');
     const body = document.getElementById('termsGateBody');
     const acceptBtn = document.getElementById('acceptTermsBtn');
@@ -1616,6 +1624,7 @@ body.is-client .home-bar{
     const title = document.getElementById('termsGateTitle');
     if (Terms && body) {
       if (termsView === 'auth' && Terms.renderAuthInto) Terms.renderAuthInto(body);
+      else if (termsView === 'purchase' && Terms.renderPurchaseInto) Terms.renderPurchaseInto(body);
       else Terms.renderInto(body);
       applyLang(currentLang);
     }
@@ -1624,6 +1633,10 @@ body.is-client .home-bar{
         title.setAttribute('data-ar', 'شروط تسجيل الدخول وإنشاء الحساب');
         title.setAttribute('data-en', 'Sign-in & registration terms');
         title.textContent = t('شروط تسجيل الدخول وإنشاء الحساب', 'Sign-in & registration terms');
+      } else if (termsView === 'purchase') {
+        title.setAttribute('data-ar', 'شروط شراء المنتجات');
+        title.setAttribute('data-en', 'Product purchase terms');
+        title.textContent = t('شروط شراء المنتجات', 'Product purchase terms');
       } else {
         title.setAttribute('data-ar', 'الشروط والأحكام');
         title.setAttribute('data-en', 'Terms & Conditions');
@@ -2293,6 +2306,13 @@ body.is-client .home-bar{
     dashRegisterTermsLink.addEventListener('click', (e) => {
       e.preventDefault();
       openTermsGate('view', 'auth');
+    });
+  }
+  const requestPurchaseTermsLink = document.getElementById('requestPurchaseTermsLink');
+  if (requestPurchaseTermsLink) {
+    requestPurchaseTermsLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      openTermsGate('view', 'purchase');
     });
   }
 
@@ -2975,6 +2995,12 @@ body.is-client .home-bar{
     if (needsCompany && !company) {
       showToast(t('اكتبوا اسم الشركة لطلبات الشركات', 'Enter the company name for business requests'));
       if (companyEl) companyEl.focus();
+      return;
+    }
+    const purchaseCheck = document.getElementById('requestPurchaseTermsCheck');
+    if (!purchaseCheck || !purchaseCheck.checked) {
+      showToast(t('يلزم الموافقة على شروط شراء المنتجات أولاً', 'Please accept the product purchase terms first'));
+      if (purchaseCheck) try { purchaseCheck.focus(); } catch (_) {}
       return;
     }
     const submitToken = ++requestConfirmSubmitToken;
