@@ -324,6 +324,17 @@
     return ensured;
   }
 
+  function hydrateAdminFromCloud(products, suggestions) {
+    if (!Array.isArray(products) || !products.length) return null;
+    const ensured = ensureCatalogVersion(products);
+    writeJson(ADMIN_PRODUCTS_KEY, ensured);
+    if (Array.isArray(suggestions) && suggestions.length) {
+      writeJson(SUGGESTIONS_KEY, suggestions);
+    }
+    publishClientCatalog(ensured, pruneSuggestions(ensured), { cloud: false });
+    return ensured;
+  }
+
   function saveAdminProducts(products) {
     const list = Array.isArray(products) ? products : [];
     writeJson(ADMIN_PRODUCTS_KEY, list);
@@ -484,17 +495,26 @@
     });
   }
 
+  function fetchWithTimeout(url, options, timeoutMs) {
+    const ms = timeoutMs || 12000;
+    const ctrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
+    const timer = setTimeout(() => { try { ctrl && ctrl.abort(); } catch (_) {} }, ms);
+    const opts = Object.assign({}, options || {});
+    if (ctrl) opts.signal = ctrl.signal;
+    return fetch(url, opts).finally(() => clearTimeout(timer));
+  }
+
   function notifyRequestWebhook(row) {
     try {
       const url = resolveWebhookUrl();
       if (!url || !/^https?:\/\//i.test(url)) return Promise.resolve(false);
-      return fetch(url, {
+      return fetchWithTimeout(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ event: 'raseekh.request', request: row }),
         mode: 'cors',
         keepalive: true
-      }).then((res) => !!res && res.ok).catch(() => false);
+      }, 12000).then((res) => !!res && res.ok).catch(() => false);
     } catch (_) {
       return Promise.resolve(false);
     }
@@ -509,7 +529,7 @@
         : (row.type === 'payment'
           ? 'دفعة / عربون راسخ — '
           : 'طلب جديد من موقع راسخ — ');
-      return fetch('https://formsubmit.co/ajax/' + encodeURIComponent(email), {
+      return fetchWithTimeout('https://formsubmit.co/ajax/' + encodeURIComponent(email), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         body: JSON.stringify({
@@ -528,7 +548,7 @@
         }),
         mode: 'cors',
         keepalive: true
-      }).then(async (res) => {
+      }, 12000).then(async (res) => {
         let body = null;
         try { body = await res.json(); } catch (_) {}
         const blob = JSON.stringify(body || {}).toLowerCase();
@@ -874,13 +894,13 @@
     try {
       const url = resolveWebhookUrl();
       if (url) {
-        webhook = await fetch(url, {
+        webhook = await fetchWithTimeout(url, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ event: 'raseekh.payment', payment: row }),
           mode: 'cors',
           keepalive: true
-        }).then((res) => !!res && res.ok).catch(() => false);
+        }, 12000).then((res) => !!res && res.ok).catch(() => false);
       }
     } catch (_) {}
     return {
@@ -1066,6 +1086,7 @@
     getClientProducts,
     getClientSuggestions,
     loadAdminProducts,
+    hydrateAdminFromCloud,
     saveAdminProducts,
     pruneSuggestions,
     addSharedRequest,

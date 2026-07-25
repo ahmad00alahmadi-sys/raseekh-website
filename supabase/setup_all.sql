@@ -204,6 +204,10 @@ create policy "raseekh_payments_insert" on public.payments for insert to authent
   coalesce(user_id, '') = coalesce(auth.uid()::text, '')
   or lower(coalesce(email, '')) = lower(coalesce(auth.jwt() ->> 'email', ''))
 );
+drop policy if exists "raseekh_payments_insert_admin" on public.payments;
+create policy "raseekh_payments_insert_admin" on public.payments for insert to authenticated with check (
+  lower(coalesce(auth.jwt() ->> 'email', '')) = 'ahmad00alahmadi@gmail.com'
+);
 create policy "raseekh_payments_select_own" on public.payments for select to authenticated using (
   lower(coalesce(email, '')) = lower(coalesce(auth.jwt() ->> 'email', ''))
   or coalesce(user_id, '') = coalesce(auth.uid()::text, '')

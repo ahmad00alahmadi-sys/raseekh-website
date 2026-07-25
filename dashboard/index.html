@@ -1423,6 +1423,8 @@ body.is-admin .client-only{display:none!important}
   function setTermsBlocked(on){
     const dash = document.getElementById('dashboardView');
     if (dash) dash.classList.toggle('terms-blocked', !!on);
+  }
+  function setTermsBodyLock(on){
     document.body.classList.toggle('terms-locked', !!on);
   }
   function openTermsGate(mode){
@@ -1442,6 +1444,7 @@ body.is-admin .client-only{display:none!important}
       gate.setAttribute('aria-hidden', 'false');
       try { gate.focus({ preventScroll: true }); } catch (_) {}
     }
+    setTermsBodyLock(true);
     setTermsBlocked(termsGateMode === 'accept');
     if (acceptBtn && termsGateMode === 'accept') {
       setTimeout(() => { try { acceptBtn.focus(); } catch (_) {} }, 30);
@@ -1456,6 +1459,7 @@ body.is-admin .client-only{display:none!important}
     }
     gate.classList.remove('open');
     gate.setAttribute('aria-hidden', 'true');
+    setTermsBodyLock(false);
     setTermsBlocked(false);
   }
   async function ensureClientTerms(){
@@ -1466,6 +1470,7 @@ body.is-admin .client-only{display:none!important}
         gate.classList.remove('open');
         gate.setAttribute('aria-hidden', 'true');
       }
+      setTermsBodyLock(false);
       setTermsBlocked(false);
       return true;
     }
@@ -1480,6 +1485,7 @@ body.is-admin .client-only{display:none!important}
         gate.classList.remove('open');
         gate.setAttribute('aria-hidden', 'true');
       }
+      setTermsBodyLock(false);
       setTermsBlocked(false);
       return true;
     }
@@ -1671,12 +1677,16 @@ body.is-admin .client-only{display:none!important}
       if (Catalog && Catalog.syncPublicCatalogFromCloud) {
         Catalog.syncPublicCatalogFromCloud().then((cloud) => {
           if (!cloud || !cloud.products) return;
+          if (isAdminUser && Catalog.hydrateAdminFromCloud) {
+            Catalog.hydrateAdminFromCloud(cloud.products, cloud.suggestions);
+          }
           loadProducts();
           if (typeof renderClientCatalog === 'function') renderClientCatalog();
           if (typeof renderClientSuggestionsPage === 'function') renderClientSuggestionsPage();
           if (typeof renderOverview === 'function') renderOverview();
           if (typeof fillCategoryFilter === 'function') fillCategoryFilter();
           if (typeof renderPos === 'function') renderPos();
+          if (isAdminUser && typeof renderProducts === 'function') renderProducts();
         }).catch(() => {});
       }
       document.getElementById('storeName').value = store.name || '';
@@ -2899,7 +2909,10 @@ body.is-admin .client-only{display:none!important}
           items,
           lines: cart.map(l => ({ ...l })),
           note: t('دفعة خدمات بسعر ثابت', 'Fixed-price services payment'),
-          source: 'admin-pos'
+          source: 'admin-pos',
+          name: (currentUser && currentUser.user_metadata && currentUser.user_metadata.full_name) || '',
+          email: (currentUser && currentUser.email) || '',
+          userId: (currentUser && currentUser.id) || ''
         })
       : {
           id: uid(),
@@ -2917,7 +2930,17 @@ body.is-admin .client-only{display:none!important}
     saveProducts();
     renderAll();
     openReceipt(sale);
-    showToast(method === 'card' ? t('تم تسجيل دفعة بالبطاقة','Card payment recorded') : t('تم تسجيل دفعة نقداً','Cash payment recorded'));
+    const finishToast = (delivery) => {
+      const synced = !!(delivery && (delivery.cloud || delivery.delivered));
+      showToast(synced
+        ? (method === 'card' ? t('تم تسجيل دفعة بالبطاقة','Card payment recorded') : t('تم تسجيل دفعة نقداً','Cash payment recorded'))
+        : t('حُفظت الدفعة محلياً — تعذّرت مزامنة السحابة', 'Payment saved locally — cloud sync failed'));
+    };
+    if (sale && sale.deliveryPromise) {
+      sale.deliveryPromise.then(finishToast).catch(() => finishToast(null));
+    } else {
+      finishToast({ cloud: false });
+    }
   }
   document.getElementById('payCashBtn').addEventListener('click', () => checkout('cash'));
   document.getElementById('payCardBtn').addEventListener('click', () => checkout('card'));
@@ -2943,7 +2966,9 @@ body.is-admin .client-only{display:none!important}
             method,
             total: amount,
             items: 1,
-            name,
+            name: name || ((currentUser && currentUser.user_metadata && currentUser.user_metadata.full_name) || ''),
+            email: (currentUser && currentUser.email) || '',
+            userId: (currentUser && currentUser.id) || '',
             note: note || t('عربون يدوي', 'Manual deposit'),
             source: 'admin-manual'
           })
@@ -2954,11 +2979,23 @@ body.is-admin .client-only{display:none!important}
         saveSales();
       } else loadSales();
       manualDepositForm.reset();
-      msg.style.color = 'var(--ok)';
-      msg.textContent = t('تم تسجيل العربون', 'Deposit recorded');
-      renderOverview();
-      renderSales();
-      showToast(t('تم تسجيل العربون', 'Deposit recorded'));
+      msg.style.color = 'var(--muted)';
+      msg.textContent = t('جاري حفظ العربون...', 'Saving deposit...');
+      const finish = (delivery) => {
+        const synced = !!(delivery && (delivery.cloud || delivery.delivered));
+        msg.style.color = synced ? 'var(--ok)' : 'var(--danger)';
+        msg.textContent = synced
+          ? t('تم تسجيل العربون', 'Deposit recorded')
+          : t('حُفظ محلياً — تعذّرت مزامنة السحابة', 'Saved locally — cloud sync failed');
+        renderOverview();
+        renderSales();
+        showToast(msg.textContent);
+      };
+      if (row && row.deliveryPromise) {
+        row.deliveryPromise.then(finish).catch(() => finish(null));
+      } else {
+        finish({ cloud: !!row });
+      }
     });
   }
 

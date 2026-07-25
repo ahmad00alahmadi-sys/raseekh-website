@@ -1184,6 +1184,17 @@ body.terms-locked,body.auth-locked{overflow:hidden}
     return d.innerHTML;
   }
 
+  function prefersReducedMotion(){
+    try { return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); }
+    catch (_) { return false; }
+  }
+  function scrollToEl(el, opts){
+    if (!el || !el.scrollIntoView) return;
+    const behavior = prefersReducedMotion() ? 'auto' : ((opts && opts.behavior) || 'smooth');
+    const block = (opts && opts.block) || 'start';
+    try { el.scrollIntoView({ behavior, block }); } catch (_) { el.scrollIntoView(); }
+  }
+
   function syncCompanyFieldForType(type){
     const company = document.getElementById('contactCompany');
     const label = document.getElementById('contactCompanyLabel');
@@ -1220,7 +1231,7 @@ body.terms-locked,body.auth-locked{overflow:hidden}
     if (msgEl) msgEl.value = opts.message || '';
     if (opts.company && companyEl && !companyEl.value.trim()) companyEl.value = opts.company;
     syncCompanyFieldForType((typeEl && typeEl.value) || opts.type || '');
-    document.getElementById('contact').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    scrollToEl(document.getElementById('contact'), { block: 'start' });
     const focusEl = (nameEl && !nameEl.value.trim())
       ? nameEl
       : ((opts.type === 'business' || opts.type === 'system') && companyEl && !companyEl.value.trim()
@@ -1261,7 +1272,7 @@ body.terms-locked,body.auth-locked{overflow:hidden}
     if (resultEl) {
       resultEl.style.color = 'var(--muted)';
       resultEl.textContent = t('جاري إرسال الطلب...', 'Sending request...');
-      document.getElementById('contact').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      scrollToEl(document.getElementById('contact'), { block: 'nearest' });
     }
     try {
       const saved = Catalog.addSharedRequest({
@@ -1736,7 +1747,7 @@ body.terms-locked,body.auth-locked{overflow:hidden}
       authIntent = 'dashboard';
       if (paidReturn) finalizePendingMoyasarPayment(user);
       const pay = document.getElementById('pay');
-      if (pay) pay.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (pay) scrollToEl(pay, { block: 'start' });
       const nameEl = document.getElementById('payName');
       if (nameEl && !paidReturn && hasCloudPaySession(user)) setTimeout(() => nameEl.focus(), 350);
       return;
@@ -1935,8 +1946,10 @@ body.terms-locked,body.auth-locked{overflow:hidden}
     }
   }
 
+  let contactSubmitting = false;
   document.getElementById('contactForm').addEventListener('submit', async (e) => {
     e.preventDefault();
+    if (contactSubmitting) return;
     const result = document.getElementById('contactResult');
     if (!navigator.onLine) {
       result.style.color = 'var(--danger)';
@@ -1981,6 +1994,7 @@ body.terms-locked,body.auth-locked{overflow:hidden}
       ? Catalog.requestTypeLabel(payload.type, currentLang)
       : payload.type;
     const submitBtn = e.target.querySelector('button[type="submit"]');
+    contactSubmitting = true;
     if (submitBtn) {
       submitBtn.disabled = true;
       submitBtn.setAttribute('aria-busy', 'true');
@@ -2005,63 +2019,79 @@ body.terms-locked,body.auth-locked{overflow:hidden}
         });
         if (saved && saved.deliveryPromise) delivery = await saved.deliveryPromise;
       }
-    } catch (_) {}
-    const delivered = !!(delivery && (delivery.delivered || delivery.cloud));
-    const pending = !!(delivery && delivery.pendingNotify);
-    const ok = !!saved;
-    result.style.color = ok ? 'var(--ok)' : 'var(--danger)';
-    result.classList.remove('ok-pulse');
-    void result.offsetWidth;
-    if (ok) result.classList.add('ok-pulse');
-    const successActions = document.getElementById('contactSuccessActions');
-    result.textContent = !ok
-      ? t('تعذّر إيصال الطلب الآن. حاولوا مرة أخرى أو تواصلوا لاحقاً.', 'Could not deliver the request now. Please try again later.')
-      : (delivered
-        ? (loggedInUser
-          ? t('✓ تم إرسال طلبكم إلى راسخ', '✓ Request sent to Raseekh')
-          : t('✓ تم إرسال طلبكم إلى راسخ — سنراجع ونرد', '✓ Request sent to Raseekh — we will review and reply'))
-        : (pending
-          ? t('✓ استلمنا طلبكم — فعلوا إشعار البريد من الإدارة إن لزم', '✓ Request received — admin may still need to activate email notify')
-          : t('✓ تم حفظ الطلب — سنراجعه قريباً', '✓ Request saved — we will review it soon')));
-    if (successActions) {
-      if (ok) {
-        successActions.style.display = 'flex';
-        successActions.style.gap = '8px';
-        successActions.style.flexWrap = 'wrap';
-        if (loggedInUser) {
-          successActions.innerHTML = `<a class="btn btn-primary" href="/dashboard/">${escapeHtml(t('متابعة الطلب من حسابي','Track request in my account'))}</a>`;
+      const delivered = !!(delivery && (delivery.delivered || delivery.cloud));
+      const pending = !!(delivery && delivery.pendingNotify);
+      // Guests only succeed when delivery reaches cloud/email/webhook; local-only is invisible to admin.
+      const ok = loggedInUser ? !!saved : !!(saved && (delivered || pending));
+      result.style.color = ok ? 'var(--ok)' : 'var(--danger)';
+      result.classList.remove('ok-pulse');
+      void result.offsetWidth;
+      if (ok) result.classList.add('ok-pulse');
+      const successActions = document.getElementById('contactSuccessActions');
+      result.textContent = !saved
+        ? t('تعذّر إيصال الطلب الآن. حاولوا مرة أخرى أو تواصلوا لاحقاً.', 'Could not deliver the request now. Please try again later.')
+        : (!ok
+          ? t('تعذّر إيصال الطلب الآن. أبقوا النموذج وحاولوا مرة أخرى أو أنشئوا حساباً.', 'Could not deliver the request now. Keep the form and retry, or create an account.')
+          : (delivered
+            ? (loggedInUser
+              ? t('✓ تم إرسال طلبكم إلى راسخ', '✓ Request sent to Raseekh')
+              : t('✓ تم إرسال طلبكم إلى راسخ — سنراجع ونرد', '✓ Request sent to Raseekh — we will review and reply'))
+            : (pending
+              ? t('✓ استلمنا طلبكم — فعلوا إشعار البريد من الإدارة إن لزم', '✓ Request received — admin may still need to activate email notify')
+              : t('✓ تم حفظ الطلب — تابعوه من حسابكم', '✓ Request saved — track it in your account'))));
+      if (successActions) {
+        if (ok) {
+          successActions.style.display = 'flex';
+          successActions.style.gap = '8px';
+          successActions.style.flexWrap = 'wrap';
+          if (loggedInUser) {
+            successActions.innerHTML = `<a class="btn btn-primary" href="/dashboard/">${escapeHtml(t('متابعة الطلب من حسابي','Track request in my account'))}</a>`;
+          } else {
+            successActions.innerHTML = `
+              <button type="button" class="btn btn-primary" id="contactCreateAccountBtn">${escapeHtml(t('إنشاء حساب للمتابعة','Create an account to track'))}</button>
+              <a class="btn btn-ghost" href="#pay">${escapeHtml(t('سداد عربون','Pay a deposit'))}</a>`;
+            const createBtn = document.getElementById('contactCreateAccountBtn');
+            if (createBtn) createBtn.addEventListener('click', () => { openAuth('dashboard'); showAuthPanel('register'); });
+          }
         } else {
-          successActions.innerHTML = `
-            <button type="button" class="btn btn-primary" id="contactCreateAccountBtn">${escapeHtml(t('إنشاء حساب للمتابعة','Create an account to track'))}</button>
-            <a class="btn btn-ghost" href="#pay">${escapeHtml(t('سداد عربون','Pay a deposit'))}</a>`;
+          successActions.style.display = 'flex';
+          successActions.style.gap = '8px';
+          successActions.style.flexWrap = 'wrap';
+          successActions.innerHTML = loggedInUser
+            ? `<a class="btn btn-primary" href="/dashboard/">${escapeHtml(t('فتح حسابي','Open my account'))}</a>`
+            : `<button type="button" class="btn btn-primary" id="contactCreateAccountBtn">${escapeHtml(t('إنشاء حساب ثم أرسلوا مجدداً','Create an account, then retry'))}</button>`;
           const createBtn = document.getElementById('contactCreateAccountBtn');
           if (createBtn) createBtn.addEventListener('click', () => { openAuth('dashboard'); showAuthPanel('register'); });
         }
-      } else {
-        successActions.style.display = 'none';
-        successActions.innerHTML = '';
       }
-    }
-    if (submitBtn) {
-      submitBtn.disabled = false;
-      submitBtn.removeAttribute('aria-busy');
       if (ok) {
-        submitBtn.classList.add('sent');
-        const prev = submitBtn.textContent;
-        submitBtn.textContent = t('تم الإرسال', 'Sent');
-        setTimeout(() => { submitBtn.classList.remove('sent'); submitBtn.textContent = prev; applyLang(currentLang); }, 1800);
+        e.target.reset();
+        const hq = document.getElementById('heroQuoteMsg');
+        if (hq) hq.value = '';
+        if (loggedInUser) {
+          const fullName = loggedInUser.user_metadata && loggedInUser.user_metadata.full_name;
+          const phone = loggedInUser.user_metadata && loggedInUser.user_metadata.phone;
+          const company = loggedInUser.user_metadata && loggedInUser.user_metadata.company;
+          if (fullName) document.getElementById('contactName').value = fullName;
+          if (phone) document.getElementById('contactPhone').value = phone;
+          if (company) document.getElementById('contactCompany').value = company;
+          if (loggedInUser.email) document.getElementById('contactEmail').value = loggedInUser.email;
+        }
+        if (submitBtn) {
+          submitBtn.classList.add('sent');
+          const prev = submitBtn.textContent;
+          submitBtn.textContent = t('تم الإرسال', 'Sent');
+          setTimeout(() => { submitBtn.classList.remove('sent'); submitBtn.textContent = prev; applyLang(currentLang); }, 1800);
+        }
       }
-    }
-    if (ok) {
-      e.target.reset();
-      const hq = document.getElementById('heroQuoteMsg');
-      if (hq) hq.value = '';
-      if (loggedInUser) {
-        const fullName = loggedInUser.user_metadata && loggedInUser.user_metadata.full_name;
-        const phone = loggedInUser.user_metadata && loggedInUser.user_metadata.phone;
-        if (fullName) document.getElementById('contactName').value = fullName;
-        if (phone) document.getElementById('contactPhone').value = phone;
-        if (loggedInUser.email) document.getElementById('contactEmail').value = loggedInUser.email;
+    } catch (_) {
+      result.style.color = 'var(--danger)';
+      result.textContent = t('تعذّر إيصال الطلب الآن. حاولوا مرة أخرى أو تواصلوا لاحقاً.', 'Could not deliver the request now. Please try again later.');
+    } finally {
+      contactSubmitting = false;
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.removeAttribute('aria-busy');
       }
     }
   });
@@ -2203,7 +2233,7 @@ body.terms-locked,body.auth-locked{overflow:hidden}
     if (status !== 'paid' && status !== 'failed') {
       if (params.get('pay') === '1') {
         const pay = document.getElementById('pay');
-        if (pay) setTimeout(() => pay.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80);
+        if (pay) setTimeout(() => scrollToEl(pay, { block: 'start' }), 80);
       }
       return;
     }
@@ -2216,13 +2246,13 @@ body.terms-locked,body.auth-locked{overflow:hidden}
       }
       if (!user) {
         openAuth('pay');
-        document.getElementById('pay').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        scrollToEl(document.getElementById('pay'), { block: 'start' });
         return;
       }
       setPayUnlocked(user, provider);
       if (status === 'paid') finalizePendingMoyasarPayment(user);
       else showPayStep(payStatusFailed);
-      document.getElementById('pay').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      scrollToEl(document.getElementById('pay'), { block: 'start' });
       if (status !== 'paid') {
         try {
           const url = new URL(location.href);
@@ -2269,10 +2299,8 @@ body.terms-locked,body.auth-locked{overflow:hidden}
     if (!termsOverlay) return;
     termsOverlay.classList.remove('open');
     termsOverlay.setAttribute('aria-hidden', 'true');
-    // Keep body locked if auth modal is still open underneath.
-    if (!(authModal && authModal.classList.contains('open'))) {
-      document.body.classList.remove('terms-locked');
-    }
+    // Always clear terms lock; auth-locked keeps scroll locked while auth remains open.
+    document.body.classList.remove('terms-locked');
     const link = document.getElementById('registerTermsLink');
     if (link && authModal && authModal.classList.contains('open')) {
       try { link.focus(); } catch (_) {}
