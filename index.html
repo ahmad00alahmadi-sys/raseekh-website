@@ -2467,6 +2467,11 @@ body.terms-locked,body.auth-locked{overflow:hidden}
     else finish(null, null);
   })();
 
+  if (Catalog) {
+    if (Catalog.retryPendingSharedRequests) Catalog.retryPendingSharedRequests().catch(() => {});
+    if (Catalog.retryPendingPayments) Catalog.retryPendingPayments().catch(() => {});
+  }
+
   const revealEls = document.querySelectorAll('.reveal');
   if ('IntersectionObserver' in window) {
     const io = new IntersectionObserver((entries) => {
