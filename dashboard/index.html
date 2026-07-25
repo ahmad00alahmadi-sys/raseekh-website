@@ -628,7 +628,8 @@ body.is-admin .client-only{display:none!important}
       </div>
       <div class="panel" style="margin-top:14px">
         <h3 data-ar="سجل الدخول" data-en="Login log">سجل الدخول</h3>
-        <p style="color:var(--muted);font-size:.9rem;margin:4px 0 10px" data-ar="كل من دخل لحساب راسخ، ومن نشط خلال آخر 15 دقيقة. للمزامنة بين الأجهزة شغّل setup_all.sql." data-en="Everyone who signed into Raseekh, and who is active in the last 15 minutes. For cross-device sync run setup_all.sql.">كل من دخل لحساب راسخ، ومن نشط خلال آخر 15 دقيقة. للمزامنة بين الأجهزة شغّل setup_all.sql.</p>
+        <p style="color:var(--muted);font-size:.9rem;margin:4px 0 6px" data-ar="كل من دخل لحساب راسخ، ومن نشط خلال آخر 15 دقيقة. للمزامنة بين الأجهزة شغّل setup_all.sql." data-en="Everyone who signed into Raseekh, and who is active in the last 15 minutes. For cross-device sync run setup_all.sql.">كل من دخل لحساب راسخ، ومن نشط خلال آخر 15 دقيقة. للمزامنة بين الأجهزة شغّل setup_all.sql.</p>
+        <div id="activityCloudHint" style="font-size:.86rem;font-weight:700;margin-bottom:10px">—</div>
         <div class="lead-filters" id="activityFilters">
           <button type="button" class="active" data-activity-filter="all" data-ar="الكل" data-en="All">الكل</button>
           <button type="button" data-activity-filter="active" data-ar="نشط الآن" data-en="Active now">نشط الآن</button>
@@ -1397,6 +1398,23 @@ body.is-admin .client-only{display:none!important}
     set('activityStatToday', stats.loginsToday);
     set('activityStatTotal', stats.totalLogins);
     updateActivityBadge(stats.activeNow);
+
+    const hint = document.getElementById('activityCloudHint');
+    if (hint && Activity.probeCloud) {
+      try {
+        const probe = await Activity.probeCloud();
+        if (probe && probe.ok) {
+          hint.style.color = 'var(--ok)';
+          hint.textContent = t('✓ مزامنة السحابة جاهزة — الدخول يظهر من أي جهاز', '✓ Cloud sync ready — logins appear across devices');
+        } else {
+          hint.style.color = 'var(--danger)';
+          hint.textContent = t('⚠ السحابة غير جاهزة — شغّل setup_all.sql ثم ادخل بحساب الإدارة', '⚠ Cloud not ready — run setup_all.sql then sign in as admin');
+        }
+      } catch (_) {
+        hint.style.color = 'var(--danger)';
+        hint.textContent = t('⚠ تعذّر فحص مزامنة الدخول', '⚠ Could not check login sync');
+      }
+    }
 
     const now = Date.now();
     const loc = currentLang === 'ar' ? 'ar-SA' : 'en-US';
