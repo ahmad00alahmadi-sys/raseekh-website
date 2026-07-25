@@ -80,6 +80,27 @@ a{color:inherit;text-decoration:none}
 .lead-filters button.active{background:var(--navy);color:#F4F7FA;border-color:var(--navy)}
 .stat.clickable{cursor:pointer;transition:transform .15s,border-color .15s}
 .stat.clickable:hover{transform:translateY(-2px);border-color:var(--copper)}
+.delivery-status{
+  display:grid;gap:8px;margin:10px 0 14px;padding:12px 14px;border:1.5px solid var(--line);
+  border-radius:var(--radius);background:rgba(247,249,252,.9);font-size:.86rem;
+}
+.delivery-status .row{display:flex;justify-content:space-between;gap:10px;align-items:center}
+.delivery-pill{
+  display:inline-flex;align-items:center;gap:6px;padding:3px 8px;border-radius:2px;font-size:.75rem;font-weight:700;
+  background:var(--mist);color:var(--navy);
+}
+.delivery-pill.on{background:rgba(31,122,88,.14);color:var(--ok)}
+.delivery-pill.off{background:#FCE8E6;color:var(--danger)}
+.status-chip{
+  display:inline-flex;padding:4px 8px;border-radius:2px;font-size:.75rem;font-weight:700;
+  background:rgba(42,111,122,.12);color:var(--harbor);
+}
+.status-chip.new{background:rgba(196,92,38,.16);color:#8A3E14}
+.status-chip.in_progress{background:rgba(42,111,122,.16);color:var(--harbor)}
+.status-chip.done{background:rgba(31,122,88,.14);color:var(--ok)}
+.status-chip.closed{background:var(--mist);color:var(--muted)}
+.setup-steps{display:flex;flex-direction:column;gap:8px;text-align:start;margin-top:12px;color:var(--muted);font-size:.9rem}
+.setup-steps b{color:var(--navy)}
 .btn{
   display:inline-flex;align-items:center;justify-content:center;gap:8px;
   border:none;border-radius:var(--radius);padding:12px 18px;cursor:pointer;font-weight:700;
@@ -536,7 +557,11 @@ body.is-admin .client-only{display:none!important}
         <p style="color:var(--muted);font-size:.9rem;margin-bottom:8px" data-ar="هنا تصلك طلبات نموذج الموقع + طلبات حساب العميل. لتصل من أي جهاز: فعّل جدول Supabase واحفظ بريد الإشعار من الإعدادات." data-en="Website form and client-account requests land here. To receive them on any device: enable the Supabase table and save a notify email in Settings.">هنا تصلك طلبات نموذج الموقع + طلبات حساب العميل. لتصل من أي جهاز: فعّل جدول Supabase واحفظ بريد الإشعار من الإعدادات.</p>
         <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
           <button class="btn btn-ghost" type="button" id="refreshLeadsBtn" data-ar="↻ تحديث من السحابة" data-en="↻ Refresh from cloud">↻ تحديث من السحابة</button>
+          <button class="btn btn-ghost" type="button" id="exportLeadsBtn" data-ar="تصدير CSV" data-en="Export CSV">تصدير CSV</button>
           <a class="btn btn-ghost" href="#page-settings" id="gotoNotifySettings" data-ar="إعدادات وصول الطلبات" data-en="Request delivery settings">إعدادات وصول الطلبات</a>
+        </div>
+        <div class="delivery-status" id="leadsDeliveryHint">
+          <div class="row"><span data-ar="وصول الطلبات الآن" data-en="Delivery right now">وصول الطلبات الآن</span><span class="delivery-pill off" id="leadsDeliveryPill">—</span></div>
         </div>
         <div class="lead-filters" id="leadFilters">
           <button type="button" class="active" data-lead-filter="all" data-ar="الكل" data-en="All">الكل</button>
@@ -662,7 +687,16 @@ body.is-admin .client-only{display:none!important}
             <input type="url" id="storeWebhook" data-ar-placeholder="https://hooks.example.com/..." data-en-placeholder="https://hooks.example.com/..." placeholder="https://hooks.example.com/...">
           </label>
           <p style="color:var(--muted);font-size:.82rem" data-ar="اختياري: Zapier / Make / n8n. وللمزامنة بين الأجهزة شغّل ملف supabase/client_requests.sql مرة واحدة في Supabase." data-en="Optional: Zapier / Make / n8n. For cross-device sync, run supabase/client_requests.sql once in Supabase.">اختياري: Zapier / Make / n8n. وللمزامنة بين الأجهزة شغّل ملف supabase/client_requests.sql مرة واحدة في Supabase.</p>
-          <button class="btn btn-primary" type="submit" style="width:fit-content" data-ar="حفظ بيانات المتجر" data-en="Save store details">حفظ بيانات المتجر</button>
+          <div class="delivery-status" id="deliveryStatusBox">
+            <div class="row"><span data-ar="حالة وصول الطلبات" data-en="Request delivery status">حالة وصول الطلبات</span><button type="button" class="btn btn-ghost" id="refreshDeliveryStatusBtn" style="padding:6px 10px;font-size:.78rem" data-ar="فحص" data-en="Check">فحص</button></div>
+            <div class="row"><span data-ar="البريد" data-en="Email">البريد</span><span class="delivery-pill off" id="deliveryEmailPill">—</span></div>
+            <div class="row"><span data-ar="السحابة (Supabase)" data-en="Cloud (Supabase)">السحابة (Supabase)</span><span class="delivery-pill off" id="deliveryCloudPill">—</span></div>
+            <div class="row"><span data-ar="Webhook" data-en="Webhook">Webhook</span><span class="delivery-pill off" id="deliveryWebhookPill">—</span></div>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn btn-primary" type="submit" style="width:fit-content" data-ar="حفظ بيانات المتجر" data-en="Save store details">حفظ بيانات المتجر</button>
+            <button class="btn btn-brass" type="button" id="testNotifyEmailBtn" style="width:fit-content" data-ar="إرسال طلب تجريبي للبريد" data-en="Send test email request">إرسال طلب تجريبي للبريد</button>
+          </div>
         </form>
         <div class="msg" id="storeMsg"></div>
       </div>
@@ -901,6 +935,37 @@ body.is-admin .client-only{display:none!important}
     }
     return clientRequests;
   }
+
+  async function renderDeliveryStatus(){
+    const status = Catalog && Catalog.getDeliveryStatus ? Catalog.getDeliveryStatus() : { hasEmail: false, hasWebhook: false, hasSupabaseClient: false, notifyEmail: '' };
+    let cloudOk = false;
+    if (Catalog && Catalog.probeCloudRequests && status.hasSupabaseClient) {
+      const probe = await Catalog.probeCloudRequests();
+      cloudOk = !!(probe && probe.ok);
+    }
+    const setPill = (id, on, onText, offText) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.classList.toggle('on', !!on);
+      el.classList.toggle('off', !on);
+      el.textContent = on ? onText : offText;
+    };
+    setPill('deliveryEmailPill', status.hasEmail, status.notifyEmail || t('مفعّل', 'On'), t('غير مضبوط', 'Not set'));
+    setPill('deliveryCloudPill', cloudOk, t('متصل', 'Connected'), status.hasSupabaseClient ? t('شغّل SQL أولاً', 'Run SQL first') : t('غير متصل', 'Offline'));
+    setPill('deliveryWebhookPill', status.hasWebhook, t('مفعّل', 'On'), t('اختياري', 'Optional'));
+    const leadsPill = document.getElementById('leadsDeliveryPill');
+    if (leadsPill) {
+      const ready = status.hasEmail || cloudOk;
+      leadsPill.classList.toggle('on', ready);
+      leadsPill.classList.toggle('off', !ready);
+      leadsPill.textContent = ready
+        ? (status.hasEmail && cloudOk
+          ? t('بريد + سحابة', 'Email + cloud')
+          : (status.hasEmail ? t('بريد مفعّل', 'Email on') : t('سحابة فقط', 'Cloud only')))
+        : t('اضبط البريد من الإعدادات', 'Set email in Settings');
+    }
+    return { status, cloudOk };
+  }
   function saveClientRequests(){
     if (Catalog && Catalog.saveSharedRequests) {
       Catalog.saveSharedRequests(clientRequests);
@@ -1034,8 +1099,16 @@ body.is-admin .client-only{display:none!important}
     const webhookEl = document.getElementById('storeWebhook');
     if (webhookEl) webhookEl.value = store.webhookUrl || '';
     const notifyEl = document.getElementById('storeNotifyEmail');
-    if (notifyEl) notifyEl.value = store.notifyEmail || '';
+    if (notifyEl) {
+      const fallbackEmail = (!store.notifyEmail && user && user.email && isAdminUser) ? String(user.email).toLowerCase() : '';
+      notifyEl.value = store.notifyEmail || fallbackEmail || '';
+      if (!store.notifyEmail && fallbackEmail) {
+        store.notifyEmail = fallbackEmail;
+        saveStore();
+      }
+    }
     if (isAdminUser && Catalog && Catalog.publishPublicNotify) Catalog.publishPublicNotify(store);
+    if (isAdminUser) renderDeliveryStatus();
     cart = [];
     applyLang(currentLang);
     startClock();
@@ -1322,22 +1395,23 @@ body.is-admin .client-only{display:none!important}
     }).join('');
   }
 
-  function renderClientRequestsPage(){
+  async function renderClientRequestsPage(){
     const box = document.getElementById('clientRequestsList');
     if (!box) return;
+    await refreshClientRequestsFromCloud();
     const mine = myRequests();
     if (!mine.length) {
-      box.innerHTML = `<div class="empty">${t('لا توجد طلبات مرسلة بعد','No submitted requests yet')}</div>`;
+      box.innerHTML = `<div class="empty"><strong>${escapeHtml(t('لا توجد طلبات مرسلة بعد','No submitted requests yet'))}</strong>${escapeHtml(t('اطلب عرض سعر من الكتالوج أو الاقتراحات، وستظهر حالتها هنا.','Request a quote from catalog or suggestions — status will show here.'))}</div>`;
       return;
     }
     box.innerHTML = mine.map(r => `
       <div class="sale-row">
         <div>
-          <div><strong>${escapeHtml(r.title || t('طلب','Request'))}</strong></div>
+          <div><strong>${escapeHtml(requestTitle(r))}</strong></div>
           <div style="color:var(--muted);font-size:.86rem;white-space:pre-wrap">${escapeHtml(r.message || '')}</div>
           <div style="color:var(--muted);font-size:.78rem;margin-top:4px">${new Date(r.at).toLocaleString(currentLang === 'ar' ? 'ar-SA' : 'en-US')}</div>
         </div>
-        <strong>${escapeHtml(statusLabel(r.status))}</strong>
+        <span class="status-chip ${escapeHtml(r.status || 'new')}">${escapeHtml(statusLabel(r.status))}</span>
       </div>
     `).join('');
   }
@@ -1391,9 +1465,22 @@ body.is-admin .client-only{display:none!important}
     }
     updateLeadsBadge();
 
+    await renderDeliveryStatus();
     const filtered = clientRequests.filter((r) => leadsFilter === 'all' || (r.status || 'new') === leadsFilter);
     if (!filtered.length) {
-      box.innerHTML = `<div class="empty">${t('لا توجد طلبات ضمن هذا التصفية','No requests in this filter')}</div>`;
+      if (!clientRequests.length) {
+        box.innerHTML = `<div class="empty">
+          <strong>${escapeHtml(t('صندوق الطلبات فارغ','Request inbox is empty'))}</strong>
+          <div class="setup-steps">
+            <div><b>1.</b> ${escapeHtml(t('احفظ «بريد وصول الطلبات» من الإعدادات','Save “Request notify email” in Settings'))}</div>
+            <div><b>2.</b> ${escapeHtml(t('فعّل رسالة FormSubmit الأولى على بريدك','Activate the first FormSubmit email'))}</div>
+            <div><b>3.</b> ${escapeHtml(t('اختياري: شغّل supabase/client_requests.sql للمزامنة بين الأجهزة','Optional: run supabase/client_requests.sql for cross-device sync'))}</div>
+            <div><b>4.</b> ${escapeHtml(t('أرسل طلب تجريبي من الصفحة الرئيسية','Send a test request from the homepage'))}</div>
+          </div>
+        </div>`;
+      } else {
+        box.innerHTML = `<div class="empty">${t('لا توجد طلبات ضمن هذا التصفية','No requests in this filter')}</div>`;
+      }
       return;
     }
     const sorted = filtered.slice().sort((a, b) => {
@@ -1405,7 +1492,9 @@ body.is-admin .client-only{display:none!important}
     box.innerHTML = sorted.slice(0, 80).map(r => `
       <div class="sale-row" style="align-items:flex-start">
         <div style="flex:1">
-          <div><strong>${escapeHtml(r.name || r.email || '—')}</strong> · <span style="color:var(--muted)">${escapeHtml(r.source === 'site' ? t('نموذج الموقع','Website form') : t('حساب عميل','Client account'))}</span></div>
+          <div><strong>${escapeHtml(r.name || r.email || '—')}</strong> · <span style="color:var(--muted)">${escapeHtml(r.source === 'site' ? t('نموذج الموقع','Website form') : t('حساب عميل','Client account'))}</span>
+            <span class="status-chip ${escapeHtml(r.status || 'new')}" style="margin-inline-start:8px">${escapeHtml(statusLabel(r.status))}</span>
+          </div>
           <div style="color:var(--muted);font-size:.86rem;margin-top:2px">
             ${escapeHtml([r.phone, r.email, r.company].filter(Boolean).join(' · ') || t('بدون بيانات تواصل إضافية','No extra contact details'))}
           </div>
@@ -1420,6 +1509,7 @@ body.is-admin .client-only{display:none!important}
             <option value="done" ${r.status === 'done' ? 'selected' : ''}>${escapeHtml(t('مكتمل','Done'))}</option>
             <option value="closed" ${r.status === 'closed' ? 'selected' : ''}>${escapeHtml(t('مغلق','Closed'))}</option>
           </select>
+          <button type="button" class="btn btn-ghost" style="padding:8px 10px;font-size:.78rem" data-copy-lead="${escapeHtml(r.id)}">${escapeHtml(t('نسخ للتواصل','Copy contact'))}</button>
         </div>
       </div>
     `).join('');
@@ -1472,6 +1562,27 @@ body.is-admin .client-only{display:none!important}
       showToast(t('تم تحديث حالة الطلب', 'Request status updated'));
       renderAdminLeads();
       renderOverview();
+    });
+    adminLeadsList.addEventListener('click', async (e) => {
+      const btn = e.target.closest('[data-copy-lead]');
+      if (!btn) return;
+      const id = btn.getAttribute('data-copy-lead');
+      const r = clientRequests.find((x) => x.id === id);
+      if (!r) return;
+      const text = [
+        r.name || '',
+        r.phone || '',
+        r.email || '',
+        r.company || '',
+        requestTitle(r),
+        r.message || ''
+      ].filter(Boolean).join('\n');
+      try {
+        await navigator.clipboard.writeText(text);
+        showToast(t('تم نسخ بيانات التواصل', 'Contact details copied'));
+      } catch (_) {
+        showToast(t('تعذّر النسخ', 'Could not copy'));
+      }
     });
   }
 
@@ -1931,6 +2042,7 @@ body.is-admin .client-only{display:none!important}
     store.webhookUrl = (document.getElementById('storeWebhook').value || '').trim();
     store.notifyEmail = (document.getElementById('storeNotifyEmail').value || '').trim().toLowerCase();
     saveStore();
+    renderDeliveryStatus();
     document.getElementById('storeMsg').style.color = 'var(--ok)';
     if (store.notifyEmail) {
       document.getElementById('storeMsg').textContent = t(
@@ -1944,6 +2056,48 @@ body.is-admin .client-only{display:none!important}
     }
   });
 
+  const testNotifyEmailBtn = document.getElementById('testNotifyEmailBtn');
+  if (testNotifyEmailBtn) {
+    testNotifyEmailBtn.addEventListener('click', async () => {
+      if (!requireAdmin('testNotifyEmail')) return;
+      const email = (document.getElementById('storeNotifyEmail').value || '').trim().toLowerCase();
+      if (!email) {
+        document.getElementById('storeMsg').style.color = 'var(--danger)';
+        document.getElementById('storeMsg').textContent = t('اكتب بريد وصول الطلبات أولاً', 'Enter a notify email first');
+        return;
+      }
+      store.notifyEmail = email;
+      saveStore();
+      document.getElementById('storeMsg').style.color = 'var(--muted)';
+      document.getElementById('storeMsg').textContent = t('جاري إرسال طلب تجريبي...', 'Sending test request...');
+      const sample = {
+        id: 'test-' + Date.now().toString(36),
+        at: new Date().toISOString(),
+        name: t('طلب تجريبي', 'Test request'),
+        phone: store.phone || '',
+        email: email,
+        company: store.name || 'راسخ',
+        title: t('اختبار وصول الطلبات', 'Request delivery test'),
+        message: t('هذا اختبار من لوحة راسخ — إذا وصلك فالبريد يعمل.', 'This is a Raseekh dashboard test — if you got it, email delivery works.'),
+        type: 'site',
+        source: 'admin-test',
+        status: 'new'
+      };
+      const result = Catalog && Catalog.notifyAdminEmail
+        ? await Catalog.notifyAdminEmail(sample, email)
+        : { ok: false };
+      document.getElementById('storeMsg').style.color = result && result.ok ? 'var(--ok)' : 'var(--danger)';
+      document.getElementById('storeMsg').textContent = result && result.ok
+        ? t('تم الإرسال — افحص البريد (والبريد المزعج). أول مرة تحتاج تفعيل FormSubmit.', 'Sent — check inbox (and spam). First time needs FormSubmit activation.')
+        : t('تعذّر الإرسال — تأكد من البريد أو جرّب لاحقاً', 'Send failed — check the email or try later');
+      renderDeliveryStatus();
+    });
+  }
+  const refreshDeliveryStatusBtn = document.getElementById('refreshDeliveryStatusBtn');
+  if (refreshDeliveryStatusBtn) {
+    refreshDeliveryStatusBtn.addEventListener('click', () => renderDeliveryStatus());
+  }
+
   const refreshLeadsBtn = document.getElementById('refreshLeadsBtn');
   if (refreshLeadsBtn) {
     refreshLeadsBtn.addEventListener('click', async () => {
@@ -1951,6 +2105,29 @@ body.is-admin .client-only{display:none!important}
       await renderAdminLeads();
       updateLeadsBadge();
       showToast(t('تم تحديث صندوق الطلبات', 'Request inbox updated'));
+    });
+  }
+  const exportLeadsBtn = document.getElementById('exportLeadsBtn');
+  if (exportLeadsBtn) {
+    exportLeadsBtn.addEventListener('click', () => {
+      if (!requireAdmin('exportLeads')) return;
+      loadClientRequests();
+      if (!clientRequests.length) {
+        showToast(t('لا توجد طلبات للتصدير', 'No requests to export'));
+        return;
+      }
+      const header = ['id','at','status','source','name','phone','email','company','title','message'];
+      const lines = [header.join(',')].concat(clientRequests.map((r) => header.map((k) => {
+        const raw = String(r[k] == null ? '' : r[k]).replace(/"/g, '""');
+        return `"${raw}"`;
+      }).join(',')));
+      const blob = new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'raseekh-client-requests.csv';
+      a.click();
+      URL.revokeObjectURL(a.href);
+      showToast(t('تم تصدير الطلبات', 'Requests exported'));
     });
   }
   const gotoNotifySettings = document.getElementById('gotoNotifySettings');
@@ -1962,6 +2139,18 @@ body.is-admin .client-only{display:none!important}
       if (panel) panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
   }
+
+  let leadsPollTimer = null;
+  function startLeadsPolling(){
+    clearInterval(leadsPollTimer);
+    leadsPollTimer = setInterval(async () => {
+      if (!isAdminUser || !document.getElementById('page-leads')?.classList.contains('active')) return;
+      await refreshClientRequestsFromCloud();
+      updateLeadsBadge();
+      renderAdminLeads();
+    }, 45000);
+  }
+  startLeadsPolling();
 
   applyLang(currentLang);
 

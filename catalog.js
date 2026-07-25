@@ -385,17 +385,17 @@
     }
   }
 
-  function notifyAdminEmail(row) {
+  function notifyAdminEmail(row, overrideEmail) {
     try {
-      const email = resolveNotifyEmail();
-      if (!email || email.indexOf('@') < 0) return Promise.resolve(false);
+      const email = String(overrideEmail || resolveNotifyEmail() || '').trim().toLowerCase();
+      if (!email || email.indexOf('@') < 0) return Promise.resolve({ ok: false, reason: 'no-email' });
       return fetch('https://formsubmit.co/ajax/' + encodeURIComponent(email), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         body: JSON.stringify({
           _subject: 'طلب جديد من موقع راسخ — ' + (row.title || row.type || 'طلب'),
           name: row.name || 'عميل',
-          email: row.email || 'no-reply@raseekh.local',
+          email: row.email || 'client@raseekh.local',
           phone: row.phone || '',
           company: row.company || '',
           type: row.type || '',
@@ -403,13 +403,18 @@
           message: row.message || '',
           source: row.source || '',
           request_id: row.id || '',
-          _template: 'table'
+          _template: 'table',
+          _captcha: 'false'
         }),
         mode: 'cors',
         keepalive: true
-      }).then((res) => !!res && res.ok).catch(() => false);
-    } catch (_) {
-      return Promise.resolve(false);
+      }).then(async (res) => {
+        let body = null;
+        try { body = await res.json(); } catch (_) {}
+        return { ok: !!res && res.ok, status: res.status, body: body };
+      }).catch((err) => ({ ok: false, reason: String(err && err.message || err || 'network') }));
+    } catch (err) {
+      return Promise.resolve({ ok: false, reason: String(err && err.message || err || 'error') });
     }
   }
 
@@ -422,6 +427,28 @@
     } catch (_) {
       return false;
     }
+  }
+
+  async function probeCloudRequests() {
+    const sb = getSupabase();
+    if (!sb) return { ok: false, reason: 'no-client' };
+    try {
+      const { error } = await sb.from('client_requests').select('id').limit(1);
+      if (error) return { ok: false, reason: error.message || 'table-missing' };
+      return { ok: true };
+    } catch (err) {
+      return { ok: false, reason: String(err && err.message || err || 'error') };
+    }
+  }
+
+  function getDeliveryStatus() {
+    return {
+      notifyEmail: resolveNotifyEmail(),
+      webhookUrl: resolveWebhookUrl(),
+      hasEmail: !!resolveNotifyEmail(),
+      hasWebhook: !!resolveWebhookUrl(),
+      hasSupabaseClient: !!getSupabase()
+    };
   }
 
   async function syncSharedRequestsFromCloud() {
@@ -493,6 +520,18 @@
       .then(() => notifyRequestWebhook(row))
       .catch(() => {});
     return row;
+  }
+
+  async function deliverSharedRequest(row) {
+    const cloud = await pushRequestToCloud(row);
+    const email = await notifyAdminEmail(row);
+    const webhook = await notifyRequestWebhook(row);
+    return {
+      cloud: !!cloud,
+      email: !!(email && email.ok),
+      webhook: !!webhook,
+      emailDetail: email || null
+    };
   }
 
   function getSharedRequests() {
@@ -567,11 +606,14 @@
     saveAdminProducts,
     pruneSuggestions,
     addSharedRequest,
+    deliverSharedRequest,
     notifyRequestWebhook,
     notifyAdminEmail,
     publishPublicNotify,
     resolveWebhookUrl,
     resolveNotifyEmail,
+    getDeliveryStatus,
+    probeCloudRequests,
     requestTypeLabel,
     pushRequestToCloud,
     syncSharedRequestsFromCloud,
