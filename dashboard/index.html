@@ -2411,6 +2411,9 @@ body.is-client .home-bar{
   async function renderClientRequestsPage(){
     const box = document.getElementById('clientRequestsList');
     if (!box) return;
+    if (Catalog && Catalog.retryPendingSharedRequests) {
+      try { await Catalog.retryPendingSharedRequests(); } catch (_) {}
+    }
     await refreshClientRequestsFromCloud();
     const mine = myRequests();
     if (!mine.length) {
@@ -2418,16 +2421,25 @@ body.is-client .home-bar{
       return;
     }
     box.innerHTML = mine.map(r => {
-      const pending = !!(r.syncPending || r.deliveryStatus === 'local' || r.deliveryStatus === 'pending_notify');
-      const chip = pending
-        ? `<span class="status-chip new">${escapeHtml(t('محلي / بانتظار المزامنة', 'Local / pending sync'))}</span>`
-        : `<span class="status-chip ${escapeHtml(r.status || 'new')}">${escapeHtml(statusLabel(r.status))}</span>`;
+      // pending_notify = cloud/webhook accepted; email still retrying — not a client-facing failure.
+      const needsResend = r.deliveryStatus === 'local'
+        || (!!r.syncPending && r.deliveryStatus !== 'pending_notify' && r.deliveryStatus !== 'delivered');
+      const chip = `<span class="status-chip ${escapeHtml(r.status || 'new')}">${escapeHtml(statusLabel(r.status))}</span>`;
+      const syncNote = needsResend
+        ? `<div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:8px;align-items:center">
+             <span style="color:var(--muted);font-size:.78rem">${escapeHtml(t('لم يكتمل إرسال الطلب للإدارة بعد','Request was not fully sent to admin yet'))}</span>
+             <button type="button" class="btn btn-ghost" style="padding:4px 10px;font-size:.75rem" data-retry-request="${escapeHtml(r.id)}">${escapeHtml(t('إعادة الإرسال','Resend'))}</button>
+           </div>`
+        : (r.deliveryStatus === 'pending_notify'
+          ? `<div style="margin-top:6px;color:var(--muted);font-size:.78rem">${escapeHtml(t('تم استلام الطلب — جاري تأكيد إشعار الإدارة','Request received — confirming admin notify'))}</div>`
+          : '');
       return `
-      <div class="sale-row">
-        <div>
+      <div class="sale-row" style="align-items:flex-start">
+        <div style="flex:1">
           <div><strong>${escapeHtml(requestTitle(r))}</strong></div>
           <div style="color:var(--muted);font-size:.86rem;white-space:pre-wrap">${escapeHtml(r.message || '')}</div>
           <div style="color:var(--muted);font-size:.78rem;margin-top:4px">${new Date(r.at).toLocaleString(currentLang === 'ar' ? 'ar-SA' : 'en-US')}</div>
+          ${syncNote}
         </div>
         ${chip}
       </div>`;
@@ -2946,6 +2958,33 @@ body.is-client .home-bar{
   if (overviewSuggestions) overviewSuggestions.addEventListener('click', (e) => {
     const btn = e.target.closest('[data-client-suggest]');
     if (btn) requestSuggestionAsClient(btn.dataset.clientSuggest);
+  });
+  const clientRequestsList = document.getElementById('clientRequestsList');
+  if (clientRequestsList) clientRequestsList.addEventListener('click', async (e) => {
+    const btn = e.target.closest('[data-retry-request]');
+    if (!btn || !Catalog) return;
+    if (btn.dataset.busy === '1') return;
+    btn.dataset.busy = '1';
+    btn.disabled = true;
+    showToast(t('جاري إعادة الإرسال...', 'Resending...'));
+    try {
+      const id = btn.dataset.retryRequest;
+      const row = (Catalog.getSharedRequests && Catalog.getSharedRequests().find((r) => r && r.id === id)) || null;
+      if (row && Catalog.deliverSharedRequest) await Catalog.deliverSharedRequest(row);
+      else if (Catalog.retryPendingSharedRequests) await Catalog.retryPendingSharedRequests();
+      await renderClientRequestsPage();
+      const fresh = myRequests().find((r) => r.id === id);
+      if (fresh && (fresh.deliveryStatus === 'delivered' || fresh.deliveryStatus === 'pending_notify')) {
+        showToast(t('تم إرسال الطلب', 'Request sent'));
+      } else {
+        showToast(t('ما زال الإرسال معلّقاً — حاولوا لاحقاً أو تواصلوا عبر النموذج', 'Send is still pending — try later or use the site form'));
+      }
+    } catch (_) {
+      showToast(t('تعذّرت إعادة الإرسال', 'Could not resend'));
+    } finally {
+      btn.dataset.busy = '0';
+      btn.disabled = false;
+    }
   });
 
   document.getElementById('recentSales').addEventListener('click', (e) => {
