@@ -1292,8 +1292,8 @@ body.terms-locked,body.auth-locked{overflow:hidden}
       const delivered = !!(delivery && (delivery.delivered || delivery.cloud));
       const pending = !!(delivery && delivery.pendingNotify);
       const savedOk = !!saved;
-      // "ok"/Sent only when delivery reached cloud/email/webhook (or pending notify activation).
-      const ok = !!(savedOk && (delivered || pending));
+      // Align with contact form: "Sent"/ok only when actually delivered.
+      const ok = !!(savedOk && delivered);
       if (resultEl) {
         resultEl.style.color = ok ? 'var(--ok)' : (savedOk ? 'var(--muted)' : 'var(--danger)');
         resultEl.textContent = !savedOk
@@ -1301,7 +1301,7 @@ body.terms-locked,body.auth-locked{overflow:hidden}
           : (delivered
             ? t('✓ تم إرسال طلب عرض السعر', '✓ Quote request sent')
             : (pending
-              ? t('✓ استلمنا طلبكم — جاري تفعيل إشعار الإدارة', '✓ Request received — admin notify is activating')
+              ? t('استلمنا الطلب محلياً — جاري تفعيل إشعار الإدارة', 'Request saved locally — admin notify is activating')
               : t('حُفظ الطلب محلياً — تابعوه من حسابكم أو أعيدوا الإرسال', 'Request saved locally — track it in your account or resend')));
       }
       if ((ok || savedOk) && successActions) {
@@ -1310,8 +1310,11 @@ body.terms-locked,body.auth-locked{overflow:hidden}
         successActions.style.flexWrap = 'wrap';
         successActions.innerHTML = `<a class="btn btn-primary" href="/dashboard/">${escapeHtml(t('متابعة الطلب من حسابي','Track request in my account'))}</a>`;
       }
-      const hq = document.getElementById('heroQuoteMsg');
-      if (hq) hq.value = '';
+      // Keep draft on soft/local failure so users can resend.
+      if (ok) {
+        const hq = document.getElementById('heroQuoteMsg');
+        if (hq) hq.value = '';
+      }
       return { ok, saved: savedOk, delivered, pending };
     } catch (_) {
       requestFromCatalog({ type, message, company });
@@ -1744,22 +1747,27 @@ body.terms-locked,body.auth-locked{overflow:hidden}
   function setPaySuccessCopy(delivery){
     const msg = document.getElementById('paySuccessMsg');
     if (!msg) return;
-    if (!delivery) {
-      msg.textContent = t(
-        'الدفع نجح عند البوابة لكن تعذّر تسجيل العربون محلياً — احتفظوا برقم العملية وتواصلوا مع راسخ.',
-        'Gateway payment succeeded but the deposit was not recorded here — keep the payment id and contact Raseekh.'
-      );
-      return;
+    let ar = 'سيتواصل معكم الفريق خلال يوم عمل.';
+    let en = 'Our team will contact you within one business day.';
+    if (delivery && delivery.recording) {
+      ar = 'جاري تسجيل العربون...';
+      en = 'Recording your deposit...';
+    } else if (!delivery) {
+      ar = 'الدفع نجح عند البوابة لكن تعذّر تسجيل العربون محلياً — احتفظوا برقم العملية وتواصلوا مع راسخ.';
+      en = 'Gateway payment succeeded but the deposit was not recorded here — keep the payment id and contact Raseekh.';
+    } else if (delivery.delivered) {
+      ar = 'تم تسجيل العربون وسيتواصل معكم الفريق خلال يوم عمل.';
+      en = 'Deposit recorded — our team will contact you within one business day.';
+    } else if (delivery.pendingNotify) {
+      ar = 'تم حفظ الدفعة — جاري تفعيل إشعار الإدارة.';
+      en = 'Payment saved — admin notify is still activating.';
+    } else if (!delivery.cloud) {
+      ar = 'تم الحفظ محلياً — ادخلوا بحساب سحابي لمزامنة الدفعة مع الإدارة.';
+      en = 'Saved locally — sign in with a cloud account to sync the payment to admin.';
     }
-    if (delivery && delivery.delivered) {
-      msg.textContent = t('تم تسجيل العربون وسيتواصل معكم الفريق خلال يوم عمل.', 'Deposit recorded — our team will contact you within one business day.');
-    } else if (delivery && delivery.pendingNotify) {
-      msg.textContent = t('تم حفظ الدفعة — جاري تفعيل إشعار الإدارة.', 'Payment saved — admin notify is still activating.');
-    } else if (delivery && !delivery.cloud) {
-      msg.textContent = t('تم الحفظ محلياً — ادخلوا بحساب سحابي لمزامنة الدفعة مع الإدارة.', 'Saved locally — sign in with a cloud account to sync the payment to admin.');
-    } else {
-      msg.textContent = t('سيتواصل معكم الفريق خلال يوم عمل.', 'Our team will contact you within one business day.');
-    }
+    msg.setAttribute('data-ar', ar);
+    msg.setAttribute('data-en', en);
+    msg.textContent = t(ar, en);
   }
 
   function paymentReturnParams(){
@@ -1814,6 +1822,7 @@ body.terms-locked,body.auth-locked{overflow:hidden}
     }
     if (!paymentId) return false;
     if (wasProcessedPay(paymentId)) {
+      setPaySuccessCopy({ recording: true });
       showPayStep(payStatusSuccess);
       let delivery = { delivered: false, cloud: false, duplicate: true };
       try {
@@ -1850,6 +1859,7 @@ body.terms-locked,body.auth-locked{overflow:hidden}
       ['status', 'id', 'payment_id', 'amount', 'message', 'pay'].forEach((k) => url.searchParams.delete(k));
       history.replaceState(null, '', url.pathname + url.search + '#pay');
     } catch (_) {}
+    setPaySuccessCopy({ recording: true });
     showPayStep(payStatusSuccess);
     let delivery = null;
     try { if (row && row.deliveryPromise) delivery = await row.deliveryPromise; } catch (_) {}
@@ -1872,7 +1882,10 @@ body.terms-locked,body.auth-locked{overflow:hidden}
     if (authIntent === 'pay' || location.hash === '#pay' || params.get('pay') === '1' || paidReturn || failedReturn) {
       authIntent = 'dashboard';
       if (paidReturn) {
-        try { await finalizePendingMoyasarPayment(user); } catch (_) {
+        try {
+          const ok = await finalizePendingMoyasarPayment(user);
+          if (!ok) showPayStep(payStatusFailed);
+        } catch (_) {
           showPayStep(payStatusFailed);
         }
       }
@@ -2403,8 +2416,11 @@ body.terms-locked,body.auth-locked{overflow:hidden}
         methods: ['creditcard', 'applepay'],
         on_completed: function(payment){
           if (payment && payment.status === 'paid') {
+            setPaySuccessCopy({ recording: true });
             showPayStep(payStatusSuccess);
-            recordMoyasarPayment(payment).then(setPaySuccessCopy).catch(() => setPaySuccessCopy(null));
+            recordMoyasarPayment(payment)
+              .then((delivery) => setPaySuccessCopy(delivery))
+              .catch(() => setPaySuccessCopy(null));
           } else showPayStep(payStatusFailed);
           return true;
         }

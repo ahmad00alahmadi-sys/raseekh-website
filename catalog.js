@@ -1010,9 +1010,10 @@
         const key = deliveryKey(row);
         if (key && inFlightPaymentDeliveries.has(key)) {
           await inFlightPaymentDeliveries.get(key);
-          continue;
         }
-        await beginPaymentDelivery(row);
+        const fresh = getPaymentRecords().find((r) => r && r.id === row.id) || row;
+        if (fresh.deliveryStatus === 'delivered' && !fresh.syncPending) continue;
+        await beginPaymentDelivery(fresh);
       } catch (_) {}
     }
     return getPaymentRecords();
@@ -1134,9 +1135,10 @@
         const key = deliveryKey(row);
         if (key && inFlightRequestDeliveries.has(key)) {
           await inFlightRequestDeliveries.get(key);
-          continue;
         }
-        await beginRequestDelivery(row);
+        const fresh = getSharedRequests().find((r) => r && r.id === row.id) || row;
+        if (fresh.deliveryStatus === 'delivered' && !fresh.syncPending) continue;
+        await beginRequestDelivery(fresh);
       } catch (_) {}
     }
     return getSharedRequests();

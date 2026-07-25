@@ -2979,7 +2979,7 @@ body.is-admin .client-only{display:none!important}
         applyLang(currentLang);
       }
     }
-    setModalOpen(document.getElementById('productModal'), false);
+    if (!hardFail) setModalOpen(document.getElementById('productModal'), false);
     fillCategoryFilter();
     renderAll();
     showToast(hardFail
@@ -3234,13 +3234,14 @@ body.is-admin .client-only{display:none!important}
           sales.unshift(sale);
           saveSales();
         } else loadSales();
-        manualDepositForm.reset();
         let delivery = null;
         try {
           if (row && row.deliveryPromise) delivery = await row.deliveryPromise;
         } catch (_) {}
         try { await refreshSalesFromCloud(); } catch (_) { loadSales(); }
         const synced = !!(delivery && (delivery.cloud || delivery.delivered));
+        // Clear form only after local record exists; keep fields if nothing was saved.
+        if (row || !Catalog) manualDepositForm.reset();
         msg.style.color = synced ? 'var(--ok)' : 'var(--danger)';
         msg.textContent = synced
           ? t('تم تسجيل العربون', 'Deposit recorded')
