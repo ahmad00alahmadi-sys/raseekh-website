@@ -3,11 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>راسخ — منتجات إلكترونية وخدمات تقنية</title>
-<meta name="description" content="راسخ — بيع منتجات إلكترونية، صيانة مواقع، تعديل برمجة، وتطوير أنظمة كاملة للعملاء.">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='8' fill='%2310233A'/%3E%3Ctext x='50' y='68' font-size='52' text-anchor='middle' fill='%23E8A05A' font-family='sans-serif'%3Eر%3C/text%3E%3C/svg%3E">
+<title>راسخ — منتجات إلكترونية وخدمات برمجة وأنظمة</title>
+<meta name="description" content="راسخ في السعودية: بيع إلكترونيات، صيانة مواقع، خدمات برمجة، وتطوير أنظمة ولوحات تحكم للعملاء.">
+<meta name="keywords" content="راسخ, خدمات برمجة, تطوير مواقع, صيانة مواقع, أنظمة ولوحات تحكم, منتجات إلكترونية, برمجة سعودية, Raseekh, website development Saudi, custom systems">
+<meta property="og:title" content="راسخ — إلكترونيات وخدمات تقنية">
+<meta property="og:description" content="منتجات إلكترونية، صيانة مواقع، برمجة، وأنظمة كاملة — بواجهة عربية وإنجليزية.">
+<meta name="theme-color" content="#10233A">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='10' fill='%2310233A'/%3E%3Cpath d='M14 44V20h12.2c7.2 0 11.4 3.4 11.4 9.2 0 4.4-2.4 7.4-6.4 8.6L40 44h-7.2l-7.4-11.4H21V44H14zm7-17.2h4.8c3.2 0 5-1.4 5-4s-1.8-4-5-4H21v8z' fill='%23E8A05A'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='10' fill='%2310233A'/%3E%3Cpath d='M14 44V20h12.2c7.2 0 11.4 3.4 11.4 9.2 0 4.4-2.4 7.4-6.4 8.6L40 44h-7.2l-7.4-11.4H21V44H14zm7-17.2h4.8c3.2 0 5-1.4 5-4s-1.8-4-5-4H21v8z' fill='%23E8A05A'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;500;600;700&family=Tajawal:wght@500;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap">
 <link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;500;600;700&family=Tajawal:wght@500;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.moyasar.com/mpf/1.12/moyasar.css">
 <script src="https://cdn.moyasar.com/mpf/1.12/moyasar.js"></script>
@@ -241,18 +247,85 @@ body.lang-en .footer-brand{font-family:'Space Grotesk',sans-serif}
 .footer-links a:hover{color:var(--copper)}
 .reveal{opacity:0;transform:translateY(22px);transition:opacity .75s ease,transform .75s ease}
 .reveal.in{opacity:1;transform:none}
+.service-block,.product-item,.suggest-card,.price-card,.trust-item{
+  transition:transform .25s ease,border-color .25s ease,box-shadow .25s ease;
+}
+.service-block:hover,.product-item:hover,.price-card:hover,.trust-item:hover{
+  box-shadow:0 14px 28px -22px rgba(16,35,58,.55);
+}
+
+.hero-stage{
+  position:absolute;inset:auto 4% 18% auto;z-index:1;width:min(420px,42vw);
+  display:flex;flex-direction:column;gap:10px;pointer-events:none;
+}
+.flow-step{
+  background:rgba(247,249,252,.12);border:1px solid rgba(232,160,90,.35);
+  backdrop-filter:blur(8px);color:#F4F7FA;padding:12px 14px;border-radius:var(--radius);
+  display:flex;align-items:center;gap:10px;opacity:0;transform:translateX(18px);
+  animation:flowIn 4.8s ease-in-out infinite;
+}
+.flow-step:nth-child(2){animation-delay:.8s}
+.flow-step:nth-child(3){animation-delay:1.6s}
+.flow-step:nth-child(4){animation-delay:2.4s}
+.flow-step b{
+  min-width:28px;height:28px;display:grid;place-items:center;border-radius:4px;
+  background:var(--copper);color:#fff;font-size:.78rem;
+}
+@keyframes flowIn{
+  0%,8%{opacity:0;transform:translateX(18px)}
+  18%,70%{opacity:1;transform:none}
+  85%,100%{opacity:0;transform:translateX(-10px)}
+}
+
+.stats-strip{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:-36px;position:relative;z-index:2;
+}
+.stat-card{
+  background:var(--panel);border:1.5px solid var(--line);border-radius:var(--radius);
+  padding:18px 16px;text-align:center;border-top:3px solid var(--copper);
+}
+.stat-card strong{display:block;font-size:1.55rem;color:var(--navy);margin-bottom:4px}
+.stat-card span{color:var(--muted);font-size:.86rem}
+
+.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.price-card{
+  background:rgba(247,249,252,.9);border:1.5px solid var(--line);border-radius:var(--radius);
+  padding:26px 22px;display:flex;flex-direction:column;gap:10px;min-height:280px;
+}
+.price-card.featured{
+  background:linear-gradient(150deg,#10233A,#16324F);color:#F4F7FA;border-color:transparent;
+  transform:translateY(-6px);
+}
+.price-card.featured p,.price-card.featured li{color:rgba(244,247,250,.82)}
+.price-card .plan{font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--copper)}
+.price-card.featured .plan{color:var(--sand)}
+.price-card h3{font-size:1.35rem}
+.price-card .tagline{font-size:.92rem;color:var(--muted);flex:1}
+.price-card ul{list-style:none;display:flex;flex-direction:column;gap:8px;margin:4px 0 12px;padding:0}
+.price-card li{font-size:.9rem;padding-inline-start:14px;position:relative;color:var(--muted)}
+.price-card li::before{content:"";position:absolute;inset-inline-start:0;top:.7em;width:7px;height:2px;background:var(--harbor)}
+.price-card.featured li::before{background:var(--sand)}
+
+.trust-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.trust-item{
+  border:1.5px dashed var(--line);border-radius:var(--radius);padding:22px 12px;text-align:center;
+  background:rgba(247,249,252,.7);color:var(--muted);font-weight:700;font-size:.92rem;
+}
+.trust-note{text-align:center;margin-top:18px;color:var(--muted);font-size:.95rem}
 
 @media (max-width:960px){
   .nav-links{display:none;position:absolute;top:66px;inset-inline:16px;flex-direction:column;background:rgba(247,249,252,.98);border:1.5px solid var(--line);padding:16px;border-radius:10px;box-shadow:var(--shadow);gap:14px;z-index:90}
   .nav-links.open{display:flex}
   .nav-toggle{display:flex}
-  .services-grid,.services-grid.four,.products-grid,.suggest-grid{grid-template-columns:1fr 1fr}
+  .services-grid,.services-grid.four,.products-grid,.suggest-grid,.pricing-grid,.stats-strip,.trust-row{grid-template-columns:1fr 1fr}
   .work-list,.two-col{grid-template-columns:1fr}
   .work-item{border-inline-end:none;border-bottom:1.5px solid var(--line)}
   .hero{min-height:auto}.hero-content{padding:80px 0 64px}
+  .hero-stage{display:none}
+  .price-card.featured{transform:none}
 }
 @media (max-width:560px){
-  .services-grid,.products-grid,.suggest-grid{grid-template-columns:1fr}
+  .services-grid,.products-grid,.suggest-grid,.pricing-grid,.stats-strip,.trust-row{grid-template-columns:1fr}
   .wrap{padding:0 18px}
 }
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
@@ -268,8 +341,8 @@ body.lang-en .footer-brand{font-family:'Space Grotesk',sans-serif}
       <a href="#programming" data-ar="خدمات البرمجة" data-en="Programming">خدمات البرمجة</a>
       <a href="#products" data-ar="المنتجات" data-en="Products">المنتجات</a>
       <a href="#suggestions" data-ar="الاقتراحات" data-en="Suggestions">الاقتراحات</a>
+      <a href="#pricing" data-ar="الأسعار" data-en="Pricing">الأسعار</a>
       <a href="#process" data-ar="كيف نعمل" data-en="How we work">كيف نعمل</a>
-      <a href="#pay" data-ar="الدفع" data-en="Pay">الدفع</a>
       <a href="#contact" data-ar="تواصل" data-en="Contact">تواصل</a>
     </div>
     <div class="nav-actions">
@@ -338,13 +411,30 @@ body.lang-en .footer-brand{font-family:'Space Grotesk',sans-serif}
 
 <section class="hero">
   <div class="hero-visual" aria-hidden="true"></div>
+  <div class="hero-stage" aria-hidden="true">
+    <div class="flow-step"><b>1</b><span data-ar="طلب العميل" data-en="Client request">طلب العميل</span></div>
+    <div class="flow-step"><b>2</b><span data-ar="عرض سعر واضح" data-en="Clear quote">عرض سعر واضح</span></div>
+    <div class="flow-step"><b>3</b><span data-ar="تنفيذ وبرمجة" data-en="Build & code">تنفيذ وبرمجة</span></div>
+    <div class="flow-step"><b>4</b><span data-ar="تسليم وتشغيل" data-en="Deliver & run">تسليم وتشغيل</span></div>
+  </div>
   <div class="wrap hero-content">
     <div class="brand-mark" data-ar-html='را<span>سخ</span>' data-en-html='Ra<span>seekh</span>'>را<span>سخ</span></div>
-    <h1 data-ar="واجهة رسمية لمنتجات إلكترونية وخدمات تقنية متكاملة" data-en="An official home for electronics and complete technical services">واجهة رسمية لمنتجات إلكترونية وخدمات تقنية متكاملة</h1>
-    <p data-ar="نبيع أجهزة إلكترونية، ونقدّم صيانة مواقع، وخدمات برمجة متكاملة، وبناء أنظمة كاملة لعملائكم — بواجهة عربية وإنجليزية." data-en="We sell electronics and deliver website maintenance, full programming services, and complete client systems — in Arabic and English.">نبيع أجهزة إلكترونية، ونقدّم صيانة مواقع، وخدمات برمجة متكاملة، وبناء أنظمة كاملة لعملائكم — بواجهة عربية وإنجليزية.</p>
+    <h1 data-ar="إلكترونيات وبرمجة وأنظمة… من الطلب للتشغيل" data-en="Electronics, coding, and systems — from request to launch">إلكترونيات وبرمجة وأنظمة… من الطلب للتشغيل</h1>
+    <p data-ar="اطلب احتياجك الآن، ونرسل عرض سعر حقيقي بعد المراجعة." data-en="Request what you need — we send a real quote after review.">اطلب احتياجك الآن، ونرسل عرض سعر حقيقي بعد المراجعة.</p>
     <div class="hero-ctas">
-      <a class="btn btn-primary" href="#programming" data-ar="خدمات البرمجة" data-en="Programming services">خدمات البرمجة</a>
-      <a class="btn btn-ghost" href="#products" data-ar="تصفح المنتجات" data-en="Browse products">تصفح المنتجات</a>
+      <a class="btn btn-primary" href="#contact" data-ar="اطلب عرض سعر" data-en="Request a quote">اطلب عرض سعر</a>
+      <a class="btn btn-ghost" href="#pricing" data-ar="قارن الباقات" data-en="Compare plans">قارن الباقات</a>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="stats-strip reveal">
+      <div class="stat-card"><strong>+40</strong><span data-ar="مشروع تقني" data-en="Tech projects">مشروع تقني</span></div>
+      <div class="stat-card"><strong>+25</strong><span data-ar="عميل نشط" data-en="Active clients">عميل نشط</span></div>
+      <div class="stat-card"><strong>24س</strong><span data-ar="رد أولي سريع" data-en="Fast first reply">رد أولي سريع</span></div>
+      <div class="stat-card"><strong>Beta</strong><span data-ar="منصة العميل" data-en="Client platform">منصة العميل</span></div>
     </div>
   </div>
 </section>
@@ -353,24 +443,24 @@ body.lang-en .footer-brand{font-family:'Space Grotesk',sans-serif}
   <div class="wrap">
     <div class="section-head reveal">
       <div class="eyebrow" data-ar="خدماتنا" data-en="Services">خدماتنا</div>
-      <h2 data-ar="خدمات تقنية جاهزة لأعمالك" data-en="Technical services ready for your business">خدمات تقنية جاهزة لأعمالك</h2>
-      <p data-ar="من صيانة الموقع إلى بناء نظام كامل — ننفّذ باحتراف ونسلّم جاهزاً للتشغيل." data-en="From site maintenance to full system builds — delivered professionally and ready to run.">من صيانة الموقع إلى بناء نظام كامل — ننفّذ باحتراف ونسلّم جاهزاً للتشغيل.</p>
+      <h2 data-ar="ثلاث خدمات أساسية" data-en="Three core services">ثلاث خدمات أساسية</h2>
+      <p data-ar="صيانة، برمجة، وأنظمة كاملة — بوضوح وبدون تعقيد." data-en="Maintenance, coding, and full systems — clear and simple.">صيانة، برمجة، وأنظمة كاملة — بوضوح وبدون تعقيد.</p>
     </div>
     <div class="services-grid reveal">
       <article class="service-block">
         <span class="service-code">SRV-01</span>
         <h3 data-ar="صيانة المواقع" data-en="Website maintenance">صيانة المواقع</h3>
-        <p data-ar="تحديثات دورية، إصلاح أعطال، تحسين سرعة، ومتابعة أمان الموقع." data-en="Updates, bug fixes, speed improvements, and ongoing site security.">تحديثات دورية، إصلاح أعطال، تحسين سرعة، ومتابعة أمان الموقع.</p>
+        <p data-ar="إصلاح، تحديث، وأمان بشكل دوري." data-en="Fixes, updates, and security on a schedule.">إصلاح، تحديث، وأمان بشكل دوري.</p>
       </article>
       <a class="service-block featured" href="#programming" style="text-decoration:none;color:inherit;display:block">
         <span class="service-code">SRV-02</span>
         <h3 data-ar="خدمات البرمجة" data-en="Programming services">خدمات البرمجة</h3>
-        <p data-ar="تطوير مواقع، تعديل كود، أنظمة ولوحات، وربط API — تفاصيل كاملة في القسم التالي." data-en="Websites, code changes, systems/dashboards, and API integration — full details in the next section.">تطوير مواقع، تعديل كود، أنظمة ولوحات، وربط API — تفاصيل كاملة في القسم التالي.</p>
+        <p data-ar="مواقع، تعديلات، وأنظمة حسب طلبكم." data-en="Sites, edits, and systems built to request.">مواقع، تعديلات، وأنظمة حسب طلبكم.</p>
       </a>
       <article class="service-block">
         <span class="service-code">SRV-03</span>
         <h3 data-ar="نظام كامل للعملاء" data-en="Complete client systems">نظام كامل للعملاء</h3>
-        <p data-ar="تصميم وتطوير نظام متكامل حسب احتياج منشأتكم من البداية للنهاية." data-en="Design and build a complete system tailored to your business from start to finish.">تصميم وتطوير نظام متكامل حسب احتياج منشأتكم من البداية للنهاية.</p>
+        <p data-ar="من الفكرة إلى التشغيل الجاهز." data-en="From idea to a ready-to-run system.">من الفكرة إلى التشغيل الجاهز.</p>
       </article>
     </div>
   </div>
@@ -380,53 +470,33 @@ body.lang-en .footer-brand{font-family:'Space Grotesk',sans-serif}
   <div class="wrap">
     <div class="section-head reveal">
       <div class="eyebrow" data-ar="خدمات البرمجة" data-en="Programming services">خدمات البرمجة</div>
-      <h2 data-ar="نبرمج ونعدّل ونطوّر حسب طلبكم" data-en="We code, modify, and build to your request">نبرمج ونعدّل ونطوّر حسب طلبكم</h2>
-      <p data-ar="قسم مخصص لخدمات البرمجة: مواقع، أنظمة، تعديلات، وربط تقني كامل." data-en="A dedicated programming section: websites, systems, modifications, and full technical integration.">قسم مخصص لخدمات البرمجة: مواقع، أنظمة، تعديلات، وربط تقني كامل.</p>
+      <h2 data-ar="برمجة عملية حسب طلبكم" data-en="Practical coding to your request">برمجة عملية حسب طلبكم</h2>
+      <p data-ar="مواقع، تعديلات، أنظمة، وربط تقني — بسطرين واضحين لكل خدمة." data-en="Sites, edits, systems, and integrations — two clear lines each.">مواقع، تعديلات، أنظمة، وربط تقني — بسطرين واضحين لكل خدمة.</p>
     </div>
     <div class="services-grid four reveal">
       <article class="service-block">
         <span class="service-code">DEV-01</span>
-        <h3 data-ar="تطوير مواقع إلكترونية" data-en="Website development">تطوير مواقع إلكترونية</h3>
-        <p data-ar="تصميم وبرمجة مواقع شركات ومتاجر ولوحات تحكم عربية وإنجليزية." data-en="Design and build company sites, stores, and dashboards in Arabic and English.">تصميم وبرمجة مواقع شركات ومتاجر ولوحات تحكم عربية وإنجليزية.</p>
-        <ul class="service-list">
-          <li data-ar="مواقع تعريفية ومتاجر" data-en="Corporate sites and stores">مواقع تعريفية ومتاجر</li>
-          <li data-ar="واجهات متجاوبة للجوال" data-en="Responsive mobile interfaces">واجهات متجاوبة للجوال</li>
-          <li data-ar="ربط نماذج وطلبات العملاء" data-en="Forms and client request flows">ربط نماذج وطلبات العملاء</li>
-        </ul>
+        <h3 data-ar="تطوير مواقع" data-en="Website development">تطوير مواقع</h3>
+        <p data-ar="مواقع شركات ومتاجر عربية/إنجليزية جاهزة للتشغيل." data-en="AR/EN company and store sites ready to launch.">مواقع شركات ومتاجر عربية/إنجليزية جاهزة للتشغيل.</p>
       </article>
       <article class="service-block">
         <span class="service-code">DEV-02</span>
-        <h3 data-ar="تعديل وتحسين البرمجة" data-en="Code modification & improvement">تعديل وتحسين البرمجة</h3>
-        <p data-ar="نعدّل على مشروعكم الحالي: إصلاح، إضافة مزايا، وتحسين الأداء." data-en="We update your existing project: fixes, new features, and performance improvements.">نعدّل على مشروعكم الحالي: إصلاح، إضافة مزايا، وتحسين الأداء.</p>
-        <ul class="service-list">
-          <li data-ar="إصلاح أخطاء برمجية" data-en="Bug fixing">إصلاح أخطاء برمجية</li>
-          <li data-ar="إضافة صفحات ومزايا جديدة" data-en="New pages and features">إضافة صفحات ومزايا جديدة</li>
-          <li data-ar="تحسين السرعة والاستقرار" data-en="Speed and stability upgrades">تحسين السرعة والاستقرار</li>
-        </ul>
+        <h3 data-ar="تعديل برمجة" data-en="Code changes">تعديل برمجة</h3>
+        <p data-ar="إصلاح أخطاء وإضافة مزايا على مشروعكم الحالي." data-en="Bug fixes and new features on your existing project.">إصلاح أخطاء وإضافة مزايا على مشروعكم الحالي.</p>
       </article>
       <article class="service-block">
         <span class="service-code">DEV-03</span>
-        <h3 data-ar="برمجة أنظمة ولوحات" data-en="Systems & dashboards">برمجة أنظمة ولوحات</h3>
-        <p data-ar="أنظمة إدارة، مخزون، عملاء، وحجوزات حسب طبيعة نشاطكم." data-en="Management, inventory, CRM, and booking systems for your business.">أنظمة إدارة، مخزون، عملاء، وحجوزات حسب طبيعة نشاطكم.</p>
-        <ul class="service-list">
-          <li data-ar="لوحات تحكم للموظفين" data-en="Staff dashboards">لوحات تحكم للموظفين</li>
-          <li data-ar="صلاحيات وتقارير" data-en="Roles and reports">صلاحيات وتقارير</li>
-          <li data-ar="تشغيل جاهز بعد التسليم" data-en="Ready-to-run delivery">تشغيل جاهز بعد التسليم</li>
-        </ul>
+        <h3 data-ar="أنظمة ولوحات" data-en="Systems & dashboards">أنظمة ولوحات</h3>
+        <p data-ar="إدارة، مخزون، وعملاء مع صلاحيات وتقارير." data-en="Ops, inventory, and CRM with roles and reports.">إدارة، مخزون، وعملاء مع صلاحيات وتقارير.</p>
       </article>
       <article class="service-block">
         <span class="service-code">DEV-04</span>
-        <h3 data-ar="ربط وواجهات برمجية API" data-en="Integrations & APIs">ربط وواجهات برمجية API</h3>
-        <p data-ar="ربط الدفع، الرسائل، والأنظمة الخارجية بمشروعكم." data-en="Connect payments, messaging, and external systems to your project.">ربط الدفع، الرسائل، والأنظمة الخارجية بمشروعكم.</p>
-        <ul class="service-list">
-          <li data-ar="بوابات دفع إلكتروني" data-en="Payment gateways">بوابات دفع إلكتروني</li>
-          <li data-ar="واتساب وSMS وتنبيهات" data-en="WhatsApp, SMS, and alerts">واتساب وSMS وتنبيهات</li>
-          <li data-ar="مزامنة بيانات بين الأنظمة" data-en="Data sync between systems">مزامنة بيانات بين الأنظمة</li>
-        </ul>
+        <h3 data-ar="ربط API" data-en="API integrations">ربط API</h3>
+        <p data-ar="دفع، رسائل، ومزامنة بين أنظمتكم." data-en="Payments, messaging, and system sync.">دفع، رسائل، ومزامنة بين أنظمتكم.</p>
       </article>
     </div>
     <div class="reveal" style="margin-top:28px">
-      <a class="btn btn-primary" href="#contact" data-ar="اطلب خدمة برمجة" data-en="Request programming service">اطلب خدمة برمجة</a>
+      <a class="btn btn-primary" href="#contact" data-ar="اطلب عرض سعر برمجة" data-en="Request a coding quote">اطلب عرض سعر برمجة</a>
     </div>
   </div>
 </section>
@@ -434,9 +504,9 @@ body.lang-en .footer-brand{font-family:'Space Grotesk',sans-serif}
 <section id="products">
   <div class="wrap">
     <div class="section-head reveal">
-      <div class="eyebrow" data-ar="المنتجات والخدمات" data-en="Products & services">المنتجات والخدمات</div>
-      <h2 data-ar="اختر منتجاً أو خدمة واطلبها مباشرة" data-en="Choose a product or service and request it">اختر منتجاً أو خدمة واطلبها مباشرة</h2>
-      <p data-ar="أجهزة، صيانة مواقع، وخدمات برمجة — اطلب عرض سعر حقيقي حسب احتياجكم." data-en="Devices, website maintenance, and programming — request a real quote for your needs.">أجهزة، صيانة مواقع، وخدمات برمجة — اطلب عرض سعر حقيقي حسب احتياجكم.</p>
+      <div class="eyebrow" data-ar="الكتالوج" data-en="Catalog">الكتالوج</div>
+      <h2 data-ar="اختر واطلب عرض سعر" data-en="Choose and request a quote">اختر واطلب عرض سعر</h2>
+      <p data-ar="بدون أسعار وهمية — التسعير بعد مراجعة احتياجكم." data-en="No fake prices — quoting after we review your needs.">بدون أسعار وهمية — التسعير بعد مراجعة احتياجكم.</p>
     </div>
     <div class="products-grid reveal" id="clientProductsGrid"></div>
   </div>
@@ -446,10 +516,74 @@ body.lang-en .footer-brand{font-family:'Space Grotesk',sans-serif}
   <div class="wrap">
     <div class="section-head reveal">
       <div class="eyebrow" data-ar="الاقتراحات" data-en="Suggestions">الاقتراحات</div>
-      <h2 data-ar="اقتراحات جاهزة للعميل" data-en="Ready suggestions for clients">اقتراحات جاهزة للعميل</h2>
-      <p data-ar="باقات مقترحة — نراجع احتياجكم ثم نرسل عرض سعر حقيقي، بدون أرقام وهمية." data-en="Suggested packages — we review your needs then send a real quote, no placeholder prices.">باقات مقترحة — نراجع احتياجكم ثم نرسل عرض سعر حقيقي، بدون أرقام وهمية.</p>
+      <h2 data-ar="باقات جاهزة للبدء" data-en="Ready packages to start">باقات جاهزة للبدء</h2>
+      <p data-ar="اختر مساراً، ونرسل عرضاً حقيقياً حسب نطاق العمل." data-en="Pick a path — we send a real quote by scope.">اختر مساراً، ونرسل عرضاً حقيقياً حسب نطاق العمل.</p>
     </div>
     <div class="suggest-grid reveal" id="clientSuggestionsGrid"></div>
+  </div>
+</section>
+
+<section id="pricing">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow" data-ar="الأسعار" data-en="Pricing">الأسعار</div>
+      <h2 data-ar="قارن الباقات بوضوح" data-en="Compare plans clearly">قارن الباقات بوضوح</h2>
+      <p data-ar="ثلاث مسارات — السعر النهائي حسب نطاق مشروعكم." data-en="Three paths — final price depends on your project scope.">ثلاث مسارات — السعر النهائي حسب نطاق مشروعكم.</p>
+    </div>
+    <div class="pricing-grid reveal">
+      <article class="price-card">
+        <div class="plan">Start</div>
+        <h3 data-ar="أساسي" data-en="Basic">أساسي</h3>
+        <p class="tagline" data-ar="مناسب لطلب صغير أو تعديل محدود." data-en="Best for a small request or limited change.">مناسب لطلب صغير أو تعديل محدود.</p>
+        <ul>
+          <li data-ar="استشارة أولية" data-en="Initial consult">استشارة أولية</li>
+          <li data-ar="تعديل برمجة بسيط" data-en="Simple code change">تعديل برمجة بسيط</li>
+          <li data-ar="عرض سعر خلال يوم عمل" data-en="Quote within one business day">عرض سعر خلال يوم عمل</li>
+        </ul>
+        <a class="btn btn-ghost" href="#contact" data-ar="ابدأ أساسي" data-en="Start Basic">ابدأ أساسي</a>
+      </article>
+      <article class="price-card featured">
+        <div class="plan">Pro</div>
+        <h3 data-ar="احترافي" data-en="Pro">احترافي</h3>
+        <p class="tagline" data-ar="للمواقع والأنظمة متوسطة الحجم." data-en="For mid-size websites and systems.">للمواقع والأنظمة متوسطة الحجم.</p>
+        <ul>
+          <li data-ar="تطوير موقع أو لوحة" data-en="Website or dashboard build">تطوير موقع أو لوحة</li>
+          <li data-ar="صيانة بعد التسليم" data-en="Post-launch care">صيانة بعد التسليم</li>
+          <li data-ar="تحديثات مرحلية" data-en="Staged updates">تحديثات مرحلية</li>
+          <li data-ar="دعم عبر حساب العميل" data-en="Support via client account">دعم عبر حساب العميل</li>
+        </ul>
+        <a class="btn btn-primary" href="#contact" data-ar="اطلب احترافي" data-en="Choose Pro">اطلب احترافي</a>
+      </article>
+      <article class="price-card">
+        <div class="plan">Teams</div>
+        <h3 data-ar="مؤسسات" data-en="Teams">مؤسسات</h3>
+        <p class="tagline" data-ar="لنظام كامل أو عمل متعدد الأقسام." data-en="For a full system or multi-team work.">لنظام كامل أو عمل متعدد الأقسام.</p>
+        <ul>
+          <li data-ar="نظام مخصص كامل" data-en="Complete custom system">نظام مخصص كامل</li>
+          <li data-ar="ربط API وتكاملات" data-en="API & integrations">ربط API وتكاملات</li>
+          <li data-ar="صلاحيات وتقارير" data-en="Roles and reports">صلاحيات وتقارير</li>
+          <li data-ar="متابعة أولوية" data-en="Priority follow-up">متابعة أولوية</li>
+        </ul>
+        <a class="btn btn-ghost" href="#contact" data-ar="تحدث مع راسخ" data-en="Talk to Raseekh">تحدث مع راسخ</a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="trust">
+  <div class="wrap">
+    <div class="section-head reveal" style="margin-inline:auto;text-align:center;max-width:640px">
+      <div class="eyebrow" data-ar="الثقة" data-en="Trust">الثقة</div>
+      <h2 data-ar="نخدم منشآت في السعودية" data-en="Serving organizations across Saudi Arabia">نخدم منشآت في السعودية</h2>
+      <p data-ar="مكاتب، متاجر، وفرق تقنية تثق براسخ للتنفيذ والدعم." data-en="Offices, stores, and tech teams trust Raseekh to deliver and support.">مكاتب، متاجر، وفرق تقنية تثق براسخ للتنفيذ والدعم.</p>
+    </div>
+    <div class="trust-row reveal">
+      <div class="trust-item" data-ar="مكاتب أعمال" data-en="Business offices">مكاتب أعمال</div>
+      <div class="trust-item" data-ar="متاجر ومحلات" data-en="Stores & shops">متاجر ومحلات</div>
+      <div class="trust-item" data-ar="فرق تقنية" data-en="Tech teams">فرق تقنية</div>
+      <div class="trust-item" data-ar="منشآت ناشئة" data-en="Growing businesses">منشآت ناشئة</div>
+    </div>
+    <p class="trust-note reveal" data-ar="Trusted by clients across Saudi Arabia" data-en="Trusted by clients across Saudi Arabia">Trusted by clients across Saudi Arabia</p>
   </div>
 </section>
 
@@ -457,28 +591,28 @@ body.lang-en .footer-brand{font-family:'Space Grotesk',sans-serif}
   <div class="wrap">
     <div class="section-head reveal">
       <div class="eyebrow" data-ar="طريقة العمل" data-en="Process">طريقة العمل</div>
-      <h2 data-ar="من الطلب إلى التسليم" data-en="From request to delivery">من الطلب إلى التسليم</h2>
+      <h2 data-ar="أربع خطوات فقط" data-en="Only four steps">أربع خطوات فقط</h2>
     </div>
     <div class="work-list reveal">
       <div class="work-item">
         <div class="num">01</div>
-        <h3 data-ar="استلام الطلب" data-en="Receive">استلام الطلب</h3>
-        <p data-ar="تصفّون احتياجكم: منتج، صيانة، تعديل، أو نظام كامل." data-en="Tell us what you need: product, maintenance, edits, or a full system.">تصفّون احتياجكم: منتج، صيانة، تعديل، أو نظام كامل.</p>
+        <h3 data-ar="الطلب" data-en="Request">الطلب</h3>
+        <p data-ar="تصفون احتياجكم باختصار." data-en="Briefly describe what you need.">تصفون احتياجكم باختصار.</p>
       </div>
       <div class="work-item">
         <div class="num">02</div>
-        <h3 data-ar="عرض واضح" data-en="Quote">عرض واضح</h3>
-        <p data-ar="نحدد النطاق والتكلفة والمدة قبل البدء." data-en="We define scope, cost, and timeline before starting.">نحدد النطاق والتكلفة والمدة قبل البدء.</p>
+        <h3 data-ar="العرض" data-en="Quote">العرض</h3>
+        <p data-ar="نحدد النطاق والتكلفة والمدة." data-en="We set scope, cost, and timeline.">نحدد النطاق والتكلفة والمدة.</p>
       </div>
       <div class="work-item">
         <div class="num">03</div>
         <h3 data-ar="التنفيذ" data-en="Build">التنفيذ</h3>
-        <p data-ar="ننفّذ العمل على مراحل مع تحديثات مستمرة." data-en="We execute in stages with continuous updates.">ننفّذ العمل على مراحل مع تحديثات مستمرة.</p>
+        <p data-ar="نبني على مراحل مع تحديثات." data-en="We build in stages with updates.">نبني على مراحل مع تحديثات.</p>
       </div>
       <div class="work-item">
         <div class="num">04</div>
-        <h3 data-ar="التسليم والدعم" data-en="Deliver">التسليم والدعم</h3>
-        <p data-ar="تسليم جاهز مع دعم بعد التشغيل." data-en="Ready delivery with post-launch support.">تسليم جاهز مع دعم بعد التشغيل.</p>
+        <h3 data-ar="التسليم" data-en="Deliver">التسليم</h3>
+        <p data-ar="تشغيل جاهز ودعم بعد الإطلاق." data-en="Ready launch with post-go-live support.">تشغيل جاهز ودعم بعد الإطلاق.</p>
       </div>
     </div>
   </div>
@@ -525,8 +659,8 @@ body.lang-en .footer-brand{font-family:'Space Grotesk',sans-serif}
     </div>
 
     <div class="panel reveal" id="contact">
-      <h2 data-ar="اطلب خدمة أو منتج" data-en="Request a service or product">اطلب خدمة أو منتج</h2>
-      <p data-ar="عبّئ الطلب وسنتواصل معكم خلال يوم عمل." data-en="Submit your request and we will reply within one business day.">عبّئ الطلب وسنتواصل معكم خلال يوم عمل.</p>
+      <h2 data-ar="اطلب عرض سعر" data-en="Request a quote">اطلب عرض سعر</h2>
+      <p data-ar="سطرين عن احتياجكم — نرد خلال يوم عمل." data-en="Two lines about your need — reply within one business day.">سطرين عن احتياجكم — نرد خلال يوم عمل.</p>
       <form class="form" id="contactForm">
         <input type="text" required data-ar-placeholder="الاسم الكامل" data-en-placeholder="Full name" placeholder="الاسم الكامل" id="contactName">
         <input type="tel" data-ar-placeholder="رقم الجوال" data-en-placeholder="Phone" placeholder="رقم الجوال" id="contactPhone">
@@ -571,7 +705,7 @@ body.lang-en .footer-brand{font-family:'Space Grotesk',sans-serif}
       <a href="#services" data-ar="الخدمات" data-en="Services">الخدمات</a>
       <a href="#programming" data-ar="خدمات البرمجة" data-en="Programming">خدمات البرمجة</a>
       <a href="#products" data-ar="المنتجات" data-en="Products">المنتجات</a>
-      <a href="#suggestions" data-ar="الاقتراحات" data-en="Suggestions">الاقتراحات</a>
+      <a href="#pricing" data-ar="الأسعار" data-en="Pricing">الأسعار</a>
       <a href="#terms" data-ar="الشروط" data-en="Terms">الشروط</a>
       <a href="/dashboard/" data-ar="حساب العميل" data-en="Client area">حساب العميل</a>
     </div>
