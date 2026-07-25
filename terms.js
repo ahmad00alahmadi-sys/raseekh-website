@@ -2,6 +2,23 @@
 (function (global) {
   const TERMS_VERSION = '2026-07-25-v7';
   const ACCEPT_KEY = 'raseekh_terms_accepted_v1';
+  const PURCHASE_SESSION_KEY = 'raseekh_purchase_terms_session_v1';
+
+  function hasPurchaseAcceptedSession() {
+    try {
+      return sessionStorage.getItem(PURCHASE_SESSION_KEY) === TERMS_VERSION;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  function setPurchaseAcceptedSession(on) {
+    try {
+      if (on) sessionStorage.setItem(PURCHASE_SESSION_KEY, TERMS_VERSION);
+      else sessionStorage.removeItem(PURCHASE_SESSION_KEY);
+    } catch (_) {}
+    return !!on;
+  }
 
   function termsHtml() {
     return `
@@ -442,6 +459,8 @@
     acceptTerms,
     acceptTermsByEmail,
     syncAcceptance,
+    hasPurchaseAcceptedSession,
+    setPurchaseAcceptedSession,
     probeCloud,
     userKey
   };
