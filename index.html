@@ -1493,10 +1493,24 @@ body.terms-locked,body.auth-locked{overflow:hidden}
     const priceText = Catalog.suggestionPriceLabel
       ? Catalog.suggestionPriceLabel(s, clientProducts, currentLang)
       : t('عرض سعر بعد المراجعة', 'Custom quote after review');
-    const firstId = (s.productIds && s.productIds[0]) || '';
-    const firstProduct = clientProducts.find((x) => x.id === firstId);
+    const ids = Array.isArray(s.productIds) ? s.productIds : [];
+    const priority = { business: 4, system: 3, inventory: 2, systems: 2, programming: 1 };
+    let reqType = 'programming';
+    let best = 0;
+    ids.forEach((id) => {
+      const product = clientProducts.find((x) => x.id === id);
+      if (!product) return;
+      const mapped = typeForProduct(product);
+      const score = priority[mapped] || 0;
+      if (score > best) {
+        best = score;
+        reqType = mapped;
+      }
+    });
+    const titleBlob = ((s.title || '') + ' ' + (s.title_en || '') + ' ' + (s.badge || '') + ' ' + (s.badge_en || '')).toLowerCase();
+    if (/شركات|company|business|منشآت/.test(titleBlob)) reqType = 'business';
     submitCatalogQuote({
-      type: firstProduct ? typeForProduct(firstProduct) : 'programming',
+      type: reqType,
       message: t(
         'أرغب بطلب عرض سعر للاقتراح: ' + title + '\nيشمل: ' + items.join('، ') + '\n' + priceText,
         'I would like a quote for suggestion: ' + title + '\nIncludes: ' + items.join(', ') + '\n' + priceText
@@ -1544,11 +1558,24 @@ body.terms-locked,body.auth-locked{overflow:hidden}
   const navToggle = document.getElementById('navToggle');
   const navLinks = document.getElementById('navLinks');
   function setNavOpen(open){
-    navLinks.classList.toggle('open', open);
+    navLinks.classList.toggle('open', !!open);
     navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
   }
-  navToggle.addEventListener('click', () => setNavOpen(!navLinks.classList.contains('open')));
+  navToggle.addEventListener('click', (e) => {
+    e.stopPropagation();
+    setNavOpen(!navLinks.classList.contains('open'));
+  });
   navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => setNavOpen(false)));
+  document.addEventListener('click', (e) => {
+    if (!navLinks.classList.contains('open')) return;
+    if (e.target.closest('#navLinks') || e.target.closest('#navToggle')) return;
+    setNavOpen(false);
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape' || !navLinks.classList.contains('open')) return;
+    setNavOpen(false);
+    try { navToggle.focus(); } catch (_) {}
+  });
 
   (function navScrollSpy(){
     const links = Array.from(navLinks.querySelectorAll('a[href^="#"]'));
@@ -1697,6 +1724,16 @@ body.terms-locked,body.auth-locked{overflow:hidden}
     if (status !== 'paid') return false;
     if (!pendingPay || !(Number(pendingPay.amount) > 0)) {
       try { sessionStorage.removeItem('raseekh_pending_pay'); } catch (_) {}
+      showPayStep(payStatusFailed);
+      const failBox = document.getElementById('payStatusFailed');
+      if (failBox) {
+        const p = failBox.querySelector('p');
+        if (p) {
+          p.setAttribute('data-ar', 'رجعت دفعة ناجحة لكن جلسة العربون انتهت — تواصلوا مع راسخ مع رقم العملية.');
+          p.setAttribute('data-en', 'A paid return arrived but the deposit session expired — contact Raseekh with the payment id.');
+          p.textContent = t('رجعت دفعة ناجحة لكن جلسة العربون انتهت — تواصلوا مع راسخ مع رقم العملية.', 'A paid return arrived but the deposit session expired — contact Raseekh with the payment id.');
+        }
+      }
       return false;
     }
     if (!paymentId) return false;
@@ -1821,8 +1858,29 @@ body.terms-locked,body.auth-locked{overflow:hidden}
     }
   }
 
-  document.getElementById('loginForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
+  function withFormSubmitting(form, run){
+    return async (e) => {
+      e.preventDefault();
+      if (form.dataset.submitting === '1') return;
+      const btn = form.querySelector('button[type="submit"]');
+      form.dataset.submitting = '1';
+      if (btn) {
+        btn.disabled = true;
+        btn.setAttribute('aria-busy', 'true');
+      }
+      try {
+        await run(e, btn);
+      } finally {
+        form.dataset.submitting = '0';
+        if (btn) {
+          btn.disabled = false;
+          btn.removeAttribute('aria-busy');
+        }
+      }
+    };
+  }
+
+  document.getElementById('loginForm').addEventListener('submit', withFormSubmitting(document.getElementById('loginForm'), async () => {
     const msg = document.getElementById('loginMsg');
     if (!Auth) { msg.style.color = 'var(--danger)'; msg.textContent = t('تعذّر تحميل نظام الحسابات', 'Auth system failed to load'); return; }
     msg.style.color = 'var(--muted)'; msg.textContent = t('جاري تسجيل الدخول...', 'Signing in...');
@@ -1840,10 +1898,9 @@ body.terms-locked,body.auth-locked{overflow:hidden}
       if (window.RaseekhActivity) RaseekhActivity.recordLogin(result.user, role);
       afterAuthSuccess(result.user, result.provider);
     } catch (err) { msg.style.color = 'var(--danger)'; msg.textContent = Auth.friendlyError(err, currentLang); }
-  });
+  }));
 
-  document.getElementById('registerForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
+  document.getElementById('registerForm').addEventListener('submit', withFormSubmitting(document.getElementById('registerForm'), async () => {
     const msg = document.getElementById('registerMsg');
     if (!Auth) { msg.style.color = 'var(--danger)'; msg.textContent = t('تعذّر تحميل نظام الحسابات', 'Auth system failed to load'); return; }
     const termsCheck = document.getElementById('registerTermsCheck');
@@ -1890,10 +1947,9 @@ body.terms-locked,body.auth-locked{overflow:hidden}
       if (window.RaseekhActivity) RaseekhActivity.recordLogin(result.user, 'client');
       afterAuthSuccess(result.user, result.provider);
     } catch (err) { msg.style.color = 'var(--danger)'; msg.textContent = Auth.friendlyError(err, currentLang); }
-  });
+  }));
 
-  document.getElementById('forgotForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
+  document.getElementById('forgotForm').addEventListener('submit', withFormSubmitting(document.getElementById('forgotForm'), async () => {
     const msg = document.getElementById('forgotMsg');
     if (!Auth) return;
     msg.textContent = t('جاري الإرسال...', 'Sending...');
@@ -1903,10 +1959,9 @@ body.terms-locked,body.auth-locked{overflow:hidden}
       if (result.provider === 'local') { msg.textContent = t('تم التحقق — عيّن كلمة مرور جديدة الآن', 'Verified — set a new password now'); showAuthPanel('reset'); }
       else msg.textContent = t('تم إرسال رابط إعادة التعيين', 'Reset link sent');
     } catch (err) { msg.style.color = 'var(--danger)'; msg.textContent = Auth.friendlyError(err, currentLang); }
-  });
+  }));
 
-  document.getElementById('resetForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
+  document.getElementById('resetForm').addEventListener('submit', withFormSubmitting(document.getElementById('resetForm'), async () => {
     const msg = document.getElementById('resetMsg');
     if (!Auth) return;
     try {
@@ -1926,7 +1981,7 @@ body.terms-locked,body.auth-locked{overflow:hidden}
         }
       }
     } catch (err) { msg.style.color = 'var(--danger)'; msg.textContent = Auth.friendlyError(err, currentLang); }
-  });
+  }));
 
   if (Auth) {
     Auth.getSession().then(({ user, provider }) => {
@@ -2066,6 +2121,8 @@ body.terms-locked,body.auth-locked{overflow:hidden}
       }
       if (ok) {
         e.target.reset();
+        const typeEl = document.getElementById('contactType');
+        if (typeEl) syncCompanyFieldForType(typeEl.value);
         const hq = document.getElementById('heroQuoteMsg');
         if (hq) hq.value = '';
         if (loggedInUser) {
@@ -2245,13 +2302,21 @@ body.terms-locked,body.auth-locked{overflow:hidden}
         user = null;
       }
       if (!user) {
+        const lockText = document.getElementById('payLockText');
+        if (lockText && status === 'paid') {
+          lockText.setAttribute('data-ar', 'رجعت دفعة ناجحة — يلزم دخول سحابي لتثبيت العربون في حسابكم.');
+          lockText.setAttribute('data-en', 'A paid return was detected — cloud sign-in is required to finalize the deposit.');
+          lockText.textContent = t('رجعت دفعة ناجحة — يلزم دخول سحابي لتثبيت العربون في حسابكم.', 'A paid return was detected — cloud sign-in is required to finalize the deposit.');
+        }
         openAuth('pay');
         scrollToEl(document.getElementById('pay'), { block: 'start' });
         return;
       }
       setPayUnlocked(user, provider);
-      if (status === 'paid') finalizePendingMoyasarPayment(user);
-      else showPayStep(payStatusFailed);
+      if (status === 'paid') {
+        const ok = await finalizePendingMoyasarPayment(user);
+        if (!ok) showPayStep(payStatusFailed);
+      } else showPayStep(payStatusFailed);
       scrollToEl(document.getElementById('pay'), { block: 'start' });
       if (status !== 'paid') {
         try {

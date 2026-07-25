@@ -962,15 +962,40 @@
     const cloud = await pushRequestToCloud(row);
     const email = await notifyAdminEmail(row);
     const webhook = await notifyRequestWebhook(row);
+    const delivered = !!(cloud || (email && email.ok) || webhook);
+    const pendingNotify = !!(email && email.pendingConfirm);
+    try {
+      const list = getSharedRequests();
+      const idx = list.findIndex((r) => r && row && r.id === row.id);
+      if (idx >= 0) {
+        if (delivered) {
+          delete list[idx].syncPending;
+          list[idx].deliveryStatus = 'delivered';
+        } else {
+          list[idx].syncPending = true;
+          list[idx].deliveryStatus = pendingNotify ? 'pending_notify' : 'local';
+        }
+        saveSharedRequests(list);
+      }
+    } catch (_) {}
     return {
       cloud: !!cloud,
       email: !!(email && email.ok),
       webhook: !!webhook,
       emailDetail: email || null,
-      pendingNotify: !!(email && email.pendingConfirm),
-      delivered: !!(cloud || (email && email.ok) || webhook),
+      pendingNotify: pendingNotify,
+      delivered: delivered,
       accepted: true
     };
+  }
+
+  async function retryPendingSharedRequests() {
+    const list = getSharedRequests();
+    const pending = list.filter((r) => r && (r.syncPending || r.deliveryStatus === 'local' || r.deliveryStatus === 'pending_notify'));
+    for (const row of pending.slice(0, 20)) {
+      try { await deliverSharedRequest(row); } catch (_) {}
+    }
+    return getSharedRequests();
   }
 
   function getSharedRequests() {
@@ -1111,6 +1136,7 @@
     pruneSuggestions,
     addSharedRequest,
     deliverSharedRequest,
+    retryPendingSharedRequests,
     notifyRequestWebhook,
     notifyAdminEmail,
     publishPublicNotify,
@@ -1145,4 +1171,10 @@
     suggestionTotal,
     suggestionItems
   };
+
+  if (typeof global.addEventListener === 'function') {
+    global.addEventListener('online', () => {
+      retryPendingSharedRequests().catch(() => {});
+    });
+  }
 })(typeof window !== 'undefined' ? window : globalThis);

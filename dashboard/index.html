@@ -1696,6 +1696,14 @@ body.is-admin .client-only{display:none!important}
       loadSales();
       loadStore();
       loadClientRequests();
+      if (Catalog && Catalog.retryPendingSharedRequests) {
+        Catalog.retryPendingSharedRequests().then(() => {
+          loadClientRequests();
+          if (typeof renderClientRequestsPage === 'function' && document.getElementById('page-requests')?.classList.contains('active')) {
+            renderClientRequestsPage();
+          }
+        }).catch(() => {});
+      }
       if (Catalog && Catalog.syncPublicCatalogFromCloud) {
         Catalog.syncPublicCatalogFromCloud().then((cloud) => {
           if (!cloud || !cloud.products) return;
@@ -1868,12 +1876,17 @@ body.is-admin .client-only{display:none!important}
 
   document.getElementById('dashLoginForm').addEventListener('submit', async (e) => {
     e.preventDefault();
+    const form = e.target;
+    if (form.dataset.submitting === '1') return;
     const msg = document.getElementById('dashLoginMsg');
     if (!Auth) {
       msg.style.color = 'var(--danger)';
       msg.textContent = t('تعذّر تحميل نظام الحسابات', 'Auth system failed to load');
       return;
     }
+    const btn = form.querySelector('button[type="submit"]');
+    form.dataset.submitting = '1';
+    if (btn) { btn.disabled = true; btn.setAttribute('aria-busy', 'true'); }
     msg.style.color = 'var(--muted)';
     msg.textContent = t('جاري الدخول...', 'Signing in...');
     const email = document.getElementById('dashLoginEmail').value.trim();
@@ -1891,11 +1904,16 @@ body.is-admin .client-only{display:none!important}
     } catch (err) {
       msg.style.color = 'var(--danger)';
       msg.textContent = Auth.friendlyError(err, currentLang);
+    } finally {
+      form.dataset.submitting = '0';
+      if (btn) { btn.disabled = false; btn.removeAttribute('aria-busy'); }
     }
   });
 
   document.getElementById('dashRegisterForm').addEventListener('submit', async (e) => {
     e.preventDefault();
+    const form = e.target;
+    if (form.dataset.submitting === '1') return;
     const msg = document.getElementById('dashRegisterMsg');
     if (!Auth) {
       msg.style.color = 'var(--danger)';
@@ -1918,6 +1936,9 @@ body.is-admin .client-only{display:none!important}
       document.getElementById('dashRegisterPhone').focus();
       return;
     }
+    const btn = form.querySelector('button[type="submit"]');
+    form.dataset.submitting = '1';
+    if (btn) { btn.disabled = true; btn.setAttribute('aria-busy', 'true'); }
     msg.style.color = 'var(--muted)';
     msg.textContent = t('جاري إنشاء الحساب...', 'Creating account...');
     try {
@@ -1939,6 +1960,9 @@ body.is-admin .client-only{display:none!important}
     } catch (err) {
       msg.style.color = 'var(--danger)';
       msg.textContent = Auth.friendlyError(err, currentLang);
+    } finally {
+      form.dataset.submitting = '0';
+      if (btn) { btn.disabled = false; btn.removeAttribute('aria-busy'); }
     }
   });
 
@@ -2208,16 +2232,21 @@ body.is-admin .client-only{display:none!important}
       box.innerHTML = `<div class="empty"><strong>${escapeHtml(t('لا توجد طلبات مرسلة بعد','No submitted requests yet'))}</strong><p>${escapeHtml(t('اطلب عرض سعر من الكتالوج أو الاقتراحات، وستظهر حالتها هنا.','Request a quote from catalog or suggestions — status will show here.'))}</p><div class="empty-actions"><button class="btn btn-primary" data-goto="catalog">${escapeHtml(t('تصفح الكتالوج','Browse catalog'))}</button><a class="btn btn-ghost" href="/#contact">${escapeHtml(t('نموذج الموقع','Site form'))}</a></div></div>`;
       return;
     }
-    box.innerHTML = mine.map(r => `
+    box.innerHTML = mine.map(r => {
+      const pending = !!(r.syncPending || r.deliveryStatus === 'local' || r.deliveryStatus === 'pending_notify');
+      const chip = pending
+        ? `<span class="status-chip new">${escapeHtml(t('محلي / بانتظار المزامنة', 'Local / pending sync'))}</span>`
+        : `<span class="status-chip ${escapeHtml(r.status || 'new')}">${escapeHtml(statusLabel(r.status))}</span>`;
+      return `
       <div class="sale-row">
         <div>
           <div><strong>${escapeHtml(requestTitle(r))}</strong></div>
           <div style="color:var(--muted);font-size:.86rem;white-space:pre-wrap">${escapeHtml(r.message || '')}</div>
           <div style="color:var(--muted);font-size:.78rem;margin-top:4px">${new Date(r.at).toLocaleString(currentLang === 'ar' ? 'ar-SA' : 'en-US')}</div>
         </div>
-        <span class="status-chip ${escapeHtml(r.status || 'new')}">${escapeHtml(statusLabel(r.status))}</span>
-      </div>
-    `).join('');
+        ${chip}
+      </div>`;
+    }).join('');
   }
 
   async function renderAdminLeads(){
@@ -2634,13 +2663,21 @@ body.is-admin .client-only{display:none!important}
       ? Catalog.suggestionPriceLabel(s, products, currentLang === 'en' ? 'en' : 'ar')
       : t('عرض سعر بعد المراجعة', 'Custom quote after review');
     let reqType = 'suggestion';
-    const firstId = s.productIds && s.productIds[0];
-    if (firstId) {
-      const firstProduct = products.find(x => x.id === firstId);
-      if (firstProduct && Catalog.requestTypeForProduct) {
-        reqType = Catalog.requestTypeForProduct(firstProduct);
+    const ids = Array.isArray(s.productIds) ? s.productIds : [];
+    const priority = { business: 4, system: 3, inventory: 2, systems: 2, programming: 1 };
+    let best = 0;
+    ids.forEach((id) => {
+      const product = products.find(x => x.id === id);
+      if (!product || !Catalog.requestTypeForProduct) return;
+      const mapped = Catalog.requestTypeForProduct(product);
+      const score = priority[mapped] || 0;
+      if (score > best) {
+        best = score;
+        reqType = mapped;
       }
-    }
+    });
+    const titleBlob = ((s.title || '') + ' ' + (s.title_en || '') + ' ' + (s.badge || '') + ' ' + (s.badge_en || '')).toLowerCase();
+    if (/شركات|company|business|منشآت/.test(titleBlob)) reqType = 'business';
     openRequestConfirm({
       type: reqType,
       title: titleText,
@@ -2710,7 +2747,7 @@ body.is-admin .client-only{display:none!important}
   }
 
   document.getElementById('productSearch').addEventListener('input', renderProducts);
-  document.getElementById('productsBody').addEventListener('click', (e) => {
+  document.getElementById('productsBody').addEventListener('click', async (e) => {
     if (!requireAdmin('productsActions')) return;
     const edit = e.target.closest('[data-edit]');
     const del = e.target.closest('[data-del]');
@@ -2718,14 +2755,48 @@ body.is-admin .client-only{display:none!important}
     if (edit) openProductModal(edit.dataset.edit);
     if (restock) {
       const p = products.find(x => x.id === restock.dataset.restock);
-      if (p) { p.stock += 10; saveProducts(); renderAll(); showToast(t('تم تزويد المخزون','Stock restocked')); }
+      if (!p) return;
+      const prevStock = p.stock;
+      p.stock += 10;
+      restock.disabled = true;
+      let cloudOk = true;
+      try {
+        const result = saveProducts({ cloud: true, awaitCloud: true });
+        if (result && typeof result.then === 'function') {
+          const published = await result;
+          cloudOk = !!(published && published.cloud);
+        }
+      } catch (_) {
+        cloudOk = false;
+        p.stock = prevStock;
+      }
+      restock.disabled = false;
+      renderAll();
+      showToast(cloudOk
+        ? t('تم تزويد المخزون','Stock restocked')
+        : t('حُفظ محلياً — تعذّر نشر الكتالوج للسحابة', 'Saved locally — catalog cloud publish failed'));
     }
     if (del) {
       if (!confirm(t('حذف هذه الخدمة؟','Delete this service?'))) return;
+      const removed = products.find(p => p.id === del.dataset.del);
       products = products.filter(p => p.id !== del.dataset.del);
-      saveProducts();
+      del.disabled = true;
+      let cloudOk = true;
+      try {
+        const result = saveProducts({ cloud: true, awaitCloud: true });
+        if (result && typeof result.then === 'function') {
+          const published = await result;
+          cloudOk = !!(published && published.cloud);
+        }
+      } catch (_) {
+        cloudOk = false;
+        if (removed) products.unshift(removed);
+      }
+      del.disabled = false;
       renderAll();
-      showToast(t('تم الحذف','Deleted'));
+      showToast(cloudOk
+        ? t('تم الحذف','Deleted')
+        : t('حُفظ محلياً — تعذّر نشر الكتالوج للسحابة', 'Saved locally — catalog cloud publish failed'));
     }
   });
 
@@ -3014,9 +3085,10 @@ body.is-admin .client-only{display:none!important}
 
   const manualDepositForm = document.getElementById('manualDepositForm');
   if (manualDepositForm) {
-    manualDepositForm.addEventListener('submit', (e) => {
+    manualDepositForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       if (!requireAdmin('manualDeposit')) return;
+      if (manualDepositForm.dataset.submitting === '1') return;
       const methodBtn = e.submitter && e.submitter.getAttribute('data-method');
       const method = methodBtn || 'cash';
       const name = document.getElementById('depositName').value.trim();
@@ -3028,6 +3100,8 @@ body.is-admin .client-only{display:none!important}
         msg.textContent = t('أدخلوا مبلغاً صحيحاً', 'Enter a valid amount');
         return;
       }
+      manualDepositForm.dataset.submitting = '1';
+      Array.from(manualDepositForm.querySelectorAll('button')).forEach((b) => { b.disabled = true; });
       const row = Catalog && Catalog.addPaymentRecord
         ? Catalog.addPaymentRecord({
             method,
@@ -3048,21 +3122,21 @@ body.is-admin .client-only{display:none!important}
       manualDepositForm.reset();
       msg.style.color = 'var(--muted)';
       msg.textContent = t('جاري حفظ العربون...', 'Saving deposit...');
-      const finish = (delivery) => {
-        const synced = !!(delivery && (delivery.cloud || delivery.delivered));
-        msg.style.color = synced ? 'var(--ok)' : 'var(--danger)';
-        msg.textContent = synced
-          ? t('تم تسجيل العربون', 'Deposit recorded')
-          : t('حُفظ محلياً — تعذّرت مزامنة السحابة', 'Saved locally — cloud sync failed');
-        renderOverview();
-        renderSales();
-        showToast(msg.textContent);
-      };
-      if (row && row.deliveryPromise) {
-        row.deliveryPromise.then(finish).catch(() => finish(null));
-      } else {
-        finish({ cloud: !!row });
-      }
+      let delivery = null;
+      try {
+        if (row && row.deliveryPromise) delivery = await row.deliveryPromise;
+      } catch (_) {}
+      try { await refreshSalesFromCloud(); } catch (_) { loadSales(); }
+      const synced = !!(delivery && (delivery.cloud || delivery.delivered));
+      msg.style.color = synced ? 'var(--ok)' : 'var(--danger)';
+      msg.textContent = synced
+        ? t('تم تسجيل العربون', 'Deposit recorded')
+        : t('حُفظ محلياً — تعذّرت مزامنة السحابة', 'Saved locally — cloud sync failed');
+      renderOverview();
+      renderSales();
+      showToast(msg.textContent);
+      manualDepositForm.dataset.submitting = '0';
+      Array.from(manualDepositForm.querySelectorAll('button')).forEach((b) => { b.disabled = false; });
     });
   }
 
