@@ -1860,6 +1860,17 @@ body.is-admin .client-only{display:none!important}
       if (e.target !== termsGateEl) return;
       if (termsGateMode === 'view') closeTermsGate();
     });
+    termsGateEl.addEventListener('keydown', (e) => {
+      if (e.key !== 'Tab' || !termsGateEl.classList.contains('open')) return;
+      const sheet = termsGateEl.querySelector('.terms-gate-sheet') || termsGateEl;
+      const focusables = Array.from(sheet.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'))
+        .filter((el) => !el.disabled && el.offsetParent !== null);
+      if (!focusables.length) return;
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    });
   }
   const viewTermsBtn = document.getElementById('viewTermsBtn');
   if (viewTermsBtn) {
@@ -2985,6 +2996,17 @@ body.is-admin .client-only{display:none!important}
     }
 
     showLogin();
+  })();
+
+  (function siteConnectivity(){
+    const offline = document.getElementById('offlineBanner');
+    const syncOnline = () => {
+      if (!offline) return;
+      offline.style.display = navigator.onLine ? 'none' : 'block';
+    };
+    window.addEventListener('online', syncOnline);
+    window.addEventListener('offline', syncOnline);
+    syncOnline();
   })();
 
   if ('serviceWorker' in navigator) {
