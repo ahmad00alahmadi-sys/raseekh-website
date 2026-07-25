@@ -158,8 +158,10 @@ body.terms-locked{overflow:hidden}
   transition:transform .15s,background .15s;
 }
 .btn:hover{transform:translateY(-2px)}
-.btn-primary{background:var(--navy);color:#F4F7FA}
-.btn-primary:hover{background:#0C1B2E}
+.btn-primary{background:var(--copper);color:#fff}
+.btn-primary:hover{background:#A84C1E}
+.btn-navy{background:var(--navy);color:#F4F7FA}
+.btn-navy:hover{background:#0C1B2E}
 .btn-ghost{background:transparent;border:1.5px solid var(--line);color:var(--ink)}
 .btn-brass{background:var(--copper);color:#fff}
 .btn-danger{background:#FCE8E6;color:var(--danger);border:1px solid #F3C1BB}
@@ -311,10 +313,12 @@ body.is-admin .client-only{display:none!important}
 }
 .cart-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .empty{
-  color:var(--muted);text-align:center;padding:40px 16px;
+  color:var(--muted);text-align:center;padding:36px 18px;
   border:1.5px dashed var(--line);border-radius:var(--radius);background:rgba(247,249,252,.65);
 }
-.empty strong{display:block;color:var(--navy);margin-bottom:6px}
+.empty strong{display:block;color:var(--navy);margin-bottom:8px;font-size:1.02rem}
+.empty .empty-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:16px}
+.empty p{max-width:360px;margin:0 auto;line-height:1.7;font-size:.92rem}
 .stat{animation:rise .45s ease both}
 .stats .stat:nth-child(1){animation-delay:.04s}
 .stats .stat:nth-child(2){animation-delay:.1s}
@@ -550,7 +554,7 @@ body.is-admin .client-only{display:none!important}
         <div class="stat"><div class="label" data-ar="خدمات متاحة" data-en="Available services">خدمات متاحة</div><div class="value" id="statClientProducts">0</div><div class="hint" data-ar="للطلب" data-en="to request">للطلب</div></div>
         <div class="stat"><div class="label" data-ar="اقتراحات" data-en="Suggestions">اقتراحات</div><div class="value" id="statClientSuggestions">0</div><div class="hint" data-ar="جاهزة" data-en="ready">جاهزة</div></div>
         <div class="stat"><div class="label" data-ar="طلباتي" data-en="My requests">طلباتي</div><div class="value" id="statClientRequests">0</div><div class="hint" data-ar="مرسلة" data-en="sent">مرسلة</div></div>
-        <div class="stat"><div class="label" data-ar="التغطية" data-en="Coverage">التغطية</div><div class="value" style="font-size:1.05rem" data-ar="إلكتروني" data-en="Digital">إلكتروني</div><div class="hint" data-ar="خدمات أونلاين حالياً" data-en="Online services for now">خدمات أونلاين حالياً</div></div>
+        <div class="stat"><div class="label" data-ar="المسار" data-en="Path">المسار</div><div class="value" style="font-size:1.05rem" data-ar="طلب ← عرض" data-en="Ask → Quote">طلب ← عرض</div><div class="hint" data-ar="نرد خلال يوم عمل" data-en="Reply in one business day">نرد خلال يوم عمل</div></div>
       </div>
 
       <div class="grid-2 admin-only">
@@ -601,7 +605,7 @@ body.is-admin .client-only{display:none!important}
         </div>
         <a class="btn btn-ghost" href="/" data-ar="← الرئيسية" data-en="← Home">← الرئيسية</a>
       </div>
-      <div class="client-note" data-ar="حالياً نعرض خدمات إلكترونية أونلاين. الأسعار «حسب الطلب» بعد مراجعة احتياجكم." data-en="We currently list online digital services. Prices are quote-on-request after we review your needs.">حالياً نعرض خدمات إلكترونية أونلاين. الأسعار «حسب الطلب» بعد مراجعة احتياجكم.</div>
+      <div class="client-note" data-ar="خدمات رقمية للطلب أونلاين. التسعير بعد مراجعة احتياجكم — بدون مفاجآت." data-en="Digital services available online. Pricing after we review your need — no surprises.">خدمات رقمية للطلب أونلاين. التسعير بعد مراجعة احتياجكم — بدون مفاجآت.</div>
       <div class="panel">
         <input type="search" id="clientCatalogSearch" style="margin-bottom:14px;padding:12px 14px;width:100%;border:1px solid var(--line);border-radius:10px" data-ar-placeholder="ابحث..." data-en-placeholder="Search..." placeholder="ابحث...">
         <div class="browse-grid" id="clientCatalogGrid"></div>
@@ -1649,7 +1653,11 @@ body.is-admin .client-only{display:none!important}
     if (page === 'settings' && isAdminUser) renderDeliveryStatus();
   }
   document.querySelectorAll('.nav-item').forEach(btn => btn.addEventListener('click', () => switchPage(btn.dataset.page)));
-  document.querySelectorAll('[data-goto]').forEach(el => el.addEventListener('click', () => switchPage(el.dataset.goto)));
+  document.addEventListener('click', (e) => {
+    const el = e.target.closest('[data-goto]');
+    if (!el || el.classList.contains('nav-item')) return;
+    switchPage(el.dataset.goto);
+  });
 
   function startClock(){
     const tick = () => {
@@ -1844,7 +1852,7 @@ body.is-admin .client-only{display:none!important}
       const holder = document.getElementById('recentSales');
       const recent = sales.slice(0, 5);
       if (!recent.length) {
-        holder.innerHTML = `<div class="empty">${t('لا توجد مبيعات بعد — ابدأ من نقطة البيع','No sales yet — start from POS')}</div>`;
+        holder.innerHTML = `<div class="empty"><strong>${t('لا توجد مبيعات بعد','No sales yet')}</strong><p>${t('ابدأ طلب بيع من مكتب المبيعات.' ,'Start a sales order from the sales desk.')}</p><div class="empty-actions"><button class="btn btn-primary" data-goto="pos">${t('فتح طلبات البيع','Open sales desk')}</button></div></div>`;
       } else {
         holder.innerHTML = recent.map(s => `
           <div class="sale-row">
@@ -1867,7 +1875,7 @@ body.is-admin .client-only{display:none!important}
       document.getElementById('statClientRequests').textContent = mine.length;
       const recentBox = document.getElementById('clientRecentRequests');
       if (!mine.length) {
-        recentBox.innerHTML = `<div class="empty">${t('لا توجد طلبات بعد — اطلب من الكتالوج أو الاقتراحات','No requests yet — order from catalog or suggestions')}</div>`;
+        recentBox.innerHTML = `<div class="empty"><strong>${t('لا توجد طلبات بعد','No requests yet')}</strong><p>${t('اطلبوا عرض سعر من الكتالوج أو الاقتراحات، وستظهر الحالة هنا.','Request a quote from catalog or suggestions — status shows here.')}</p><div class="empty-actions"><button class="btn btn-primary" data-goto="catalog">${t('تصفح الكتالوج','Browse catalog')}</button><button class="btn btn-ghost" data-goto="suggestions">${t('الاقتراحات','Suggestions')}</button></div></div>`;
       } else {
         recentBox.innerHTML = mine.slice(0, 5).map(r => `
           <div class="sale-row">
@@ -1948,7 +1956,7 @@ body.is-admin .client-only{display:none!important}
     await refreshClientRequestsFromCloud();
     const mine = myRequests();
     if (!mine.length) {
-      box.innerHTML = `<div class="empty"><strong>${escapeHtml(t('لا توجد طلبات مرسلة بعد','No submitted requests yet'))}</strong>${escapeHtml(t('اطلب عرض سعر من الكتالوج أو الاقتراحات، وستظهر حالتها هنا.','Request a quote from catalog or suggestions — status will show here.'))}</div>`;
+      box.innerHTML = `<div class="empty"><strong>${escapeHtml(t('لا توجد طلبات مرسلة بعد','No submitted requests yet'))}</strong><p>${escapeHtml(t('اطلب عرض سعر من الكتالوج أو الاقتراحات، وستظهر حالتها هنا.','Request a quote from catalog or suggestions — status will show here.'))}</p><div class="empty-actions"><button class="btn btn-primary" data-goto="catalog">${escapeHtml(t('تصفح الكتالوج','Browse catalog'))}</button><a class="btn btn-ghost" href="/#contact">${escapeHtml(t('نموذج الموقع','Site form'))}</a></div></div>`;
       return;
     }
     box.innerHTML = mine.map(r => `

@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>راسخ — منتجات إلكترونية وخدمات برمجة وأنظمة</title>
-<meta name="description" content="راسخ في السعودية: بيع إلكترونيات، صيانة مواقع، خدمات برمجة، وتطوير أنظمة ولوحات تحكم للعملاء.">
-<meta name="keywords" content="راسخ, خدمات برمجة, تطوير مواقع, صيانة مواقع, أنظمة ولوحات تحكم, منتجات إلكترونية, برمجة سعودية, Raseekh, website development Saudi, custom systems">
-<meta property="og:title" content="راسخ — إلكترونيات وخدمات تقنية">
-<meta property="og:description" content="منتجات إلكترونية، صيانة مواقع، برمجة، وأنظمة كاملة — بواجهة عربية وإنجليزية.">
+<title>راسخ — صيانة وبرمجة وأنظمة تشغيل</title>
+<meta name="description" content="راسخ في السعودية: صيانة مواقع، خدمات برمجة، وتطوير أنظمة ولوحات تحكم — من الطلب حتى التشغيل.">
+<meta name="keywords" content="راسخ, خدمات برمجة, تطوير مواقع, صيانة مواقع, أنظمة ولوحات تحكم, برمجة سعودية, Raseekh, website development Saudi, custom systems">
+<meta property="og:title" content="راسخ — خدمات رقمية وأنظمة">
+<meta property="og:description" content="صيانة مواقع، برمجة، وأنظمة كاملة — بواجهة عربية وإنجليزية ومتابعة من حساب العميل.">
 <meta name="theme-color" content="#10233A">
 <meta name="robots" content="index,follow">
 <link rel="canonical" href="https://raseekh.com/">
@@ -34,7 +34,7 @@
       "name": "راسخ",
       "alternateName": "Raseekh",
       "url": "https://raseekh.com/",
-      "description": "منتجات إلكترونية، صيانة مواقع، خدمات برمجة، وتطوير أنظمة ولوحات تحكم للعملاء.",
+      "description": "صيانة مواقع، خدمات برمجة، وتطوير أنظمة ولوحات تحكم للعملاء.",
       "areaServed": "SA",
       "knowsLanguage": ["ar", "en"]
     },
@@ -161,10 +161,12 @@ nav{display:flex;align-items:center;justify-content:space-between;gap:16px;paddi
   font-weight:700;font-size:.9rem;transition:transform .18s,background .18s,border-color .18s,color .18s;
 }
 .btn:hover{transform:translateY(-2px)}
-.btn-primary{background:var(--navy);color:#F4F7FA}
-.btn-primary:hover{background:#0C1B2E}
+.btn-primary{background:var(--copper);color:#fff}
+.btn-primary:hover{background:#A84C1E}
 .btn-ghost{background:rgba(247,249,252,.75);border:1.5px solid var(--line);color:var(--ink);padding:11px 18px}
 .btn-ghost:hover{border-color:var(--harbor);color:var(--harbor);background:#fff}
+.btn-navy{background:var(--navy);color:#F4F7FA}
+.btn-navy:hover{background:#0C1B2E}
 .btn-brass{background:var(--copper);color:#fff}
 .lang-btn{
   min-width:44px;padding:10px 12px;border-radius:var(--radius);border:1.5px solid var(--line);
@@ -264,26 +266,33 @@ nav{display:flex;align-items:center;justify-content:space-between;gap:16px;paddi
 section{padding:100px 0;position:relative;z-index:1}
 .section-head{max-width:580px;margin-bottom:42px}
 .eyebrow{
-  display:inline-block;font-size:.74rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
-  color:var(--copper);margin-bottom:12px;padding-bottom:6px;border-bottom:2px solid var(--sand);
+  display:inline-flex;align-items:center;gap:10px;font-size:.8rem;font-weight:700;
+  color:var(--copper);margin-bottom:12px;
 }
+.eyebrow::before{content:"";width:18px;height:2px;background:var(--copper);display:inline-block}
 .section-head h2{font-size:clamp(1.8rem,3.5vw,2.55rem);line-height:1.2;margin-bottom:12px}
 .section-head p{color:var(--muted);font-size:1.05rem}
+.band-navy{
+  background:linear-gradient(180deg, rgba(16,35,58,.96), rgba(22,50,79,.92));
+  color:#F4F7FA;
+}
+.band-navy .section-head p,.band-navy .section-head h2{color:#F4F7FA}
+.band-navy .eyebrow{color:var(--sand)}
+.band-navy .eyebrow::before{background:var(--sand)}
+.band-mist{background:rgba(247,249,252,.55)}
 
 .services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
 .services-grid.four{grid-template-columns:repeat(2,1fr)}
 .service-block{
   background:rgba(247,249,252,.82);border:1.5px solid var(--line);border-radius:var(--radius);
-  padding:28px 22px;transition:border-color .2s,transform .2s,background .2s;
+  padding:28px 22px;border-top:3px solid transparent;transition:border-color .25s,transform .25s,background .25s;
 }
-.service-block:hover{border-color:var(--harbor);transform:translateY(-4px);background:#fff}
+.service-block:hover{border-color:var(--harbor);border-top-color:var(--copper);transform:translateY(-3px);background:#fff}
 .service-block.featured{
   background:linear-gradient(145deg,#10233A 0%, #16324F 55%, #1D4A58 100%);
-  color:#F4F7FA;border-color:transparent;
+  color:#F4F7FA;border-color:transparent;border-top:3px solid var(--copper);
 }
 .service-block.featured p{color:rgba(244,247,250,.82)}
-.service-block.featured .service-code{color:var(--sand)}
-.service-code{font-size:.72rem;font-weight:700;letter-spacing:.1em;color:var(--copper);margin-bottom:14px;display:block}
 .service-block h3{font-size:1.2rem;margin-bottom:10px}
 .service-block p{color:var(--muted);font-size:.94rem}
 .service-list{margin-top:14px;display:flex;flex-direction:column;gap:8px;padding:0;list-style:none}
@@ -315,8 +324,8 @@ section{padding:100px 0;position:relative;z-index:1}
   display:flex;flex-direction:column;gap:10px;min-height:230px;
 }
 .suggest-card .badge{
-  align-self:flex-start;font-size:.72rem;font-weight:700;letter-spacing:.05em;
-  color:#fff;background:var(--copper);padding:5px 10px;border-radius:2px;
+  align-self:flex-start;font-size:.78rem;font-weight:700;color:var(--sand);
+  padding:0;background:none;border:none;
 }
 .suggest-card h3{font-size:1.22rem}
 .suggest-card p{color:rgba(244,247,250,.8);font-size:.92rem;flex:1}
@@ -327,12 +336,21 @@ section{padding:100px 0;position:relative;z-index:1}
 .suggest-card .btn-primary:hover{background:#A84C1E}
 
 .work-list{
-  display:grid;grid-template-columns:repeat(4,1fr);gap:0;
-  border:1.5px solid var(--line);background:rgba(247,249,252,.65);border-radius:var(--radius);overflow:hidden;
+  display:grid;grid-template-columns:repeat(4,1fr);gap:18px;
 }
-.work-item{padding:28px 22px;border-inline-end:1.5px solid var(--line)}
-.work-item:last-child{border-inline-end:none}
-.work-item .num{color:var(--copper);font-weight:800;font-size:.9rem;margin-bottom:12px}
+.work-item{
+  padding:8px 4px 8px 0;position:relative;
+  border:none;background:transparent;
+}
+.work-item::after{
+  content:"";position:absolute;top:22px;inset-inline-start:42px;inset-inline-end:-12px;height:2px;
+  background:linear-gradient(90deg, var(--copper), rgba(42,111,122,.25));
+}
+.work-item:last-child::after{display:none}
+.work-item .num{
+  width:40px;height:40px;border-radius:50%;display:grid;place-items:center;margin-bottom:14px;
+  background:rgba(196,92,38,.12);color:var(--copper);font-weight:800;font-size:.9rem;position:relative;z-index:1;
+}
 .work-item h3{font-size:1.05rem;margin-bottom:8px}
 .work-item p{color:var(--muted);font-size:.9rem}
 
@@ -379,9 +397,9 @@ section{padding:100px 0;position:relative;z-index:1}
 .check{display:flex;gap:8px;align-items:flex-start;font-size:.82rem;color:var(--muted)}
 .check input{margin-top:4px}.check a{color:var(--harbor);text-decoration:underline}
 
-.site-note{border-top:1.5px solid var(--line);padding:14px 18px;text-align:center;font-size:.84rem;color:var(--muted);position:relative;z-index:1;background:rgba(247,249,252,.5)}
-footer{border-top:1.5px solid var(--line);padding:36px 0 48px;text-align:center;color:var(--muted);font-size:.92rem;position:relative;z-index:1}
-.footer-brand{font-family:'Tajawal',sans-serif;font-weight:800;color:var(--ink);font-size:1.2rem;margin-bottom:8px}
+.site-note{border-top:1.5px solid var(--line);padding:16px 18px;text-align:center;font-size:.9rem;font-weight:600;color:var(--muted);position:relative;z-index:1}
+footer{border-top:1.5px solid var(--line);padding:48px 0 36px;text-align:center;color:var(--muted);font-size:.92rem;position:relative;z-index:1}
+.footer-brand{font-family:'Tajawal',sans-serif;font-weight:800;color:var(--ink);font-size:1.55rem;margin-bottom:8px}
 body.lang-en .footer-brand{font-family:'Space Grotesk',sans-serif}
 .footer-links{display:flex;gap:18px;justify-content:center;margin-top:12px;flex-wrap:wrap}
 .footer-links a:hover{color:var(--copper)}
@@ -394,16 +412,12 @@ body.lang-en .footer-brand{font-family:'Space Grotesk',sans-serif}
   box-shadow:0 14px 28px -22px rgba(16,35,58,.55);
 }
 
-.stats-strip{
-  display:grid;grid-template-columns:repeat(4,1fr);gap:14px;position:relative;z-index:2;
+.promise-line{
+  display:flex;flex-wrap:wrap;gap:10px 22px;justify-content:center;align-items:center;
+  padding:28px 0 8px;color:var(--muted);font-weight:700;font-size:.95rem;
 }
-.stat-card{
-  background:var(--panel);border:1.5px solid var(--line);border-radius:var(--radius);
-  padding:18px 16px;border-inline-start:3px solid var(--copper);
-}
-.stat-card strong{display:block;font-size:1.55rem;color:var(--navy);margin-bottom:4px;font-family:'Tajawal',sans-serif}
-body.lang-en .stat-card strong{font-family:'Space Grotesk',sans-serif}
-.stat-card span{color:var(--muted);font-size:.86rem}
+.promise-line span{display:inline-flex;align-items:center;gap:8px}
+.promise-line span::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--copper)}
 
 .pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
 .price-card{
@@ -412,7 +426,7 @@ body.lang-en .stat-card strong{font-family:'Space Grotesk',sans-serif}
 }
 .price-card.featured{
   background:linear-gradient(150deg,#10233A,#16324F);color:#F4F7FA;border-color:transparent;
-  transform:translateY(-6px);
+  border-top:3px solid var(--copper);
 }
 .price-card.featured p,.price-card.featured li{color:rgba(244,247,250,.82)}
 .price-card .plan{font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--copper)}
@@ -424,17 +438,30 @@ body.lang-en .stat-card strong{font-family:'Space Grotesk',sans-serif}
 .price-card li::before{content:"";position:absolute;inset-inline-start:0;top:.7em;width:7px;height:2px;background:var(--harbor)}
 .price-card.featured li::before{background:var(--sand)}
 
-.trust-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-.trust-item{
-  border:1.5px dashed var(--line);border-radius:var(--radius);padding:22px 12px;text-align:center;
-  background:rgba(247,249,252,.7);color:var(--muted);font-weight:700;font-size:.92rem;
+.trust-proof{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:18px;max-width:920px;margin:0 auto;
 }
-.trust-note{text-align:center;margin-top:18px;color:var(--muted);font-size:.95rem}
-.terms-teaser{
-  background:rgba(247,249,252,.9);border:1.5px solid var(--line);border-radius:var(--radius);
-  padding:28px 22px;border-top:4px solid var(--copper);
+.trust-proof article{
+  padding:22px 8px;border:none;background:transparent;text-align:start;
+  border-inline-start:3px solid var(--copper);
 }
-.terms-teaser p{color:var(--muted);margin:10px 0 18px}
+.trust-proof h3{font-size:1.05rem;margin-bottom:8px;color:var(--navy)}
+.band-navy .trust-proof h3{color:#F4F7FA}
+.trust-proof p{color:var(--muted);font-size:.92rem;line-height:1.7}
+.band-navy .trust-proof p{color:rgba(244,247,250,.82)}
+.reveal.stagger > *{
+  opacity:0;transform:translateY(16px);transition:opacity .65s ease,transform .65s ease;
+}
+.reveal.stagger.in > *{opacity:1;transform:none}
+.reveal.stagger > *:nth-child(1){transition-delay:.04s}
+.reveal.stagger > *:nth-child(2){transition-delay:.1s}
+.reveal.stagger > *:nth-child(3){transition-delay:.16s}
+.reveal.stagger > *:nth-child(4){transition-delay:.22s}
+.mobile-quote-bar{
+  display:none;position:fixed;inset-inline:12px;bottom:12px;z-index:70;
+  transition:opacity .25s ease;
+}
+.mobile-quote-bar .btn{width:100%;box-shadow:0 12px 28px -12px rgba(16,35,58,.55)}
 .terms-overlay{
   position:fixed;inset:0;z-index:220;display:none;align-items:center;justify-content:center;
   padding:18px;background:rgba(16,35,58,.72);backdrop-filter:blur(8px);
@@ -457,25 +484,28 @@ body.terms-locked{overflow:hidden}
 .terms-item h3{color:var(--navy);font-size:1.02rem;margin-bottom:8px}
 .terms-item p{margin:0;line-height:1.8;color:var(--muted);font-size:.94rem}
 
+.contact-band .panel{border-top:3px solid var(--copper)}
+
 @media (max-width:960px){
   .nav-links{display:none;position:absolute;top:66px;inset-inline:16px;flex-direction:column;background:rgba(247,249,252,.98);border:1.5px solid var(--line);padding:16px;border-radius:10px;box-shadow:var(--shadow);gap:14px;z-index:90}
   .nav-links.open{display:flex}
   .nav-toggle{display:flex}
-  .services-grid,.services-grid.four,.products-grid,.suggest-grid,.pricing-grid,.stats-strip,.trust-row{grid-template-columns:1fr 1fr}
+  .services-grid,.services-grid.four,.products-grid,.suggest-grid,.pricing-grid,.trust-proof{grid-template-columns:1fr 1fr}
   .work-list,.two-col{grid-template-columns:1fr}
-  .work-item{border-inline-end:none;border-bottom:1.5px solid var(--line)}
+  .work-item::after{display:none}
   .hero{min-height:auto;align-items:end}
   .hero-content{padding:88px 0 72px;max-width:100%}
   .price-card.featured{transform:none}
   .hero-quote{grid-template-columns:1fr}
   .hero-quote .btn{width:100%}
-  .news-item{grid-template-columns:1fr;gap:6px}
 }
 @media (max-width:560px){
-  .services-grid,.products-grid,.suggest-grid,.pricing-grid,.stats-strip,.trust-row{grid-template-columns:1fr}
+  .services-grid,.products-grid,.suggest-grid,.pricing-grid,.trust-proof{grid-template-columns:1fr}
   .wrap{padding:0 18px}
   .brand-mark{font-size:clamp(3.6rem,18vw,5rem)}
   .hero h1{max-width:100%}
+  .mobile-quote-bar{display:block}
+  body{padding-bottom:76px}
 }
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
@@ -487,10 +517,9 @@ body.terms-locked{overflow:hidden}
     <a class="logo" href="/" data-ar-html='را<em>سخ</em>' data-en-html='Ra<em>seekh</em>'>را<em>سخ</em></a>
     <div class="nav-links" id="navLinks">
       <a href="#services" data-ar="خدماتنا" data-en="Services">خدماتنا</a>
-      <a href="#programming" data-ar="خدمات البرمجة" data-en="Programming">خدمات البرمجة</a>
-      <a href="#products" data-ar="الخدمات" data-en="Services">الخدمات</a>
-      <a href="#suggestions" data-ar="الاقتراحات" data-en="Suggestions">الاقتراحات</a>
-      <a href="#pricing" data-ar="الأسعار" data-en="Pricing">الأسعار</a>
+      <a href="#programming" data-ar="البرمجة" data-en="Coding">البرمجة</a>
+      <a href="#pricing" data-ar="الباقات" data-en="Plans">الباقات</a>
+      <a href="#process" data-ar="آلية العمل" data-en="Process">آلية العمل</a>
       <a href="#faq" data-ar="أسئلة" data-en="FAQ">أسئلة</a>
       <a href="#contact" data-ar="تواصل" data-en="Contact">تواصل</a>
     </div>
@@ -584,16 +613,14 @@ body.terms-locked{overflow:hidden}
   </div>
 </section>
 
-<section style="padding-top:48px;padding-bottom:48px">
-  <div class="wrap">
-    <div class="stats-strip reveal">
-      <div class="stat-card"><strong>+40</strong><span data-ar="مشروع تقني" data-en="Tech projects">مشروع تقني</span></div>
-      <div class="stat-card"><strong>+25</strong><span data-ar="عميل نشط" data-en="Active clients">عميل نشط</span></div>
-      <div class="stat-card"><strong>24س</strong><span data-ar="رد أولي سريع" data-en="Fast first reply">رد أولي سريع</span></div>
-      <div class="stat-card"><strong>Beta</strong><span data-ar="منصة العميل" data-en="Client platform">منصة العميل</span></div>
-    </div>
+<div class="wrap">
+  <div class="promise-line reveal">
+    <span data-ar="صيانة مواقع" data-en="Maintenance">صيانة مواقع</span>
+    <span data-ar="برمجة مخصصة" data-en="Custom coding">برمجة مخصصة</span>
+    <span data-ar="أنظمة تشغيل" data-en="Business systems">أنظمة تشغيل</span>
+    <span data-ar="متابعة من حساب العميل" data-en="Track in client account">متابعة من حساب العميل</span>
   </div>
-</section>
+</div>
 
 <section id="services">
   <div class="wrap">
@@ -602,19 +629,16 @@ body.terms-locked{overflow:hidden}
       <h2 data-ar="ثلاث خدمات أساسية" data-en="Three core services">ثلاث خدمات أساسية</h2>
       <p data-ar="صيانة، برمجة، وأنظمة كاملة — بوضوح وبدون تعقيد." data-en="Maintenance, coding, and full systems — clear and simple.">صيانة، برمجة، وأنظمة كاملة — بوضوح وبدون تعقيد.</p>
     </div>
-    <div class="services-grid reveal">
+    <div class="services-grid reveal stagger">
       <article class="service-block">
-        <span class="service-code">SRV-01</span>
         <h3 data-ar="صيانة المواقع" data-en="Website maintenance">صيانة المواقع</h3>
         <p data-ar="إصلاح، تحديث، وأمان بشكل دوري." data-en="Fixes, updates, and security on a schedule.">إصلاح، تحديث، وأمان بشكل دوري.</p>
       </article>
       <a class="service-block featured" href="#programming" style="text-decoration:none;color:inherit;display:block">
-        <span class="service-code">SRV-02</span>
         <h3 data-ar="خدمات البرمجة" data-en="Programming services">خدمات البرمجة</h3>
         <p data-ar="مواقع، تعديلات، وأنظمة حسب طلبكم." data-en="Sites, edits, and systems built to request.">مواقع، تعديلات، وأنظمة حسب طلبكم.</p>
       </a>
       <article class="service-block">
-        <span class="service-code">SRV-03</span>
         <h3 data-ar="نظام كامل للعملاء" data-en="Complete client systems">نظام كامل للعملاء</h3>
         <p data-ar="من الفكرة إلى التشغيل الجاهز." data-en="From idea to a ready-to-run system.">من الفكرة إلى التشغيل الجاهز.</p>
       </article>
@@ -629,24 +653,20 @@ body.terms-locked{overflow:hidden}
       <h2 data-ar="برمجة عملية حسب طلبكم" data-en="Practical coding to your request">برمجة عملية حسب طلبكم</h2>
       <p data-ar="مواقع، تعديلات، أنظمة، وربط تقني — بسطرين واضحين لكل خدمة." data-en="Sites, edits, systems, and integrations — two clear lines each.">مواقع، تعديلات، أنظمة، وربط تقني — بسطرين واضحين لكل خدمة.</p>
     </div>
-    <div class="services-grid four reveal">
+    <div class="services-grid four reveal stagger">
       <article class="service-block">
-        <span class="service-code">DEV-01</span>
         <h3 data-ar="تطوير مواقع" data-en="Website development">تطوير مواقع</h3>
         <p data-ar="مواقع شركات ومتاجر عربية/إنجليزية جاهزة للتشغيل." data-en="AR/EN company and store sites ready to launch.">مواقع شركات ومتاجر عربية/إنجليزية جاهزة للتشغيل.</p>
       </article>
       <article class="service-block">
-        <span class="service-code">DEV-02</span>
         <h3 data-ar="تعديل برمجة" data-en="Code changes">تعديل برمجة</h3>
         <p data-ar="إصلاح أخطاء وإضافة مزايا على مشروعكم الحالي." data-en="Bug fixes and new features on your existing project.">إصلاح أخطاء وإضافة مزايا على مشروعكم الحالي.</p>
       </article>
       <article class="service-block">
-        <span class="service-code">DEV-03</span>
         <h3 data-ar="أنظمة ولوحات" data-en="Systems & dashboards">أنظمة ولوحات</h3>
         <p data-ar="إدارة، مخزون، وعملاء مع صلاحيات وتقارير." data-en="Ops, inventory, and CRM with roles and reports.">إدارة، مخزون، وعملاء مع صلاحيات وتقارير.</p>
       </article>
       <article class="service-block">
-        <span class="service-code">DEV-04</span>
         <h3 data-ar="ربط API" data-en="API integrations">ربط API</h3>
         <p data-ar="دفع، رسائل، ومزامنة بين أنظمتكم." data-en="Payments, messaging, and system sync.">دفع، رسائل، ومزامنة بين أنظمتكم.</p>
       </article>
@@ -696,7 +716,7 @@ body.terms-locked{overflow:hidden}
           <li data-ar="تعديل برمجة بسيط" data-en="Simple code change">تعديل برمجة بسيط</li>
           <li data-ar="عرض سعر خلال يوم عمل" data-en="Quote within one business day">عرض سعر خلال يوم عمل</li>
         </ul>
-        <a class="btn btn-ghost" href="#contact" data-ar="ابدأ أساسي" data-en="Start Basic">ابدأ أساسي</a>
+        <a class="btn btn-ghost" href="#contact" data-quote-type="programming" data-quote-msg-ar="أرغب بباقة أساسي — طلب صغير أو تعديل محدود." data-quote-msg-en="I want the Basic plan — small request or limited change." data-ar="ابدأ أساسي" data-en="Start Basic">ابدأ أساسي</a>
       </article>
       <article class="price-card featured">
         <div class="plan" data-ar="احترافي" data-en="Pro">احترافي</div>
@@ -708,7 +728,7 @@ body.terms-locked{overflow:hidden}
           <li data-ar="تحديثات مرحلية" data-en="Staged updates">تحديثات مرحلية</li>
           <li data-ar="دعم عبر حساب العميل" data-en="Support via client account">دعم عبر حساب العميل</li>
         </ul>
-        <a class="btn btn-primary" href="#contact" data-ar="اطلب احترافي" data-en="Choose Pro">اطلب احترافي</a>
+        <a class="btn btn-primary" href="#contact" data-quote-type="web-dev" data-quote-msg-ar="أرغب بباقة احترافي — موقع أو لوحة متوسطة." data-quote-msg-en="I want the Pro plan — mid-size site or dashboard." data-ar="اطلب احترافي" data-en="Choose Pro">اطلب احترافي</a>
       </article>
       <article class="price-card">
         <div class="plan" data-ar="فرق" data-en="Teams">فرق</div>
@@ -720,57 +740,31 @@ body.terms-locked{overflow:hidden}
           <li data-ar="صلاحيات وتقارير" data-en="Roles and reports">صلاحيات وتقارير</li>
           <li data-ar="متابعة أولوية" data-en="Priority follow-up">متابعة أولوية</li>
         </ul>
-        <a class="btn btn-ghost" href="#contact" data-ar="تحدث مع راسخ" data-en="Talk to Raseekh">تحدث مع راسخ</a>
+        <a class="btn btn-ghost" href="#contact" data-quote-type="system" data-quote-msg-ar="أرغب بباقة مؤسسات — نظام كامل أو عمل متعدد الأقسام." data-quote-msg-en="I want the Teams plan — full system or multi-team work." data-ar="تحدث مع راسخ" data-en="Talk to Raseekh">تحدث مع راسخ</a>
       </article>
     </div>
   </div>
 </section>
 
-<section id="trust">
-  <div class="wrap">
-    <div class="section-head reveal" style="margin-inline:auto;text-align:center;max-width:640px">
-      <div class="eyebrow" data-ar="الثقة" data-en="Trust">الثقة</div>
-      <h2 data-ar="نخدم منشآت في السعودية" data-en="Serving organizations across Saudi Arabia">نخدم منشآت في السعودية</h2>
-      <p data-ar="مكاتب، متاجر، وفرق تقنية تثق براسخ للتنفيذ والدعم." data-en="Offices, stores, and tech teams trust Raseekh to deliver and support.">مكاتب، متاجر، وفرق تقنية تثق براسخ للتنفيذ والدعم.</p>
-    </div>
-    <div class="trust-row reveal">
-      <div class="trust-item" data-ar="مكاتب أعمال" data-en="Business offices">مكاتب أعمال</div>
-      <div class="trust-item" data-ar="متاجر ومحلات" data-en="Stores & shops">متاجر ومحلات</div>
-      <div class="trust-item" data-ar="فرق تقنية" data-en="Tech teams">فرق تقنية</div>
-      <div class="trust-item" data-ar="منشآت ناشئة" data-en="Growing businesses">منشآت ناشئة</div>
-    </div>
-    <p class="trust-note reveal" data-ar="موثوق من عملاء في السعودية" data-en="Trusted by clients across Saudi Arabia">موثوق من عملاء في السعودية</p>
-  </div>
-</section>
-
-<section id="whats-new">
+<section class="band-mist" id="trust" style="padding:88px 0">
   <div class="wrap">
     <div class="section-head reveal">
-      <div class="eyebrow" data-ar="التحديثات" data-en="Updates">التحديثات</div>
-      <h2 data-ar="ما الجديد في راسخ" data-en="What's new at Raseekh">ما الجديد في راسخ</h2>
-      <p data-ar="تحسينات واضحة على الواجهة وحساب العميل." data-en="Clear upgrades to the site and client account.">تحسينات واضحة على الواجهة وحساب العميل.</p>
+      <div class="eyebrow" data-ar="لماذا راسخ" data-en="Why Raseekh">لماذا راسخ</div>
+      <h2 data-ar="عمل واضح من أول رسالة" data-en="Clear work from the first message">عمل واضح من أول رسالة</h2>
+      <p data-ar="نوضّح النطاق والسعر والمدة قبل التنفيذ، ونبقي مسار الطلب ظاهرًا حتى التسليم." data-en="We clarify scope, price, and timeline before build — and keep the request path visible until delivery.">نوضّح النطاق والسعر والمدة قبل التنفيذ، ونبقي مسار الطلب ظاهرًا حتى التسليم.</p>
     </div>
-    <div class="news-list reveal">
-      <article class="news-item">
-        <time datetime="2026-07">2026-07</time>
-        <div>
-          <h3 data-ar="عروض سعر حسب الطلب" data-en="On-request quotes">عروض سعر حسب الطلب</h3>
-          <p data-ar="الكتالوج يعرض «حسب الطلب» — نرسل عرض السعر بعد مراجعة النطاق." data-en="Catalog shows “on request” — we send the quote after scope review.">الكتالوج يعرض «حسب الطلب» — نرسل عرض السعر بعد مراجعة النطاق.</p>
-        </div>
+    <div class="trust-proof reveal stagger">
+      <article>
+        <h3 data-ar="نطاق مكتوب" data-en="Written scope">نطاق مكتوب</h3>
+        <p data-ar="قبل البدء نثبّت المطلوب والمستثنى حتى لا يتغيّر الاتفاق أثناء التنفيذ." data-en="We lock what is included and excluded before work starts.">قبل البدء نثبّت المطلوب والمستثنى حتى لا يتغيّر الاتفاق أثناء التنفيذ.</p>
       </article>
-      <article class="news-item">
-        <time datetime="2026-07">2026-07</time>
-        <div>
-          <h3 data-ar="حساب عميل ومتابعة الطلبات" data-en="Client account & request tracking">حساب عميل ومتابعة الطلبات</h3>
-          <p data-ar="سجّل دخولك لتتبع الطلبات والدفع عبر Moyasar." data-en="Sign in to track requests and pay via Moyasar.">سجّل دخولك لتتبع الطلبات والدفع عبر Moyasar.</p>
-        </div>
+      <article>
+        <h3 data-ar="تسعير قبل التنفيذ" data-en="Price before build">تسعير قبل التنفيذ</h3>
+        <p data-ar="تعرف التكلفة المتوقعة أو نطاق الباقة قبل أن نبدأ — بدون مفاجآت لاحقة." data-en="Know the expected cost or plan range before we start — no late surprises.">تعرف التكلفة المتوقعة أو نطاق الباقة قبل أن نبدأ — بدون مفاجآت لاحقة.</p>
       </article>
-      <article class="news-item">
-        <time datetime="2026-07">2026-07</time>
-        <div>
-          <h3 data-ar="واجهة عربية / إنجليزية" data-en="Arabic / English interface">واجهة عربية / إنجليزية</h3>
-          <p data-ar="تبديل لغة فوري على الموقع وحساب العميل." data-en="Instant language switch on the site and client area.">تبديل لغة فوري على الموقع وحساب العميل.</p>
-        </div>
+      <article>
+        <h3 data-ar="متابعة من لوحتكم" data-en="Track from your account">متابعة من لوحتكم</h3>
+        <p data-ar="ترفعون الطلب وتتابعون حالته من حساب العميل بدل الرسائل المتفرقة." data-en="Raise and track the request from the client account instead of scattered chats.">ترفعون الطلب وتتابعون حالته من حساب العميل بدل الرسائل المتفرقة.</p>
       </article>
     </div>
   </div>
@@ -780,9 +774,10 @@ body.terms-locked{overflow:hidden}
   <div class="wrap">
     <div class="section-head reveal">
       <div class="eyebrow" data-ar="طريقة العمل" data-en="Process">طريقة العمل</div>
-      <h2 data-ar="أربع خطوات فقط" data-en="Only four steps">أربع خطوات فقط</h2>
+      <h2 data-ar="أربع خطوات من الطلب إلى التشغيل" data-en="Four steps from request to launch">أربع خطوات من الطلب إلى التشغيل</h2>
+      <p data-ar="مسار مختصر يقلّل اللبس ويسرّع البدء." data-en="A short path that reduces confusion and speeds the start.">مسار مختصر يقلّل اللبس ويسرّع البدء.</p>
     </div>
-    <div class="work-list reveal">
+    <div class="work-list reveal stagger">
       <div class="work-item">
         <div class="num">01</div>
         <h3 data-ar="الطلب" data-en="Request">الطلب</h3>
@@ -839,7 +834,7 @@ body.terms-locked{overflow:hidden}
   </div>
 </section>
 
-<section id="pay">
+<section id="pay" class="contact-band band-mist" style="padding:88px 0">
   <div class="wrap two-col">
     <div class="panel reveal">
       <h2 data-ar="سداد عربون أو دفعة" data-en="Pay a deposit">سداد عربون أو دفعة</h2>
@@ -917,19 +912,7 @@ body.terms-locked{overflow:hidden}
   </div>
 </section>
 
-<section id="terms">
-  <div class="wrap" style="max-width:760px">
-    <div class="terms-teaser reveal">
-      <div class="eyebrow" data-ar="الشروط" data-en="Terms">الشروط</div>
-      <h2 data-ar="الشروط والأحكام" data-en="Terms & Conditions">الشروط والأحكام</h2>
-      <p data-ar="الشروط في صفحة مستقلة. يمكنكم قراءتها كاملة، وتظهر كغطاء للعميل عند الحاجة داخل الحساب." data-en="Terms live on a dedicated page. You can read them fully, and they appear as a client overlay in the account when needed.">الشروط في صفحة مستقلة. يمكنكم قراءتها كاملة، وتظهر كغطاء للعميل عند الحاجة داخل الحساب.</p>
-      <div style="display:flex;gap:10px;flex-wrap:wrap">
-        <button type="button" class="btn btn-primary" id="openTermsOverlayBtn" data-ar="عرض الشروط" data-en="View terms">عرض الشروط</button>
-        <a class="btn btn-ghost" href="/terms/" data-ar="فتح صفحة الشروط" data-en="Open terms page">فتح صفحة الشروط</a>
-      </div>
-    </div>
-  </div>
-</section>
+<button type="button" id="openTermsOverlayBtn" class="visually-hidden" tabindex="-1" aria-hidden="true" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">terms</button>
 
 <div class="terms-overlay" id="termsOverlay" role="dialog" aria-modal="true" aria-labelledby="termsOverlayTitle" aria-hidden="true">
   <div class="terms-sheet">
@@ -942,23 +925,26 @@ body.terms-locked{overflow:hidden}
   </div>
 </div>
 
-<div class="site-note"><span data-ar="راسخ — منتجات إلكترونية وخدمات تقنية للعملاء." data-en="Raseekh — electronics and technical services for clients.">راسخ — منتجات إلكترونية وخدمات تقنية للعملاء.</span></div>
+<div class="site-note"><span data-ar="راسخ — صيانة وبرمجة وأنظمة تشغيل من الطلب حتى التسليم." data-en="Raseekh — maintenance, coding, and systems from request to delivery.">راسخ — صيانة وبرمجة وأنظمة تشغيل من الطلب حتى التسليم.</span></div>
 
 <footer>
   <div class="wrap">
     <div class="footer-brand" data-ar-html='را<em style="color:var(--copper);font-style:normal">سخ</em>' data-en-html='Ra<em style="color:var(--copper);font-style:normal">seekh</em>'>را<em style="color:var(--copper);font-style:normal">سخ</em></div>
-    <div data-ar="منتجات إلكترونية وخدمات تقنية © 2026" data-en="Electronics & Technical Services © 2026">منتجات إلكترونية وخدمات تقنية © 2026</div>
+    <div data-ar="خدمات رقمية وأنظمة © 2026" data-en="Digital services & systems © 2026">خدمات رقمية وأنظمة © 2026</div>
     <div class="footer-links">
       <a href="#services" data-ar="الخدمات" data-en="Services">الخدمات</a>
-      <a href="#programming" data-ar="خدمات البرمجة" data-en="Programming">خدمات البرمجة</a>
-      <a href="#products" data-ar="الخدمات" data-en="Services">الخدمات</a>
-      <a href="#pricing" data-ar="الأسعار" data-en="Pricing">الأسعار</a>
-      <a href="#faq" data-ar="أسئلة" data-en="FAQ">أسئلة</a>
+      <a href="#programming" data-ar="البرمجة" data-en="Coding">البرمجة</a>
+      <a href="#pricing" data-ar="الباقات" data-en="Plans">الباقات</a>
+      <a href="#contact" data-ar="تواصل" data-en="Contact">تواصل</a>
       <a href="/terms/" data-ar="الشروط" data-en="Terms">الشروط</a>
       <a href="/dashboard/" data-ar="حساب العميل" data-en="Client area">حساب العميل</a>
     </div>
   </div>
 </footer>
+
+<div class="mobile-quote-bar" id="mobileQuoteBar">
+  <a class="btn btn-primary" href="#contact" data-ar="اطلب عرض سعر" data-en="Request a quote">اطلب عرض سعر</a>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="/auth.js"></script>
@@ -1007,15 +993,15 @@ body.terms-locked{overflow:hidden}
       if (v !== null) el.setAttribute('aria-label', v);
     });
     document.getElementById('langToggle').textContent = lang === 'ar' ? 'EN' : 'AR';
-    const title = lang === 'ar' ? 'راسخ — منتجات إلكترونية وخدمات تقنية' : 'Raseekh — Electronics & Technical Services';
+    const title = lang === 'ar' ? 'راسخ — صيانة وبرمجة وأنظمة تشغيل' : 'Raseekh — Maintenance, coding & systems';
     const desc = lang === 'ar'
-      ? 'راسخ في السعودية: بيع إلكترونيات، صيانة مواقع، خدمات برمجة، وتطوير أنظمة ولوحات تحكم للعملاء.'
-      : 'Raseekh in Saudi Arabia: electronics, website maintenance, programming services, and custom client systems.';
+      ? 'راسخ في السعودية: صيانة مواقع، خدمات برمجة، وتطوير أنظمة ولوحات تحكم — من الطلب حتى التشغيل.'
+      : 'Raseekh in Saudi Arabia: website maintenance, programming, and custom systems — from request to launch.';
     document.title = title;
     const metaDesc = document.querySelector('meta[name="description"]');
     if (metaDesc) metaDesc.setAttribute('content', desc);
     const ogTitle = document.querySelector('meta[property="og:title"]');
-    if (ogTitle) ogTitle.setAttribute('content', lang === 'ar' ? 'راسخ — إلكترونيات وخدمات تقنية' : 'Raseekh — Electronics & Technical Services');
+    if (ogTitle) ogTitle.setAttribute('content', lang === 'ar' ? 'راسخ — خدمات رقمية وأنظمة' : 'Raseekh — Digital services & systems');
     const ogDesc = document.querySelector('meta[property="og:description"]');
     if (ogDesc) ogDesc.setAttribute('content', desc);
     const ogLocale = document.querySelector('meta[property="og:locale"]');
@@ -1059,6 +1045,30 @@ body.terms-locked{overflow:hidden}
       applyLang(currentLang);
     }, 2200);
   });
+
+  document.querySelectorAll('[data-quote-type]').forEach((el) => {
+    el.addEventListener('click', (e) => {
+      e.preventDefault();
+      const type = el.getAttribute('data-quote-type') || 'programming';
+      const message = currentLang === 'ar'
+        ? (el.getAttribute('data-quote-msg-ar') || '')
+        : (el.getAttribute('data-quote-msg-en') || '');
+      requestFromCatalog({ type, message });
+    });
+  });
+
+  (function mobileQuoteBar(){
+    const bar = document.getElementById('mobileQuoteBar');
+    const contact = document.getElementById('contact');
+    if (!bar || !contact || !('IntersectionObserver' in window)) return;
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        bar.style.opacity = entry.isIntersecting ? '0' : '1';
+        bar.style.pointerEvents = entry.isIntersecting ? 'none' : 'auto';
+      });
+    }, { threshold: 0.2 });
+    io.observe(contact);
+  })();
 
   function typeForProduct(p){
     const cat = (p.category_en || p.category || '').toLowerCase();
