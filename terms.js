@@ -1,6 +1,6 @@
 /* Shared Terms & Conditions for Raseekh (page + client overlay). */
 (function (global) {
-  const TERMS_VERSION = '2026-07';
+  const TERMS_VERSION = '2026-07-25';
   const ACCEPT_KEY = 'raseekh_terms_accepted_v1';
 
   function termsHtml() {
@@ -23,7 +23,7 @@
           </article>
           <article class="terms-item">
             <h3 data-ar="3) حساب العميل والصلاحيات" data-en="3) Client account and roles">3) حساب العميل والصلاحيات</h3>
-            <p data-ar="حساب العميل مخصص للطلب والمتابعة والدفع عند التفعيل. تعديل الكتالوج والأسعار والمخزون والمبيعات مخصص لحساب الإدارة فقط. العميل مسؤول عن سرية بيانات الدخول." data-en="A client account is for requesting, tracking, and paying when enabled. Catalog and sales editing are admin-only. Clients are responsible for login confidentiality.">حساب العميل مخصص للطلب والمتابعة والدفع عند التفعيل. تعديل الكتالوج والأسعار والمخزون والمبيعات مخصص لحساب الإدارة فقط. العميل مسؤول عن سرية بيانات الدخول.</p>
+            <p data-ar="حساب العميل مخصص للطلب والمتابعة والدفع عند التفعيل. تعديل الكتالوج والخدمات وعروض الأسعار مخصص لحساب الإدارة فقط. العميل مسؤول عن سرية بيانات الدخول." data-en="A client account is for requesting, tracking, and paying when enabled. Catalog, services, and quote management are admin-only. Clients are responsible for login confidentiality.">حساب العميل مخصص للطلب والمتابعة والدفع عند التفعيل. تعديل الكتالوج والخدمات وعروض الأسعار مخصص لحساب الإدارة فقط. العميل مسؤول عن سرية بيانات الدخول.</p>
           </article>
           <article class="terms-item">
             <h3 data-ar="4) الأجهزة المادية" data-en="4) Physical hardware">4) الأجهزة المادية</h3>

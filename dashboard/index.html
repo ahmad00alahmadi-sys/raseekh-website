@@ -711,7 +711,20 @@ body.is-admin .client-only{display:none!important}
           <button class="btn btn-ghost" id="clearCartBtn" data-ar="تفريغ القائمة" data-en="Clear list">تفريغ القائمة</button>
         </div>
       </div>
-      <div class="client-note admin-only" data-ar="للخدمات بسعر ثابت فقط. معظم خدمات راسخ «حسب الطلب» — سجّل العربون من صفحة الدفع في الموقع أو حدّد سعراً ثابتاً من إدارة الخدمات." data-en="For fixed-price items only. Most Raseekh services are quote-based — record deposits via the site pay page, or set a fixed price in service management.">للخدمات بسعر ثابت فقط. معظم خدمات راسخ «حسب الطلب» — سجّل العربون من صفحة الدفع في الموقع أو حدّد سعراً ثابتاً من إدارة الخدمات.</div>
+      <div class="client-note admin-only" data-ar="سجّلوا عربوناً يدوياً أدناه، أو استقبلوا دفعات Moyasar من صفحة السداد في الموقع. الشبكة السفلية للخدمات بسعر ثابت فقط." data-en="Record a manual deposit below, or receive Moyasar payments from the site pay page. The grid below is for fixed-price services only.">سجّلوا عربوناً يدوياً أدناه، أو استقبلوا دفعات Moyasar من صفحة السداد في الموقع. الشبكة السفلية للخدمات بسعر ثابت فقط.</div>
+      <div class="panel" style="margin-bottom:16px">
+        <h3 data-ar="تسجيل عربون يدوي" data-en="Record manual deposit">تسجيل عربون يدوي</h3>
+        <form class="form" id="manualDepositForm" style="margin-top:12px;max-width:560px">
+          <input type="text" id="depositName" data-ar-placeholder="اسم العميل" data-en-placeholder="Client name" placeholder="اسم العميل">
+          <input type="number" id="depositAmount" min="1" step="0.01" required data-ar-placeholder="المبلغ (SAR)" data-en-placeholder="Amount (SAR)" placeholder="المبلغ (SAR)">
+          <input type="text" id="depositNote" data-ar-placeholder="ملاحظة / رقم الطلب" data-en-placeholder="Note / request id" placeholder="ملاحظة / رقم الطلب">
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn btn-primary" type="submit" data-method="cash" data-ar="حفظ نقداً" data-en="Save cash">حفظ نقداً</button>
+            <button class="btn btn-brass" type="submit" data-method="card" data-ar="حفظ بطاقة" data-en="Save card">حفظ بطاقة</button>
+          </div>
+        </form>
+        <div class="msg" id="depositMsg"></div>
+      </div>
       <div class="pos-layout">
         <div>
           <input type="search" id="posSearch" style="margin-bottom:12px;padding:12px 14px;width:100%;border:1px solid var(--line);border-radius:10px" data-ar-placeholder="ابحث عن خدمة بسعر ثابت..." data-en-placeholder="Search fixed-price services..." placeholder="ابحث عن خدمة بسعر ثابت...">
@@ -735,7 +748,7 @@ body.is-admin .client-only{display:none!important}
           <h1 data-ar="إدارة الخدمات" data-en="Manage services">إدارة الخدمات</h1>
           <div class="crumb"><span data-ar="راسخ" data-en="Raseekh">راسخ</span> <span>/</span> <span data-ar="إدارة فقط" data-en="Admin only">إدارة فقط</span></div>
         </div>
-        <button class="btn btn-primary" id="addProductBtn" data-ar="+ منتج جديد" data-en="+ New product">+ منتج جديد</button>
+        <button class="btn btn-primary" id="addProductBtn" data-ar="+ خدمة جديدة" data-en="+ New service">+ خدمة جديدة</button>
       </div>
       <div class="client-note" data-ar="إدارة فقط. الأجهزة المادية حالياً للرياض ومخفية عن العميل. أظهر للعميل الخدمات الإلكترونية فقط." data-en="Admin only. Physical devices are Riyadh-only and hidden from clients for now. Show clients digital services only.">إدارة فقط. الأجهزة المادية حالياً للرياض ومخفية عن العميل. أظهر للعميل الخدمات الإلكترونية فقط.</div>
       <div class="panel">
@@ -844,17 +857,17 @@ body.is-admin .client-only{display:none!important}
 <div class="modal-overlay" id="productModal">
   <div class="modal">
     <button class="modal-close no-print" id="productModalClose" type="button">×</button>
-    <h2 id="productModalTitle" style="margin-bottom:14px" data-ar="منتج جديد" data-en="New product">منتج جديد</h2>
+    <h2 id="productModalTitle" style="margin-bottom:14px" data-ar="خدمة جديدة" data-en="New service">خدمة جديدة</h2>
     <form class="form" id="productForm">
-      <input type="text" id="pName" required data-ar-placeholder="اسم المنتج" data-en-placeholder="Product name" placeholder="اسم المنتج">
+      <input type="text" id="pName" required data-ar-placeholder="اسم الخدمة" data-en-placeholder="Service name" placeholder="اسم الخدمة">
       <input type="text" id="pNameEn" data-ar-placeholder="الاسم بالإنجليزية (اختياري)" data-en-placeholder="English name (optional)" placeholder="الاسم بالإنجليزية (اختياري)">
       <input type="text" id="pCategory" data-ar-placeholder="القسم بالعربية" data-en-placeholder="Category in Arabic" placeholder="القسم بالعربية">
       <input type="text" id="pCategoryEn" data-ar-placeholder="القسم بالإنجليزية" data-en-placeholder="Category in English" placeholder="القسم بالإنجليزية">
       <textarea id="pDesc" data-ar-placeholder="الوصف للعميل" data-en-placeholder="Client-facing description" placeholder="الوصف للعميل" style="min-height:70px"></textarea>
       <textarea id="pDescEn" data-ar-placeholder="الوصف بالإنجليزية" data-en-placeholder="Description in English" placeholder="الوصف بالإنجليزية" style="min-height:70px"></textarea>
       <select id="pKind">
-        <option value="product" data-ar="منتج" data-en="Product">منتج</option>
         <option value="service" data-ar="خدمة" data-en="Service">خدمة</option>
+        <option value="product" data-ar="جهاز / منتج" data-en="Hardware / product">جهاز / منتج</option>
       </select>
       <label class="check" style="align-items:center;gap:8px;margin:0">
         <input type="checkbox" id="pQuote" checked>
@@ -866,8 +879,8 @@ body.is-admin .client-only{display:none!important}
       </label>
       <input type="text" id="pRegion" data-ar-placeholder="التغطية (online / riyadh)" data-en-placeholder="Coverage (online / riyadh)" placeholder="التغطية (online / riyadh)">
       <input type="number" id="pPrice" min="0" step="0.01" data-ar-placeholder="السعر الثابت (إن وجد)" data-en-placeholder="Fixed price (if any)" placeholder="السعر الثابت (إن وجد)">
-      <input type="number" id="pStock" min="0" step="1" required data-ar-placeholder="المخزون" data-en-placeholder="Stock" placeholder="المخزون">
-      <button class="btn btn-primary" type="submit" data-ar="حفظ المنتج" data-en="Save product">حفظ المنتج</button>
+      <input type="number" id="pStock" min="0" step="1" required data-ar-placeholder="الكمية / السعة (اختياري)" data-en-placeholder="Qty / capacity (optional)" placeholder="الكمية / السعة (اختياري)">
+      <button class="btn btn-primary" type="submit" data-ar="حفظ الخدمة" data-en="Save service">حفظ الخدمة</button>
     </form>
   </div>
 </div>
@@ -1042,11 +1055,19 @@ body.is-admin .client-only{display:none!important}
   }
   function loadSales(){
     migrateLegacyKey('raseekh_sales_', ADMIN_SALES_KEY);
+    if (Catalog && Catalog.getPaymentRecords) {
+      sales = Catalog.getPaymentRecords();
+      return;
+    }
     try { sales = JSON.parse(localStorage.getItem(ADMIN_SALES_KEY) || '[]'); }
     catch (_) { sales = []; }
   }
   function saveSales(){
     if (!requireAdmin('saveSales')) return;
+    if (Catalog && Catalog.savePaymentRecords) {
+      Catalog.savePaymentRecords(sales);
+      return;
+    }
     localStorage.setItem(ADMIN_SALES_KEY, JSON.stringify(sales));
   }
   function loadStore(){
@@ -2563,11 +2584,11 @@ body.is-admin .client-only{display:none!important}
 
   function checkout(method){
     if (!requireAdmin('checkout')) return;
-    if (!cart.length) { showToast(t('السلة فارغة','Cart is empty')); return; }
+    if (!cart.length) { showToast(t('لا توجد بنود','No items')); return; }
     for (const line of cart) {
       const p = products.find(x => x.id === line.id);
       if (!p || p.stock < line.qty) {
-        showToast(t('تعذّر إتمام البيع — تحقق من المخزون','Sale failed — check stock'));
+        showToast(t('تعذّر التسجيل — تحقق من الكمية','Could not record — check quantity'));
         return;
       }
     }
@@ -2577,43 +2598,100 @@ body.is-admin .client-only{display:none!important}
     });
     const total = cart.reduce((s, l) => s + l.price * l.qty, 0);
     const items = cart.reduce((s, l) => s + l.qty, 0);
-    const sale = {
-      id: uid(),
-      at: new Date().toISOString(),
-      method,
-      total,
-      items,
-      lines: cart.map(l => ({ ...l }))
-    };
-    sales.unshift(sale);
+    const sale = Catalog && Catalog.addPaymentRecord
+      ? Catalog.addPaymentRecord({
+          method,
+          total,
+          items,
+          lines: cart.map(l => ({ ...l })),
+          note: t('دفعة خدمات بسعر ثابت', 'Fixed-price services payment'),
+          source: 'admin-pos'
+        })
+      : {
+          id: uid(),
+          at: new Date().toISOString(),
+          method,
+          total,
+          items,
+          lines: cart.map(l => ({ ...l }))
+        };
+    if (!(Catalog && Catalog.addPaymentRecord)) {
+      sales.unshift(sale);
+      saveSales();
+    } else loadSales();
     cart = [];
     saveProducts();
-    saveSales();
     renderAll();
     openReceipt(sale);
-    showToast(method === 'card' ? t('تم البيع بالبطاقة','Card sale completed') : t('تم البيع نقداً','Cash sale completed'));
+    showToast(method === 'card' ? t('تم تسجيل دفعة بالبطاقة','Card payment recorded') : t('تم تسجيل دفعة نقداً','Cash payment recorded'));
   }
   document.getElementById('payCashBtn').addEventListener('click', () => checkout('cash'));
   document.getElementById('payCardBtn').addEventListener('click', () => checkout('card'));
 
+  const manualDepositForm = document.getElementById('manualDepositForm');
+  if (manualDepositForm) {
+    manualDepositForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!requireAdmin('manualDeposit')) return;
+      const methodBtn = e.submitter && e.submitter.getAttribute('data-method');
+      const method = methodBtn || 'cash';
+      const name = document.getElementById('depositName').value.trim();
+      const amount = parseFloat(document.getElementById('depositAmount').value);
+      const note = document.getElementById('depositNote').value.trim();
+      const msg = document.getElementById('depositMsg');
+      if (!amount || amount < 1) {
+        msg.style.color = 'var(--danger)';
+        msg.textContent = t('أدخلوا مبلغاً صحيحاً', 'Enter a valid amount');
+        return;
+      }
+      const row = Catalog && Catalog.addPaymentRecord
+        ? Catalog.addPaymentRecord({
+            method,
+            total: amount,
+            items: 1,
+            name,
+            note: note || t('عربون يدوي', 'Manual deposit'),
+            source: 'admin-manual'
+          })
+        : null;
+      if (!row) {
+        const sale = { id: uid(), at: new Date().toISOString(), method, total: amount, items: 1, name, note, lines: [{ id: 'deposit', name: note || 'Deposit', qty: 1, price: amount }] };
+        sales.unshift(sale);
+        saveSales();
+      } else loadSales();
+      manualDepositForm.reset();
+      msg.style.color = 'var(--ok)';
+      msg.textContent = t('تم تسجيل العربون', 'Deposit recorded');
+      renderOverview();
+      renderSales();
+      showToast(t('تم تسجيل العربون', 'Deposit recorded'));
+    });
+  }
+
   function renderSales(){
     const holder = document.getElementById('salesList');
     if (!sales.length) {
-      holder.innerHTML = `<div class="empty">${t('لا يوجد سجل مبيعات بعد','No sales history yet')}</div>`;
+      holder.innerHTML = `<div class="empty"><strong>${t('لا يوجد سجل مدفوعات بعد','No payments history yet')}</strong><p>${t('سجّلوا عربوناً يدوياً أو انتظروا دفعة من صفحة السداد.','Record a manual deposit or wait for a site payment.')}</p></div>`;
       return;
     }
-    holder.innerHTML = sales.map(s => `
+    holder.innerHTML = sales.map(s => {
+      const methodLabel = s.method === 'card' ? t('بطاقة','Card') : (s.method === 'cash' ? t('نقداً','Cash') : escapeHtml(s.method || '—'));
+      const sourceLabel = s.source === 'moyasar' || s.source === 'moyasar-return'
+        ? 'Moyasar'
+        : (s.source === 'admin-manual' ? t('يدوي','Manual') : (s.source === 'admin-pos' ? t('سعر ثابت','Fixed') : ''));
+      const who = s.name || s.email || '';
+      return `
       <div class="sale-row">
         <div>
-          <div><strong>#${String(s.id).slice(-6)}</strong> · ${s.method === 'card' ? t('بطاقة','Card') : t('نقداً','Cash')}</div>
-          <div style="color:var(--muted);font-size:.78rem">${new Date(s.at).toLocaleString(currentLang === 'ar' ? 'ar-SA' : 'en-US')} · ${s.items} ${t('صنف','items')}</div>
+          <div><strong>#${String(s.id).slice(-6)}</strong> · ${methodLabel}${sourceLabel ? ' · ' + sourceLabel : ''}</div>
+          <div style="color:var(--muted);font-size:.78rem">${new Date(s.at).toLocaleString(currentLang === 'ar' ? 'ar-SA' : 'en-US')}${who ? ' · ' + escapeHtml(who) : ''}${s.note ? ' · ' + escapeHtml(s.note) : ''}</div>
         </div>
         <div style="display:flex;gap:8px;align-items:center">
           <strong>${money(s.total)}</strong>
           <button class="btn btn-ghost" style="padding:6px 10px;font-size:.78rem" data-view-sale="${s.id}">${t('إيصال','Receipt')}</button>
         </div>
-      </div>
-    `).join('');
+      </div>`;
+    }).join('');
   }
   document.getElementById('salesList').addEventListener('click', (e) => {
     const btn = e.target.closest('[data-view-sale]');
@@ -2624,14 +2702,14 @@ body.is-admin .client-only{display:none!important}
 
   document.getElementById('exportSalesBtn').addEventListener('click', () => {
     if (!requireAdmin('exportSales')) return;
-    if (!sales.length) { showToast(t('لا توجد مبيعات للتصدير','No sales to export')); return; }
-    const rows = [['id','date','method','items','total']];
-    sales.forEach(s => rows.push([s.id, s.at, s.method, s.items, s.total]));
+    if (!sales.length) { showToast(t('لا توجد مدفوعات للتصدير','No payments to export')); return; }
+    const rows = [['id','date','method','source','name','note','items','total']];
+    sales.forEach(s => rows.push([s.id, s.at, s.method, s.source || '', s.name || '', (s.note || '').replace(/,/g,';'), s.items, s.total]));
     const csv = rows.map(r => r.join(',')).join('\n');
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = 'raseekh-sales.csv';
+    a.download = 'raseekh-payments.csv';
     a.click();
     URL.revokeObjectURL(a.href);
     showToast(t('تم التصدير','Exported'));

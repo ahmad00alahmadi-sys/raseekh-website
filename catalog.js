@@ -8,6 +8,7 @@
   const CATALOG_VERSION = 7;
   const SUGGESTIONS_VERSION = 5;
   const CLIENT_REQUESTS_KEY = 'raseekh_all_client_requests_v1';
+  const PAYMENTS_KEY = 'raseekh_admin_sales_v1';
 
   // Hardware (p1–p4) stays admin-only for now: physical supply is Riyadh-only.
   // Clients currently see digital/electronic services only.
@@ -640,6 +641,50 @@
     ];
   }
 
+  function getPaymentRecords() {
+    return readJson(PAYMENTS_KEY, []);
+  }
+
+  function savePaymentRecords(list) {
+    writeJson(PAYMENTS_KEY, (list || []).slice(0, 200));
+  }
+
+  function addPaymentRecord(payload) {
+    const list = getPaymentRecords();
+    const row = Object.assign({
+      id: 'pay-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 7),
+      at: new Date().toISOString(),
+      method: 'card',
+      items: 1,
+      total: 0,
+      note: '',
+      name: '',
+      email: '',
+      source: 'site',
+      lines: []
+    }, payload || {});
+    row.total = Number(row.total) || 0;
+    row.items = Number(row.items) || 1;
+    if (!row.lines || !row.lines.length) {
+      row.lines = [{
+        id: 'deposit',
+        name: row.note || 'Deposit / عربون',
+        qty: 1,
+        price: row.total
+      }];
+    }
+    const fingerprint = row.paymentId
+      ? 'moyasar:' + row.paymentId
+      : 'pay:' + row.at + ':' + row.total + ':' + (row.email || '') + ':' + (row.note || '');
+    if (list.some((x) => (x.paymentId && row.paymentId && x.paymentId === row.paymentId) || x.fingerprint === fingerprint)) {
+      return list.find((x) => (x.paymentId && row.paymentId && x.paymentId === row.paymentId) || x.fingerprint === fingerprint) || row;
+    }
+    row.fingerprint = fingerprint;
+    list.unshift(row);
+    savePaymentRecords(list);
+    return row;
+  }
+
   function addSharedRequest(payload) {
     const list = readJson(CLIENT_REQUESTS_KEY, []);
     const row = Object.assign({
@@ -759,6 +804,10 @@
     requestTypeLabel,
     requestTypeForProduct,
     requestTypeOptions,
+    PAYMENTS_KEY,
+    getPaymentRecords,
+    savePaymentRecords,
+    addPaymentRecord,
     pushRequestToCloud,
     syncSharedRequestsFromCloud,
     getSharedRequests,

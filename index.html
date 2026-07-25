@@ -82,7 +82,7 @@
           "name": "ما الفرق بين العميل والمدير؟",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "العميل يطلب ويتابع. المدير فقط يعدّل الكتالوج والمبيعات والطلبات."
+            "text": "العميل يطلب ويتابع. المدير فقط يعدّل الكتالوج والخدمات والطلبات."
           }
         },
         {
@@ -553,8 +553,7 @@ body.terms-locked{overflow:hidden}
       <a href="#services" data-ar="خدماتنا" data-en="Services">خدماتنا</a>
       <a href="#products" data-ar="الكتالوج" data-en="Catalog">الكتالوج</a>
       <a href="#pricing" data-ar="الباقات" data-en="Plans">الباقات</a>
-      <a href="#process" data-ar="آلية العمل" data-en="Process">آلية العمل</a>
-      <a href="#faq" data-ar="أسئلة" data-en="FAQ">أسئلة</a>
+      <a href="#whats-new" data-ar="الآن" data-en="Now">الآن</a>
       <a href="#contact" data-ar="تواصل" data-en="Contact">تواصل</a>
       <a href="#pay" data-ar="سداد" data-en="Pay">سداد</a>
     </div>
@@ -893,7 +892,7 @@ body.terms-locked{overflow:hidden}
       </details>
       <details class="faq-item">
         <summary data-ar="ما الفرق بين العميل والمدير؟" data-en="What’s the difference between client and admin?">ما الفرق بين العميل والمدير؟</summary>
-        <p data-ar="العميل يطلب ويتابع. المدير فقط يعدّل الكتالوج والمبيعات والطلبات." data-en="Clients request and track. Only admin edits catalog, sales, and leads.">العميل يطلب ويتابع. المدير فقط يعدّل الكتالوج والمبيعات والطلبات.</p>
+        <p data-ar="العميل يطلب ويتابع. المدير فقط يعدّل الكتالوج والخدمات والطلبات." data-en="Clients request and track. Only admin edits catalog, services, and requests.">العميل يطلب ويتابع. المدير فقط يعدّل الكتالوج والخدمات والطلبات.</p>
       </details>
       <details class="faq-item">
         <summary data-ar="هل يمكن الدفع أونلاين؟" data-en="Can I pay online?">هل يمكن الدفع أونلاين؟</summary>
@@ -1111,6 +1110,62 @@ body.terms-locked{overflow:hidden}
     focusEl && focusEl.focus();
   }
 
+  async function submitCatalogQuote(opts){
+    const type = opts.type || 'programming';
+    const message = (opts.message || '').trim();
+    if (!message) return;
+    if (!loggedInUser) {
+      requestFromCatalog({ type, message });
+      return;
+    }
+    const typeTitle = Catalog && Catalog.requestTypeLabel
+      ? Catalog.requestTypeLabel(type, currentLang)
+      : type;
+    const fullName = (loggedInUser.user_metadata && loggedInUser.user_metadata.full_name) || '';
+    const phone = (loggedInUser.user_metadata && loggedInUser.user_metadata.phone) || '';
+    const email = loggedInUser.email || '';
+    requestFromCatalog({ type, message });
+    const resultEl = document.getElementById('contactResult');
+    const successActions = document.getElementById('contactSuccessActions');
+    if (resultEl) {
+      resultEl.style.color = 'var(--muted)';
+      resultEl.textContent = t('جاري إرسال الطلب...', 'Sending request...');
+    }
+    try {
+      const saved = Catalog.addSharedRequest({
+        name: fullName,
+        phone,
+        email,
+        userId: loggedInUser.id || '',
+        title: typeTitle,
+        message,
+        type,
+        source: 'client',
+        status: 'new'
+      });
+      let delivery = null;
+      if (saved && saved.deliveryPromise) delivery = await saved.deliveryPromise;
+      const ok = !!(delivery && delivery.delivered) || !!saved;
+      if (resultEl) {
+        resultEl.style.color = ok ? 'var(--ok)' : 'var(--danger)';
+        resultEl.textContent = ok
+          ? t('✓ تم إرسال طلب عرض السعر', '✓ Quote request sent')
+          : t('تعذّر الإرسال — أكملوا النموذج أدناه', 'Could not send — complete the form below');
+      }
+      if (ok && successActions) {
+        successActions.style.display = 'flex';
+        successActions.style.gap = '8px';
+        successActions.style.flexWrap = 'wrap';
+        successActions.innerHTML = `<a class="btn btn-primary" href="/dashboard/">${escapeHtml(t('متابعة الطلب من حسابي','Track request in my account'))}</a>`;
+      }
+    } catch (_) {
+      if (resultEl) {
+        resultEl.style.color = 'var(--danger)';
+        resultEl.textContent = t('تعذّر الإرسال — أكملوا النموذج أدناه', 'Could not send — complete the form below');
+      }
+    }
+  }
+
   document.getElementById('heroQuoteForm').addEventListener('submit', (e) => {
     e.preventDefault();
     const type = document.getElementById('heroQuoteType').value;
@@ -1177,12 +1232,12 @@ body.terms-locked{overflow:hidden}
         const name = Catalog.label(p, currentLang, 'name', 'name_en');
         const desc = Catalog.label(p, currentLang, 'desc', 'desc_en') || t('متاح للطلب','Available to order');
         const cat = Catalog.label(p, currentLang, 'category', 'category_en');
-        const status = p.kind === 'service'
-          ? t('خدمة متاحة','Service available')
-          : (p.stock > 0 ? t('متوفر','In stock') : t('غير متوفر','Out of stock'));
+        const status = p.kind === 'service' || p.priceMode === 'quote' || !(Number(p.price) > 0)
+          ? t('متاح لعرض السعر','Available for quote')
+          : t('سعر ثابت متاح','Fixed price available');
         return `
           <article class="product-item">
-            <span class="tag">${escapeHtml(cat || (p.kind === 'service' ? t('خدمة','Service') : t('منتج','Product')))}</span>
+            <span class="tag">${escapeHtml(cat || (p.kind === 'service' ? t('خدمة','Service') : t('خدمة','Service')))}</span>
             <h3>${escapeHtml(name)}</h3>
             <p>${escapeHtml(desc)}</p>
             <div class="meta">${escapeHtml(status)}</div>
@@ -1220,7 +1275,7 @@ body.terms-locked{overflow:hidden}
     const p = clientProducts.find((x) => x.id === btn.dataset.requestProduct);
     if (!p) return;
     const name = Catalog.label(p, currentLang, 'name', 'name_en');
-    requestFromCatalog({
+    submitCatalogQuote({
       type: typeForProduct(p),
       message: t(
         'أرغب بطلب عرض سعر لـ: ' + name + ' — ' + (Catalog.formatPrice ? Catalog.formatPrice(p, 'ar') : 'حسب الطلب'),
@@ -1239,8 +1294,10 @@ body.terms-locked{overflow:hidden}
     const priceText = Catalog.suggestionPriceLabel
       ? Catalog.suggestionPriceLabel(s, clientProducts, currentLang)
       : t('عرض سعر بعد المراجعة', 'Custom quote after review');
-    requestFromCatalog({
-      type: 'programming',
+    const firstId = (s.productIds && s.productIds[0]) || '';
+    const firstProduct = clientProducts.find((x) => x.id === firstId);
+    submitCatalogQuote({
+      type: firstProduct ? typeForProduct(firstProduct) : 'programming',
       message: t(
         'أرغب بطلب عرض سعر للاقتراح: ' + title + '\nيشمل: ' + items.join('، ') + '\n' + priceText,
         'I would like a quote for suggestion: ' + title + '\nIncludes: ' + items.join(', ') + '\n' + priceText
@@ -1643,24 +1700,81 @@ body.terms-locked{overflow:hidden}
     document.getElementById('paySummaryAmount').textContent = amount.toFixed(2) + ' SAR';
     document.getElementById('mysr-form').innerHTML = '';
     const note = document.getElementById('payNote').value.trim();
+    function recordMoyasarPayment(payment){
+      if (!Catalog || !Catalog.addPaymentRecord || !payment || payment.status !== 'paid') return;
+      const payAmount = typeof payment.amount === 'number' ? payment.amount / 100 : amount;
+      Catalog.addPaymentRecord({
+        method: 'card',
+        total: payAmount,
+        items: 1,
+        note: note || t('عربون عبر الموقع', 'Site deposit'),
+        name: name,
+        email: (loggedInUser && loggedInUser.email) || '',
+        userId: (loggedInUser && loggedInUser.id) || '',
+        source: 'moyasar',
+        paymentId: payment.id || ''
+      });
+    }
     Moyasar.init({
       element: '#mysr-form',
       amount: Math.round(amount * 100),
       currency: 'SAR',
       description: (note ? note + ' — ' : '') + name,
       publishable_api_key: MOYASAR_PUBLISHABLE_KEY,
-      callback_url: window.location.origin + window.location.pathname + '#pay',
+      callback_url: window.location.origin + window.location.pathname + '?pay=1#pay',
       methods: ['creditcard', 'applepay'],
-      on_completed: function(payment){ showPayStep(payment && payment.status === 'paid' ? payStatusSuccess : payStatusFailed); return true; }
+      on_completed: function(payment){
+        if (payment && payment.status === 'paid') {
+          recordMoyasarPayment(payment);
+          showPayStep(payStatusSuccess);
+        } else showPayStep(payStatusFailed);
+        return true;
+      }
     });
     showPayStep(paymentFormStep);
   });
   document.getElementById('payBackBtn').addEventListener('click', () => showPayStep(payDetailsStep));
   document.getElementById('payRetryBtn').addEventListener('click', () => showPayStep(payDetailsStep));
   (function checkPaymentReturn(){
-    const status = new URLSearchParams(window.location.search).get('status');
-    if (status === 'paid') { document.getElementById('payBoxContent').style.display = 'block'; document.getElementById('payLockedMessage').style.display = 'none'; showPayStep(payStatusSuccess); document.getElementById('pay').scrollIntoView(); }
-    if (status === 'failed') { document.getElementById('payBoxContent').style.display = 'block'; document.getElementById('payLockedMessage').style.display = 'none'; showPayStep(payStatusFailed); document.getElementById('pay').scrollIntoView(); }
+    const params = new URLSearchParams(window.location.search);
+    const status = params.get('status');
+    if (status !== 'paid' && status !== 'failed') return;
+    const finish = (user) => {
+      if (!user) {
+        openAuth('pay');
+        document.getElementById('pay').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        return;
+      }
+      setPayUnlocked(user);
+      if (status === 'paid' && Catalog && Catalog.addPaymentRecord) {
+        const amountParam = parseFloat(params.get('amount') || '');
+        const total = Number.isFinite(amountParam) ? (amountParam > 1000 ? amountParam / 100 : amountParam) : 0;
+        const paymentId = params.get('id') || params.get('payment_id') || '';
+        if (total > 0 || paymentId) {
+          Catalog.addPaymentRecord({
+            method: 'card',
+            total,
+            items: 1,
+            note: t('عربون عبر Moyasar', 'Moyasar deposit'),
+            name: (user.user_metadata && user.user_metadata.full_name) || '',
+            email: user.email || '',
+            userId: user.id || '',
+            source: 'moyasar-return',
+            paymentId
+          });
+        }
+      }
+      showPayStep(status === 'paid' ? payStatusSuccess : payStatusFailed);
+      document.getElementById('pay').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      try {
+        const url = new URL(location.href);
+        ['status', 'id', 'payment_id', 'amount', 'message', 'pay'].forEach((k) => url.searchParams.delete(k));
+        history.replaceState(null, '', url.pathname + url.search + '#pay');
+      } catch (_) {}
+    };
+    if (loggedInUser) finish(loggedInUser);
+    else if (Auth) Auth.getSession().then(({ user }) => finish(user || null));
+    else finish(null);
   })();
 
   const revealEls = document.querySelectorAll('.reveal');
