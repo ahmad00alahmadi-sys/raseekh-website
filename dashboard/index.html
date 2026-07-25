@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl" id="htmlRoot">
 <head>
 <script>
-(function(){try{var t=localStorage.getItem("raseekh_theme");document.documentElement.setAttribute("data-theme",t==="dark"?"dark":"white");}catch(e){document.documentElement.setAttribute("data-theme","white");}})();
+(function(){try{var t=localStorage.getItem("raseekh_theme");document.documentElement.setAttribute("data-theme",t==="night"||t==="dark"?"night":"base");}catch(e){document.documentElement.setAttribute("data-theme","base");}})();
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -450,7 +450,7 @@ body.is-client .home-bar{
   <div class="login-card">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
       <div class="logo" data-ar-html='را<em>سخ</em>' data-en-html='Ra<em>seekh</em>'>را<em>سخ</em></div>
-      <button class="theme-btn" type="button" data-theme-toggle data-ar="داكن" data-en="Dark" aria-pressed="true" aria-label="الوضع الداكن">داكن</button>
+      <button class="theme-btn" type="button" data-theme-toggle data-ar="ليلي" data-en="Night" aria-pressed="true" aria-label="تفعيل النظام الليلي">ليلي</button>
       <button class="lang-btn" id="loginLangBtn" type="button">EN</button>
     </div>
     <p class="sub" data-ar="سجّل كعميل لمتابعة الطلبات والاقتراحات. التعديل مخصص لحساب الإدارة فقط." data-en="Sign in as a client to follow requests and suggestions. Editing is admin-only.">سجّل كعميل لمتابعة الطلبات والاقتراحات. التعديل مخصص لحساب الإدارة فقط.</p>
@@ -558,7 +558,7 @@ body.is-client .home-bar{
     </div>
     <div class="top-actions" style="justify-content:flex-end;margin-bottom:8px">
       <div class="clock" id="dashClock">—</div>
-      <button class="theme-btn" type="button" data-theme-toggle data-ar="داكن" data-en="Dark" aria-pressed="true" aria-label="الوضع الداكن">داكن</button>
+      <button class="theme-btn" type="button" data-theme-toggle data-ar="ليلي" data-en="Night" aria-pressed="true" aria-label="تفعيل النظام الليلي">ليلي</button>
       <button class="lang-btn" id="dashLangBtn" type="button">EN</button>
       <button class="btn btn-ghost client-only" id="viewTermsBtn" type="button" data-ar="الشروط" data-en="Terms">الشروط</button>
       <a class="btn btn-ghost" href="/" data-ar="الصفحة الرئيسية" data-en="Home">الصفحة الرئيسية</a>
