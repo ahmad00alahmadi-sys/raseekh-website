@@ -35,12 +35,9 @@ button,input,select,textarea{font:inherit}
 a{color:inherit;text-decoration:none}
 .hidden{display:none!important}
 
-/* LOGIN */
-#loginView{
-  position:relative;z-index:2;min-height:100vh;display:grid;place-items:center;padding:24px;
-}
+#loginView{position:relative;z-index:2;min-height:100vh;display:grid;place-items:center;padding:24px}
 .login-card{
-  width:100%;max-width:420px;background:var(--panel);border:1px solid var(--line);
+  width:100%;max-width:440px;background:var(--panel);border:1px solid var(--line);
   border-radius:18px;padding:32px;box-shadow:var(--shadow);animation:rise .45s ease;
 }
 @keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
@@ -64,14 +61,18 @@ a{color:inherit;text-decoration:none}
 .btn-brass{background:var(--brass);color:#fff}
 .btn-danger{background:#FCE8E6;color:var(--danger);border:1px solid #F3C1BB}
 .msg{min-height:18px;font-size:.88rem;font-weight:600}
-.login-actions{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+.login-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
 .tabs{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-bottom:16px}
 .tab{flex:1;border:none;background:var(--bg);color:var(--muted);padding:11px;cursor:pointer;font-weight:700}
 .tab.active{background:var(--forest);color:#F5FBF8}
 .auth-panel{display:none}
 .auth-panel.active{display:block}
+.linkish{background:none;border:none;color:var(--muted);text-decoration:underline;cursor:pointer;font-size:.85rem;padding:0;margin-top:10px}
+.demo-banner{
+  background:var(--mist);border:1px dashed var(--leaf);border-radius:10px;padding:10px 12px;
+  font-size:.82rem;color:var(--forest);margin-bottom:14px;
+}
 
-/* DASHBOARD SHELL */
 #dashboardView{
   display:none;position:relative;z-index:1;min-height:100vh;
   grid-template-columns:250px 1fr;
@@ -116,9 +117,7 @@ a{color:inherit;text-decoration:none}
 .page.active{display:block;animation:rise .35s ease}
 
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
-.stat{
-  background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px;
-}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px}
 .stat .label{color:var(--muted);font-size:.85rem;margin-bottom:8px}
 .stat .value{font-size:1.8rem;font-weight:800;color:var(--forest)}
 .stat .hint{font-size:.78rem;color:var(--muted);margin-top:6px}
@@ -128,8 +127,6 @@ a{color:inherit;text-decoration:none}
 }
 .panel h3{font-size:1.05rem;margin-bottom:14px}
 .grid-2{display:grid;grid-template-columns:1.2fr .8fr;gap:16px}
-
-/* PRODUCTS */
 .toolbar{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:14px;flex-wrap:wrap}
 .product-table{width:100%;border-collapse:collapse}
 .product-table th,.product-table td{padding:12px 10px;border-bottom:1px solid var(--line);text-align:start;font-size:.92rem}
@@ -141,7 +138,6 @@ a{color:inherit;text-decoration:none}
 .badge.low{background:#FCE8E6;color:var(--danger)}
 .row-actions{display:flex;gap:6px}
 
-/* POS */
 .pos-layout{display:grid;grid-template-columns:1.4fr .9fr;gap:16px;align-items:start}
 .pos-catalog{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .pos-item{
@@ -152,6 +148,7 @@ a{color:inherit;text-decoration:none}
 .pos-item h4{font-size:.95rem;margin-bottom:4px}
 .pos-item .price{color:var(--forest);font-weight:700}
 .pos-item .stock{font-size:.75rem;color:var(--muted);margin-top:4px}
+.pos-item .cat{font-size:.7rem;color:var(--brass);margin-bottom:6px;font-weight:700}
 .cart{
   background:var(--ink);color:#E8F5EF;border-radius:16px;padding:18px;
   position:sticky;top:16px;min-height:420px;display:flex;flex-direction:column;
@@ -160,8 +157,7 @@ a{color:inherit;text-decoration:none}
 .cart-lines{flex:1;overflow:auto;display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
 .cart-line{
   display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;
-  background:rgba(255,255,255,.06);border-radius:10px;padding:10px;
-  font-size:.88rem;
+  background:rgba(255,255,255,.06);border-radius:10px;padding:10px;font-size:.88rem;
 }
 .qty-ctrl{display:flex;gap:6px;align-items:center}
 .qty-ctrl button{
@@ -175,15 +171,12 @@ a{color:inherit;text-decoration:none}
 }
 .cart-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .empty{color:var(--muted);text-align:center;padding:36px 12px}
-
-/* SALES */
 .sale-row{
   display:flex;justify-content:space-between;gap:12px;align-items:center;
   padding:12px 0;border-bottom:1px solid var(--line);font-size:.92rem;
 }
 .sale-row:last-child{border-bottom:none}
 
-/* MODAL */
 .modal-overlay{
   position:fixed;inset:0;background:rgba(15,31,26,.5);backdrop-filter:blur(4px);
   z-index:100;display:none;align-items:center;justify-content:center;padding:18px;
@@ -194,6 +187,10 @@ a{color:inherit;text-decoration:none}
   width:100%;max-width:460px;padding:24px;position:relative;box-shadow:var(--shadow);
 }
 .modal-close{position:absolute;top:12px;inset-inline-start:12px;border:none;background:none;font-size:1.3rem;cursor:pointer;color:var(--muted)}
+.receipt{font-size:.9rem}
+.receipt-head{text-align:center;margin-bottom:14px;border-bottom:1px dashed var(--line);padding-bottom:12px}
+.receipt-line{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px solid var(--mist)}
+.receipt-total{display:flex;justify-content:space-between;margin-top:12px;font-weight:800;font-size:1.1rem;color:var(--forest)}
 .toast{
   position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(20px);
   background:var(--ink);color:#F2F6F4;padding:12px 18px;border-radius:10px;z-index:200;
@@ -201,12 +198,20 @@ a{color:inherit;text-decoration:none}
 }
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
+@media print{
+  body *{visibility:hidden}
+  #receiptPrintArea,#receiptPrintArea *{visibility:visible}
+  #receiptPrintArea{position:absolute;left:0;top:0;width:100%;padding:24px}
+  .modal-overlay{position:static;display:block!important;background:none}
+  .modal{box-shadow:none;border:none;max-width:100%}
+  .no-print{display:none!important}
+}
+
 @media (max-width:960px){
   #dashboardView.active{display:flex;flex-direction:column}
   .sidebar{position:relative;height:auto;border-inline-end:none;border-bottom:1px solid var(--line)}
   .side-nav{flex-direction:row;overflow-x:auto}
-  .side-foot{display:none}
-  .side-logo{display:none}
+  .side-foot,.side-logo{display:none}
   .nav-item{white-space:nowrap}
   .main{padding:18px}
   .stats{grid-template-columns:1fr 1fr}
@@ -216,13 +221,11 @@ a{color:inherit;text-decoration:none}
 }
 @media (max-width:520px){
   .stats{grid-template-columns:1fr}
-  .pos-catalog{grid-template-columns:1fr 1fr}
 }
 </style>
 </head>
 <body>
 
-<!-- LOGIN VIEW -->
 <div id="loginView">
   <div class="login-card">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
@@ -230,8 +233,9 @@ a{color:inherit;text-decoration:none}
       <button class="lang-btn" id="loginLangBtn" type="button">EN</button>
     </div>
     <p class="sub" data-ar="سجّل دخولك للوصول إلى نقطة البيع والمنتجات" data-en="Sign in to access POS and products">سجّل دخولك للوصول إلى نقطة البيع والمنتجات</p>
+    <div class="demo-banner" data-ar="يمكنك تجربة النظام فوراً بدون حساب عبر الزر بالأسفل." data-en="You can try the system instantly without an account using the button below.">يمكنك تجربة النظام فوراً بدون حساب عبر الزر بالأسفل.</div>
 
-    <div class="tabs">
+    <div class="tabs" id="authTabsBar">
       <button type="button" class="tab active" id="loginTabBtn" data-ar="دخول" data-en="Login">دخول</button>
       <button type="button" class="tab" id="registerTabBtn" data-ar="حساب جديد" data-en="Sign up">حساب جديد</button>
     </div>
@@ -242,6 +246,7 @@ a{color:inherit;text-decoration:none}
         <input type="password" id="dashLoginPassword" required data-ar-placeholder="كلمة المرور" data-en-placeholder="Password" placeholder="كلمة المرور">
         <button class="btn btn-primary" type="submit" data-ar="دخول إلى النظام" data-en="Enter system">دخول إلى النظام</button>
       </form>
+      <button type="button" class="linkish" id="forgotLink" data-ar="نسيت كلمة المرور؟" data-en="Forgot password?">نسيت كلمة المرور؟</button>
       <div class="msg" id="dashLoginMsg"></div>
     </div>
 
@@ -255,13 +260,22 @@ a{color:inherit;text-decoration:none}
       <div class="msg" id="dashRegisterMsg"></div>
     </div>
 
+    <div class="auth-panel" id="forgotPanel">
+      <form class="form" id="dashForgotForm">
+        <input type="email" id="dashForgotEmail" required data-ar-placeholder="البريد الإلكتروني" data-en-placeholder="Email" placeholder="البريد الإلكتروني">
+        <button class="btn btn-primary" type="submit" data-ar="إرسال رابط التعيين" data-en="Send reset link">إرسال رابط التعيين</button>
+      </form>
+      <button type="button" class="linkish" id="backLoginLink" data-ar="رجوع لتسجيل الدخول" data-en="Back to login">رجوع لتسجيل الدخول</button>
+      <div class="msg" id="dashForgotMsg"></div>
+    </div>
+
     <div class="login-actions">
+      <button class="btn btn-brass" type="button" id="demoBtn" data-ar="تجربة فورية" data-en="Try demo">تجربة فورية</button>
       <a class="btn btn-ghost" href="../" data-ar="← الموقع الرئيسي" data-en="← Main site">← الموقع الرئيسي</a>
     </div>
   </div>
 </div>
 
-<!-- DASHBOARD VIEW -->
 <div id="dashboardView">
   <aside class="sidebar">
     <div class="side-logo">
@@ -279,7 +293,7 @@ a{color:inherit;text-decoration:none}
         <div class="avatar" id="dashAvatar">?</div>
         <div>
           <div class="user-email" id="dashUserLabel">—</div>
-          <div class="user-status" data-ar="متصل" data-en="Online">متصل</div>
+          <div class="user-status" id="dashUserStatus" data-ar="متصل" data-en="Online">متصل</div>
         </div>
       </div>
       <button class="btn btn-ghost" style="width:100%" id="logoutBtn" data-ar="تسجيل الخروج" data-en="Log out">تسجيل الخروج</button>
@@ -293,7 +307,6 @@ a{color:inherit;text-decoration:none}
       <a class="btn btn-ghost" href="../" data-ar="الموقع" data-en="Website">الموقع</a>
     </div>
 
-    <!-- OVERVIEW -->
     <div class="page active" id="page-overview">
       <div class="topbar">
         <div>
@@ -324,18 +337,22 @@ a{color:inherit;text-decoration:none}
       </div>
     </div>
 
-    <!-- POS -->
     <div class="page" id="page-pos">
       <div class="topbar">
         <div>
           <h1 data-ar="نقطة البيع" data-en="Point of Sale">نقطة البيع</h1>
           <div class="crumb">راسخ <span>/</span> POS</div>
         </div>
-        <button class="btn btn-ghost" id="clearCartBtn" data-ar="تفريغ السلة" data-en="Clear cart">تفريغ السلة</button>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <select id="posCategory" style="padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--panel)">
+            <option value="all" data-ar="كل الأقسام" data-en="All categories">كل الأقسام</option>
+          </select>
+          <button class="btn btn-ghost" id="clearCartBtn" data-ar="تفريغ السلة" data-en="Clear cart">تفريغ السلة</button>
+        </div>
       </div>
       <div class="pos-layout">
         <div>
-          <input type="search" id="posSearch" class="form" style="margin-bottom:12px;padding:12px 14px;width:100%;border:1px solid var(--line);border-radius:10px" data-ar-placeholder="ابحث عن منتج..." data-en-placeholder="Search products..." placeholder="ابحث عن منتج...">
+          <input type="search" id="posSearch" style="margin-bottom:12px;padding:12px 14px;width:100%;border:1px solid var(--line);border-radius:10px" data-ar-placeholder="ابحث عن منتج..." data-en-placeholder="Search products..." placeholder="ابحث عن منتج...">
           <div class="pos-catalog" id="posCatalog"></div>
         </div>
         <aside class="cart">
@@ -350,7 +367,6 @@ a{color:inherit;text-decoration:none}
       </div>
     </div>
 
-    <!-- PRODUCTS -->
     <div class="page" id="page-products">
       <div class="topbar">
         <div>
@@ -369,6 +385,7 @@ a{color:inherit;text-decoration:none}
             <thead>
               <tr>
                 <th data-ar="الاسم" data-en="Name">الاسم</th>
+                <th data-ar="القسم" data-en="Category">القسم</th>
                 <th data-ar="السعر" data-en="Price">السعر</th>
                 <th data-ar="المخزون" data-en="Stock">المخزون</th>
                 <th data-ar="الحالة" data-en="Status">الحالة</th>
@@ -381,13 +398,13 @@ a{color:inherit;text-decoration:none}
       </div>
     </div>
 
-    <!-- SALES -->
     <div class="page" id="page-sales">
       <div class="topbar">
         <div>
           <h1 data-ar="المبيعات" data-en="Sales">المبيعات</h1>
           <div class="crumb">راسخ <span>/</span> <span data-ar="المبيعات" data-en="Sales">المبيعات</span></div>
         </div>
+        <button class="btn btn-ghost" id="exportSalesBtn" data-ar="تصدير CSV" data-en="Export CSV">تصدير CSV</button>
       </div>
       <div class="panel">
         <h3 data-ar="سجل الفواتير" data-en="Receipt history">سجل الفواتير</h3>
@@ -395,7 +412,6 @@ a{color:inherit;text-decoration:none}
       </div>
     </div>
 
-    <!-- SETTINGS -->
     <div class="page" id="page-settings">
       <div class="topbar">
         <div>
@@ -413,21 +429,49 @@ a{color:inherit;text-decoration:none}
         </form>
         <div class="msg" id="settingsMsg"></div>
       </div>
+      <div class="panel">
+        <h3 data-ar="بيانات المتجر" data-en="Store details">بيانات المتجر</h3>
+        <form class="form" id="storeForm" style="max-width:480px">
+          <input type="text" id="storeName" data-ar-placeholder="اسم المتجر" data-en-placeholder="Store name" placeholder="اسم المتجر">
+          <input type="text" id="storePhone" data-ar-placeholder="هاتف المتجر" data-en-placeholder="Store phone" placeholder="هاتف المتجر">
+          <button class="btn btn-primary" type="submit" style="width:fit-content" data-ar="حفظ بيانات المتجر" data-en="Save store details">حفظ بيانات المتجر</button>
+        </form>
+        <div class="msg" id="storeMsg"></div>
+      </div>
     </div>
   </main>
 </div>
 
 <div class="modal-overlay" id="productModal">
   <div class="modal">
-    <button class="modal-close" id="productModalClose" type="button">×</button>
+    <button class="modal-close no-print" id="productModalClose" type="button">×</button>
     <h2 id="productModalTitle" style="margin-bottom:14px" data-ar="منتج جديد" data-en="New product">منتج جديد</h2>
     <form class="form" id="productForm">
       <input type="text" id="pName" required data-ar-placeholder="اسم المنتج" data-en-placeholder="Product name" placeholder="اسم المنتج">
       <input type="text" id="pNameEn" data-ar-placeholder="الاسم بالإنجليزية (اختياري)" data-en-placeholder="English name (optional)" placeholder="الاسم بالإنجليزية (اختياري)">
+      <input type="text" id="pCategory" data-ar-placeholder="القسم (مثال: مشروبات)" data-en-placeholder="Category (e.g. Drinks)" placeholder="القسم (مثال: مشروبات)">
       <input type="number" id="pPrice" min="0" step="0.01" required data-ar-placeholder="السعر" data-en-placeholder="Price" placeholder="السعر">
       <input type="number" id="pStock" min="0" step="1" required data-ar-placeholder="المخزون" data-en-placeholder="Stock" placeholder="المخزون">
       <button class="btn btn-primary" type="submit" data-ar="حفظ المنتج" data-en="Save product">حفظ المنتج</button>
     </form>
+  </div>
+</div>
+
+<div class="modal-overlay" id="receiptModal">
+  <div class="modal" id="receiptPrintArea">
+    <button class="modal-close no-print" id="receiptClose" type="button">×</button>
+    <div class="receipt">
+      <div class="receipt-head">
+        <h2 id="receiptStore">راسخ</h2>
+        <div style="color:var(--muted);font-size:.82rem" id="receiptMeta"></div>
+      </div>
+      <div id="receiptLines"></div>
+      <div class="receipt-total"><span data-ar="الإجمالي" data-en="Total">الإجمالي</span><span id="receiptTotal">0</span></div>
+      <div class="no-print" style="display:flex;gap:8px;margin-top:18px;flex-wrap:wrap">
+        <button class="btn btn-primary" type="button" id="printReceiptBtn" data-ar="طباعة الإيصال" data-en="Print receipt">طباعة الإيصال</button>
+        <button class="btn btn-ghost" type="button" id="receiptDoneBtn" data-ar="تم" data-en="Done">تم</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -437,34 +481,47 @@ a{color:inherit;text-decoration:none}
 (function(){
   const SUPABASE_URL = 'https://dupdkohciluepwrfuhod.supabase.co';
   const SUPABASE_ANON_KEY = 'sb_publishable_UVbMT7eplHHBNdZbOpLssw_UUEYTxFA';
+  const DEMO_FLAG = 'raseekh_demo_session';
 
   let supabaseClient = null;
-  try {
-    if (window.supabase) supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-  } catch (e) { console.warn(e); }
+  try { if (window.supabase) supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); }
+  catch (e) { console.warn(e); }
 
   let currentLang = localStorage.getItem('raseekh_lang') || 'ar';
   let currentUser = null;
+  let isDemo = false;
   let products = [];
   let sales = [];
   let cart = [];
+  let store = { name: 'راسخ', phone: '' };
   let editingProductId = null;
+  let lastSale = null;
   let toastTimer;
 
   const DEFAULT_PRODUCTS = [
-    { id: 'p1', name: 'قهوة', name_en: 'Coffee', price: 12, stock: 40 },
-    { id: 'p2', name: 'ماء', name_en: 'Water', price: 3, stock: 80 },
-    { id: 'p3', name: 'ساندويتش', name_en: 'Sandwich', price: 18, stock: 25 },
-    { id: 'p4', name: 'عصير', name_en: 'Juice', price: 10, stock: 30 },
-    { id: 'p5', name: 'حلويات', name_en: 'Dessert', price: 15, stock: 18 },
-    { id: 'p6', name: 'وجبة', name_en: 'Meal', price: 28, stock: 12 }
+    { id: 'p1', name: 'قهوة', name_en: 'Coffee', category: 'مشروبات', category_en: 'Drinks', price: 12, stock: 40 },
+    { id: 'p2', name: 'ماء', name_en: 'Water', category: 'مشروبات', category_en: 'Drinks', price: 3, stock: 80 },
+    { id: 'p3', name: 'عصير', name_en: 'Juice', category: 'مشروبات', category_en: 'Drinks', price: 10, stock: 30 },
+    { id: 'p4', name: 'ساندويتش', name_en: 'Sandwich', category: 'أكل', category_en: 'Food', price: 18, stock: 25 },
+    { id: 'p5', name: 'وجبة', name_en: 'Meal', category: 'أكل', category_en: 'Food', price: 28, stock: 12 },
+    { id: 'p6', name: 'حلويات', name_en: 'Dessert', category: 'حلويات', category_en: 'Desserts', price: 15, stock: 18 },
+    { id: 'p7', name: 'شاي', name_en: 'Tea', category: 'مشروبات', category_en: 'Drinks', price: 8, stock: 50 },
+    { id: 'p8', name: 'كعكة', name_en: 'Cake', category: 'حلويات', category_en: 'Desserts', price: 22, stock: 10 }
   ];
 
   function t(ar, en){ return currentLang === 'ar' ? ar : en; }
   function uid(){ return 'id-' + Date.now() + '-' + Math.random().toString(36).slice(2,7); }
   function money(n){ return (Number(n) || 0).toFixed(2) + ' SAR'; }
   function productLabel(p){ return currentLang === 'en' && p.name_en ? p.name_en : p.name; }
-
+  function categoryLabel(p){
+    if (!p) return '';
+    return currentLang === 'en' && p.category_en ? p.category_en : (p.category || t('عام','General'));
+  }
+  function escapeHtml(str){
+    const d = document.createElement('div');
+    d.textContent = str == null ? '' : String(str);
+    return d.innerHTML;
+  }
   function showToast(msg){
     const el = document.getElementById('toast');
     el.textContent = msg;
@@ -472,32 +529,25 @@ a{color:inherit;text-decoration:none}
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => el.classList.remove('show'), 2800);
   }
-
-  function storageKey(base){
-    return 'raseekh_' + base + '_' + (currentUser?.id || 'guest');
-  }
+  function storageKey(base){ return 'raseekh_' + base + '_' + (currentUser?.id || 'guest'); }
 
   function loadProducts(){
     try {
       const raw = localStorage.getItem(storageKey('products'));
       products = raw ? JSON.parse(raw) : DEFAULT_PRODUCTS.map(p => ({ ...p }));
-    } catch (_) {
-      products = DEFAULT_PRODUCTS.map(p => ({ ...p }));
-    }
+    } catch (_) { products = DEFAULT_PRODUCTS.map(p => ({ ...p })); }
   }
-
-  function saveProducts(){
-    localStorage.setItem(storageKey('products'), JSON.stringify(products));
-  }
-
+  function saveProducts(){ localStorage.setItem(storageKey('products'), JSON.stringify(products)); }
   function loadSales(){
     try { sales = JSON.parse(localStorage.getItem(storageKey('sales')) || '[]'); }
     catch (_) { sales = []; }
   }
-
-  function saveSales(){
-    localStorage.setItem(storageKey('sales'), JSON.stringify(sales));
+  function saveSales(){ localStorage.setItem(storageKey('sales'), JSON.stringify(sales)); }
+  function loadStore(){
+    try { store = Object.assign({ name: 'راسخ', phone: '' }, JSON.parse(localStorage.getItem(storageKey('store')) || '{}')); }
+    catch (_) { store = { name: 'راسخ', phone: '' }; }
   }
+  function saveStore(){ localStorage.setItem(storageKey('store'), JSON.stringify(store)); }
 
   function applyLang(lang){
     currentLang = lang;
@@ -520,36 +570,84 @@ a{color:inherit;text-decoration:none}
     document.getElementById('loginLangBtn').textContent = lang === 'ar' ? 'EN' : 'AR';
     document.getElementById('dashLangBtn').textContent = lang === 'ar' ? 'EN' : 'AR';
     document.getElementById('pageTitle').textContent = lang === 'ar' ? 'لوحة التحكم — راسخ' : 'Dashboard — Raseekh';
+    if (isDemo) {
+      document.getElementById('dashUserStatus').textContent = t('وضع تجريبي', 'Demo mode');
+    }
     renderAll();
+    fillCategoryFilter();
   }
 
   document.getElementById('loginLangBtn').addEventListener('click', () => applyLang(currentLang === 'ar' ? 'en' : 'ar'));
   document.getElementById('dashLangBtn').addEventListener('click', () => applyLang(currentLang === 'ar' ? 'en' : 'ar'));
 
+  function showAuthPanel(name){
+    ['loginPanel','registerPanel','forgotPanel'].forEach(id => document.getElementById(id).classList.remove('active'));
+    document.getElementById(name).classList.add('active');
+    document.getElementById('authTabsBar').style.display = name === 'forgotPanel' ? 'none' : 'flex';
+  }
+  document.getElementById('loginTabBtn').addEventListener('click', () => {
+    document.getElementById('loginTabBtn').classList.add('active');
+    document.getElementById('registerTabBtn').classList.remove('active');
+    showAuthPanel('loginPanel');
+  });
+  document.getElementById('registerTabBtn').addEventListener('click', () => {
+    document.getElementById('registerTabBtn').classList.add('active');
+    document.getElementById('loginTabBtn').classList.remove('active');
+    showAuthPanel('registerPanel');
+  });
+  document.getElementById('forgotLink').addEventListener('click', () => showAuthPanel('forgotPanel'));
+  document.getElementById('backLoginLink').addEventListener('click', () => {
+    document.getElementById('loginTabBtn').classList.add('active');
+    document.getElementById('registerTabBtn').classList.remove('active');
+    showAuthPanel('loginPanel');
+  });
+
   function showLogin(){
+    isDemo = false;
+    localStorage.removeItem(DEMO_FLAG);
     document.getElementById('loginView').classList.remove('hidden');
     document.getElementById('dashboardView').classList.remove('active');
   }
 
-  function showDashboard(user){
+  function showDashboard(user, demo){
     currentUser = user;
+    isDemo = !!demo;
+    if (isDemo) localStorage.setItem(DEMO_FLAG, '1');
+    else localStorage.removeItem(DEMO_FLAG);
+
     document.getElementById('loginView').classList.add('hidden');
     document.getElementById('dashboardView').classList.add('active');
 
-    const name = user?.user_metadata?.full_name || user?.user_metadata?.display_name || '';
-    const email = user?.email || '';
+    const name = user?.user_metadata?.full_name || user?.user_metadata?.display_name || (isDemo ? t('زائر تجريبي','Demo guest') : '');
+    const email = user?.email || (isDemo ? 'demo@raseekh.local' : '');
     document.getElementById('dashUserLabel').textContent = name || email || '—';
     document.getElementById('dashAvatar').textContent = (name || email || '?').trim().charAt(0).toUpperCase();
     document.getElementById('settingsEmail').value = email;
-    document.getElementById('settingsName').value = name;
+    document.getElementById('settingsName').value = isDemo ? t('زائر تجريبي','Demo guest') : (name || '');
+    document.getElementById('settingsPassword').disabled = isDemo;
+    document.getElementById('dashUserStatus').textContent = isDemo ? t('وضع تجريبي','Demo mode') : t('متصل','Online');
 
     loadProducts();
     loadSales();
+    loadStore();
+    document.getElementById('storeName').value = store.name || '';
+    document.getElementById('storePhone').value = store.phone || '';
     cart = [];
     applyLang(currentLang);
     startClock();
     switchPage('overview');
   }
+
+  function enterDemo(){
+    showDashboard({
+      id: 'demo-user',
+      email: 'demo@raseekh.local',
+      user_metadata: { full_name: t('زائر تجريبي','Demo guest') }
+    }, true);
+    showToast(t('دخلت وضع التجربة','Entered demo mode'));
+    switchPage('pos');
+  }
+  document.getElementById('demoBtn').addEventListener('click', enterDemo);
 
   function switchPage(page){
     document.querySelectorAll('.nav-item').forEach(b => b.classList.toggle('active', b.dataset.page === page));
@@ -561,13 +659,8 @@ a{color:inherit;text-decoration:none}
     if (page === 'sales') renderSales();
     if (page === 'overview') renderOverview();
   }
-
-  document.querySelectorAll('.nav-item').forEach(btn => {
-    btn.addEventListener('click', () => switchPage(btn.dataset.page));
-  });
-  document.querySelectorAll('[data-goto]').forEach(el => {
-    el.addEventListener('click', () => switchPage(el.dataset.goto));
-  });
+  document.querySelectorAll('.nav-item').forEach(btn => btn.addEventListener('click', () => switchPage(btn.dataset.page)));
+  document.querySelectorAll('[data-goto]').forEach(el => el.addEventListener('click', () => switchPage(el.dataset.goto)));
 
   function startClock(){
     const tick = () => {
@@ -579,26 +672,12 @@ a{color:inherit;text-decoration:none}
     window._raseekhClock = setInterval(tick, 1000);
   }
 
-  /* AUTH */
-  document.getElementById('loginTabBtn').addEventListener('click', () => {
-    document.getElementById('loginTabBtn').classList.add('active');
-    document.getElementById('registerTabBtn').classList.remove('active');
-    document.getElementById('loginPanel').classList.add('active');
-    document.getElementById('registerPanel').classList.remove('active');
-  });
-  document.getElementById('registerTabBtn').addEventListener('click', () => {
-    document.getElementById('registerTabBtn').classList.add('active');
-    document.getElementById('loginTabBtn').classList.remove('active');
-    document.getElementById('registerPanel').classList.add('active');
-    document.getElementById('loginPanel').classList.remove('active');
-  });
-
   document.getElementById('dashLoginForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const msg = document.getElementById('dashLoginMsg');
     if (!supabaseClient) {
       msg.style.color = 'var(--danger)';
-      msg.textContent = t('تعذّر الاتصال بخدمة الحسابات', 'Accounts service unavailable');
+      msg.textContent = t('تعذّر الاتصال — استخدم التجربة الفورية', 'Connection failed — use demo');
       return;
     }
     msg.style.color = 'var(--muted)';
@@ -613,7 +692,7 @@ a{color:inherit;text-decoration:none}
     }
     msg.style.color = 'var(--ok)';
     msg.textContent = t('تم الدخول بنجاح', 'Signed in');
-    showDashboard(data.user);
+    showDashboard(data.user, false);
   });
 
   document.getElementById('dashRegisterForm').addEventListener('submit', async (e) => {
@@ -621,7 +700,7 @@ a{color:inherit;text-decoration:none}
     const msg = document.getElementById('dashRegisterMsg');
     if (!supabaseClient) {
       msg.style.color = 'var(--danger)';
-      msg.textContent = t('تعذّر الاتصال بخدمة الحسابات', 'Accounts service unavailable');
+      msg.textContent = t('تعذّر الاتصال — استخدم التجربة الفورية', 'Connection failed — use demo');
       return;
     }
     const name = document.getElementById('dashRegisterName').value.trim();
@@ -639,21 +718,38 @@ a{color:inherit;text-decoration:none}
         : error.message;
       return;
     }
-    if (data.session?.user) {
-      showDashboard(data.user);
-    } else {
+    if (data.session?.user) showDashboard(data.user, false);
+    else {
       msg.style.color = 'var(--ok)';
       msg.textContent = t('تم الإنشاء — فعّل البريد ثم سجّل الدخول', 'Created — verify email then sign in');
     }
   });
 
+  document.getElementById('dashForgotForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const msg = document.getElementById('dashForgotMsg');
+    if (!supabaseClient) {
+      msg.style.color = 'var(--danger)';
+      msg.textContent = t('تعذّر الاتصال بخدمة الحسابات', 'Accounts service unavailable');
+      return;
+    }
+    const email = document.getElementById('dashForgotEmail').value.trim();
+    msg.textContent = t('جاري الإرسال...', 'Sending...');
+    const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.origin + '/'
+    });
+    msg.style.color = error ? 'var(--danger)' : 'var(--ok)';
+    msg.textContent = error
+      ? t('حدث خطأ، حاول مرة أخرى', 'Something went wrong')
+      : t('تم إرسال رابط إعادة التعيين', 'Reset link sent');
+  });
+
   document.getElementById('logoutBtn').addEventListener('click', async () => {
-    if (supabaseClient) await supabaseClient.auth.signOut();
+    if (!isDemo && supabaseClient) await supabaseClient.auth.signOut();
     currentUser = null;
     showLogin();
   });
 
-  /* RENDER */
   function renderAll(){
     if (!currentUser) return;
     renderOverview();
@@ -667,6 +763,15 @@ a{color:inherit;text-decoration:none}
     return sales.filter(s => new Date(s.at).toDateString() === day);
   }
 
+  function fillCategoryFilter(){
+    const select = document.getElementById('posCategory');
+    const current = select.value || 'all';
+    const cats = [...new Set(products.map(p => categoryLabel(p)).filter(Boolean))];
+    select.innerHTML = `<option value="all">${t('كل الأقسام','All categories')}</option>` +
+      cats.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
+    if ([...select.options].some(o => o.value === current)) select.value = current;
+  }
+
   function renderOverview(){
     const todays = todaySales();
     const total = todays.reduce((s, x) => s + (x.total || 0), 0);
@@ -674,7 +779,6 @@ a{color:inherit;text-decoration:none}
     document.getElementById('statToday').textContent = total.toFixed(0);
     document.getElementById('statReceipts').textContent = todays.length;
     document.getElementById('statLow').textContent = products.filter(p => p.stock <= 5).length;
-
     const holder = document.getElementById('recentSales');
     const recent = sales.slice(0, 5);
     if (!recent.length) {
@@ -687,31 +791,43 @@ a{color:inherit;text-decoration:none}
           <div>${s.method === 'card' ? t('بطاقة','Card') : t('نقداً','Cash')} · ${s.items} ${t('صنف','items')}</div>
           <div style="color:var(--muted);font-size:.78rem">${new Date(s.at).toLocaleString(currentLang === 'ar' ? 'ar-SA' : 'en-US')}</div>
         </div>
-        <strong>${money(s.total)}</strong>
+        <div style="display:flex;gap:8px;align-items:center">
+          <strong>${money(s.total)}</strong>
+          <button class="btn btn-ghost" style="padding:6px 10px" data-view-sale="${s.id}">🧾</button>
+        </div>
       </div>
     `).join('');
   }
 
+  document.getElementById('recentSales').addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-view-sale]');
+    if (!btn) return;
+    const sale = sales.find(s => s.id === btn.dataset.viewSale);
+    if (sale) openReceipt(sale);
+  });
+
   function renderProducts(){
     const q = (document.getElementById('productSearch').value || '').trim().toLowerCase();
     const list = products.filter(p => {
-      const blob = (p.name + ' ' + (p.name_en || '')).toLowerCase();
+      const blob = (p.name + ' ' + (p.name_en || '') + ' ' + (p.category || '')).toLowerCase();
       return !q || blob.includes(q);
     });
     const body = document.getElementById('productsBody');
     if (!list.length) {
-      body.innerHTML = `<tr><td colspan="5" class="empty">${t('لا توجد منتجات','No products')}</td></tr>`;
+      body.innerHTML = `<tr><td colspan="6" class="empty">${t('لا توجد منتجات','No products')}</td></tr>`;
       return;
     }
     body.innerHTML = list.map(p => `
       <tr>
         <td><strong>${escapeHtml(productLabel(p))}</strong></td>
+        <td>${escapeHtml(categoryLabel(p))}</td>
         <td>${money(p.price)}</td>
         <td>${p.stock}</td>
         <td><span class="badge ${p.stock <= 5 ? 'low' : ''}">${p.stock <= 5 ? t('منخفض','Low') : t('متوفر','In stock')}</span></td>
         <td>
           <div class="row-actions">
             <button class="btn btn-ghost" style="padding:6px 10px" data-edit="${p.id}">✎</button>
+            <button class="btn btn-ghost" style="padding:6px 10px" data-restock="${p.id}" title="+10">+10</button>
             <button class="btn btn-danger" style="padding:6px 10px" data-del="${p.id}">×</button>
           </div>
         </td>
@@ -719,17 +835,16 @@ a{color:inherit;text-decoration:none}
     `).join('');
   }
 
-  function escapeHtml(str){
-    const d = document.createElement('div');
-    d.textContent = str == null ? '' : String(str);
-    return d.innerHTML;
-  }
-
   document.getElementById('productSearch').addEventListener('input', renderProducts);
   document.getElementById('productsBody').addEventListener('click', (e) => {
     const edit = e.target.closest('[data-edit]');
     const del = e.target.closest('[data-del]');
+    const restock = e.target.closest('[data-restock]');
     if (edit) openProductModal(edit.dataset.edit);
+    if (restock) {
+      const p = products.find(x => x.id === restock.dataset.restock);
+      if (p) { p.stock += 10; saveProducts(); renderAll(); showToast(t('تم تزويد المخزون','Stock restocked')); }
+    }
     if (del) {
       if (!confirm(t('حذف هذا المنتج؟','Delete this product?'))) return;
       products = products.filter(p => p.id !== del.dataset.del);
@@ -749,6 +864,7 @@ a{color:inherit;text-decoration:none}
       title.textContent = t('تعديل منتج','Edit product');
       document.getElementById('pName').value = p.name;
       document.getElementById('pNameEn').value = p.name_en || '';
+      document.getElementById('pCategory').value = p.category || '';
       document.getElementById('pPrice').value = p.price;
       document.getElementById('pStock').value = p.stock;
     } else {
@@ -757,18 +873,18 @@ a{color:inherit;text-decoration:none}
     }
     modal.classList.add('open');
   }
-
   document.getElementById('addProductBtn').addEventListener('click', () => openProductModal(null));
   document.getElementById('productModalClose').addEventListener('click', () => document.getElementById('productModal').classList.remove('open'));
-  document.getElementById('productModal').addEventListener('click', (e) => {
-    if (e.target.id === 'productModal') e.currentTarget.classList.remove('open');
-  });
+  document.getElementById('productModal').addEventListener('click', (e) => { if (e.target.id === 'productModal') e.currentTarget.classList.remove('open'); });
 
   document.getElementById('productForm').addEventListener('submit', (e) => {
     e.preventDefault();
+    const cat = document.getElementById('pCategory').value.trim() || t('عام','General');
     const payload = {
       name: document.getElementById('pName').value.trim(),
       name_en: document.getElementById('pNameEn').value.trim(),
+      category: cat,
+      category_en: cat,
       price: parseFloat(document.getElementById('pPrice').value) || 0,
       stock: parseInt(document.getElementById('pStock').value, 10) || 0
     };
@@ -780,23 +896,27 @@ a{color:inherit;text-decoration:none}
     }
     saveProducts();
     document.getElementById('productModal').classList.remove('open');
+    fillCategoryFilter();
     renderAll();
     showToast(t('تم حفظ المنتج','Product saved'));
   });
 
-  /* POS */
   function renderPos(){
+    fillCategoryFilter();
     const q = (document.getElementById('posSearch').value || '').trim().toLowerCase();
+    const cat = document.getElementById('posCategory').value;
     const catalog = document.getElementById('posCatalog');
     const list = products.filter(p => {
       const blob = (p.name + ' ' + (p.name_en || '')).toLowerCase();
-      return p.stock > 0 && (!q || blob.includes(q));
+      const catOk = cat === 'all' || categoryLabel(p) === cat;
+      return p.stock > 0 && catOk && (!q || blob.includes(q));
     });
     if (!list.length) {
       catalog.innerHTML = `<div class="empty" style="grid-column:1/-1">${t('لا توجد منتجات متاحة','No available products')}</div>`;
     } else {
       catalog.innerHTML = list.map(p => `
         <button type="button" class="pos-item" data-add="${p.id}">
+          <div class="cat">${escapeHtml(categoryLabel(p))}</div>
           <h4>${escapeHtml(productLabel(p))}</h4>
           <div class="price">${money(p.price)}</div>
           <div class="stock">${t('المتبقي','Left')}: ${p.stock}</div>
@@ -805,12 +925,11 @@ a{color:inherit;text-decoration:none}
     }
     renderCart();
   }
-
   document.getElementById('posSearch').addEventListener('input', renderPos);
+  document.getElementById('posCategory').addEventListener('change', renderPos);
   document.getElementById('posCatalog').addEventListener('click', (e) => {
     const btn = e.target.closest('[data-add]');
-    if (!btn) return;
-    addToCart(btn.dataset.add);
+    if (btn) addToCart(btn.dataset.add);
   });
 
   function addToCart(id){
@@ -818,10 +937,7 @@ a{color:inherit;text-decoration:none}
     if (!p || p.stock <= 0) return;
     const line = cart.find(c => c.id === id);
     const qty = line ? line.qty + 1 : 1;
-    if (qty > p.stock) {
-      showToast(t('المخزون غير كافٍ','Not enough stock'));
-      return;
-    }
+    if (qty > p.stock) { showToast(t('المخزون غير كافٍ','Not enough stock')); return; }
     if (line) line.qty = qty;
     else cart.push({ id: p.id, name: p.name, name_en: p.name_en, price: p.price, qty: 1 });
     renderCart();
@@ -848,8 +964,7 @@ a{color:inherit;text-decoration:none}
         <strong>${money(line.price * line.qty)}</strong>
       </div>
     `).join('');
-    const total = cart.reduce((s, l) => s + l.price * l.qty, 0);
-    document.getElementById('cartTotal').textContent = money(total);
+    document.getElementById('cartTotal').textContent = money(cart.reduce((s, l) => s + l.price * l.qty, 0));
   }
 
   document.getElementById('cartLines').addEventListener('click', (e) => {
@@ -869,17 +984,32 @@ a{color:inherit;text-decoration:none}
       renderCart();
     }
   });
+  document.getElementById('clearCartBtn').addEventListener('click', () => { cart = []; renderCart(); });
 
-  document.getElementById('clearCartBtn').addEventListener('click', () => {
-    cart = [];
-    renderCart();
+  function openReceipt(sale){
+    lastSale = sale;
+    document.getElementById('receiptStore').textContent = store.name || 'راسخ';
+    document.getElementById('receiptMeta').textContent =
+      `#${String(sale.id).slice(-6)} · ${sale.method === 'card' ? t('بطاقة','Card') : t('نقداً','Cash')} · ${new Date(sale.at).toLocaleString(currentLang === 'ar' ? 'ar-SA' : 'en-US')}` +
+      (store.phone ? ` · ${store.phone}` : '');
+    document.getElementById('receiptLines').innerHTML = (sale.lines || []).map(l => `
+      <div class="receipt-line">
+        <span>${escapeHtml(productLabel(l))} × ${l.qty}</span>
+        <span>${money(l.price * l.qty)}</span>
+      </div>
+    `).join('');
+    document.getElementById('receiptTotal').textContent = money(sale.total);
+    document.getElementById('receiptModal').classList.add('open');
+  }
+  document.getElementById('receiptClose').addEventListener('click', () => document.getElementById('receiptModal').classList.remove('open'));
+  document.getElementById('receiptDoneBtn').addEventListener('click', () => document.getElementById('receiptModal').classList.remove('open'));
+  document.getElementById('printReceiptBtn').addEventListener('click', () => window.print());
+  document.getElementById('receiptModal').addEventListener('click', (e) => {
+    if (e.target.id === 'receiptModal') e.currentTarget.classList.remove('open');
   });
 
   function checkout(method){
-    if (!cart.length) {
-      showToast(t('السلة فارغة','Cart is empty'));
-      return;
-    }
+    if (!cart.length) { showToast(t('السلة فارغة','Cart is empty')); return; }
     for (const line of cart) {
       const p = products.find(x => x.id === line.id);
       if (!p || p.stock < line.qty) {
@@ -893,23 +1023,22 @@ a{color:inherit;text-decoration:none}
     });
     const total = cart.reduce((s, l) => s + l.price * l.qty, 0);
     const items = cart.reduce((s, l) => s + l.qty, 0);
-    sales.unshift({
+    const sale = {
       id: uid(),
       at: new Date().toISOString(),
       method,
       total,
       items,
       lines: cart.map(l => ({ ...l }))
-    });
+    };
+    sales.unshift(sale);
     cart = [];
     saveProducts();
     saveSales();
     renderAll();
-    showToast(method === 'card'
-      ? t('تم البيع بالبطاقة','Card sale completed')
-      : t('تم البيع نقداً','Cash sale completed'));
+    openReceipt(sale);
+    showToast(method === 'card' ? t('تم البيع بالبطاقة','Card sale completed') : t('تم البيع نقداً','Cash sale completed'));
   }
-
   document.getElementById('payCashBtn').addEventListener('click', () => checkout('cash'));
   document.getElementById('payCardBtn').addEventListener('click', () => checkout('card'));
 
@@ -925,14 +1054,42 @@ a{color:inherit;text-decoration:none}
           <div><strong>#${String(s.id).slice(-6)}</strong> · ${s.method === 'card' ? t('بطاقة','Card') : t('نقداً','Cash')}</div>
           <div style="color:var(--muted);font-size:.78rem">${new Date(s.at).toLocaleString(currentLang === 'ar' ? 'ar-SA' : 'en-US')} · ${s.items} ${t('صنف','items')}</div>
         </div>
-        <strong>${money(s.total)}</strong>
+        <div style="display:flex;gap:8px;align-items:center">
+          <strong>${money(s.total)}</strong>
+          <button class="btn btn-ghost" style="padding:6px 10px" data-view-sale="${s.id}">🧾</button>
+        </div>
       </div>
     `).join('');
   }
+  document.getElementById('salesList').addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-view-sale]');
+    if (!btn) return;
+    const sale = sales.find(s => s.id === btn.dataset.viewSale);
+    if (sale) openReceipt(sale);
+  });
+
+  document.getElementById('exportSalesBtn').addEventListener('click', () => {
+    if (!sales.length) { showToast(t('لا توجد مبيعات للتصدير','No sales to export')); return; }
+    const rows = [['id','date','method','items','total']];
+    sales.forEach(s => rows.push([s.id, s.at, s.method, s.items, s.total]));
+    const csv = rows.map(r => r.join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'raseekh-sales.csv';
+    a.click();
+    URL.revokeObjectURL(a.href);
+    showToast(t('تم التصدير','Exported'));
+  });
 
   document.getElementById('settingsForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const msg = document.getElementById('settingsMsg');
+    if (isDemo) {
+      msg.style.color = 'var(--muted)';
+      msg.textContent = t('الوضع التجريبي لا يحفظ على الحساب', 'Demo mode does not update account');
+      return;
+    }
     if (!supabaseClient) return;
     const name = document.getElementById('settingsName').value.trim();
     const pass = document.getElementById('settingsPassword').value;
@@ -954,25 +1111,32 @@ a{color:inherit;text-decoration:none}
     }
   });
 
-  /* SESSION BOOT */
+  document.getElementById('storeForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    store.name = document.getElementById('storeName').value.trim() || 'راسخ';
+    store.phone = document.getElementById('storePhone').value.trim();
+    saveStore();
+    document.getElementById('storeMsg').style.color = 'var(--ok)';
+    document.getElementById('storeMsg').textContent = t('تم حفظ بيانات المتجر','Store details saved');
+  });
+
   applyLang(currentLang);
 
   (async function init(){
-    if (!supabaseClient) {
-      showLogin();
-      document.getElementById('dashLoginMsg').textContent = t('تعذّر تحميل خدمة الحسابات','Accounts service failed to load');
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('demo') === '1' || localStorage.getItem(DEMO_FLAG) === '1') {
+      enterDemo();
       return;
     }
+    if (!supabaseClient) { showLogin(); return; }
     try {
       const { data } = await supabaseClient.auth.getSession();
-      if (data?.session?.user) showDashboard(data.session.user);
+      if (data?.session?.user) showDashboard(data.session.user, false);
       else showLogin();
-    } catch (_) {
-      showLogin();
-    }
+    } catch (_) { showLogin(); }
     supabaseClient.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_OUT') showLogin();
-      if (event === 'SIGNED_IN' && session?.user && !currentUser) showDashboard(session.user);
+      if (event === 'SIGNED_OUT' && !isDemo) showLogin();
+      if (event === 'SIGNED_IN' && session?.user && !currentUser) showDashboard(session.user, false);
     });
   })();
 })();

@@ -311,6 +311,7 @@ footer{
     <div class="nav-links" id="navLinks">
       <a href="#products" data-ar="المنتجات" data-en="Products">المنتجات</a>
       <a href="#pos" data-ar="نقاط البيع" data-en="POS">نقاط البيع</a>
+      <a href="#about" data-ar="عن راسخ" data-en="About">عن راسخ</a>
       <a href="#process" data-ar="كيف نعمل" data-en="How we work">كيف نعمل</a>
       <a href="#pay" data-ar="الدفع" data-en="Pay">الدفع</a>
       <a href="#contact" data-ar="تواصل" data-en="Contact">تواصل</a>
@@ -492,6 +493,24 @@ footer{
   </div>
 </section>
 
+<section id="about">
+  <div class="wrap two-col" style="align-items:center">
+    <div class="section-head" style="margin:0">
+      <div class="eyebrow" data-ar="عن الشركة" data-en="About">عن الشركة</div>
+      <h2 data-ar="راسخ — أساس تقني لمنشأتكم" data-en="Raseekh — a technical foundation for your business">راسخ — أساس تقني لمنشأتكم</h2>
+      <p data-ar="نطوّر أنظمة نقاط بيع، منتجات، ومخزون بواجهة فردية لعلامتكم — عربية وإنجليزية — مع تسجيل دخول مربوط بلوحة تشغيل حقيقية." data-en="We build POS, product, and inventory systems with a distinct brand UI — Arabic and English — and login tied to a real operations dashboard.">نطوّر أنظمة نقاط بيع، منتجات، ومخزون بواجهة فردية لعلامتكم — عربية وإنجليزية — مع تسجيل دخول مربوط بلوحة تشغيل حقيقية.</p>
+    </div>
+    <div class="panel">
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div><strong data-ar="التركيز" data-en="Focus">التركيز</strong><p style="color:var(--muted);margin-top:4px" data-ar="كاشير، منتجات، مخزون، وفواتير يومية." data-en="Checkout, products, stock, and daily receipts.">كاشير، منتجات، مخزون، وفواتير يومية.</p></div>
+        <div><strong data-ar="اللغات" data-en="Languages">اللغات</strong><p style="color:var(--muted);margin-top:4px" data-ar="عربي وإنجليزي في الموقع واللوحة معاً." data-en="Arabic and English across site and dashboard.">عربي وإنجليزي في الموقع واللوحة معاً.</p></div>
+        <div><strong data-ar="التشغيل" data-en="Operations">التشغيل</strong><p style="color:var(--muted);margin-top:4px" data-ar="سجّل دخولك وابدأ البيع من أول يوم." data-en="Sign in and start selling from day one.">سجّل دخولك وابدأ البيع من أول يوم.</p></div>
+        <a class="btn btn-primary" href="dashboard/?demo=1" style="width:fit-content" data-ar="تجربة فورية بدون حساب" data-en="Try instantly without an account">تجربة فورية بدون حساب</a>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section id="process">
   <div class="wrap">
     <div class="section-head">
@@ -568,8 +587,13 @@ footer{
     <div class="panel" id="contact">
       <h2 data-ar="تواصل مع راسخ" data-en="Contact Raseekh">تواصل مع راسخ</h2>
       <p data-ar="صف احتياجكم وسنعود إليكم خلال يوم عمل." data-en="Tell us what you need — we reply within a business day.">صف احتياجكم وسنعود إليكم خلال يوم عمل.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px">
+        <a class="btn btn-ghost" href="mailto:ahmad00alahmadi@gmail.com">ahmad00alahmadi@gmail.com</a>
+        <a class="btn btn-ghost" href="https://wa.me/966500000000" target="_blank" rel="noopener" data-ar="واتساب" data-en="WhatsApp">واتساب</a>
+      </div>
       <form class="form" id="contactForm">
         <input type="text" required data-ar-placeholder="الاسم الكامل" data-en-placeholder="Full name" placeholder="الاسم الكامل" id="contactName">
+        <input type="tel" data-ar-placeholder="رقم الجوال" data-en-placeholder="Phone" placeholder="رقم الجوال" id="contactPhone">
         <input type="text" data-ar-placeholder="اسم الشركة" data-en-placeholder="Company name" placeholder="اسم الشركة" id="contactCompany">
         <select id="contactType">
           <option value="pos" data-ar="نقطة بيع POS" data-en="POS system">نقطة بيع POS</option>
@@ -827,6 +851,7 @@ footer{
     const result = document.getElementById('contactResult');
     const payload = {
       name: document.getElementById('contactName').value.trim(),
+      phone: document.getElementById('contactPhone').value.trim(),
       company: document.getElementById('contactCompany').value.trim(),
       type: document.getElementById('contactType').value,
       message: document.getElementById('contactMsg').value.trim(),
