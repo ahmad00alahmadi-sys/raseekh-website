@@ -55,7 +55,7 @@
       "alternateName": "Raseekh",
       "url": "https://raseekh.com/",
       "areaServed": "SA",
-      "serviceType": ["Website maintenance", "Custom programming", "Inventory applications", "Business systems"],
+      "serviceType": ["Website maintenance", "Custom programming", "Inventory applications", "Business solutions", "Business systems"],
       "provider": { "@id": "https://raseekh.com/#org" },
       "availableLanguage": ["ar", "en"]
     },
@@ -93,6 +93,14 @@
           "acceptedAnswer": {
             "@type": "Answer",
             "text": "نعم — تطبيقات مخزون ومنتجات وكميات وحركات حسب نشاطكم، مع لوحات وتقارير عند الحاجة."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "هل لديكم حلول للشركات؟",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "نعم — خيار حلول للشركات يغطي أنظمة تشغيل، مخزون، صلاحيات أقسام، وتقارير حسب نشاط المنشأة."
           }
         },
         {
@@ -670,6 +678,7 @@ body.terms-locked{overflow:hidden}
           <option value="web-dev" data-ar="تطوير مواقع" data-en="Website development">تطوير مواقع</option>
           <option value="programming" data-ar="برمجة / تعديل كود" data-en="Programming / code changes" selected>برمجة / تعديل كود</option>
           <option value="inventory" data-ar="تطبيق مخزون" data-en="Inventory app">تطبيق مخزون</option>
+          <option value="business" data-ar="حلول للشركات" data-en="Business solutions">حلول للشركات</option>
           <option value="systems" data-ar="أنظمة ولوحات" data-en="Systems & dashboards">أنظمة ولوحات</option>
           <option value="api" data-ar="ربط API" data-en="API & integrations">ربط API</option>
           <option value="system" data-ar="نظام كامل" data-en="Complete system">نظام كامل</option>
@@ -691,7 +700,7 @@ body.terms-locked{overflow:hidden}
   <div class="promise-line reveal">
     <span data-ar="صيانة مواقع" data-en="Maintenance">صيانة مواقع</span>
     <span data-ar="برمجة مخصصة" data-en="Custom coding">برمجة مخصصة</span>
-    <span data-ar="أنظمة تشغيل" data-en="Business systems">أنظمة تشغيل</span>
+    <span data-ar="حلول للشركات" data-en="For companies">حلول للشركات</span>
     <span data-ar="متابعة من حساب العميل" data-en="Track in client account">متابعة من حساب العميل</span>
   </div>
 </div>
@@ -712,10 +721,10 @@ body.terms-locked{overflow:hidden}
         <h3 data-ar="خدمات البرمجة" data-en="Programming services">خدمات البرمجة</h3>
         <p data-ar="مواقع، تعديلات، وأنظمة حسب طلبكم." data-en="Sites, edits, and systems built to request.">مواقع، تعديلات، وأنظمة حسب طلبكم.</p>
       </a>
-      <article class="service-block">
-        <h3 data-ar="نظام كامل للعملاء" data-en="Complete client systems">نظام كامل للعملاء</h3>
-        <p data-ar="من الفكرة إلى التشغيل الجاهز." data-en="From idea to a ready-to-run system.">من الفكرة إلى التشغيل الجاهز.</p>
-      </article>
+      <a class="service-block" href="#contact" data-quote-type="business" data-quote-msg-ar="أرغب بحلول للشركات — موقع/نظام/مخزون حسب نشاط منشأتنا." data-quote-msg-en="I want business solutions — site/system/inventory for our company." style="text-decoration:none;color:inherit;display:block">
+        <h3 data-ar="حلول للشركات" data-en="For companies">حلول للشركات</h3>
+        <p data-ar="أنظمة ومخزون وصلاحيات أقسام حسب نشاط المنشأة." data-en="Systems, inventory, and department roles for your company.">أنظمة ومخزون وصلاحيات أقسام حسب نشاط المنشأة.</p>
+      </a>
     </div>
   </div>
 </section>
@@ -739,6 +748,10 @@ body.terms-locked{overflow:hidden}
       <article class="service-block">
         <h3 data-ar="تطبيق مخزون" data-en="Inventory app">تطبيق مخزون</h3>
         <p data-ar="إدارة منتجات وكميات وحركات مخزون حسب نشاطكم." data-en="Products, quantities, and stock movements for your workflow.">إدارة منتجات وكميات وحركات مخزون حسب نشاطكم.</p>
+      </article>
+      <article class="service-block">
+        <h3 data-ar="حلول للشركات" data-en="Business solutions">حلول للشركات</h3>
+        <p data-ar="تشغيل، مخزون، وصلاحيات أقسام حسب هيكل منشأتكم." data-en="Ops, inventory, and department roles for your company structure.">تشغيل، مخزون، وصلاحيات أقسام حسب هيكل منشأتكم.</p>
       </article>
       <article class="service-block">
         <h3 data-ar="أنظمة ولوحات" data-en="Systems & dashboards">أنظمة ولوحات</h3>
@@ -809,16 +822,16 @@ body.terms-locked{overflow:hidden}
         <a class="btn btn-primary" href="#contact" data-quote-type="inventory" data-quote-msg-ar="أرغب بباقة احترافي — موقع أو تطبيق مخزون / لوحة متوسطة." data-quote-msg-en="I want the Pro plan — mid-size site, inventory app, or dashboard." data-ar="اطلب احترافي" data-en="Choose Pro">اطلب احترافي</a>
       </article>
       <article class="price-card">
-        <div class="plan" data-ar="فرق" data-en="Teams">فرق</div>
-        <h3 data-ar="مؤسسات" data-en="Teams">مؤسسات</h3>
-        <p class="tagline" data-ar="لنظام كامل أو عمل متعدد الأقسام." data-en="For a full system or multi-team work.">لنظام كامل أو عمل متعدد الأقسام.</p>
+        <div class="plan" data-ar="شركات" data-en="Companies">شركات</div>
+        <h3 data-ar="للشركات" data-en="For companies">للشركات</h3>
+        <p class="tagline" data-ar="لمنشآت تحتاج نظاماً أو مخزوناً أو عدة أقسام." data-en="For companies that need a system, inventory, or multiple departments.">لمنشآت تحتاج نظاماً أو مخزوناً أو عدة أقسام.</p>
         <ul>
-          <li data-ar="نظام مخصص كامل" data-en="Complete custom system">نظام مخصص كامل</li>
-          <li data-ar="مخزون وتشغيل متعدد الأقسام" data-en="Inventory & multi-team operations">مخزون وتشغيل متعدد الأقسام</li>
+          <li data-ar="حلول تشغيلية للشركة" data-en="Company operational solutions">حلول تشغيلية للشركة</li>
+          <li data-ar="مخزون وصلاحيات أقسام" data-en="Inventory & department roles">مخزون وصلاحيات أقسام</li>
           <li data-ar="ربط API وتكاملات" data-en="API & integrations">ربط API وتكاملات</li>
           <li data-ar="متابعة أولوية" data-en="Priority follow-up">متابعة أولوية</li>
         </ul>
-        <a class="btn btn-ghost" href="#contact" data-quote-type="system" data-quote-msg-ar="أرغب بباقة مؤسسات — نظام كامل أو عمل متعدد الأقسام." data-quote-msg-en="I want the Teams plan — full system or multi-team work." data-ar="تحدث مع راسخ" data-en="Talk to Raseekh">تحدث مع راسخ</a>
+        <a class="btn btn-ghost" href="#contact" data-quote-type="business" data-quote-msg-ar="أرغب بباقة للشركات — حلول تشغيلية حسب نشاط منشأتنا." data-quote-msg-en="I want the company plan — operational solutions for our business." data-ar="اطلب حلول الشركات" data-en="Request company solutions">اطلب حلول الشركات</a>
       </article>
     </div>
   </div>
@@ -910,7 +923,8 @@ body.terms-locked{overflow:hidden}
       </article>
     </div>
     <div class="now-foot reveal">
-      <a class="btn btn-primary" href="#contact" data-quote-type="inventory" data-quote-msg-ar="أرغب بتطبيق مخزون حسب نشاطنا." data-quote-msg-en="I want an inventory app for our workflow." data-ar="اطلب تطبيق مخزون" data-en="Request inventory app">اطلب تطبيق مخزون</a>
+      <a class="btn btn-primary" href="#contact" data-quote-type="business" data-quote-msg-ar="أرغب بحلول للشركات حسب نشاط منشأتنا." data-quote-msg-en="I want business solutions for our company." data-ar="حلول للشركات" data-en="For companies">حلول للشركات</a>
+      <a class="btn btn-ghost" href="#contact" data-quote-type="inventory" data-quote-msg-ar="أرغب بتطبيق مخزون حسب نشاطنا." data-quote-msg-en="I want an inventory app for our workflow." data-ar="تطبيق مخزون" data-en="Inventory app">تطبيق مخزون</a>
       <a class="btn btn-ghost" href="/dashboard/" data-ar="دخول حساب العميل" data-en="Open client account">دخول حساب العميل</a>
     </div>
   </div>
@@ -939,6 +953,10 @@ body.terms-locked{overflow:hidden}
       <details class="faq-item">
         <summary data-ar="هل تطورون تطبيق مخزون؟" data-en="Do you build inventory apps?">هل تطورون تطبيق مخزون؟</summary>
         <p data-ar="نعم — تطبيقات مخزون ومنتجات وكميات وحركات حسب نشاطكم، مع لوحات وتقارير عند الحاجة." data-en="Yes — inventory, products, quantities, and stock movements scoped to your workflow, with dashboards/reports when needed.">نعم — تطبيقات مخزون ومنتجات وكميات وحركات حسب نشاطكم، مع لوحات وتقارير عند الحاجة.</p>
+      </details>
+      <details class="faq-item">
+        <summary data-ar="هل لديكم حلول للشركات؟" data-en="Do you offer solutions for companies?">هل لديكم حلول للشركات؟</summary>
+        <p data-ar="نعم — خيار «حلول للشركات» يغطي أنظمة تشغيل، مخزون، صلاحيات أقسام، وتقارير حسب نشاط المنشأة." data-en="Yes — the “Business solutions” option covers ops systems, inventory, department roles, and reports for your company.">نعم — خيار «حلول للشركات» يغطي أنظمة تشغيل، مخزون، صلاحيات أقسام، وتقارير حسب نشاط المنشأة.</p>
       </details>
       <details class="faq-item">
         <summary data-ar="هل يمكن الدفع أونلاين؟" data-en="Can I pay online?">هل يمكن الدفع أونلاين؟</summary>
@@ -1010,7 +1028,8 @@ body.terms-locked{overflow:hidden}
           <input type="tel" data-ar-placeholder="05xxxxxxxx" data-en-placeholder="05xxxxxxxx" placeholder="05xxxxxxxx" id="contactPhone" autocomplete="tel">
         </label>
         <p class="hint-inline" data-ar="يلزم بريد أو جوال واحد على الأقل للتواصل." data-en="Provide at least an email or phone so we can reply.">يلزم بريد أو جوال واحد على الأقل للتواصل.</p>
-        <label class="field"><span data-ar="اسم الشركة (اختياري)" data-en="Company (optional)">اسم الشركة (اختياري)</span>
+        <label class="field" id="contactCompanyField">
+          <span id="contactCompanyLabel" data-ar="اسم الشركة (اختياري)" data-en="Company (optional)">اسم الشركة (اختياري)</span>
           <input type="text" data-ar-placeholder="اسم الشركة" data-en-placeholder="Company name" placeholder="اسم الشركة" id="contactCompany" autocomplete="organization">
         </label>
         <label class="field"><span data-ar="نوع الطلب" data-en="Request type">نوع الطلب</span>
@@ -1019,6 +1038,7 @@ body.terms-locked{overflow:hidden}
             <option value="web-dev" data-ar="تطوير مواقع" data-en="Website development">تطوير مواقع</option>
             <option value="programming" data-ar="خدمات البرمجة / تعديل كود" data-en="Programming / code changes">خدمات البرمجة / تعديل كود</option>
             <option value="inventory" data-ar="تطبيق مخزون" data-en="Inventory app">تطبيق مخزون</option>
+            <option value="business" data-ar="حلول للشركات" data-en="Business solutions">حلول للشركات</option>
             <option value="systems" data-ar="برمجة أنظمة ولوحات" data-en="Systems & dashboards">برمجة أنظمة ولوحات</option>
             <option value="api" data-ar="ربط API وأنظمة" data-en="API & integrations">ربط API وأنظمة</option>
             <option value="system" data-ar="نظام كامل" data-en="Complete system">نظام كامل</option>
@@ -1163,14 +1183,42 @@ body.terms-locked{overflow:hidden}
     return d.innerHTML;
   }
 
+  function syncCompanyFieldForType(type){
+    const company = document.getElementById('contactCompany');
+    const label = document.getElementById('contactCompanyLabel');
+    if (!company || !label) return;
+    const forBusiness = type === 'business' || type === 'system';
+    company.required = forBusiness;
+    if (forBusiness) {
+      label.setAttribute('data-ar', 'اسم الشركة');
+      label.setAttribute('data-en', 'Company name');
+      label.textContent = t('اسم الشركة', 'Company name');
+      company.setAttribute('data-ar-placeholder', 'اسم الشركة');
+      company.setAttribute('data-en-placeholder', 'Company name');
+    } else {
+      label.setAttribute('data-ar', 'اسم الشركة (اختياري)');
+      label.setAttribute('data-en', 'Company (optional)');
+      label.textContent = t('اسم الشركة (اختياري)', 'Company (optional)');
+      company.setAttribute('data-ar-placeholder', 'اسم الشركة');
+      company.setAttribute('data-en-placeholder', 'Company name');
+    }
+    company.placeholder = t('اسم الشركة', 'Company name');
+  }
+
   function requestFromCatalog(opts){
     const typeEl = document.getElementById('contactType');
     const msgEl = document.getElementById('contactMsg');
     const nameEl = document.getElementById('contactName');
+    const companyEl = document.getElementById('contactCompany');
     if (opts.type && typeEl) typeEl.value = opts.type;
     if (msgEl) msgEl.value = opts.message || '';
+    syncCompanyFieldForType((typeEl && typeEl.value) || opts.type || '');
     document.getElementById('contact').scrollIntoView({ behavior: 'smooth', block: 'start' });
-    const focusEl = (nameEl && !nameEl.value.trim()) ? nameEl : msgEl;
+    const focusEl = (nameEl && !nameEl.value.trim())
+      ? nameEl
+      : ((opts.type === 'business' || opts.type === 'system') && companyEl && !companyEl.value.trim()
+        ? companyEl
+        : msgEl);
     focusEl && focusEl.focus();
   }
 
@@ -1438,7 +1486,21 @@ body.terms-locked{overflow:hidden}
     const params = new URLSearchParams(location.search);
     const type = params.get('type');
     const msg = params.get('msg') || params.get('message');
-    const allowed = ['maintenance','web-dev','programming','inventory','systems','api','system','hardware','electronics'];
+    const allowed = ['maintenance','web-dev','programming','inventory','business','systems','api','system','hardware','electronics'];
+    const typeEl = document.getElementById('contactType');
+    if (typeEl) {
+      typeEl.addEventListener('change', () => syncCompanyFieldForType(typeEl.value));
+      syncCompanyFieldForType(typeEl.value);
+    }
+    const heroType = document.getElementById('heroQuoteType');
+    if (heroType) {
+      heroType.addEventListener('change', () => {
+        if (typeEl) {
+          typeEl.value = heroType.value;
+          syncCompanyFieldForType(heroType.value);
+        }
+      });
+    }
     if (!type && !msg) return;
     let normalized = type === 'electronics' ? 'hardware' : type;
     if (!allowed.includes(normalized)) normalized = 'programming';
@@ -1818,6 +1880,8 @@ body.terms-locked{overflow:hidden}
     }
     const emailVal = document.getElementById('contactEmail').value.trim();
     const phoneVal = document.getElementById('contactPhone').value.trim();
+    const companyVal = document.getElementById('contactCompany').value.trim();
+    const typeVal = document.getElementById('contactType').value;
     const sessionEmail = loggedInUser && loggedInUser.email ? loggedInUser.email : '';
     const email = emailVal || sessionEmail;
     if (!email && !phoneVal) {
@@ -1826,11 +1890,17 @@ body.terms-locked{overflow:hidden}
       (emailVal ? document.getElementById('contactPhone') : document.getElementById('contactEmail')).focus();
       return;
     }
+    if ((typeVal === 'business' || typeVal === 'system') && !companyVal) {
+      result.style.color = 'var(--danger)';
+      result.textContent = t('اكتبوا اسم الشركة لطلبات الشركات', 'Enter the company name for business requests');
+      document.getElementById('contactCompany').focus();
+      return;
+    }
     const payload = {
       name: document.getElementById('contactName').value.trim(),
       phone: phoneVal,
-      company: document.getElementById('contactCompany').value.trim(),
-      type: document.getElementById('contactType').value,
+      company: companyVal,
+      type: typeVal,
       message: document.getElementById('contactMsg').value.trim(),
       at: new Date().toISOString(),
       email: email,

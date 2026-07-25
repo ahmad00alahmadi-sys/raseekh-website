@@ -5,8 +5,8 @@
   const ADMIN_PRODUCTS_KEY = 'raseekh_admin_products_v1';
   const VERSION_KEY = 'raseekh_catalog_version';
   const SUGGESTIONS_VERSION_KEY = 'raseekh_suggestions_version';
-  const CATALOG_VERSION = 8;
-  const SUGGESTIONS_VERSION = 6;
+  const CATALOG_VERSION = 9;
+  const SUGGESTIONS_VERSION = 7;
   const CLIENT_REQUESTS_KEY = 'raseekh_all_client_requests_v1';
   const PAYMENTS_KEY = 'raseekh_admin_sales_v1';
 
@@ -89,6 +89,13 @@
       desc: 'تطبيق برمجي لإدارة المخزون والمنتجات والكميات والحركات — حسب نشاطكم ومتطلباتكم.',
       desc_en: 'Custom software for inventory, products, quantities, and stock movements — scoped to your workflow.',
       price: 0, priceMode: 'quote', stock: 99, kind: 'service', client: true, region: 'online'
+    },
+    {
+      id: 'p12', name: 'حلول للشركات', name_en: 'Business solutions',
+      category: 'شركات', category_en: 'Business',
+      desc: 'باقة للشركات: موقع أو نظام تشغيلي، مخزون، صلاحيات أقسام، وتقارير — عرض سعر بعد فهم نشاط الشركة.',
+      desc_en: 'For companies: site or ops system, inventory, department roles, and reports — quote after we understand your business.',
+      price: 0, priceMode: 'quote', stock: 99, kind: 'service', client: true, region: 'online'
     }
   ];
 
@@ -142,6 +149,16 @@
       productIds: ['p11', 'p8'],
       badge: 'مخزون',
       badge_en: 'Inventory'
+    },
+    {
+      id: 'sg7',
+      title: 'باقة الشركات',
+      title_en: 'Company package',
+      desc: 'حلول للشركات + مخزون + نظام تشغيلي — مناسبة للمنشآت التي تحتاج أكثر من موقع بسيط.',
+      desc_en: 'Business solutions + inventory + ops system — for companies that need more than a simple website.',
+      productIds: ['p12', 'p11', 'p10'],
+      badge: 'للشركات',
+      badge_en: 'For companies'
     }
   ];
 
@@ -637,6 +654,7 @@
       'web-dev': { ar: 'تطوير مواقع', en: 'Website development' },
       programming: { ar: 'خدمات البرمجة', en: 'Programming' },
       inventory: { ar: 'تطبيق مخزون', en: 'Inventory app' },
+      business: { ar: 'حلول للشركات', en: 'Business solutions' },
       systems: { ar: 'أنظمة ولوحات', en: 'Systems & dashboards' },
       api: { ar: 'ربط API', en: 'API & integrations' },
       system: { ar: 'نظام كامل', en: 'Complete system' },
@@ -651,7 +669,7 @@
   const PRODUCT_REQUEST_TYPES = {
     p1: 'hardware', p2: 'hardware', p3: 'hardware', p4: 'hardware',
     p5: 'maintenance', p6: 'web-dev', p7: 'programming',
-    p8: 'systems', p9: 'api', p10: 'system', p11: 'inventory'
+    p8: 'systems', p9: 'api', p10: 'system', p11: 'inventory', p12: 'business'
   };
 
   function requestTypeForProduct(product) {
@@ -662,6 +680,7 @@
     if (cat.includes('maintenance') || cat.includes('صيانة')) return 'maintenance';
     if (cat.includes('website development') || cat.includes('تطوير مواقع') || cat.includes('web-dev')) return 'web-dev';
     if (cat.includes('inventory') || cat.includes('مخزون') || cat.includes('stock')) return 'inventory';
+    if (cat.includes('business') || cat.includes('company') || cat.includes('شركات') || cat.includes('منشآت')) return 'business';
     if (cat.includes('api') || cat.includes('ربط')) return 'api';
     if (cat.includes('dashboard') || cat.includes('systems') || cat.includes('أنظمة') || cat.includes('لوحات')) return 'systems';
     if (cat.includes('system') || cat.includes('نظام')) return 'system';
@@ -675,6 +694,7 @@
       { value: 'web-dev', ar: 'تطوير مواقع', en: 'Website development' },
       { value: 'programming', ar: 'خدمات البرمجة / تعديل كود', en: 'Programming / code changes' },
       { value: 'inventory', ar: 'تطبيق مخزون', en: 'Inventory app' },
+      { value: 'business', ar: 'حلول للشركات', en: 'Business solutions' },
       { value: 'systems', ar: 'برمجة أنظمة ولوحات', en: 'Systems & dashboards' },
       { value: 'api', ar: 'ربط API وأنظمة', en: 'API & integrations' },
       { value: 'system', ar: 'نظام كامل', en: 'Complete system' },

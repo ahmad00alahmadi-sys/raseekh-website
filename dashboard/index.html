@@ -1155,7 +1155,7 @@ body.is-admin .client-only{display:none!important}
     badge.classList.toggle('show', isAdminUser && n > 0);
   }
   function requestTitle(r){
-    if (r.title && !/^(electronics|hardware|maintenance|web-dev|programming|inventory|systems|api|system|site|product|suggestion)$/i.test(String(r.title))) {
+    if (r.title && !/^(electronics|hardware|maintenance|web-dev|programming|inventory|business|systems|api|system|site|product|suggestion)$/i.test(String(r.title))) {
       return r.title;
     }
     const type = r.type || r.title || 'site';
