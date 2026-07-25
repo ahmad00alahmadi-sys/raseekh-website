@@ -1249,6 +1249,16 @@ body.terms-locked{overflow:hidden}
     ['loginMsg','registerMsg','forgotMsg','resetMsg'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = ''; });
     if (lastFocusBeforeAuth && typeof lastFocusBeforeAuth.focus === 'function') lastFocusBeforeAuth.focus();
   }
+  authModal.addEventListener('keydown', (e) => {
+    if (e.key !== 'Tab' || !authModal.classList.contains('open')) return;
+    const focusables = Array.from(authModal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'))
+      .filter((el) => !el.disabled && el.offsetParent !== null && el.getAttribute('aria-hidden') !== 'true');
+    if (!focusables.length) return;
+    const first = focusables[0];
+    const last = focusables[focusables.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  });
   function showAuthPanel(name){
     Object.values(panels).forEach(p => p.classList.remove('active'));
     panels[name].classList.add('active');
