@@ -2505,7 +2505,10 @@ body.is-admin .client-only{display:none!important}
             <span class="status-chip ${escapeHtml(r.status || 'new')}" style="margin-inline-start:8px">${escapeHtml(statusLabel(r.status))}</span>
           </div>
           <div style="color:var(--muted);font-size:.86rem;margin-top:2px">
-            ${escapeHtml([r.phone, r.email, r.company].filter(Boolean).join(' · ') || t('بدون بيانات تواصل إضافية','No extra contact details'))}
+            ${escapeHtml([
+              r.segment === 'company' ? t('شركة','Company') : (r.segment === 'institution' ? t('مؤسسة','Institution') : (r.segment === 'individual' ? t('فرد','Individual') : '')),
+              r.phone, r.email, r.company
+            ].filter(Boolean).join(' · ') || t('بدون بيانات تواصل إضافية','No extra contact details'))}
           </div>
           <div style="font-size:.92rem;margin-top:6px"><strong>${escapeHtml(requestTitle(r))}</strong></div>
           <div style="color:var(--muted);font-size:.86rem;white-space:pre-wrap">${escapeHtml(r.message || '')}</div>
