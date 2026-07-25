@@ -880,6 +880,14 @@ body.pay-paused .pay-public-entry{display:none!important}
         <form class="form" id="loginForm">
           <input type="email" id="loginEmail" required autocomplete="email" data-ar-placeholder="البريد الإلكتروني" data-en-placeholder="Email" placeholder="البريد الإلكتروني">
           <input type="password" id="loginPassword" required autocomplete="current-password" data-ar-placeholder="كلمة المرور" data-en-placeholder="Password" placeholder="كلمة المرور">
+          <label class="check" for="loginTermsCheck">
+            <input type="checkbox" id="loginTermsCheck" required>
+            <span class="check-text">
+              <span data-ar="أوافق على " data-en="I agree to the ">أوافق على </span>
+              <a href="/terms/#auth" id="loginTermsLink" data-ar="شروط تسجيل الدخول" data-en="sign-in terms">شروط تسجيل الدخول</a>
+              <span data-ar="." data-en=".">.</span>
+            </span>
+          </label>
           <button class="btn btn-primary" type="submit" data-ar="دخول" data-en="Log in">دخول</button>
         </form>
         <button type="button" class="linkish" id="forgotPasswordLink" style="margin-top:12px" data-ar="نسيت كلمة المرور؟" data-en="Forgot password?">نسيت كلمة المرور؟</button>
@@ -896,8 +904,8 @@ body.pay-paused .pay-public-entry{display:none!important}
             <input type="checkbox" id="registerTermsCheck" required>
             <span class="check-text">
               <span data-ar="أوافق على " data-en="I agree to the ">أوافق على </span>
-              <a href="/terms/" id="registerTermsLink" data-ar="الشروط والأحكام" data-en="Terms & Conditions">الشروط والأحكام</a>
-              <span data-ar=" لاستخدام حساب العميل وطلب الخدمات." data-en=" for using the client account and requesting services."> لاستخدام حساب العميل وطلب الخدمات.</span>
+              <a href="/terms/#auth" id="registerTermsLink" data-ar="شروط تسجيل الدخول وإنشاء الحساب" data-en="sign-in & registration terms">شروط تسجيل الدخول وإنشاء الحساب</a>
+              <span data-ar="." data-en=".">.</span>
             </span>
           </label>
           <button class="btn btn-primary" type="submit" data-ar="إنشاء الحساب" data-en="Create account">إنشاء الحساب</button>
@@ -3143,6 +3151,13 @@ body.pay-paused .pay-public-entry{display:none!important}
   document.getElementById('loginForm').addEventListener('submit', withFormSubmitting(document.getElementById('loginForm'), async () => {
     const msg = document.getElementById('loginMsg');
     if (!Auth) { msg.style.color = 'var(--danger)'; msg.textContent = t('تعذّر تحميل نظام الحسابات', 'Auth system failed to load'); return; }
+    const loginTerms = document.getElementById('loginTermsCheck');
+    if (loginTerms && !loginTerms.checked) {
+      msg.style.color = 'var(--danger)';
+      msg.textContent = t('يلزم الموافقة على شروط تسجيل الدخول أولاً', 'Please accept the sign-in terms first');
+      loginTerms.focus();
+      return;
+    }
     msg.style.color = 'var(--muted)'; msg.textContent = t('جاري تسجيل الدخول...', 'Signing in...');
     try {
       const result = await Auth.signIn({ email: document.getElementById('loginEmail').value.trim(), password: document.getElementById('loginPassword').value });
@@ -3166,7 +3181,7 @@ body.pay-paused .pay-public-entry{display:none!important}
     const termsCheck = document.getElementById('registerTermsCheck');
     if (termsCheck && !termsCheck.checked) {
       msg.style.color = 'var(--danger)';
-      msg.textContent = t('يلزم الموافقة على الشروط والأحكام أولاً', 'Please accept the Terms & Conditions first');
+      msg.textContent = t('يلزم الموافقة على شروط تسجيل الدخول وإنشاء الحساب أولاً', 'Please accept the sign-in & registration terms first');
       termsCheck.focus();
       return;
     }
@@ -3775,12 +3790,14 @@ body.pay-paused .pay-public-entry{display:none!important}
   const Terms = window.RaseekhTerms;
   const termsOverlay = document.getElementById('termsOverlay');
   const termsBody = document.getElementById('termsOverlayBody');
-  function openTermsOverlay(e){
+  function openTermsOverlay(e, mode){
     if (e) e.preventDefault();
+    const view = mode === 'auth' ? 'auth' : 'full';
     if (Terms && termsBody) {
-      const ver = Terms.TERMS_VERSION || '1';
+      const ver = (Terms.TERMS_VERSION || '1') + ':' + view;
       if (termsBody.dataset.ready !== ver) {
-        Terms.renderInto(termsBody);
+        if (view === 'auth' && Terms.renderAuthInto) Terms.renderAuthInto(termsBody);
+        else Terms.renderInto(termsBody);
         termsBody.dataset.ready = ver;
         applyLang(currentLang);
       }
@@ -3799,15 +3816,17 @@ body.pay-paused .pay-public-entry{display:none!important}
     termsOverlay.setAttribute('aria-hidden', 'true');
     // Always clear terms lock; auth-locked keeps scroll locked while auth remains open.
     document.body.classList.remove('terms-locked');
-    const link = document.getElementById('registerTermsLink');
+    const link = document.getElementById('registerTermsLink') || document.getElementById('loginTermsLink');
     if (link && authModal && authModal.classList.contains('open')) {
       try { link.focus(); } catch (_) {}
     }
   }
   const openTermsBtn = document.getElementById('openTermsOverlayBtn');
-  if (openTermsBtn) openTermsBtn.addEventListener('click', openTermsOverlay);
+  if (openTermsBtn) openTermsBtn.addEventListener('click', (e) => openTermsOverlay(e, 'full'));
   const regTermsLink = document.getElementById('registerTermsLink');
-  if (regTermsLink) regTermsLink.addEventListener('click', openTermsOverlay);
+  if (regTermsLink) regTermsLink.addEventListener('click', (e) => openTermsOverlay(e, 'auth'));
+  const loginTermsLink = document.getElementById('loginTermsLink');
+  if (loginTermsLink) loginTermsLink.addEventListener('click', (e) => openTermsOverlay(e, 'auth'));
   const closeTermsBtn = document.getElementById('closeTermsOverlayBtn');
   if (closeTermsBtn) closeTermsBtn.addEventListener('click', closeTermsOverlay);
   if (termsOverlay) {
