@@ -107,14 +107,31 @@ section{padding:96px 0;position:relative;z-index:1}
 .section-head p{color:var(--muted);font-size:1.05rem}
 
 .services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.services-grid.four{grid-template-columns:repeat(2,1fr)}
 .service-block{
   background:rgba(255,255,255,.72);border:1px solid var(--line);padding:28px 24px;
   backdrop-filter:blur(8px);transition:border-color .2s,transform .2s;
 }
 .service-block:hover{border-color:var(--leaf);transform:translateY(-3px)}
+.service-block.featured{
+  background:linear-gradient(155deg,#0C3F32 0%, #0A2E25 60%, #071C17 100%);
+  color:#F4FAF7;border-color:transparent;
+}
+.service-block.featured p{color:rgba(244,250,247,.82)}
+.service-block.featured .service-code{color:#D4B45A}
 .service-code{font-size:.72rem;font-weight:700;letter-spacing:.08em;color:var(--brass);margin-bottom:14px;display:block}
 .service-block h3{font-size:1.2rem;margin-bottom:10px}
 .service-block p{color:var(--muted);font-size:.94rem}
+.service-list{margin-top:14px;display:flex;flex-direction:column;gap:8px;padding:0;list-style:none}
+.service-list li{
+  color:var(--muted);font-size:.9rem;padding-inline-start:14px;position:relative;
+}
+.service-list li::before{
+  content:"";position:absolute;inset-inline-start:0;top:.55em;width:6px;height:6px;
+  border-radius:50%;background:var(--leaf);
+}
+.service-block.featured .service-list li{color:rgba(244,250,247,.86)}
+.service-block.featured .service-list li::before{background:#D4B45A}
 
 .products-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
 .product-item{
@@ -184,7 +201,7 @@ body.lang-en .footer-brand{font-family:'Outfit',sans-serif}
   .nav-links{display:none;position:absolute;top:66px;inset-inline:16px;flex-direction:column;background:rgba(255,255,255,.96);border:1px solid var(--line);padding:16px;border-radius:16px;box-shadow:var(--shadow);gap:14px;z-index:90}
   .nav-links.open{display:flex}
   .nav-toggle{display:flex}
-  .services-grid,.products-grid{grid-template-columns:1fr 1fr}
+  .services-grid,.services-grid.four,.products-grid{grid-template-columns:1fr 1fr}
   .work-list,.two-col{grid-template-columns:1fr}
   .work-item{border-inline-end:none;border-bottom:1px solid var(--line)}
   .hero{min-height:auto}.hero-content{padding:80px 0 64px}
@@ -203,6 +220,7 @@ body.lang-en .footer-brand{font-family:'Outfit',sans-serif}
     <a class="logo" href="/" data-ar-html='را<em>سخ</em>' data-en-html='Ra<em>seekh</em>'>را<em>سخ</em></a>
     <div class="nav-links" id="navLinks">
       <a href="#services" data-ar="خدماتنا" data-en="Services">خدماتنا</a>
+      <a href="#programming" data-ar="خدمات البرمجة" data-en="Programming">خدمات البرمجة</a>
       <a href="#products" data-ar="المنتجات" data-en="Products">المنتجات</a>
       <a href="#process" data-ar="كيف نعمل" data-en="How we work">كيف نعمل</a>
       <a href="#pay" data-ar="الدفع" data-en="Pay">الدفع</a>
@@ -277,9 +295,9 @@ body.lang-en .footer-brand{font-family:'Outfit',sans-serif}
   <div class="wrap hero-content">
     <div class="brand-mark" data-ar-html='را<span>سخ</span>' data-en-html='Ra<span>seekh</span>'>را<span>سخ</span></div>
     <h1 data-ar="واجهة رسمية لمنتجات إلكترونية وخدمات تقنية متكاملة" data-en="An official home for electronics and complete technical services">واجهة رسمية لمنتجات إلكترونية وخدمات تقنية متكاملة</h1>
-    <p data-ar="نبيع أجهزة إلكترونية، ونقدّم صيانة مواقع، وتعديل برمجة، وبناء أنظمة كاملة لعملائكم — بواجهة عربية وإنجليزية." data-en="We sell electronics and deliver website maintenance, code updates, and complete client systems — in Arabic and English.">نبيع أجهزة إلكترونية، ونقدّم صيانة مواقع، وتعديل برمجة، وبناء أنظمة كاملة لعملائكم — بواجهة عربية وإنجليزية.</p>
+    <p data-ar="نبيع أجهزة إلكترونية، ونقدّم صيانة مواقع، وخدمات برمجة متكاملة، وبناء أنظمة كاملة لعملائكم — بواجهة عربية وإنجليزية." data-en="We sell electronics and deliver website maintenance, full programming services, and complete client systems — in Arabic and English.">نبيع أجهزة إلكترونية، ونقدّم صيانة مواقع، وخدمات برمجة متكاملة، وبناء أنظمة كاملة لعملائكم — بواجهة عربية وإنجليزية.</p>
     <div class="hero-ctas">
-      <a class="btn btn-primary" href="#services" data-ar="اطلب خدمة" data-en="Request a service">اطلب خدمة</a>
+      <a class="btn btn-primary" href="#programming" data-ar="خدمات البرمجة" data-en="Programming services">خدمات البرمجة</a>
       <a class="btn btn-ghost" href="#products" data-ar="تصفح المنتجات" data-en="Browse products">تصفح المنتجات</a>
     </div>
   </div>
@@ -298,16 +316,71 @@ body.lang-en .footer-brand{font-family:'Outfit',sans-serif}
         <h3 data-ar="صيانة المواقع" data-en="Website maintenance">صيانة المواقع</h3>
         <p data-ar="تحديثات دورية، إصلاح أعطال، تحسين سرعة، ومتابعة أمان الموقع." data-en="Updates, bug fixes, speed improvements, and ongoing site security.">تحديثات دورية، إصلاح أعطال، تحسين سرعة، ومتابعة أمان الموقع.</p>
       </article>
-      <article class="service-block">
+      <a class="service-block featured" href="#programming" style="text-decoration:none;color:inherit;display:block">
         <span class="service-code">SRV-02</span>
-        <h3 data-ar="تعديل البرمجة" data-en="Programming changes">تعديل البرمجة</h3>
-        <p data-ar="إضافة مزايا، تعديل الشاشات، ربط أنظمة، وتحسين الكود الحالي." data-en="New features, UI changes, integrations, and improvements to existing code.">إضافة مزايا، تعديل الشاشات، ربط أنظمة، وتحسين الكود الحالي.</p>
-      </article>
+        <h3 data-ar="خدمات البرمجة" data-en="Programming services">خدمات البرمجة</h3>
+        <p data-ar="تطوير مواقع، تعديل كود، أنظمة ولوحات، وربط API — تفاصيل كاملة في القسم التالي." data-en="Websites, code changes, systems/dashboards, and API integration — full details in the next section.">تطوير مواقع، تعديل كود، أنظمة ولوحات، وربط API — تفاصيل كاملة في القسم التالي.</p>
+      </a>
       <article class="service-block">
         <span class="service-code">SRV-03</span>
         <h3 data-ar="نظام كامل للعملاء" data-en="Complete client systems">نظام كامل للعملاء</h3>
         <p data-ar="تصميم وتطوير نظام متكامل حسب احتياج منشأتكم من البداية للنهاية." data-en="Design and build a complete system tailored to your business from start to finish.">تصميم وتطوير نظام متكامل حسب احتياج منشأتكم من البداية للنهاية.</p>
       </article>
+    </div>
+  </div>
+</section>
+
+<section id="programming">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow" data-ar="خدمات البرمجة" data-en="Programming services">خدمات البرمجة</div>
+      <h2 data-ar="نبرمج ونعدّل ونطوّر حسب طلبكم" data-en="We code, modify, and build to your request">نبرمج ونعدّل ونطوّر حسب طلبكم</h2>
+      <p data-ar="قسم مخصص لخدمات البرمجة: مواقع، أنظمة، تعديلات، وربط تقني كامل." data-en="A dedicated programming section: websites, systems, modifications, and full technical integration.">قسم مخصص لخدمات البرمجة: مواقع، أنظمة، تعديلات، وربط تقني كامل.</p>
+    </div>
+    <div class="services-grid four reveal">
+      <article class="service-block">
+        <span class="service-code">DEV-01</span>
+        <h3 data-ar="تطوير مواقع إلكترونية" data-en="Website development">تطوير مواقع إلكترونية</h3>
+        <p data-ar="تصميم وبرمجة مواقع شركات ومتاجر ولوحات تحكم عربية وإنجليزية." data-en="Design and build company sites, stores, and dashboards in Arabic and English.">تصميم وبرمجة مواقع شركات ومتاجر ولوحات تحكم عربية وإنجليزية.</p>
+        <ul class="service-list">
+          <li data-ar="مواقع تعريفية ومتاجر" data-en="Corporate sites and stores">مواقع تعريفية ومتاجر</li>
+          <li data-ar="واجهات متجاوبة للجوال" data-en="Responsive mobile interfaces">واجهات متجاوبة للجوال</li>
+          <li data-ar="ربط نماذج وطلبات العملاء" data-en="Forms and client request flows">ربط نماذج وطلبات العملاء</li>
+        </ul>
+      </article>
+      <article class="service-block">
+        <span class="service-code">DEV-02</span>
+        <h3 data-ar="تعديل وتحسين البرمجة" data-en="Code modification & improvement">تعديل وتحسين البرمجة</h3>
+        <p data-ar="نعدّل على مشروعكم الحالي: إصلاح، إضافة مزايا، وتحسين الأداء." data-en="We update your existing project: fixes, new features, and performance improvements.">نعدّل على مشروعكم الحالي: إصلاح، إضافة مزايا، وتحسين الأداء.</p>
+        <ul class="service-list">
+          <li data-ar="إصلاح أخطاء برمجية" data-en="Bug fixing">إصلاح أخطاء برمجية</li>
+          <li data-ar="إضافة صفحات ومزايا جديدة" data-en="New pages and features">إضافة صفحات ومزايا جديدة</li>
+          <li data-ar="تحسين السرعة والاستقرار" data-en="Speed and stability upgrades">تحسين السرعة والاستقرار</li>
+        </ul>
+      </article>
+      <article class="service-block">
+        <span class="service-code">DEV-03</span>
+        <h3 data-ar="برمجة أنظمة ولوحات" data-en="Systems & dashboards">برمجة أنظمة ولوحات</h3>
+        <p data-ar="أنظمة إدارة، مخزون، عملاء، وحجوزات حسب طبيعة نشاطكم." data-en="Management, inventory, CRM, and booking systems for your business.">أنظمة إدارة، مخزون، عملاء، وحجوزات حسب طبيعة نشاطكم.</p>
+        <ul class="service-list">
+          <li data-ar="لوحات تحكم للموظفين" data-en="Staff dashboards">لوحات تحكم للموظفين</li>
+          <li data-ar="صلاحيات وتقارير" data-en="Roles and reports">صلاحيات وتقارير</li>
+          <li data-ar="تشغيل جاهز بعد التسليم" data-en="Ready-to-run delivery">تشغيل جاهز بعد التسليم</li>
+        </ul>
+      </article>
+      <article class="service-block">
+        <span class="service-code">DEV-04</span>
+        <h3 data-ar="ربط وواجهات برمجية API" data-en="Integrations & APIs">ربط وواجهات برمجية API</h3>
+        <p data-ar="ربط الدفع، الرسائل، والأنظمة الخارجية بمشروعكم." data-en="Connect payments, messaging, and external systems to your project.">ربط الدفع، الرسائل، والأنظمة الخارجية بمشروعكم.</p>
+        <ul class="service-list">
+          <li data-ar="بوابات دفع إلكتروني" data-en="Payment gateways">بوابات دفع إلكتروني</li>
+          <li data-ar="واتساب وSMS وتنبيهات" data-en="WhatsApp, SMS, and alerts">واتساب وSMS وتنبيهات</li>
+          <li data-ar="مزامنة بيانات بين الأنظمة" data-en="Data sync between systems">مزامنة بيانات بين الأنظمة</li>
+        </ul>
+      </article>
+    </div>
+    <div class="reveal" style="margin-top:28px">
+      <a class="btn btn-primary" href="#contact" data-ar="اطلب خدمة برمجة" data-en="Request programming service">اطلب خدمة برمجة</a>
     </div>
   </div>
 </section>
@@ -429,7 +502,10 @@ body.lang-en .footer-brand{font-family:'Outfit',sans-serif}
         <select id="contactType">
           <option value="electronics" data-ar="منتجات إلكترونية" data-en="Electronics">منتجات إلكترونية</option>
           <option value="maintenance" data-ar="صيانة مواقع" data-en="Website maintenance">صيانة مواقع</option>
-          <option value="programming" data-ar="تعديل برمجة" data-en="Programming changes">تعديل برمجة</option>
+          <option value="web-dev" data-ar="تطوير مواقع" data-en="Website development">تطوير مواقع</option>
+          <option value="programming" data-ar="خدمات البرمجة / تعديل كود" data-en="Programming / code changes">خدمات البرمجة / تعديل كود</option>
+          <option value="systems" data-ar="برمجة أنظمة ولوحات" data-en="Systems & dashboards">برمجة أنظمة ولوحات</option>
+          <option value="api" data-ar="ربط API وأنظمة" data-en="API & integrations">ربط API وأنظمة</option>
           <option value="system" data-ar="نظام كامل" data-en="Complete system">نظام كامل</option>
         </select>
         <textarea required data-ar-placeholder="صف طلبكم باختصار" data-en-placeholder="Briefly describe your request" placeholder="صف طلبكم باختصار" id="contactMsg"></textarea>
@@ -461,6 +537,7 @@ body.lang-en .footer-brand{font-family:'Outfit',sans-serif}
     <div data-ar="منتجات إلكترونية وخدمات تقنية © 2026" data-en="Electronics & Technical Services © 2026">منتجات إلكترونية وخدمات تقنية © 2026</div>
     <div class="footer-links">
       <a href="#services" data-ar="الخدمات" data-en="Services">الخدمات</a>
+      <a href="#programming" data-ar="خدمات البرمجة" data-en="Programming">خدمات البرمجة</a>
       <a href="#products" data-ar="المنتجات" data-en="Products">المنتجات</a>
       <a href="#terms" data-ar="الشروط" data-en="Terms">الشروط</a>
       <a href="/dashboard/" data-ar="حساب العميل" data-en="Client area">حساب العميل</a>
