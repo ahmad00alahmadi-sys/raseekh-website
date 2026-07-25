@@ -741,6 +741,13 @@
     }
   }
 
+  function deliveryRank(status) {
+    if (status === 'delivered') return 3;
+    if (status === 'pending_notify') return 2;
+    if (status === 'local') return 1;
+    return 0;
+  }
+
   function rowToCloud(row) {
     return {
       id: row.id,
@@ -763,7 +770,9 @@
 
   function cloudToRow(row) {
     if (!row) return null;
-    const fromPayload = row.payload && typeof row.payload === 'object' ? row.payload : {};
+    const fromPayload = row.payload && typeof row.payload === 'object' ? Object.assign({}, row.payload) : {};
+    // Stale hard-local marks in embedded payload must not survive a successful cloud round-trip.
+    if (fromPayload.deliveryStatus === 'local') fromPayload.deliveryStatus = 'pending_notify';
     return Object.assign({}, fromPayload, {
       id: row.id || fromPayload.id,
       at: row.created_at || fromPayload.at,
@@ -874,11 +883,22 @@
       const msg = String((insertErr && insertErr.message) || '').toLowerCase();
       const isDup = msg.includes('duplicate') || msg.includes('unique') || insertErr.code === '23505';
       if (!isDup) return false;
-      // Unique/fingerprint collision is only success when THIS id is already stored.
+      // Unique/fingerprint collision is only success when THIS id is already stored,
+      // or the same fingerprint already belongs to this client (content already received).
       try {
         const { data: byId } = await sb.from('client_requests').select('id').eq('id', row.id).maybeSingle();
         if (byId && byId.id === row.id) return true;
       } catch (_) {}
+      if (row.fingerprint) {
+        try {
+          const { data: byFp } = await sb
+            .from('client_requests')
+            .select('id')
+            .eq('fingerprint', row.fingerprint)
+            .maybeSingle();
+          if (byFp && byFp.id) return true;
+        } catch (_) {}
+      }
       return false;
     } catch (_) {
       return false;
@@ -951,11 +971,21 @@
           const prevTime = new Date(prev.updatedAt || prev.at || 0).getTime();
           const nextTime = new Date(r.updatedAt || r.at || 0).getTime();
           const merged = nextTime >= prevTime ? Object.assign({}, prev, r) : Object.assign({}, r, prev);
-          // Preserve email-retry marks; if the row exists in cloud, promote hard-local → pending_notify.
-          if (prev.deliveryStatus === 'pending_notify' || prev.deliveryStatus === 'local') {
-            merged.deliveryStatus = 'pending_notify';
-            merged.syncPending = true;
+          // Never regress delivery (e.g. delivered → stale local from embedded payload).
+          const prevRank = deliveryRank(prev.deliveryStatus);
+          const mergedRank = deliveryRank(merged.deliveryStatus);
+          if (prevRank > mergedRank) {
+            merged.deliveryStatus = prev.deliveryStatus;
+            if (prev.deliveryStatus === 'delivered') delete merged.syncPending;
+            else if (prev.syncPending) merged.syncPending = true;
+          } else if (prev.deliveryStatus === 'local' || prev.deliveryStatus === 'pending_notify') {
+            // Cloud has this id — at least pending_notify for email retry.
+            if (deliveryRank(merged.deliveryStatus) < 2) {
+              merged.deliveryStatus = 'pending_notify';
+              merged.syncPending = true;
+            }
           }
+          if (prev.emailNotifiedAt && !merged.emailNotifiedAt) merged.emailNotifiedAt = prev.emailNotifiedAt;
           byId.set(r.id, merged);
         }
       });
@@ -1488,13 +1518,19 @@
         if (settled.delivered) {
           delete list[idx].syncPending;
           list[idx].deliveryStatus = 'delivered';
+          if (settled.emailOk) list[idx].emailNotifiedAt = new Date().toISOString();
         } else {
           list[idx].syncPending = true;
           list[idx].deliveryStatus = settled.pendingNotify ? 'pending_notify' : 'local';
         }
+        list[idx].updatedAt = new Date().toISOString();
         saveSharedRequests(list);
         row.deliveryStatus = list[idx].deliveryStatus;
         row.syncPending = list[idx].syncPending;
+        row.emailNotifiedAt = list[idx].emailNotifiedAt;
+        row.updatedAt = list[idx].updatedAt;
+        // Best-effort refresh of embedded payload for admins who can UPDATE.
+        if (cloud) pushRequestToCloud(list[idx], { allowUpdate: true }).catch(() => {});
       }
     } catch (_) {}
     return {

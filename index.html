@@ -3395,12 +3395,12 @@ body.pay-paused .pay-public-entry{display:none!important}
             ? t('✓ تم إرسال طلبكم إلى راسخ', '✓ Request sent to Raseekh')
             : t('✓ تم إرسال طلبكم إلى راسخ — سنراجع ونرد', '✓ Request sent to Raseekh — we will review and reply'))
           : (softPending
-            ? t('استلمنا الطلب محلياً — فعلوا إشعار البريد من الإدارة أو أعيدوا الإرسال لاحقاً.', 'Request saved locally — admin must activate email notify, or resend later.')
+            ? t('استلمنا طلبكم — إشعار الإدارة قيد التفعيل. يمكنكم المتابعة من الحساب.', 'We received your request — admin notify is activating. You can track it from your account.')
             : (accountLocal
               ? t('حُفظ الطلب في حسابكم محلياً — تعذّر الإيصال للإدارة الآن. تابعوه من حسابي أو أعيدوا الإرسال.', 'Request saved locally in your account — could not reach admin now. Track it in My account or resend.')
               : t('تعذّر إيصال الطلب الآن. أبقوا النموذج وحاولوا مرة أخرى أو أنشئوا حساباً.', 'Could not deliver the request now. Keep the form and retry, or create an account.'))));
       if (successActions) {
-        if (ok || accountLocal) {
+        if (ok || softPending || accountLocal) {
           successActions.style.display = 'flex';
           successActions.style.gap = '8px';
           successActions.style.flexWrap = 'wrap';

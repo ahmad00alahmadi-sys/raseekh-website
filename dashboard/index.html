@@ -2408,10 +2408,11 @@ body.is-client .home-bar{
     }).join('');
   }
 
-  async function renderClientRequestsPage(){
+  async function renderClientRequestsPage(opts){
     const box = document.getElementById('clientRequestsList');
     if (!box) return;
-    if (Catalog && Catalog.retryPendingSharedRequests) {
+    const skipRetry = !!(opts && opts.skipRetry);
+    if (!skipRetry && Catalog && Catalog.retryPendingSharedRequests) {
       try { await Catalog.retryPendingSharedRequests(); } catch (_) {}
     }
     await refreshClientRequestsFromCloud();
@@ -2446,10 +2447,46 @@ body.is-client .home-bar{
     }).join('');
   }
 
+  async function notifyUnnotifiedAdminLeads(){
+    if (!isAdminUser || !Catalog || !Catalog.notifyAdminEmail) return 0;
+    const notifyEmail = (Catalog.resolveNotifyEmail && Catalog.resolveNotifyEmail()) || (store && store.notifyEmail) || '';
+    if (!notifyEmail || String(notifyEmail).indexOf('@') < 0) return 0;
+    loadClientRequests();
+    const pending = clientRequests.filter((r) =>
+      r && !r.emailNotifiedAt
+      && (r.status || 'new') === 'new'
+      && r.type !== 'login'
+      && r.type !== 'payment'
+      && r.deliveryStatus !== 'local'
+    ).slice(0, 5);
+    if (!pending.length) return 0;
+    let sent = 0;
+    for (const row of pending) {
+      try {
+        const result = await Catalog.notifyAdminEmail(row, notifyEmail);
+        if (!(result && result.ok)) continue;
+        sent += 1;
+        const list = Catalog.getSharedRequests ? Catalog.getSharedRequests() : clientRequests;
+        const idx = list.findIndex((x) => x && x.id === row.id);
+        if (idx >= 0) {
+          list[idx].emailNotifiedAt = new Date().toISOString();
+          list[idx].deliveryStatus = 'delivered';
+          delete list[idx].syncPending;
+          list[idx].updatedAt = new Date().toISOString();
+          if (Catalog.saveSharedRequests) Catalog.saveSharedRequests(list);
+          if (Catalog.pushRequestToCloud) Catalog.pushRequestToCloud(list[idx], { allowUpdate: true }).catch(() => {});
+        }
+      } catch (_) {}
+    }
+    if (sent) loadClientRequests();
+    return sent;
+  }
+
   async function renderAdminLeads(){
     const box = document.getElementById('adminLeadsList');
     if (!box) return;
     await refreshClientRequestsFromCloud();
+    try { await notifyUnnotifiedAdminLeads(); } catch (_) {}
     let siteLeads = [];
     try { siteLeads = JSON.parse(localStorage.getItem('raseekh_contact_leads') || '[]'); } catch (_) {}
 
@@ -2971,12 +3008,14 @@ body.is-client .home-bar{
     try {
       const id = btn.dataset.retryRequest;
       const row = (Catalog.getSharedRequests && Catalog.getSharedRequests().find((r) => r && r.id === id)) || null;
-      if (row && Catalog.deliverSharedRequest) await Catalog.deliverSharedRequest(row);
+      let delivery = null;
+      if (row && Catalog.deliverSharedRequest) delivery = await Catalog.deliverSharedRequest(row);
       else if (Catalog.retryPendingSharedRequests) await Catalog.retryPendingSharedRequests();
-      await renderClientRequestsPage();
-      const fresh = myRequests().find((r) => r.id === id);
-      if (fresh && (fresh.deliveryStatus === 'delivered' || fresh.deliveryStatus === 'pending_notify')) {
-        showToast(t('تم إرسال الطلب', 'Request sent'));
+      await renderClientRequestsPage({ skipRetry: true });
+      if (delivery && (delivery.delivered || delivery.pendingNotify || delivery.cloud)) {
+        showToast(delivery.delivered
+          ? t('تم إرسال الطلب', 'Request sent')
+          : t('استلمنا الطلب — جاري تأكيد إشعار الإدارة', 'Request received — confirming admin notify'));
       } else {
         showToast(t('ما زال الإرسال معلّقاً — حاولوا لاحقاً أو تواصلوا عبر النموذج', 'Send is still pending — try later or use the site form'));
       }
