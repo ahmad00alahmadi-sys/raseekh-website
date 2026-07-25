@@ -1,36 +1,5 @@
-/* Raseekh themes: base (أساسي) + soft (ناعم) — full surface remap, no night mode. */
-:root,
-html[data-theme="base"],
-html[data-theme="white"]{
-  --ink:#10233A;
-  --navy:#16324F;
-  --harbor:#2A6F7A;
-  --copper:#C45C26;
-  --sand:#E8A05A;
-  --bg:#FFFFFF;
-  --panel:#FFFFFF;
-  --mist:#F2F4F7;
-  --line:#E4E8EE;
-  --muted:#5A6B7C;
-  --danger:#B42318;
-  --ok:#1F7A58;
-  --radius:6px;
-  --shadow:0 14px 34px -26px rgba(16,35,58,.28);
-  --header-bg:rgba(255,255,255,.92);
-  --surface-tint:#FAFBFC;
-  --ghost-bg:rgba(247,249,252,.8);
-  --elevated:#FFFFFF;
-  --chip:#F2F4F7;
-  --table-head:#F7F9FC;
-  --forest:var(--navy);
-  --leaf:var(--harbor);
-  --brass:var(--copper);
-  --on-dark:#F4F7FA;
-  --hairline:rgba(16,35,58,.08);
-  color-scheme:light;
-}
-
-html[data-theme="soft"]{
+/* Raseekh look: soft mist only (base/sun removed). */
+:root{
   --ink:#10233A;
   --navy:#16324F;
   --harbor:#2A6F7A;
@@ -43,6 +12,7 @@ html[data-theme="soft"]{
   --muted:#5A6B7C;
   --danger:#B42318;
   --ok:#1F7A58;
+  --radius:6px;
   --shadow:0 18px 40px -28px rgba(16,35,58,.45);
   --header-bg:rgba(232,237,242,.9);
   --surface-tint:#F0F4F8;
@@ -58,143 +28,17 @@ html[data-theme="soft"]{
   color-scheme:light;
 }
 
-/* Atmosphere */
-html[data-theme="base"] body::before,
-html[data-theme="white"] body::before{
-  background:
-    radial-gradient(ellipse 70% 40% at 100% 0%, rgba(196,92,38,.07), transparent 55%),
-    radial-gradient(ellipse 60% 35% at 0% 8%, rgba(42,111,122,.07), transparent 50%),
-    linear-gradient(180deg,#FFFFFF 0%, var(--surface-tint) 55%, #FFFFFF 100%) !important;
-}
-html[data-theme="base"] body::after,
-html[data-theme="white"] body::after{opacity:.1 !important}
-
-html[data-theme="soft"] body::before{
+body::before{
   background:
     radial-gradient(ellipse 80% 50% at 100% -10%, rgba(196,92,38,.14), transparent 55%),
     radial-gradient(ellipse 70% 45% at -10% 20%, rgba(42,111,122,.14), transparent 50%),
     linear-gradient(165deg,#DCE4EC 0%, var(--bg) 42%, var(--surface-tint) 100%) !important;
 }
-html[data-theme="soft"] body::after{opacity:.18 !important}
+body::after{opacity:.18 !important}
 
-/* Prefs cluster beside language */
 .nav-prefs{
   display:inline-flex;
   align-items:center;
   gap:6px;
   flex:0 0 auto;
-}
-.theme-switch{
-  display:inline-flex;
-  align-items:stretch;
-  border:1.5px solid var(--line);
-  border-radius:999px;
-  background:var(--ghost-bg);
-  overflow:hidden;
-  padding:3px;
-  gap:2px;
-}
-.theme-switch [data-theme-set]{
-  border:0;
-  background:transparent;
-  color:var(--muted);
-  font:inherit;
-  font-size:.72rem;
-  font-weight:700;
-  padding:6px 10px;
-  border-radius:999px;
-  cursor:pointer;
-  min-width:0;
-  line-height:1.2;
-  display:inline-flex;
-  align-items:center;
-  gap:5px;
-}
-.theme-switch [data-theme-set]:hover{color:var(--ink)}
-.theme-switch [data-theme-set].is-active,
-.theme-switch [data-theme-set][aria-pressed="true"]{
-  background:var(--panel);
-  color:var(--harbor);
-  box-shadow:0 1px 0 rgba(16,35,58,.06);
-}
-.theme-switch [data-theme-set="base"].is-active,
-.theme-switch [data-theme-set="base"][aria-pressed="true"]{
-  color:#C45C26;
-}
-.theme-switch [data-theme-set="soft"].is-active,
-.theme-switch [data-theme-set="soft"][aria-pressed="true"]{
-  color:#2A6F7A;
-}
-.theme-ico{
-  width:14px;height:14px;display:block;flex:0 0 auto;
-}
-.theme-switch [data-theme-label]{display:inline-block}
-.theme-btn{
-  border:1.5px solid var(--line);
-  background:var(--ghost-bg);
-  border-radius:var(--radius);
-  padding:9px 12px;
-  font-size:.82rem;
-  font-weight:700;
-  cursor:pointer;
-  color:var(--ink);
-  min-width:3.6rem;
-}
-.theme-btn:hover{border-color:rgba(196,92,38,.5);color:var(--copper)}
-.theme-btn[aria-pressed="true"]{
-  border-color:rgba(42,111,122,.45);
-  color:var(--harbor);
-}
-
-html[data-theme="soft"] .theme-switch{
-  background:rgba(255,255,255,.55);
-}
-html[data-theme="soft"] .theme-switch [data-theme-set].is-active,
-html[data-theme="soft"] .theme-switch [data-theme-set][aria-pressed="true"]{
-  background:#fff;
-}
-html[data-theme="soft"] .theme-switch [data-theme-set="base"].is-active{
-  color:#C45C26;
-}
-html[data-theme="soft"] .theme-switch [data-theme-set="soft"].is-active{
-  color:#2A6F7A;
-}
-
-/* Soft remaps for hardcoded light-only surfaces */
-html[data-theme="soft"] .panel,
-html[data-theme="soft"] .card,
-html[data-theme="soft"] .login-card,
-html[data-theme="soft"] .stat,
-html[data-theme="soft"] .service-block,
-html[data-theme="soft"] .faq-item,
-html[data-theme="soft"] .suggest-card{
-  background:var(--panel);
-  border-color:var(--line);
-  box-shadow:var(--shadow);
-}
-html[data-theme="soft"] header,
-html[data-theme="soft"] .site-header{
-  background:var(--header-bg);
-  border-bottom-color:var(--hairline);
-}
-html[data-theme="soft"] .lang-btn,
-html[data-theme="soft"] .btn-ghost{
-  background:var(--ghost-bg);
-  border-color:var(--line);
-}
-html[data-theme="soft"] input,
-html[data-theme="soft"] textarea,
-html[data-theme="soft"] select{
-  background:var(--elevated);
-  border-color:var(--line);
-  color:var(--ink);
-}
-
-html,body,header,.panel,.card,.login-card,.btn-ghost,.lang-btn,.theme-btn,.theme-switch,
-input,textarea,select{
-  transition:background-color .2s ease, color .2s ease, border-color .2s ease, box-shadow .2s ease;
-}
-@media (prefers-reduced-motion: reduce){
-  html,body,header,.panel,.card,.login-card,.btn-ghost,.lang-btn,.theme-btn,.theme-switch,
-  input,textarea,select{transition:none}
 }

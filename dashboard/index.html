@@ -1,36 +1,33 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl" id="htmlRoot">
 <head>
-<script>
-(function(){try{var t=localStorage.getItem("raseekh_theme");document.documentElement.setAttribute("data-theme",t==="soft"?"soft":"base");}catch(e){document.documentElement.setAttribute("data-theme","base");}})();
-</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title id="pageTitle">لوحة التحكم — راسخ</title>
 <meta name="robots" content="noindex,nofollow">
 <link rel="icon" href="/icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/icon-192.png">
-<meta name="theme-color" content="#ffffff">
+<meta name="theme-color" content="#E8EDF2">
 <link rel="manifest" href="/manifest.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;500;600;700&family=Tajawal:wght@500;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/theme.css?v=78">
+<link rel="stylesheet" href="/theme.css?v=79">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="/auth.js"></script>
 <script src="/catalog.js"></script>
 <script src="/terms.js"></script>
 <script src="/activity.js"></script>
-<script src="/theme.js?v=78"></script>
+<script src="/theme.js?v=79"></script>
 <style>
 :root{
   --ink:#10233A;--navy:#16324F;--harbor:#2A6F7A;--copper:#C45C26;--sand:#E8A05A;
-  --bg:#FFFFFF;--panel:#FFFFFF;--mist:#F2F4F7;--line:#E4E8EE;
+  --bg:#E8EDF2;--panel:#F7F9FC;--mist:#D5DEE8;--line:#B8C4D1;
   --muted:#5A6B7C;--danger:#B42318;--ok:#1F7A58;
-  --radius:6px;--shadow:0 14px 34px -26px rgba(16,35,58,.28);
-  --header-bg:rgba(255,255,255,.92);--surface-tint:#FAFBFC;
-  --ghost-bg:rgba(247,249,252,.8);--elevated:#FFFFFF;--chip:#F2F4F7;--table-head:#F7F9FC;
-  --hairline:rgba(16,35,58,.08);
+  --radius:6px;--shadow:0 18px 40px -28px rgba(16,35,58,.45);
+  --header-bg:rgba(232,237,242,.9);--surface-tint:#F0F4F8;
+  --ghost-bg:rgba(247,249,252,.88);--elevated:#FFFFFF;--chip:#E8EDF2;--table-head:#EEF3F7;
+  --hairline:rgba(16,35,58,.1);
   --forest:var(--navy);--leaf:var(--harbor);--brass:var(--copper);
 }
 *{margin:0;padding:0;box-sizing:border-box}
@@ -43,9 +40,9 @@ body.lang-en{font-family:'Space Grotesk',sans-serif}
 body::before{
   content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
   background:
-    radial-gradient(ellipse 70% 40% at 100% 0%, rgba(196,92,38,.07), transparent 50%),
-    radial-gradient(ellipse 60% 35% at 0% 10%, rgba(42,111,122,.07), transparent 50%),
-    linear-gradient(180deg,#FFFFFF,var(--surface-tint,#FAFBFC));
+    radial-gradient(ellipse 70% 40% at 100% 0%, rgba(196,92,38,.14), transparent 50%),
+    radial-gradient(ellipse 60% 35% at 0% 10%, rgba(42,111,122,.14), transparent 50%),
+    linear-gradient(180deg,#DCE4EC,var(--bg));
 }
 body::after{
   content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.18;
@@ -306,18 +303,9 @@ body.is-client .home-bar{
 .crumb span{color:var(--copper)}
 .top-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .nav-prefs{display:inline-flex;align-items:center;gap:6px}
-.theme-switch{display:inline-flex;align-items:stretch;border:1.5px solid var(--line);border-radius:999px;background:var(--ghost-bg,rgba(247,249,252,.8));overflow:hidden;padding:3px;gap:2px}
-.theme-switch [data-theme-set]{border:0;background:transparent;color:var(--muted);font:inherit;font-size:.72rem;font-weight:700;padding:6px 10px;border-radius:999px;cursor:pointer;min-width:0;display:inline-flex;align-items:center;gap:5px}
-.theme-switch [data-theme-set].is-active,.theme-switch [data-theme-set][aria-pressed="true"]{background:var(--panel);color:var(--harbor);box-shadow:0 1px 0 rgba(16,35,58,.06)}
-.theme-switch [data-theme-set="base"].is-active{color:#C45C26}
-.theme-switch [data-theme-set="soft"].is-active{color:#2A6F7A}
-.theme-ico{width:14px;height:14px;display:block;flex:0 0 auto}
-.lang-btn,.theme-btn,.clock{
   border:1.5px solid var(--line);background:var(--panel);border-radius:var(--radius);
   padding:9px 12px;font-size:.82rem;font-weight:700;cursor:pointer;color:var(--ink);min-width:3.2rem;
 }
-.theme-btn:hover{border-color:rgba(196,92,38,.45);color:var(--copper)}
-.theme-btn[aria-pressed="true"]{border-color:rgba(42,111,122,.45);color:var(--harbor)}
 .clock{cursor:default;color:var(--muted);font-weight:600}
 .page{display:none}
 .page.active{display:block;animation:rise .35s ease}
@@ -459,13 +447,7 @@ body.is-client .home-bar{
   <div class="login-card">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
       <div class="logo" data-ar-html='را<em>سخ</em>' data-en-html='Ra<em>seekh</em>'>را<em>سخ</em></div>
-      <div class="nav-prefs" role="group" data-ar-aria="اللغة والمظهر" data-en-aria="Language and theme" aria-label="اللغة والمظهر">
-        <button class="lang-btn" id="loginLangBtn" type="button">EN</button>
-        <div class="theme-switch" role="group" data-ar-aria="الشمس أو القمر" data-en-aria="Sun or Moon look" aria-label="الشمس أو القمر">
-          <button type="button" data-theme-set="base" class="is-active" aria-pressed="true" data-ar-aria="مظهر الشمس — أبيض ساطع" data-en-aria="Sun look — bright white" aria-label="مظهر الشمس — أبيض ساطع" title="مظهر الشمس — أبيض ساطع"><svg class="theme-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4.2" fill="currentColor"/><g stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 3v2.2M12 18.8V21M3 12h2.2M18.8 12H21M5.6 5.6l1.6 1.6M16.8 16.8l1.6 1.6M5.6 18.4l1.6-1.6M16.8 7.2l1.6-1.6"/></g></svg><span data-theme-label data-ar="شمس" data-en="Sun">شمس</span></button>
-          <button type="button" data-theme-set="soft" aria-pressed="false" data-ar-aria="مظهر القمر — رمادي ناعم" data-en-aria="Moon look — soft mist" aria-label="مظهر القمر — رمادي ناعم" title="مظهر القمر — رمادي ناعم"><svg class="theme-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M14.6 3.2a8.8 8.8 0 1 0 6.2 14.7A7.2 7.2 0 0 1 14.6 3.2z"/></svg><span data-theme-label data-ar="قمر" data-en="Moon">قمر</span></button>
-        </div>
-      </div>
+      <button class="lang-btn" id="loginLangBtn" type="button">EN</button>
     </div>
     <p class="sub" data-ar="سجّل كعميل لمتابعة الطلبات والاقتراحات. التعديل مخصص لحساب الإدارة فقط." data-en="Sign in as a client to follow requests and suggestions. Editing is admin-only.">سجّل كعميل لمتابعة الطلبات والاقتراحات. التعديل مخصص لحساب الإدارة فقط.</p>
     <div class="demo-banner" data-ar="التجربة الفورية = وضع عميل (بدون تعديل). الإدارة فقط بحساب خاص." data-en="Instant demo = client mode (no editing). Admin access is a private account only.">التجربة الفورية = وضع عميل (بدون تعديل). الإدارة فقط بحساب خاص.</div>
@@ -572,13 +554,7 @@ body.is-client .home-bar{
     </div>
     <div class="top-actions" style="justify-content:flex-end;margin-bottom:8px">
       <div class="clock" id="dashClock">—</div>
-      <div class="nav-prefs" role="group" data-ar-aria="اللغة والمظهر" data-en-aria="Language and theme" aria-label="اللغة والمظهر">
-        <button class="lang-btn" id="dashLangBtn" type="button">EN</button>
-        <div class="theme-switch" role="group" data-ar-aria="الشمس أو القمر" data-en-aria="Sun or Moon look" aria-label="الشمس أو القمر">
-          <button type="button" data-theme-set="base" class="is-active" aria-pressed="true" data-ar-aria="مظهر الشمس — أبيض ساطع" data-en-aria="Sun look — bright white" aria-label="مظهر الشمس — أبيض ساطع" title="مظهر الشمس — أبيض ساطع"><svg class="theme-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4.2" fill="currentColor"/><g stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 3v2.2M12 18.8V21M3 12h2.2M18.8 12H21M5.6 5.6l1.6 1.6M16.8 16.8l1.6 1.6M5.6 18.4l1.6-1.6M16.8 7.2l1.6-1.6"/></g></svg><span data-theme-label data-ar="شمس" data-en="Sun">شمس</span></button>
-          <button type="button" data-theme-set="soft" aria-pressed="false" data-ar-aria="مظهر القمر — رمادي ناعم" data-en-aria="Moon look — soft mist" aria-label="مظهر القمر — رمادي ناعم" title="مظهر القمر — رمادي ناعم"><svg class="theme-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M14.6 3.2a8.8 8.8 0 1 0 6.2 14.7A7.2 7.2 0 0 1 14.6 3.2z"/></svg><span data-theme-label data-ar="قمر" data-en="Moon">قمر</span></button>
-        </div>
-      </div>
+      <button class="lang-btn" id="dashLangBtn" type="button">EN</button>
       <button class="btn btn-ghost client-only" id="viewTermsBtn" type="button" data-ar="الشروط" data-en="Terms">الشروط</button>
       <a class="btn btn-ghost" href="/" data-ar="الصفحة الرئيسية" data-en="Home">الصفحة الرئيسية</a>
       <button class="btn btn-ghost mobile-logout" id="logoutBtnMobile" type="button" data-ar="خروج" data-en="Log out">خروج</button>
@@ -1522,7 +1498,6 @@ body.is-client .home-bar{
     });
     document.getElementById('loginLangBtn').textContent = lang === 'ar' ? 'EN' : 'AR';
     document.getElementById('dashLangBtn').textContent = lang === 'ar' ? 'EN' : 'AR';
-    if (window.RaseekhTheme && RaseekhTheme.apply) RaseekhTheme.apply(RaseekhTheme.get());
     if (isDemo) {
       document.getElementById('dashUserStatus').textContent = t('وضع تجريبي', 'Demo mode');
     }

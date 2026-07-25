@@ -8,7 +8,7 @@
 <meta name="keywords" content="راسخ, نظام مخزون, أنظمة شركات, لوحة تحكم عملاء, تطبيق مخزون, أنظمة تشغيل, برمجة سعودية, نسخة للمؤسسات, Raseekh, inventory system Saudi, ops dashboard">
 <meta property="og:title" content="راسخ — صيانة وبرمجة ومخزون وأنظمة">
 <meta property="og:description" content="صيانة مواقع، برمجة، مخزون، وأنظمة تشغيل — من الطلب حتى التسليم مع حساب عميل للمتابعة.">
-<meta name="theme-color" content="#ffffff">
+<meta name="theme-color" content="#E8EDF2">
 <meta name="robots" content="index,follow">
 <link rel="canonical" href="https://raseekh.com/">
 <meta property="og:type" content="website">
@@ -26,9 +26,6 @@
 <link rel="icon" href="/icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<script>
-(function(){try{var t=localStorage.getItem('raseekh_theme');document.documentElement.setAttribute('data-theme',t==='soft'?'soft':'base');}catch(e){document.documentElement.setAttribute('data-theme','base');}})();
-</script>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -162,20 +159,20 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;500;600;700&family=Tajawal:wght@500;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap">
 <link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;500;600;700&family=Tajawal:wght@500;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/theme.css?v=78">
+<link rel="stylesheet" href="/theme.css?v=79">
 <script src="/catalog.js"></script>
 <script src="/terms.js"></script>
 <script src="/activity.js"></script>
-<script src="/theme.js?v=78"></script>
+<script src="/theme.js?v=79"></script>
 <style>
 :root{
   --ink:#10233A;--navy:#16324F;--harbor:#2A6F7A;--copper:#C45C26;--sand:#E8A05A;
-  --bg:#FFFFFF;--panel:#FFFFFF;--mist:#F2F4F7;--line:#E4E8EE;
+  --bg:#E8EDF2;--panel:#F7F9FC;--mist:#D5DEE8;--line:#B8C4D1;
   --muted:#5A6B7C;--danger:#B42318;--ok:#1F7A58;
-  --radius:6px;--shadow:0 14px 34px -26px rgba(16,35,58,.28);
-  --header-bg:rgba(255,255,255,.92);--surface-tint:#FAFBFC;
-  --ghost-bg:rgba(247,249,252,.8);--elevated:#FFFFFF;--chip:#F2F4F7;--table-head:#F7F9FC;
-  --hairline:rgba(16,35,58,.08);
+  --radius:6px;--shadow:0 18px 40px -28px rgba(16,35,58,.45);
+  --header-bg:rgba(232,237,242,.9);--surface-tint:#F0F4F8;
+  --ghost-bg:rgba(247,249,252,.88);--elevated:#FFFFFF;--chip:#E8EDF2;--table-head:#EEF3F7;
+  --hairline:rgba(16,35,58,.1);
   --forest:var(--navy);--leaf:var(--harbor);--brass:var(--copper);
 }
 *{margin:0;padding:0;box-sizing:border-box}
@@ -229,17 +226,6 @@ nav{display:flex;align-items:center;justify-content:space-between;gap:16px;paddi
 .nav-links a:hover::after,.nav-links a.is-active::after{transform:scaleX(1);transform-origin:left}
 .nav-actions{display:flex;align-items:center;gap:8px}
 .nav-prefs{display:inline-flex;align-items:center;gap:6px;flex:0 0 auto}
-.theme-switch{display:inline-flex;align-items:stretch;border:1.5px solid var(--line);border-radius:999px;background:var(--ghost-bg,rgba(247,249,252,.8));overflow:hidden;padding:3px;gap:2px}
-.theme-switch [data-theme-set]{border:0;background:transparent;color:var(--muted);font:inherit;font-size:.72rem;font-weight:700;padding:6px 10px;border-radius:999px;cursor:pointer;min-width:0;display:inline-flex;align-items:center;gap:5px}
-.theme-switch [data-theme-set].is-active,.theme-switch [data-theme-set][aria-pressed="true"]{background:var(--panel);color:var(--harbor);box-shadow:0 1px 0 rgba(16,35,58,.06)}
-.theme-switch [data-theme-set="base"].is-active{color:#C45C26}
-.theme-switch [data-theme-set="soft"].is-active{color:#2A6F7A}
-.theme-ico{width:14px;height:14px;display:block;flex:0 0 auto}
-
-.nav-prefs .lang-btn,.nav-prefs .theme-btn{
-  min-width:44px;padding:10px 12px;border-radius:var(--radius);border:1.5px solid var(--line);
-  background:var(--ghost-bg,rgba(247,249,252,.8));color:var(--ink);font-weight:700;cursor:pointer;font-size:.78rem;
-}
 .btn{
   display:inline-flex;align-items:center;justify-content:center;gap:8px;
   border:none;border-radius:var(--radius);padding:12px 20px;cursor:pointer;
@@ -766,9 +752,6 @@ body.terms-locked,body.auth-locked{overflow:hidden}
 }
 @media (max-width:560px){
   .nav-prefs{gap:4px}
-  .nav-prefs .lang-btn,.nav-prefs .theme-btn{min-width:40px;padding:9px 10px}
-  .theme-switch [data-theme-set]{min-width:0;padding:6px 8px;font-size:.68rem}
-  .theme-ico{width:12px;height:12px}
   #accountBtn{padding:10px 12px;font-size:.8rem}
   .services-grid,.pricing-grid,.trust-proof{grid-template-columns:1fr}
   .wrap{padding:0 18px}
@@ -863,13 +846,7 @@ body.pay-paused .pay-public-entry{display:none!important}
       <a href="#pay" class="pay-public-entry" data-ar="سداد" data-en="Pay">سداد</a>
     </div>
     <div class="nav-actions">
-      <div class="nav-prefs" role="group" data-ar-aria="اللغة والمظهر" data-en-aria="Language and theme" aria-label="اللغة والمظهر">
-        <button class="lang-btn" id="langToggle" type="button">EN</button>
-        <div class="theme-switch" role="group" data-ar-aria="الشمس أو القمر" data-en-aria="Sun or Moon look" aria-label="الشمس أو القمر">
-          <button type="button" data-theme-set="base" class="is-active" aria-pressed="true" data-ar-aria="مظهر الشمس — أبيض ساطع" data-en-aria="Sun look — bright white" aria-label="مظهر الشمس — أبيض ساطع" title="مظهر الشمس — أبيض ساطع"><svg class="theme-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4.2" fill="currentColor"/><g stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 3v2.2M12 18.8V21M3 12h2.2M18.8 12H21M5.6 5.6l1.6 1.6M16.8 16.8l1.6 1.6M5.6 18.4l1.6-1.6M16.8 7.2l1.6-1.6"/></g></svg><span data-theme-label data-ar="شمس" data-en="Sun">شمس</span></button>
-          <button type="button" data-theme-set="soft" aria-pressed="false" data-ar-aria="مظهر القمر — رمادي ناعم" data-en-aria="Moon look — soft mist" aria-label="مظهر القمر — رمادي ناعم" title="مظهر القمر — رمادي ناعم"><svg class="theme-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M14.6 3.2a8.8 8.8 0 1 0 6.2 14.7A7.2 7.2 0 0 1 14.6 3.2z"/></svg><span data-theme-label data-ar="قمر" data-en="Moon">قمر</span></button>
-        </div>
-      </div>
+      <button class="lang-btn" id="langToggle" type="button">EN</button>
       <button class="btn btn-primary" id="accountBtn" type="button" data-ar="تسجيل الدخول" data-en="Log in">تسجيل الدخول</button>
       <button class="nav-toggle" id="navToggle" type="button" aria-controls="navLinks" aria-expanded="false" data-ar-aria="القائمة" data-en-aria="Menu" aria-label="القائمة"><span></span><span></span><span></span></button>
     </div>
@@ -2015,7 +1992,6 @@ body.pay-paused .pay-public-entry{display:none!important}
       if (v !== null) el.setAttribute('aria-label', v);
     });
     document.getElementById('langToggle').textContent = lang === 'ar' ? 'EN' : 'AR';
-    if (window.RaseekhTheme && RaseekhTheme.apply) RaseekhTheme.apply(RaseekhTheme.get());
     const title = lang === 'ar' ? 'راسخ — صيانة وبرمجة ومخزون وأنظمة' : 'Raseekh — Maintenance, coding, inventory & systems';
     const desc = lang === 'ar'
       ? 'راسخ في السعودية: صيانة مواقع، برمجة، تطبيقات مخزون، وأنظمة ولوحات — نطاق مكتوب من الطلب حتى التشغيل.'

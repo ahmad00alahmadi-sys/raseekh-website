@@ -1,14 +1,11 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl" id="htmlRoot">
 <head>
-<script>
-(function(){try{var t=localStorage.getItem("raseekh_theme");document.documentElement.setAttribute("data-theme",t==="soft"?"soft":"base");}catch(e){document.documentElement.setAttribute("data-theme","base");}})();
-</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>سياسة الخصوصية — راسخ</title>
 <meta name="description" content="سياسة الخصوصية لموقع راسخ: حلول للشركات، صيانة مواقع، برمجة، تطبيقات مخزون، وأنظمة ولوحات تحكم.">
-<meta name="theme-color" content="#ffffff">
+<meta name="theme-color" content="#E8EDF2">
 <link rel="canonical" href="https://raseekh.com/privacy/">
 <link rel="alternate" hreflang="ar" href="https://raseekh.com/privacy/">
 <link rel="alternate" hreflang="en" href="https://raseekh.com/privacy/?lang=en">
@@ -20,13 +17,15 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;500;600;700&family=Tajawal:wght@500;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="/terms.js"></script>
-<script src="/theme.js?v=78"></script>
+<script src="/theme.js?v=79"></script>
 <style>
 :root{
   --ink:#10233A;--navy:#16324F;--harbor:#2A6F7A;--copper:#C45C26;--sand:#E8A05A;
-  --bg:#FFFFFF;--panel:#FFFFFF;--line:#E4E8EE;--muted:#5A6B7C;--radius:6px;
-  --shadow:0 14px 34px -26px rgba(16,35,58,.28);
-  --header-bg:rgba(255,255,255,.92);--surface-tint:#FAFBFC;--mist:#F2F4F7;
+  --bg:#E8EDF2;--panel:#F7F9FC;--line:#B8C4D1;--muted:#5A6B7C;--radius:6px;
+  --shadow:0 18px 40px -28px rgba(16,35,58,.45);
+  --header-bg:rgba(232,237,242,.9);--surface-tint:#F0F4F8;--mist:#D5DEE8;
+  --ghost-bg:rgba(247,249,252,.88);--elevated:#FFFFFF;--chip:#E8EDF2;--table-head:#EEF3F7;
+  --hairline:rgba(16,35,58,.1);
 }
 *{margin:0;padding:0;box-sizing:border-box}
 body{
@@ -37,9 +36,9 @@ body.lang-en{font-family:'Space Grotesk',sans-serif}
 body::before{
   content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
   background:
-    radial-gradient(ellipse 70% 40% at 100% 0%, rgba(196,92,38,.07), transparent 50%),
-    radial-gradient(ellipse 60% 35% at 0% 10%, rgba(42,111,122,.07), transparent 50%),
-    linear-gradient(180deg,#FFFFFF,var(--surface-tint,#FAFBFC));
+    radial-gradient(ellipse 70% 40% at 100% 0%, rgba(196,92,38,.14), transparent 50%),
+    radial-gradient(ellipse 60% 35% at 0% 10%, rgba(42,111,122,.14), transparent 50%),
+    linear-gradient(180deg,#DCE4EC,var(--bg));
 }
 .wrap{max-width:800px;margin:0 auto;padding:28px 22px 60px;position:relative;z-index:1}
 .top{
@@ -51,9 +50,6 @@ body.lang-en .logo{font-family:'Space Grotesk',sans-serif}
 .logo em{font-style:normal;color:var(--copper)}
 .actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .nav-prefs{display:inline-flex;align-items:center;gap:6px}
-.theme-switch{display:inline-flex;align-items:stretch;border:1.5px solid var(--line);border-radius:var(--radius);background:var(--ghost-bg,#fff);overflow:hidden;padding:2px;gap:2px}
-.theme-switch [data-theme-set]{border:0;background:transparent;color:var(--muted);font:inherit;font-size:.74rem;font-weight:700;padding:7px 10px;border-radius:4px;cursor:pointer}
-.theme-switch [data-theme-set].is-active{background:var(--panel);color:var(--harbor)}
 .btn{
   display:inline-flex;align-items:center;justify-content:center;
   border:none;border-radius:var(--radius);padding:11px 16px;cursor:pointer;font-weight:700;text-decoration:none;
@@ -63,12 +59,9 @@ body.lang-en .logo{font-family:'Space Grotesk',sans-serif}
 .btn-ghost{background:transparent;border:1.5px solid var(--line);color:var(--ink)}
 .eyebrow{display:inline-flex;align-items:center;gap:10px}
 .eyebrow::before{content:"";width:18px;height:2px;background:var(--copper);display:inline-block}
-.lang-btn,.theme-btn{
   border:1.5px solid var(--line);background:var(--panel);border-radius:var(--radius);
   padding:9px 12px;font-size:.82rem;font-weight:700;cursor:pointer;color:var(--ink);min-width:3.2rem;
 }
-.theme-btn:hover{border-color:rgba(196,92,38,.45);color:var(--copper)}
-.theme-btn[aria-pressed="true"]{border-color:rgba(42,111,122,.45);color:var(--harbor)}
 .panel{
   background:var(--panel);border:1.5px solid var(--line);border-radius:10px;padding:28px 22px;
   box-shadow:var(--shadow);border-top:4px solid var(--copper);
@@ -85,20 +78,14 @@ body.lang-en .logo{font-family:'Space Grotesk',sans-serif}
 h1,h2,h3{font-family:'Tajawal',sans-serif}
 body.lang-en h1,body.lang-en h2,body.lang-en h3{font-family:'Space Grotesk',sans-serif}
 </style>
-  <link rel="stylesheet" href="/theme.css?v=78">
+  <link rel="stylesheet" href="/theme.css?v=79">
 </head>
 <body>
   <div class="wrap">
     <div class="top">
       <a class="logo" href="/" data-ar-html='را<em>سخ</em>' data-en-html='Ra<em>seekh</em>'>را<em>سخ</em></a>
       <div class="actions">
-      <div class="nav-prefs" role="group" data-ar-aria="اللغة والمظهر" data-en-aria="Language and theme" aria-label="اللغة والمظهر">
-        <button class="lang-btn" id="langToggle" type="button">EN</button>
-        <div class="theme-switch" role="group" data-ar-aria="الشمس أو القمر" data-en-aria="Sun or Moon look" aria-label="الشمس أو القمر">
-          <button type="button" data-theme-set="base" class="is-active" aria-pressed="true" data-ar-aria="مظهر الشمس — أبيض ساطع" data-en-aria="Sun look — bright white" aria-label="مظهر الشمس — أبيض ساطع" title="مظهر الشمس — أبيض ساطع"><svg class="theme-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4.2" fill="currentColor"/><g stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 3v2.2M12 18.8V21M3 12h2.2M18.8 12H21M5.6 5.6l1.6 1.6M16.8 16.8l1.6 1.6M5.6 18.4l1.6-1.6M16.8 7.2l1.6-1.6"/></g></svg><span data-theme-label data-ar="شمس" data-en="Sun">شمس</span></button>
-          <button type="button" data-theme-set="soft" aria-pressed="false" data-ar-aria="مظهر القمر — رمادي ناعم" data-en-aria="Moon look — soft mist" aria-label="مظهر القمر — رمادي ناعم" title="مظهر القمر — رمادي ناعم"><svg class="theme-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M14.6 3.2a8.8 8.8 0 1 0 6.2 14.7A7.2 7.2 0 0 1 14.6 3.2z"/></svg><span data-theme-label data-ar="قمر" data-en="Moon">قمر</span></button>
-        </div>
-      </div>
+      <button class="lang-btn" id="langToggle" type="button">EN</button>
         <a class="btn btn-ghost" href="/terms/" data-ar="الشروط" data-en="Terms">الشروط</a>
         <a class="btn btn-ghost" href="/security/" data-ar="الأمان" data-en="Security">الأمان</a>
         <a class="btn btn-ghost" href="/" data-ar="الرئيسية" data-en="Home">الرئيسية</a>
@@ -130,7 +117,6 @@ body.lang-en h1,body.lang-en h2,body.lang-en h3{font-family:'Space Grotesk',sans
       if (v !== null) el.innerHTML = v;
     });
     document.getElementById('langToggle').textContent = lang === 'ar' ? 'EN' : 'AR';
-    if (window.RaseekhTheme && RaseekhTheme.apply) RaseekhTheme.apply(RaseekhTheme.get());
     document.title = lang === 'ar' ? 'سياسة الخصوصية — راسخ' : 'Privacy Policy — Raseekh';
     const canonical = document.querySelector('link[rel="canonical"]');
     if (canonical) canonical.setAttribute('href', lang === 'en' ? 'https://raseekh.com/privacy/?lang=en' : 'https://raseekh.com/privacy/');
