@@ -2926,6 +2926,7 @@ body.is-admin .client-only{display:none!important}
       products.unshift({ id: uid(), ...payload });
     }
     let cloudOk = true;
+    let hardFail = false;
     try {
       const result = saveProducts({ awaitCloud: true, cloud: true });
       if (result && typeof result.then === 'function') {
@@ -2935,6 +2936,7 @@ body.is-admin .client-only{display:none!important}
       }
     } catch (_) {
       cloudOk = false;
+      hardFail = true;
       products = prevProducts;
     } finally {
       form.dataset.submitting = '0';
@@ -2947,9 +2949,11 @@ body.is-admin .client-only{display:none!important}
     setModalOpen(document.getElementById('productModal'), false);
     fillCategoryFilter();
     renderAll();
-    showToast(cloudOk
-      ? t('تم حفظ الخدمة','Service saved')
-      : t('حُفظت محلياً — تعذّر نشر الكتالوج للسحابة', 'Saved locally — catalog cloud publish failed'));
+    showToast(hardFail
+      ? t('تعذّر حفظ الخدمة', 'Could not save service')
+      : (cloudOk
+        ? t('تم حفظ الخدمة','Service saved')
+        : t('حُفظت محلياً — تعذّر نشر الكتالوج للسحابة', 'Saved locally — catalog cloud publish failed')));
   });
 
   function renderPos(){
