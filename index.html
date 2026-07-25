@@ -1001,7 +1001,7 @@ body.terms-locked,body.auth-locked{overflow:hidden}
         </div>
         <div class="pay-status" id="payStatusSuccess">
           <h3 data-ar="تم استلام الدفعة" data-en="Payment received">تم استلام الدفعة</h3>
-          <p id="paySuccessMsg" data-ar="سيتواصل معكم الفريق خلال يوم عمل." data-en="Our team will contact you within one business day.">سيتواصل معكم الفريق خلال يوم عمل.</p>
+          <p id="paySuccessMsg" role="status" aria-live="polite" data-ar="سيتواصل معكم الفريق خلال يوم عمل." data-en="Our team will contact you within one business day.">سيتواصل معكم الفريق خلال يوم عمل.</p>
           <div class="pay-success-actions" id="paySuccessActions">
             <a class="btn btn-primary" href="/dashboard/" data-ar="متابعة من حسابي" data-en="Continue in my account">متابعة من حسابي</a>
             <a class="btn btn-ghost" href="#contact" data-ar="طلب جديد" data-en="New request">طلب جديد</a>
@@ -1295,14 +1295,14 @@ body.terms-locked,body.auth-locked{overflow:hidden}
       // "ok"/Sent only when delivery reached cloud/email/webhook (or pending notify activation).
       const ok = !!(savedOk && (delivered || pending));
       if (resultEl) {
-        resultEl.style.color = ok || savedOk ? 'var(--ok)' : 'var(--danger)';
+        resultEl.style.color = ok ? 'var(--ok)' : (savedOk ? 'var(--muted)' : 'var(--danger)');
         resultEl.textContent = !savedOk
           ? t('تعذّر الإرسال — أكملوا النموذج أدناه', 'Could not send — complete the form below')
           : (delivered
             ? t('✓ تم إرسال طلب عرض السعر', '✓ Quote request sent')
             : (pending
               ? t('✓ استلمنا طلبكم — جاري تفعيل إشعار الإدارة', '✓ Request received — admin notify is activating')
-              : t('✓ تم حفظ الطلب — تابعوه من حسابكم', '✓ Request saved — track it in your account')));
+              : t('حُفظ الطلب محلياً — تابعوه من حسابكم أو أعيدوا الإرسال', 'Request saved locally — track it in your account or resend')));
       }
       if ((ok || savedOk) && successActions) {
         successActions.style.display = 'flex';
@@ -1989,7 +1989,7 @@ body.terms-locked,body.auth-locked{overflow:hidden}
         : t('تم الدخول — جاري التحويل...', 'Signed in — redirecting...');
       const role = (Auth.isAdmin && Auth.isAdmin(result.user)) ? 'admin' : 'client';
       if (window.RaseekhActivity) RaseekhActivity.recordLogin(result.user, role);
-      afterAuthSuccess(result.user, result.provider);
+      await afterAuthSuccess(result.user, result.provider);
     } catch (err) { msg.style.color = 'var(--danger)'; msg.textContent = Auth.friendlyError(err, currentLang); }
   }));
 
@@ -2038,7 +2038,7 @@ body.terms-locked,body.auth-locked{overflow:hidden}
           : t('تم إنشاء الحساب — يمكنكم إكمال السداد', 'Account created — continue to payment'))
         : t('تم إنشاء الحساب — جاري التحويل...', 'Account created — redirecting...');
       if (window.RaseekhActivity) RaseekhActivity.recordLogin(result.user, 'client');
-      afterAuthSuccess(result.user, result.provider);
+      await afterAuthSuccess(result.user, result.provider);
     } catch (err) { msg.style.color = 'var(--danger)'; msg.textContent = Auth.friendlyError(err, currentLang); }
   }));
 
@@ -2067,7 +2067,7 @@ body.terms-locked,body.auth-locked{overflow:hidden}
       const sessionInfo = await Auth.getSession();
       if (sessionInfo && sessionInfo.user) {
         authProvider = sessionInfo.provider || resetResult.provider || null;
-        afterAuthSuccess(sessionInfo.user, authProvider);
+        await afterAuthSuccess(sessionInfo.user, authProvider);
       } else {
         showAuthPanel('login');
         const loginMsg = document.getElementById('loginMsg');
@@ -2172,10 +2172,11 @@ body.terms-locked,body.auth-locked{overflow:hidden}
       }
       const delivered = !!(delivery && (delivery.delivered || delivery.cloud));
       const pending = !!(delivery && delivery.pendingNotify);
-      // Guests only succeed when delivery reaches cloud/email/webhook — pendingNotify alone is not enough.
-      const ok = loggedInUser ? !!saved : !!(saved && delivered);
-      const softPending = !!(saved && !ok && !loggedInUser && pending);
-      result.style.color = ok ? 'var(--ok)' : (softPending ? 'var(--muted)' : 'var(--danger)');
+      // Success (clear form / Sent) only when delivery reached cloud/email/webhook.
+      const ok = !!(saved && delivered);
+      const softPending = !!(saved && !ok && pending);
+      const accountLocal = !!(saved && !ok && !pending && loggedInUser);
+      result.style.color = ok ? 'var(--ok)' : ((softPending || accountLocal) ? 'var(--muted)' : 'var(--danger)');
       result.classList.remove('ok-pulse');
       void result.offsetWidth;
       if (ok) result.classList.add('ok-pulse');
@@ -2183,16 +2184,16 @@ body.terms-locked,body.auth-locked{overflow:hidden}
       result.textContent = !saved
         ? t('تعذّر إيصال الطلب الآن. حاولوا مرة أخرى أو تواصلوا لاحقاً.', 'Could not deliver the request now. Please try again later.')
         : (ok
-          ? (delivered
-            ? (loggedInUser
-              ? t('✓ تم إرسال طلبكم إلى راسخ', '✓ Request sent to Raseekh')
-              : t('✓ تم إرسال طلبكم إلى راسخ — سنراجع ونرد', '✓ Request sent to Raseekh — we will review and reply'))
-            : t('✓ تم حفظ الطلب — تابعوه من حسابكم', '✓ Request saved — track it in your account'))
+          ? (loggedInUser
+            ? t('✓ تم إرسال طلبكم إلى راسخ', '✓ Request sent to Raseekh')
+            : t('✓ تم إرسال طلبكم إلى راسخ — سنراجع ونرد', '✓ Request sent to Raseekh — we will review and reply'))
           : (softPending
-            ? t('استلمنا الطلب محلياً — فعلوا إشعار البريد من الإدارة أو أنشئوا حساباً ثم أعيدوا الإرسال.', 'Request saved locally — admin must activate email notify, or create an account and resend.')
-            : t('تعذّر إيصال الطلب الآن. أبقوا النموذج وحاولوا مرة أخرى أو أنشئوا حساباً.', 'Could not deliver the request now. Keep the form and retry, or create an account.')));
+            ? t('استلمنا الطلب محلياً — فعلوا إشعار البريد من الإدارة أو أعيدوا الإرسال لاحقاً.', 'Request saved locally — admin must activate email notify, or resend later.')
+            : (accountLocal
+              ? t('حُفظ الطلب في حسابكم محلياً — تعذّر الإيصال للإدارة الآن. تابعوه من حسابي أو أعيدوا الإرسال.', 'Request saved locally in your account — could not reach admin now. Track it in My account or resend.')
+              : t('تعذّر إيصال الطلب الآن. أبقوا النموذج وحاولوا مرة أخرى أو أنشئوا حساباً.', 'Could not deliver the request now. Keep the form and retry, or create an account.'))));
       if (successActions) {
-        if (ok) {
+        if (ok || accountLocal) {
           successActions.style.display = 'flex';
           successActions.style.gap = '8px';
           successActions.style.flexWrap = 'wrap';

@@ -9,6 +9,35 @@
   const SUGGESTIONS_VERSION = 7;
   const CLIENT_REQUESTS_KEY = 'raseekh_all_client_requests_v1';
   const PAYMENTS_KEY = 'raseekh_admin_sales_v1';
+  // In-flight deliveries must live outside localStorage row objects (re-parsed each call).
+  const inFlightRequestDeliveries = new Map();
+  const inFlightPaymentDeliveries = new Map();
+
+  function deliveryKey(row) {
+    return row && row.id ? String(row.id) : '';
+  }
+
+  function beginPaymentDelivery(row) {
+    const key = deliveryKey(row);
+    if (!key) return deliverPaymentRecord(row);
+    if (inFlightPaymentDeliveries.has(key)) return inFlightPaymentDeliveries.get(key);
+    const promise = Promise.resolve()
+      .then(() => deliverPaymentRecord(row))
+      .finally(() => { inFlightPaymentDeliveries.delete(key); });
+    inFlightPaymentDeliveries.set(key, promise);
+    return promise;
+  }
+
+  function beginRequestDelivery(row) {
+    const key = deliveryKey(row);
+    if (!key) return deliverSharedRequest(row);
+    if (inFlightRequestDeliveries.has(key)) return inFlightRequestDeliveries.get(key);
+    const promise = Promise.resolve()
+      .then(() => deliverSharedRequest(row))
+      .finally(() => { inFlightRequestDeliveries.delete(key); });
+    inFlightRequestDeliveries.set(key, promise);
+    return promise;
+  }
 
   // Hardware (p1–p4) stays admin-only for now: physical supply is Riyadh-only.
   // Clients currently see digital/electronic services only.
@@ -788,8 +817,7 @@
       (x.id && row.id && x.id === row.id)
     );
     if (existing) {
-      // Reuse in-flight delivery; if already delivered, do not re-notify.
-      if (existing._delivering && existing.deliveryPromise) return existing;
+      // Reuse module-level in-flight delivery; if already delivered, do not re-notify.
       if (existing.deliveryStatus === 'delivered') {
         existing.deliveryPromise = Promise.resolve({
           cloud: true,
@@ -800,18 +828,12 @@
         });
         return existing;
       }
-      existing._delivering = true;
-      existing.deliveryPromise = deliverPaymentRecord(existing).finally(() => {
-        existing._delivering = false;
-      });
+      existing.deliveryPromise = beginPaymentDelivery(existing);
       return existing;
     }
     list.unshift(row);
     savePaymentRecords(list);
-    row._delivering = true;
-    row.deliveryPromise = deliverPaymentRecord(row).finally(() => {
-      row._delivering = false;
-    });
+    row.deliveryPromise = beginPaymentDelivery(row);
     return row;
   }
 
@@ -985,15 +1007,12 @@
     const pending = list.filter((r) => r && (r.syncPending || r.deliveryStatus === 'local' || r.deliveryStatus === 'pending_notify'));
     for (const row of pending.slice(0, 20)) {
       try {
-        if (row._delivering && row.deliveryPromise) {
-          await row.deliveryPromise;
+        const key = deliveryKey(row);
+        if (key && inFlightPaymentDeliveries.has(key)) {
+          await inFlightPaymentDeliveries.get(key);
           continue;
         }
-        row._delivering = true;
-        row.deliveryPromise = deliverPaymentRecord(row).finally(() => {
-          row._delivering = false;
-        });
-        await row.deliveryPromise;
+        await beginPaymentDelivery(row);
       } catch (_) {}
     }
     return getPaymentRecords();
@@ -1026,21 +1045,27 @@
     if (!row.fingerprint) row.fingerprint = requestFingerprint(row);
     const existing = list.find((x) => x.fingerprint && x.fingerprint === row.fingerprint);
     if (existing) {
-      // Reuse only while a delivery is still in flight — settled failures must retry.
-      if (existing._delivering && existing.deliveryPromise) return existing;
-      existing._delivering = true;
-      existing.deliveryPromise = deliverSharedRequest(existing).finally(() => {
-        existing._delivering = false;
-      });
+      // Already delivered in this fingerprint window — do not re-email/webhook.
+      if (existing.deliveryStatus === 'delivered') {
+        existing.deliveryPromise = Promise.resolve({
+          cloud: true,
+          email: false,
+          webhook: false,
+          pendingNotify: false,
+          delivered: true,
+          accepted: true,
+          duplicate: true
+        });
+        return existing;
+      }
+      // Reuse module-level in-flight delivery; settled failures retry via begin*.
+      existing.deliveryPromise = beginRequestDelivery(existing);
       return existing;
     }
     list.unshift(row);
     writeJson(CLIENT_REQUESTS_KEY, list.slice(0, 200));
     // Deliver outside this browser: cloud row + email + webhook (best-effort)
-    row._delivering = true;
-    row.deliveryPromise = deliverSharedRequest(row).finally(() => {
-      row._delivering = false;
-    });
+    row.deliveryPromise = beginRequestDelivery(row);
     return row;
   }
 
@@ -1106,15 +1131,12 @@
     const pending = list.filter((r) => r && (r.syncPending || r.deliveryStatus === 'local' || r.deliveryStatus === 'pending_notify'));
     for (const row of pending.slice(0, 20)) {
       try {
-        if (row._delivering && row.deliveryPromise) {
-          await row.deliveryPromise;
+        const key = deliveryKey(row);
+        if (key && inFlightRequestDeliveries.has(key)) {
+          await inFlightRequestDeliveries.get(key);
           continue;
         }
-        row._delivering = true;
-        row.deliveryPromise = deliverSharedRequest(row).finally(() => {
-          row._delivering = false;
-        });
-        await row.deliveryPromise;
+        await beginRequestDelivery(row);
       } catch (_) {}
     }
     return getSharedRequests();

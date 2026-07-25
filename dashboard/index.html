@@ -1723,6 +1723,15 @@ body.is-admin .client-only{display:none!important}
           }
         }).catch(() => {});
       }
+      if (Catalog && Catalog.retryPendingPayments) {
+        Catalog.retryPendingPayments().then(() => {
+          loadSales();
+          if (typeof renderSales === 'function' && document.getElementById('page-sales')?.classList.contains('active')) {
+            renderSales();
+          }
+          if (typeof renderOverview === 'function') renderOverview();
+        }).catch(() => {});
+      }
       if (Catalog && Catalog.syncPublicCatalogFromCloud) {
         Catalog.syncPublicCatalogFromCloud().then((cloud) => {
           if (!cloud || !cloud.products) return;
@@ -2542,10 +2551,16 @@ body.is-admin .client-only{display:none!important}
   }
 
   let pendingClientRequest = null;
+  let requestConfirmBusy = false;
+  let requestConfirmSubmitToken = 0;
 
   function openRequestConfirm(draft){
     if (isDemo) {
       showToast(t('الوضع التجريبي لا يرسل طلبات حقيقية', 'Demo mode does not send real requests'));
+      return;
+    }
+    if (requestConfirmBusy) {
+      showToast(t('جاري إرسال طلب سابق — انتظروا لحظة', 'A previous request is still sending — please wait'));
       return;
     }
     pendingClientRequest = draft;
@@ -2573,10 +2588,8 @@ body.is-admin .client-only{display:none!important}
     if (needsCompany && companyEl && !companyEl.value.trim()) companyEl.focus();
     else phoneEl.focus();
   }
-  let requestConfirmBusy = false;
-  let requestConfirmSubmitToken = 0;
   function closeRequestConfirm(){
-    if (requestConfirmBusy) return;
+    // Allow dismiss while delivery finishes in the background — avoid a stuck open modal.
     pendingClientRequest = null;
     setModalOpen(document.getElementById('requestConfirmModal'), false);
   }
