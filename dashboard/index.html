@@ -2447,39 +2447,67 @@ body.is-client .home-bar{
     }).join('');
   }
 
+  let adminNotifyBusy = false;
+  const adminNotifyClaimed = new Set();
   async function notifyUnnotifiedAdminLeads(){
     if (!isAdminUser || !Catalog || !Catalog.notifyAdminEmail) return 0;
-    const notifyEmail = (Catalog.resolveNotifyEmail && Catalog.resolveNotifyEmail()) || (store && store.notifyEmail) || '';
-    if (!notifyEmail || String(notifyEmail).indexOf('@') < 0) return 0;
-    loadClientRequests();
-    const pending = clientRequests.filter((r) =>
-      r && !r.emailNotifiedAt
-      && (r.status || 'new') === 'new'
-      && r.type !== 'login'
-      && r.type !== 'payment'
-      && r.deliveryStatus !== 'local'
-    ).slice(0, 5);
-    if (!pending.length) return 0;
-    let sent = 0;
-    for (const row of pending) {
-      try {
-        const result = await Catalog.notifyAdminEmail(row, notifyEmail);
-        if (!(result && result.ok)) continue;
-        sent += 1;
-        const list = Catalog.getSharedRequests ? Catalog.getSharedRequests() : clientRequests;
-        const idx = list.findIndex((x) => x && x.id === row.id);
-        if (idx >= 0) {
-          list[idx].emailNotifiedAt = new Date().toISOString();
-          list[idx].deliveryStatus = 'delivered';
-          delete list[idx].syncPending;
-          list[idx].updatedAt = new Date().toISOString();
-          if (Catalog.saveSharedRequests) Catalog.saveSharedRequests(list);
-          if (Catalog.pushRequestToCloud) Catalog.pushRequestToCloud(list[idx], { allowUpdate: true }).catch(() => {});
+    if (adminNotifyBusy) return 0;
+    adminNotifyBusy = true;
+    try {
+      const notifyEmail = (Catalog.resolveNotifyEmail && Catalog.resolveNotifyEmail()) || (store && store.notifyEmail) || '';
+      if (!notifyEmail || String(notifyEmail).indexOf('@') < 0) return 0;
+      loadClientRequests();
+      // Only fan out when cloud received the lead but email never landed (or mark missing).
+      const pending = clientRequests.filter((r) =>
+        r && r.id && !r.emailNotifiedAt && !adminNotifyClaimed.has(r.id)
+        && (r.status || 'new') === 'new'
+        && r.type !== 'login'
+        && r.type !== 'payment'
+        && r.deliveryStatus !== 'local'
+        && r.deliveryStatus !== 'delivered'
+      ).slice(0, 5);
+      if (!pending.length) return 0;
+      let sent = 0;
+      for (const row of pending) {
+        adminNotifyClaimed.add(row.id);
+        // Claim locally before await so overlapping renders cannot double-send.
+        try {
+          const list = Catalog.getSharedRequests ? Catalog.getSharedRequests() : clientRequests;
+          const idx = list.findIndex((x) => x && x.id === row.id);
+          if (idx >= 0) {
+            if (list[idx].emailNotifiedAt) continue;
+            list[idx].emailNotifiedAt = 'pending:' + Date.now();
+            if (Catalog.saveSharedRequests) Catalog.saveSharedRequests(list);
+          }
+          const result = await Catalog.notifyAdminEmail(row, notifyEmail);
+          if (!(result && result.ok)) {
+            if (idx >= 0 && String(list[idx].emailNotifiedAt || '').indexOf('pending:') === 0) {
+              delete list[idx].emailNotifiedAt;
+              if (Catalog.saveSharedRequests) Catalog.saveSharedRequests(list);
+            }
+            adminNotifyClaimed.delete(row.id);
+            continue;
+          }
+          sent += 1;
+          const fresh = Catalog.getSharedRequests ? Catalog.getSharedRequests() : clientRequests;
+          const j = fresh.findIndex((x) => x && x.id === row.id);
+          if (j >= 0) {
+            fresh[j].emailNotifiedAt = new Date().toISOString();
+            fresh[j].deliveryStatus = 'delivered';
+            delete fresh[j].syncPending;
+            fresh[j].updatedAt = new Date().toISOString();
+            if (Catalog.saveSharedRequests) Catalog.saveSharedRequests(fresh);
+            if (Catalog.pushRequestToCloud) Catalog.pushRequestToCloud(fresh[j], { allowUpdate: true }).catch(() => {});
+          }
+        } catch (_) {
+          adminNotifyClaimed.delete(row.id);
         }
-      } catch (_) {}
+      }
+      if (sent) loadClientRequests();
+      return sent;
+    } finally {
+      adminNotifyBusy = false;
     }
-    if (sent) loadClientRequests();
-    return sent;
   }
 
   async function renderAdminLeads(){

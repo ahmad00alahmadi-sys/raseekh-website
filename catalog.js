@@ -1507,9 +1507,20 @@
       };
     }
     await syncPublicNotifyFromCloud().catch(() => {});
-    const cloud = await pushRequestToCloud(row);
     const email = await notifyAdminEmail(row);
     const webhook = await notifyRequestWebhook(row);
+    // Assume cloud will succeed so the first INSERT embeds final delivery marks (anon cannot UPDATE later).
+    const settledHope = settleDeliveryChannels(true, email, webhook);
+    if (settledHope.delivered) {
+      delete row.syncPending;
+      row.deliveryStatus = 'delivered';
+      if (settledHope.emailOk) row.emailNotifiedAt = new Date().toISOString();
+    } else {
+      row.syncPending = true;
+      row.deliveryStatus = settledHope.pendingNotify ? 'pending_notify' : 'local';
+    }
+    row.updatedAt = new Date().toISOString();
+    const cloud = await pushRequestToCloud(row);
     const settled = settleDeliveryChannels(cloud, email, webhook);
     try {
       const list = getSharedRequests();
@@ -1518,10 +1529,11 @@
         if (settled.delivered) {
           delete list[idx].syncPending;
           list[idx].deliveryStatus = 'delivered';
-          if (settled.emailOk) list[idx].emailNotifiedAt = new Date().toISOString();
+          if (settled.emailOk) list[idx].emailNotifiedAt = list[idx].emailNotifiedAt || new Date().toISOString();
         } else {
           list[idx].syncPending = true;
           list[idx].deliveryStatus = settled.pendingNotify ? 'pending_notify' : 'local';
+          if (!settled.emailOk) delete list[idx].emailNotifiedAt;
         }
         list[idx].updatedAt = new Date().toISOString();
         saveSharedRequests(list);
