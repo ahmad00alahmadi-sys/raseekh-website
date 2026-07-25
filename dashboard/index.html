@@ -233,8 +233,8 @@ a{color:inherit;text-decoration:none}
       <div class="logo" data-ar-html='را<em>سخ</em>' data-en-html='Ra<em>seekh</em>'>را<em>سخ</em></div>
       <button class="lang-btn" id="loginLangBtn" type="button">EN</button>
     </div>
-    <p class="sub" data-ar="سجّل دخولك للوصول إلى نقطة البيع والمنتجات" data-en="Sign in to access POS and products">سجّل دخولك للوصول إلى نقطة البيع والمنتجات</p>
-    <div class="demo-banner" data-ar="يمكنك تجربة النظام فوراً بدون حساب عبر الزر بالأسفل." data-en="You can try the system instantly without an account using the button below.">يمكنك تجربة النظام فوراً بدون حساب عبر الزر بالأسفل.</div>
+    <p class="sub" data-ar="سجّل دخولك لمتابعة طلباتك ومنتجاتك وخدماتك" data-en="Sign in to manage your requests, products, and services">سجّل دخولك لمتابعة طلباتك ومنتجاتك وخدماتك</p>
+    <div class="demo-banner" data-ar="يمكنك تجربة حساب العميل فوراً بدون تسجيل عبر الزر بالأسفل." data-en="Try the client area instantly without signup using the button below.">يمكنك تجربة حساب العميل فوراً بدون تسجيل عبر الزر بالأسفل.</div>
 
     <div class="tabs" id="authTabsBar">
       <button type="button" class="tab active" id="loginTabBtn" data-ar="دخول" data-en="Login">دخول</button>
@@ -284,9 +284,9 @@ a{color:inherit;text-decoration:none}
     </div>
     <nav class="side-nav">
       <button class="nav-item active" data-page="overview"><span class="ico">◈</span><span data-ar="نظرة عامة" data-en="Overview">نظرة عامة</span></button>
-      <button class="nav-item" data-page="pos"><span class="ico">▣</span><span data-ar="نقطة البيع" data-en="POS">نقطة البيع</span></button>
+      <button class="nav-item" data-page="pos"><span class="ico">▣</span><span data-ar="طلبات البيع" data-en="Sales desk">طلبات البيع</span></button>
       <button class="nav-item" data-page="products"><span class="ico">▤</span><span data-ar="المنتجات" data-en="Products">المنتجات</span></button>
-      <button class="nav-item" data-page="sales"><span class="ico">฿</span><span data-ar="المبيعات" data-en="Sales">المبيعات</span></button>
+      <button class="nav-item" data-page="sales"><span class="ico">฿</span><span data-ar="سجل الطلبات" data-en="Orders">سجل الطلبات</span></button>
       <button class="nav-item" data-page="settings"><span class="ico">⚙</span><span data-ar="الإعدادات" data-en="Settings">الإعدادات</span></button>
     </nav>
     <div class="side-foot">
@@ -314,7 +314,7 @@ a{color:inherit;text-decoration:none}
           <h1 data-ar="أهلاً بعودتك" data-en="Welcome back">أهلاً بعودتك</h1>
           <div class="crumb">راسخ <span>/</span> <span data-ar="نظرة عامة" data-en="Overview">نظرة عامة</span></div>
         </div>
-        <button class="btn btn-primary" data-goto="pos" data-ar="فتح نقطة البيع" data-en="Open POS">فتح نقطة البيع</button>
+        <button class="btn btn-primary" data-goto="pos" data-ar="فتح طلبات البيع" data-en="Open sales desk">فتح طلبات البيع</button>
       </div>
       <div class="stats">
         <div class="stat"><div class="label" data-ar="المنتجات" data-en="Products">المنتجات</div><div class="value" id="statProducts">0</div><div class="hint" data-ar="في الكتالوج" data-en="in catalog">في الكتالوج</div></div>
@@ -330,9 +330,9 @@ a{color:inherit;text-decoration:none}
         <div class="panel">
           <h3 data-ar="اختصارات" data-en="Shortcuts">اختصارات</h3>
           <div style="display:flex;flex-direction:column;gap:10px">
-            <button class="btn btn-primary" data-goto="pos" data-ar="بدء بيع جديد" data-en="Start a sale">بدء بيع جديد</button>
-            <button class="btn btn-ghost" data-goto="products" data-ar="إدارة المنتجات" data-en="Manage products">إدارة المنتجات</button>
-            <button class="btn btn-ghost" data-goto="sales" data-ar="سجل المبيعات" data-en="Sales history">سجل المبيعات</button>
+            <button class="btn btn-primary" data-goto="pos" data-ar="طلب بيع جديد" data-en="New sales order">طلب بيع جديد</button>
+            <button class="btn btn-ghost" data-goto="products" data-ar="إدارة المنتجات الإلكترونية" data-en="Manage electronics">إدارة المنتجات الإلكترونية</button>
+            <button class="btn btn-ghost" data-goto="sales" data-ar="سجل الطلبات" data-en="Order history">سجل الطلبات</button>
           </div>
         </div>
       </div>
@@ -341,8 +341,8 @@ a{color:inherit;text-decoration:none}
     <div class="page" id="page-pos">
       <div class="topbar">
         <div>
-          <h1 data-ar="نقطة البيع" data-en="Point of Sale">نقطة البيع</h1>
-          <div class="crumb">راسخ <span>/</span> POS</div>
+          <h1 data-ar="طلبات البيع" data-en="Sales desk">طلبات البيع</h1>
+          <div class="crumb">راسخ <span>/</span> <span data-ar="طلبات البيع" data-en="Sales desk">طلبات البيع</span></div>
         </div>
         <div style="display:flex;gap:8px;flex-wrap:wrap">
           <select id="posCategory" style="padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--panel)">
@@ -507,14 +507,14 @@ a{color:inherit;text-decoration:none}
   let toastTimer;
 
   const DEFAULT_PRODUCTS = [
-    { id: 'p1', name: 'قهوة', name_en: 'Coffee', category: 'مشروبات', category_en: 'Drinks', price: 12, stock: 40 },
-    { id: 'p2', name: 'ماء', name_en: 'Water', category: 'مشروبات', category_en: 'Drinks', price: 3, stock: 80 },
-    { id: 'p3', name: 'عصير', name_en: 'Juice', category: 'مشروبات', category_en: 'Drinks', price: 10, stock: 30 },
-    { id: 'p4', name: 'ساندويتش', name_en: 'Sandwich', category: 'أكل', category_en: 'Food', price: 18, stock: 25 },
-    { id: 'p5', name: 'وجبة', name_en: 'Meal', category: 'أكل', category_en: 'Food', price: 28, stock: 12 },
-    { id: 'p6', name: 'حلويات', name_en: 'Dessert', category: 'حلويات', category_en: 'Desserts', price: 15, stock: 18 },
-    { id: 'p7', name: 'شاي', name_en: 'Tea', category: 'مشروبات', category_en: 'Drinks', price: 8, stock: 50 },
-    { id: 'p8', name: 'كعكة', name_en: 'Cake', category: 'حلويات', category_en: 'Desserts', price: 22, stock: 10 }
+    { id: 'p1', name: 'لابتوب أعمال', name_en: 'Business laptop', category: 'أجهزة', category_en: 'Devices', price: 3200, stock: 8 },
+    { id: 'p2', name: 'طابعة فواتير', name_en: 'Receipt printer', category: 'أجهزة', category_en: 'Devices', price: 450, stock: 15 },
+    { id: 'p3', name: 'راوتر مكتبي', name_en: 'Office router', category: 'شبكات', category_en: 'Networking', price: 380, stock: 20 },
+    { id: 'p4', name: 'شاشة مكتبية', name_en: 'Monitor', category: 'اكسسوارات', category_en: 'Accessories', price: 720, stock: 12 },
+    { id: 'p5', name: 'وحدة تخزين SSD', name_en: 'SSD drive', category: 'اكسسوارات', category_en: 'Accessories', price: 260, stock: 30 },
+    { id: 'p6', name: 'صيانة موقع شهرية', name_en: 'Monthly site maintenance', category: 'خدمات', category_en: 'Services', price: 500, stock: 99 },
+    { id: 'p7', name: 'تعديل برمجة', name_en: 'Programming update', category: 'خدمات', category_en: 'Services', price: 350, stock: 99 },
+    { id: 'p8', name: 'نظام مخصص', name_en: 'Custom system', category: 'خدمات', category_en: 'Services', price: 5000, stock: 99 }
   ];
 
   function t(ar, en){ return currentLang === 'ar' ? ar : en; }
