@@ -300,22 +300,7 @@ nav{display:flex;align-items:center;justify-content:space-between;gap:16px;paddi
 .hero .btn-primary{background:var(--copper);color:#fff}
 .hero .btn-primary:hover{background:#A84C1E}
 .hero .btn-ghost{border-color:rgba(244,247,250,.4);color:#F4F7FA;background:transparent}
-.hero-quote{
-  display:grid;grid-template-columns:minmax(132px,.85fr) 1.55fr auto;gap:10px;max-width:640px;
-}
-.hero-quote .check{
-  grid-column:1 / -1;color:rgba(232,237,242,.82);margin:2px 0 0;
-}
-.hero-quote .check a{color:var(--sand)}
-.hero-quote .check a:hover{color:#fff}
-.hero-quote select,.hero-quote input{
-  width:100%;padding:14px 15px;border:1.5px solid rgba(244,247,250,.3);border-radius:var(--radius);
-  background:rgba(12,27,46,.55);color:#F4F7FA;backdrop-filter:blur(10px);
-}
-.hero-quote select option{color:var(--ink);background:var(--elevated)}
-.hero-quote input::placeholder{color:rgba(244,247,250,.55)}
-.hero-quote select:focus,.hero-quote input:focus{outline:2px solid rgba(232,160,90,.5);border-color:var(--sand)}
-.hero-quote .btn{white-space:nowrap;min-height:52px}
+.hero-cta-block .btn-primary{display:inline-flex;margin-top:4px;min-height:52px;padding:14px 28px}
 .hero-note{
   margin-top:14px;display:flex;flex-wrap:wrap;align-items:center;gap:14px;
   color:rgba(232,237,242,.78);font-size:.92rem;
@@ -798,8 +783,6 @@ body.terms-locked,body.auth-locked{overflow:hidden}
   .hero{min-height:auto;align-items:end}
   .hero-content{padding:88px 0 72px;max-width:100%}
   .price-card.featured{transform:none}
-  .hero-quote{grid-template-columns:1fr}
-  .hero-quote .btn{width:100%}
 }
 @media (max-width:768px){
 }
@@ -1014,31 +997,8 @@ body.pay-paused .pay-public-entry{display:none!important}
     <h1 data-ar="من طلبكم… إلى نظام تشغيلي جاهز" data-en="From your request… to an operational system">من طلبكم… إلى نظام تشغيلي جاهز</h1>
     <p data-ar="نقدّم حلول البرمجة، وتطوير المواقع، وإدارة المخزون، والأنظمة التشغيلية، إضافةً إلى نسخة المؤسسات، وفق احتياج منشأتكم. نراجع طلبكم ونوافيكم بعرض سعر مكتوب." data-en="We provide programming, website development, inventory management, operational systems, and an Institution edition tailored to your organization. We review your request and issue a written quote.">نقدّم حلول البرمجة، وتطوير المواقع، وإدارة المخزون، والأنظمة التشغيلية، إضافةً إلى نسخة المؤسسات، وفق احتياج منشأتكم. نراجع طلبكم ونوافيكم بعرض سعر مكتوب.</p>
     <div class="hero-cta-block">
-      <form class="hero-quote" id="heroQuoteForm" autocomplete="off">
-        <select id="heroQuoteType" data-ar-aria="نوع الخدمة" data-en-aria="Service type" aria-label="نوع الخدمة">
-          <option value="maintenance" data-ar="صيانة المواقع الإلكترونية" data-en="Website maintenance">صيانة المواقع الإلكترونية</option>
-          <option value="web-dev" data-ar="تطوير المواقع الإلكترونية" data-en="Website development">تطوير المواقع الإلكترونية</option>
-          <option value="programming" data-ar="خدمات البرمجة وتعديل الكود" data-en="Coding / changes" selected>خدمات البرمجة وتعديل الكود</option>
-          <option value="inventory" data-ar="تطبيق إدارة المخزون" data-en="Inventory management app">تطبيق إدارة المخزون</option>
-          <option value="business" data-ar="نسخة المؤسسات" data-en="Institution edition">نسخة المؤسسات</option>
-          <option value="systems" data-ar="الأنظمة ولوحات التحكم" data-en="Systems and dashboards">الأنظمة ولوحات التحكم</option>
-          <option value="api" data-ar="ربط واجهات البرمجة (API)" data-en="API connections and integrations">ربط واجهات البرمجة (API)</option>
-          <option value="hardware" data-ar="أجهزة (الرياض فقط)" data-en="Hardware (Riyadh only)">أجهزة (الرياض فقط)</option>
-        </select>
-        <input type="text" id="heroQuoteMsg" required maxlength="220" data-ar-placeholder="اكتبوا ملخص الطلب في سطر واحد" data-en-placeholder="Summarize your request in one line" placeholder="اكتبوا ملخص الطلب في سطر واحد" data-ar-aria="وصف الطلب" data-en-aria="Request summary" aria-label="وصف الطلب">
-        <button class="btn btn-primary" type="submit" id="heroQuoteBtn" data-ar="اطلبوا عرض سعر" data-en="Request a quote">اطلبوا عرض سعر</button>
-        <label class="check" for="heroPurchaseTermsCheck">
-          <input type="checkbox" id="heroPurchaseTermsCheck" required>
-          <span class="check-text">
-            <span data-ar="أوافق على " data-en="I agree to the ">أوافق على </span>
-            <a href="/terms/#purchase" id="heroPurchaseTermsLink" data-ar="شروط شراء المنتجات" data-en="product purchase terms">شروط شراء المنتجات</a>
-            <span data-ar="." data-en=".">.</span>
-          </span>
-        </label>
-      </form>
+      <a class="btn btn-primary" href="#contact" id="heroQuoteBtn" data-ar="اطلبوا عرض سعر" data-en="Request a quote">اطلبوا عرض سعر</a>
       <div class="hero-note">
-        <a href="#contact" id="heroOpenFullForm" data-ar="أو انتقلوا إلى النموذج الكامل تحت" data-en="Or go to the full form below">أو انتقلوا إلى النموذج الكامل تحت</a>
-        <span aria-hidden="true">·</span>
         <a href="#pricing" data-ar="قارنوا مسارات الأسعار" data-en="Compare pricing paths">قارنوا مسارات الأسعار</a>
         <span aria-hidden="true">·</span>
         <a href="/terms/" id="heroShortTermsLink" data-ar="الشروط" data-en="Terms">الشروط</a>
@@ -1064,47 +1024,17 @@ body.pay-paused .pay-public-entry{display:none!important}
 
 <section id="quote" class="quote-band band-mist">
   <div class="wrap">
-    <div class="section-head reveal">
-      <div class="eyebrow" data-ar="نموذج الطلب" data-en="Request form">نموذج الطلب</div>
-      <h2 data-ar="أكملوا الطلب هنا" data-en="Complete your request here">أكملوا الطلب هنا</h2>
-      <p data-ar="بعد اختيار نوع الخدمة من الأعلى، انزلوا إلى هذا النموذج وأكملوا البيانات ثم أرسلوا." data-en="After choosing a service type above, scroll to this form, complete the details, and send.">بعد اختيار نوع الخدمة من الأعلى، انزلوا إلى هذا النموذج وأكملوا البيانات ثم أرسلوا.</p>
-    </div>
     <div class="panel reveal" id="contact">
+      <div class="eyebrow" data-ar="نموذج واحد" data-en="One form">نموذج واحد</div>
       <h2 data-ar="اطلبوا عرض سعر" data-en="Request a quote">اطلبوا عرض سعر</h2>
-      <p data-ar="نراجع طلبكم ونردّ عليكم عبر البريد الإلكتروني أو رقم الجوال." data-en="We review your request and respond via email or phone.">نراجع طلبكم ونردّ عليكم عبر البريد الإلكتروني أو رقم الجوال.</p>
-      <p class="hint-inline" style="margin-bottom:8px" data-ar="يُتوقَّع الرد عادةً خلال يوم عمل واحد." data-en="A reply is typically expected within one business day.">يُتوقَّع الرد عادةً خلال يوم عمل واحد.</p>
-      <p class="hint-inline" style="margin-bottom:14px" data-ar="ساعات العمل المعتادة: من الأحد إلى الخميس · الرياض، المملكة العربية السعودية" data-en="Usual business hours: Sunday to Thursday · Riyadh, Saudi Arabia">ساعات العمل المعتادة: من الأحد إلى الخميس · الرياض، المملكة العربية السعودية</p>
+      <p data-ar="عبّئوا الحقول مرة واحدة — نوع الطلب، التفاصيل، وبيانات التواصل — ثم أرسلوا." data-en="Fill the fields once — request type, details, and contact info — then send.">عبّئوا الحقول مرة واحدة — نوع الطلب، التفاصيل، وبيانات التواصل — ثم أرسلوا.</p>
+      <p class="hint-inline" style="margin-bottom:14px" data-ar="الرد عادةً خلال يوم عمل · الأحد–الخميس · الرياض" data-en="Typical reply within one business day · Sun–Thu · Riyadh">الرد عادةً خلال يوم عمل · الأحد–الخميس · الرياض</p>
       <form class="form" id="contactForm" novalidate>
-        <label class="field"><span data-ar="الاسم الكامل" data-en="Full name">الاسم الكامل</span>
-          <input type="text" required data-ar-placeholder="الاسم الكامل" data-en-placeholder="Full name" placeholder="الاسم الكامل" id="contactName" autocomplete="name">
-        </label>
-        <label class="field"><span data-ar="البريد الإلكتروني" data-en="Email">البريد الإلكتروني</span>
-          <input type="email" required data-ar-placeholder="you@domain.com" data-en-placeholder="you@domain.com" placeholder="you@domain.com" id="contactEmail" autocomplete="email">
-        </label>
-        <label class="field"><span data-ar="رقم الجوال" data-en="Phone">رقم الجوال</span>
-          <input type="tel" required inputmode="tel" maxlength="20" data-ar-placeholder="05xxxxxxxx" data-en-placeholder="05xxxxxxxx" placeholder="05xxxxxxxx" id="contactPhone" autocomplete="tel">
-        </label>
-        <label class="field"><span data-ar="أقدّم الطلب بصفة" data-en="I am requesting as">أقدّم الطلب بصفة</span>
-          <select id="contactSegment" required>
-            <option value="individual" data-ar="أفراد" data-en="Individuals" selected>أفراد</option>
-            <option value="company" data-ar="شركات" data-en="Companies">شركات</option>
-            <option value="institution" data-ar="مؤسسات" data-en="Institutions">مؤسسات</option>
-            <option value="other" data-ar="أخرى" data-en="Other">أخرى</option>
-          </select>
-        </label>
-        <label class="field" id="contactCompanyField" hidden>
-          <span id="contactCompanyLabel" data-ar="اسم الشركة / المنشأة" data-en="Company / organization name">اسم الشركة / المنشأة</span>
-          <input type="text" data-ar-placeholder="اسم الشركة أو المنشأة" data-en-placeholder="Company or organization name" placeholder="اسم الشركة أو المنشأة" id="contactCompany" autocomplete="organization">
-        </label>
-        <label class="field" id="contactOtherField" hidden>
-          <span data-ar="وضّحوا باختصار" data-en="Briefly describe">وضّحوا باختصار</span>
-          <input type="text" data-ar-placeholder="مثلاً: جهة حكومية، فريق، مشروع…" data-en-placeholder="e.g. government body, team, project…" placeholder="مثلاً: جهة حكومية، فريق، مشروع…" id="contactOtherNote" maxlength="120" autocomplete="off">
-        </label>
         <label class="field"><span data-ar="نوع الطلب" data-en="Request type">نوع الطلب</span>
-          <select id="contactType">
+          <select id="contactType" required>
             <option value="maintenance" data-ar="صيانة المواقع الإلكترونية" data-en="Website maintenance">صيانة المواقع الإلكترونية</option>
             <option value="web-dev" data-ar="تطوير المواقع الإلكترونية" data-en="Website development">تطوير المواقع الإلكترونية</option>
-            <option value="programming" data-ar="خدمات البرمجة وتعديل الكود" data-en="Coding / changes">خدمات البرمجة وتعديل الكود</option>
+            <option value="programming" data-ar="خدمات البرمجة وتعديل الكود" data-en="Coding / changes" selected>خدمات البرمجة وتعديل الكود</option>
             <option value="inventory" data-ar="تطبيق إدارة المخزون" data-en="Inventory management app">تطبيق إدارة المخزون</option>
             <option value="business" data-ar="نسخة المؤسسات" data-en="Institution edition">نسخة المؤسسات</option>
             <option value="systems" data-ar="الأنظمة ولوحات التحكم" data-en="Systems and dashboards">الأنظمة ولوحات التحكم</option>
@@ -1115,6 +1045,26 @@ body.pay-paused .pay-public-entry{display:none!important}
         <label class="field"><span data-ar="تفاصيل الطلب" data-en="Request details">تفاصيل الطلب</span>
           <textarea required data-ar-placeholder="اكتبوا تفاصيل طلبكم باختصار" data-en-placeholder="Describe your request briefly" placeholder="اكتبوا تفاصيل طلبكم باختصار" id="contactMsg"></textarea>
         </label>
+        <label class="field"><span data-ar="الاسم الكامل" data-en="Full name">الاسم الكامل</span>
+          <input type="text" required data-ar-placeholder="الاسم الكامل" data-en-placeholder="Full name" placeholder="الاسم الكامل" id="contactName" autocomplete="name">
+        </label>
+        <label class="field" id="contactCompanyField" hidden>
+          <span id="contactCompanyLabel" data-ar="اسم المؤسسة / المنشأة" data-en="Institution / organization name">اسم المؤسسة / المنشأة</span>
+          <input type="text" data-ar-placeholder="اسم المؤسسة أو المنشأة" data-en-placeholder="Institution or organization name" placeholder="اسم المؤسسة أو المنشأة" id="contactCompany" autocomplete="organization">
+        </label>
+        <label class="field"><span data-ar="البريد الإلكتروني" data-en="Email">البريد الإلكتروني</span>
+          <input type="email" required data-ar-placeholder="you@domain.com" data-en-placeholder="you@domain.com" placeholder="you@domain.com" id="contactEmail" autocomplete="email">
+        </label>
+        <label class="field"><span data-ar="رقم الجوال" data-en="Phone">رقم الجوال</span>
+          <input type="tel" required inputmode="tel" maxlength="20" data-ar-placeholder="05xxxxxxxx" data-en-placeholder="05xxxxxxxx" placeholder="05xxxxxxxx" id="contactPhone" autocomplete="tel">
+        </label>
+        <select id="contactSegment" hidden aria-hidden="true" tabindex="-1">
+          <option value="individual" selected>أفراد</option>
+          <option value="company">شركات</option>
+          <option value="institution">مؤسسات</option>
+          <option value="other">أخرى</option>
+        </select>
+        <input type="hidden" id="contactOtherNote" value="">
         <p class="hint-inline" id="contactTrustLine" style="margin:0 0 10px">
           <span data-ar="لا نبيع بياناتكم، ونستخدمها للرد على طلبكم فقط. راجعوا " data-en="We do not sell your data and use it only to reply to your request. See ">لا نبيع بياناتكم، ونستخدمها للرد على طلبكم فقط. راجعوا </span>
           <a href="/privacy/" data-ar="سياسة الخصوصية" data-en="Privacy Policy">سياسة الخصوصية</a>
@@ -2012,7 +1962,12 @@ body.pay-paused .pay-public-entry{display:none!important}
     document.body.classList.add('maintenance-on');
     const heroBtn = document.getElementById('heroQuoteBtn');
     const contactSubmit = document.querySelector('#contactForm button[type="submit"]');
-    if (heroBtn) { heroBtn.disabled = true; heroBtn.setAttribute('aria-disabled', 'true'); }
+    if (heroBtn) {
+      heroBtn.setAttribute('aria-disabled', 'true');
+      heroBtn.addEventListener('click', (e) => e.preventDefault());
+      heroBtn.style.pointerEvents = 'none';
+      heroBtn.style.opacity = '0.55';
+    }
     if (contactSubmit) { contactSubmit.disabled = true; contactSubmit.setAttribute('aria-disabled', 'true'); }
   }
 
@@ -2194,11 +2149,12 @@ body.pay-paused .pay-public-entry{display:none!important}
   }
 
   function syncCompanyFieldForType(type){
-    // Kept for older call sites — company visibility follows segment, not request type.
-    syncCompanyFieldForSegment(getContactSegment());
-    if ((type === 'business' || type === 'institution') && getContactSegment() === 'individual') {
+    if (type === 'business' || type === 'institution') {
       setContactSegment('institution');
       syncCompanyFieldForSegment('institution');
+    } else {
+      setContactSegment('individual');
+      syncCompanyFieldForSegment('individual');
     }
   }
 
@@ -2543,21 +2499,15 @@ body.pay-paused .pay-public-entry{display:none!important}
     }
     return true;
   }
-  function requirePurchaseTerms(prefer){
-    const hero = document.getElementById('heroPurchaseTermsCheck');
+  function requirePurchaseTerms(){
     const contact = document.getElementById('contactPurchaseTermsCheck');
     const resultEl = document.getElementById('contactResult');
     const msg = t('يلزم الموافقة على شروط شراء المنتجات أولاً', 'Please accept the product purchase terms first');
-    if (prefer === 'hero' && hero) {
-      scrollToEl(document.getElementById('heroQuoteForm') || document.querySelector('.hero'), { block: 'center' });
-      try { hero.focus(); } catch (_) {}
-      return;
-    }
+    highlightContactForm();
     if (resultEl) {
       resultEl.style.color = 'var(--danger)';
       resultEl.textContent = msg;
     }
-    scrollToEl(document.getElementById('contact'), { block: 'start' });
     try { contact && contact.focus(); } catch (_) {}
   }
 
@@ -2569,7 +2519,7 @@ body.pay-paused .pay-public-entry{display:none!important}
       return { ok: false, maintenance: true };
     }
     if (!purchaseTermsAccepted()) {
-      requirePurchaseTerms(opts.focusHero ? 'hero' : 'contact');
+      requirePurchaseTerms();
       return { ok: false, needPurchaseTerms: true };
     }
     if (!navigator.onLine) {
@@ -2706,7 +2656,7 @@ body.pay-paused .pay-public-entry{display:none!important}
       if (ok) {
         storeQuoteFingerprint(email, type, message);
         clearContactDraft();
-        const hq = document.getElementById('heroQuoteMsg');
+        const hq = document.getElementById('contactMsg');
         if (hq) hq.value = '';
       } else {
         saveContactDraft();
@@ -2734,59 +2684,19 @@ body.pay-paused .pay-public-entry{display:none!important}
     applyLang(currentLang);
   }
 
-  document.getElementById('heroQuoteForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const type = document.getElementById('heroQuoteType').value;
-    const message = document.getElementById('heroQuoteMsg').value.trim();
-    if (!message) return;
-    if (maintenanceBlocksSubmit(document.getElementById('contactResult'))) {
-      highlightContactForm();
-      return;
-    }
-    if (!purchaseTermsAccepted()) {
-      requirePurchaseTerms('hero');
-      return;
-    }
-    syncPurchaseTermsChecks(true);
-    if (type === 'business' || type === 'institution') setContactSegment('institution');
-    const btn = document.getElementById('heroQuoteBtn');
-    if (btn.getAttribute('aria-busy') === 'true') return;
-    btn.disabled = true;
-    btn.setAttribute('aria-busy', 'true');
-    btn.textContent = t('جاري التجهيز...', 'Preparing...');
-    try {
-      const result = await submitCatalogQuote({ type, message, focusHero: true });
-      if (result && result.needPurchaseTerms) {
-        restoreQuoteBtn(btn);
-        return;
-      }
-      if (result && result.ok) {
-        btn.classList.add('sent');
-        btn.textContent = t('تم الإرسال', 'Sent');
-        setTimeout(() => restoreQuoteBtn(btn), 2200);
-      } else if (result && result.saved) {
-        btn.textContent = t('حُفظ الطلب', 'Request saved');
-        setTimeout(() => restoreQuoteBtn(btn), 2200);
-      } else if (result && (result.redirected || result.guestModal || result.heroContact)) {
-        restoreQuoteBtn(btn);
-        btn.textContent = t('أكملوا النموذج تحت ↓', 'Complete the form below ↓');
-        setTimeout(() => restoreQuoteBtn(btn), 2600);
-      } else {
-        restoreQuoteBtn(btn);
-      }
-    } catch (_) {
-      restoreQuoteBtn(btn);
-    }
-  });
-
-  const heroOpenFullForm = document.getElementById('heroOpenFullForm');
-  if (heroOpenFullForm) {
-    heroOpenFullForm.addEventListener('click', (e) => {
+  const heroQuoteBtn = document.getElementById('heroQuoteBtn');
+  if (heroQuoteBtn) {
+    heroQuoteBtn.addEventListener('click', (e) => {
       e.preventDefault();
-      const type = document.getElementById('heroQuoteType').value;
-      const message = document.getElementById('heroQuoteMsg').value.trim();
-      requestFromCatalog({ type, message });
       highlightContactForm();
+      const nameEl = document.getElementById('contactName');
+      const typeEl = document.getElementById('contactType');
+      const msgEl = document.getElementById('contactMsg');
+      try {
+        if (msgEl && !msgEl.value.trim()) msgEl.focus();
+        else if (nameEl && !nameEl.value.trim()) nameEl.focus();
+        else if (typeEl) typeEl.focus();
+      } catch (_) {}
     });
   }
 
@@ -3256,20 +3166,15 @@ body.pay-paused .pay-public-entry{display:none!important}
     const typeEl = document.getElementById('contactType');
     if (typeEl) {
       typeEl.addEventListener('change', () => syncCompanyFieldForType(typeEl.value));
+      syncCompanyFieldForType(typeEl.value);
     }
-    document.getElementById('contactSegment').addEventListener('change', (e) => {
-      syncCompanyFieldForSegment(e.target.value);
-    });
-    syncCompanyFieldForSegment(getContactSegment());
-    const heroType = document.getElementById('heroQuoteType');
-    if (heroType) {
-      heroType.addEventListener('change', () => {
-        if (typeEl) {
-          typeEl.value = heroType.value;
-          syncCompanyFieldForType(heroType.value);
-        }
+    const segEl = document.getElementById('contactSegment');
+    if (segEl) {
+      segEl.addEventListener('change', (e) => {
+        syncCompanyFieldForSegment(e.target.value);
       });
     }
+    syncCompanyFieldForSegment(getContactSegment());
     if (!type && !msg && !company && !industry) return;
     let normalized = type === 'electronics' ? 'hardware' : type;
     if (normalized === 'system') normalized = 'systems';
@@ -4065,7 +3970,7 @@ body.pay-paused .pay-public-entry{display:none!important}
         e.target.reset();
         setContactSegment('individual');
         syncCompanyFieldForSegment('individual');
-        const hq = document.getElementById('heroQuoteMsg');
+        const hq = document.getElementById('contactMsg');
         if (hq) hq.value = '';
         if (loggedInUser) {
           const fullName = loggedInUser.user_metadata && loggedInUser.user_metadata.full_name;
