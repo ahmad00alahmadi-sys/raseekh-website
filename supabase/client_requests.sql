@@ -21,6 +21,8 @@ create table if not exists public.client_requests (
 
 create index if not exists client_requests_created_at_idx on public.client_requests (created_at desc);
 create index if not exists client_requests_status_idx on public.client_requests (status);
+create unique index if not exists client_requests_fingerprint_uidx on public.client_requests (fingerprint)
+  where coalesce(fingerprint, '') <> '';
 
 alter table public.client_requests enable row level security;
 

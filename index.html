@@ -1335,20 +1335,25 @@ body.terms-locked,body.auth-locked{overflow:hidden}
     const message = document.getElementById('heroQuoteMsg').value.trim();
     if (!message) return;
     const btn = document.getElementById('heroQuoteBtn');
+    if (btn.getAttribute('aria-busy') === 'true') return;
     btn.disabled = true;
     btn.setAttribute('aria-busy', 'true');
     btn.textContent = t('جاري الإرسال...', 'Sending...');
-    const result = await submitCatalogQuote({ type, message });
-    if (result && result.ok) {
-      btn.classList.add('sent');
-      btn.textContent = t('تم الإرسال', 'Sent');
-      setTimeout(() => restoreQuoteBtn(btn), 2200);
-    } else if (result && result.redirected) {
-      btn.disabled = false;
-      btn.removeAttribute('aria-busy');
-      btn.textContent = t('أكمل النموذج ↓', 'Continue below ↓');
-      setTimeout(() => restoreQuoteBtn(btn), 2200);
-    } else {
+    try {
+      const result = await submitCatalogQuote({ type, message });
+      if (result && result.ok) {
+        btn.classList.add('sent');
+        btn.textContent = t('تم الإرسال', 'Sent');
+        setTimeout(() => restoreQuoteBtn(btn), 2200);
+      } else if (result && result.redirected) {
+        btn.disabled = false;
+        btn.removeAttribute('aria-busy');
+        btn.textContent = t('أكمل النموذج ↓', 'Continue below ↓');
+        setTimeout(() => restoreQuoteBtn(btn), 2200);
+      } else {
+        restoreQuoteBtn(btn);
+      }
+    } catch (_) {
       restoreQuoteBtn(btn);
     }
   });
@@ -1378,15 +1383,21 @@ body.terms-locked,body.auth-locked{overflow:hidden}
       el.setAttribute('disabled', 'disabled');
       el.textContent = t('جاري الإرسال...', 'Sending...');
     }
-    const result = await submitCatalogQuote({ type, message });
-    el.removeAttribute('aria-busy');
-    el.removeAttribute('disabled');
-    if (result && result.ok) {
-      el.textContent = t('تم الإرسال', 'Sent');
-      setTimeout(() => { el.textContent = prev; applyLang(currentLang); }, 1800);
-    } else {
+    try {
+      const result = await submitCatalogQuote({ type, message });
+      if (result && result.ok) {
+        el.textContent = t('تم الإرسال', 'Sent');
+        setTimeout(() => { el.textContent = prev; applyLang(currentLang); }, 1800);
+      } else {
+        el.textContent = prev;
+        applyLang(currentLang);
+      }
+    } catch (_) {
       el.textContent = prev;
       applyLang(currentLang);
+    } finally {
+      el.removeAttribute('aria-busy');
+      el.removeAttribute('disabled');
     }
   });
 

@@ -377,9 +377,13 @@
       if (!cfg.webhookUrl && existing.webhookUrl) cfg.webhookUrl = String(existing.webhookUrl);
     }
     writeJson(PUBLIC_NOTIFY_KEY, cfg);
-    if (cfg.notifyEmail || cfg.webhookUrl || (opts && opts.forceCloud) || (opts && opts.allowEmpty)) {
-      pushPublicNotifyToCloud(cfg, { allowEmpty: !!(opts && opts.allowEmpty) }).catch(() => {});
+    const shouldPush = !!(cfg.notifyEmail || cfg.webhookUrl || (opts && opts.forceCloud) || (opts && opts.allowEmpty));
+    if (!shouldPush) return opts && opts.awaitCloud ? Promise.resolve({ cfg, cloud: false }) : cfg;
+    if (opts && opts.awaitCloud) {
+      return pushPublicNotifyToCloud(cfg, { allowEmpty: !!(opts && opts.allowEmpty) })
+        .then((ok) => ({ cfg, cloud: !!ok }));
     }
+    pushPublicNotifyToCloud(cfg, { allowEmpty: !!(opts && opts.allowEmpty) }).catch(() => {});
     return cfg;
   }
 
@@ -766,7 +770,14 @@
     }
     const fingerprint = row.paymentId
       ? 'moyasar:' + row.paymentId
-      : 'pay:' + row.at + ':' + row.total + ':' + (row.email || '') + ':' + (row.note || '');
+      : [
+          'pay',
+          Math.floor(Date.now() / (5 * 60 * 1000)),
+          String(row.total || 0),
+          String(row.method || ''),
+          String(row.email || row.userId || '').trim().toLowerCase(),
+          String(row.note || '').trim().toLowerCase().replace(/\s+/g, ' ')
+        ].join(':');
     row.fingerprint = fingerprint;
     const existing = list.find((x) =>
       (x.paymentId && row.paymentId && x.paymentId === row.paymentId) ||

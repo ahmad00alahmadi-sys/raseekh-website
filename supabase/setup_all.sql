@@ -21,6 +21,8 @@ create table if not exists public.client_requests (
 );
 create index if not exists client_requests_created_at_idx on public.client_requests (created_at desc);
 create index if not exists client_requests_status_idx on public.client_requests (status);
+create unique index if not exists client_requests_fingerprint_uidx on public.client_requests (fingerprint)
+  where coalesce(fingerprint, '') <> '';
 alter table public.client_requests enable row level security;
 drop policy if exists "raseekh_requests_insert" on public.client_requests;
 drop policy if exists "raseekh_requests_select" on public.client_requests;
@@ -195,6 +197,8 @@ create table if not exists public.payments (
 create index if not exists payments_created_at_idx on public.payments (created_at desc);
 create unique index if not exists payments_payment_id_uidx on public.payments (payment_id)
   where coalesce(payment_id, '') <> '';
+create unique index if not exists payments_fingerprint_uidx on public.payments (fingerprint)
+  where coalesce(fingerprint, '') <> '';
 alter table public.payments enable row level security;
 drop policy if exists "raseekh_payments_insert" on public.payments;
 drop policy if exists "raseekh_payments_select_own" on public.payments;

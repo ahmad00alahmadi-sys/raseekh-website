@@ -1064,10 +1064,25 @@ body.is-admin .client-only{display:none!important}
     if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
     else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
   }
+  const modalFocusReturn = new WeakMap();
   function setModalOpen(overlay, open){
     if (!overlay) return;
-    overlay.classList.toggle('open', !!open);
-    overlay.setAttribute('aria-hidden', open ? 'false' : 'true');
+    const willOpen = !!open;
+    if (willOpen) {
+      if (!overlay.classList.contains('open')) {
+        modalFocusReturn.set(overlay, document.activeElement);
+      }
+      overlay.classList.add('open');
+      overlay.setAttribute('aria-hidden', 'false');
+      return;
+    }
+    overlay.classList.remove('open');
+    overlay.setAttribute('aria-hidden', 'true');
+    const prev = modalFocusReturn.get(overlay);
+    modalFocusReturn.delete(overlay);
+    if (prev && typeof prev.focus === 'function' && document.contains(prev)) {
+      try { prev.focus(); } catch (_) {}
+    }
   }
   function showToast(msg){
     const el = document.getElementById('toast');
@@ -1170,10 +1185,13 @@ body.is-admin .client-only{display:none!important}
     catch (_) { store = { name: 'راسخ', phone: '', webhookUrl: '', notifyEmail: '', notifyOnLogin: true }; }
     if (typeof store.notifyOnLogin !== 'boolean') store.notifyOnLogin = true;
   }
-  function saveStore(){
-    if (!requireAdmin('saveStore')) return;
+  function saveStore(opts){
+    if (!requireAdmin('saveStore')) return null;
     localStorage.setItem(ADMIN_STORE_KEY, JSON.stringify(store));
-    if (Catalog && Catalog.publishPublicNotify) Catalog.publishPublicNotify(store);
+    if (Catalog && Catalog.publishPublicNotify) {
+      return Catalog.publishPublicNotify(store, opts);
+    }
+    return opts && opts.awaitCloud ? Promise.resolve({ cfg: store, cloud: false }) : store;
   }
   let leadsFilter = 'all';
   function updateLeadsBadge(){
@@ -1968,9 +1986,19 @@ body.is-admin .client-only{display:none!important}
 
   document.getElementById('dashForgotForm').addEventListener('submit', async (e) => {
     e.preventDefault();
+    const form = e.target;
+    if (form.dataset.submitting === '1') return;
     const msg = document.getElementById('dashForgotMsg');
-    if (!Auth) return;
+    if (!Auth) {
+      msg.style.color = 'var(--danger)';
+      msg.textContent = t('تعذّر تحميل نظام الحسابات', 'Auth system failed to load');
+      return;
+    }
     const email = document.getElementById('dashForgotEmail').value.trim();
+    const btn = form.querySelector('button[type="submit"]');
+    form.dataset.submitting = '1';
+    if (btn) { btn.disabled = true; btn.setAttribute('aria-busy', 'true'); }
+    msg.style.color = 'var(--muted)';
     msg.textContent = t('جاري الإرسال...', 'Sending...');
     try {
       const result = await Auth.resetPasswordRequest(email);
@@ -1984,6 +2012,9 @@ body.is-admin .client-only{display:none!important}
     } catch (err) {
       msg.style.color = 'var(--danger)';
       msg.textContent = Auth.friendlyError(err, currentLang);
+    } finally {
+      form.dataset.submitting = '0';
+      if (btn) { btn.disabled = false; btn.removeAttribute('aria-busy'); }
     }
   });
 
@@ -3024,8 +3055,10 @@ body.is-admin .client-only{display:none!important}
   document.getElementById('requestConfirmModal').addEventListener('keydown', (e) => trapModalTab(document.getElementById('requestConfirmModal'), e));
   document.getElementById('productModal').addEventListener('keydown', (e) => trapModalTab(document.getElementById('productModal'), e));
 
-  function checkout(method){
+  let checkoutBusy = false;
+  async function checkout(method){
     if (!requireAdmin('checkout')) return;
+    if (checkoutBusy) return;
     if (!cart.length) { showToast(t('لا توجد بنود','No items')); return; }
     for (const line of cart) {
       const p = products.find(x => x.id === line.id);
@@ -3034,54 +3067,83 @@ body.is-admin .client-only{display:none!important}
         return;
       }
     }
-    cart.forEach(line => {
-      const p = products.find(x => x.id === line.id);
-      if (p) p.stock -= line.qty;
-    });
-    const total = cart.reduce((s, l) => s + l.price * l.qty, 0);
-    const items = cart.reduce((s, l) => s + l.qty, 0);
-    const sale = Catalog && Catalog.addPaymentRecord
-      ? Catalog.addPaymentRecord({
-          method,
-          total,
-          items,
-          lines: cart.map(l => ({ ...l })),
-          note: t('دفعة خدمات بسعر ثابت', 'Fixed-price services payment'),
-          source: 'admin-pos',
-          name: (currentUser && currentUser.user_metadata && currentUser.user_metadata.full_name) || '',
-          email: (currentUser && currentUser.email) || '',
-          userId: (currentUser && currentUser.id) || ''
-        })
-      : {
-          id: uid(),
-          at: new Date().toISOString(),
-          method,
-          total,
-          items,
-          lines: cart.map(l => ({ ...l }))
-        };
-    if (!(Catalog && Catalog.addPaymentRecord)) {
-      sales.unshift(sale);
-      saveSales();
-    } else loadSales();
-    cart = [];
-    saveProducts();
-    renderAll();
-    openReceipt(sale);
-    const finishToast = (delivery) => {
-      const synced = !!(delivery && (delivery.cloud || delivery.delivered));
-      showToast(synced
+    checkoutBusy = true;
+    const payCashBtn = document.getElementById('payCashBtn');
+    const payCardBtn = document.getElementById('payCardBtn');
+    if (payCashBtn) payCashBtn.disabled = true;
+    if (payCardBtn) payCardBtn.disabled = true;
+    const stockBefore = products.map((p) => ({ id: p.id, stock: p.stock }));
+    const cartSnapshot = cart.map((l) => ({ ...l }));
+    try {
+      cart.forEach(line => {
+        const p = products.find(x => x.id === line.id);
+        if (p) p.stock -= line.qty;
+      });
+      const total = cart.reduce((s, l) => s + l.price * l.qty, 0);
+      const items = cart.reduce((s, l) => s + l.qty, 0);
+      const sale = Catalog && Catalog.addPaymentRecord
+        ? Catalog.addPaymentRecord({
+            method,
+            total,
+            items,
+            lines: cart.map(l => ({ ...l })),
+            note: t('دفعة خدمات بسعر ثابت', 'Fixed-price services payment'),
+            source: 'admin-pos',
+            name: (currentUser && currentUser.user_metadata && currentUser.user_metadata.full_name) || '',
+            email: (currentUser && currentUser.email) || '',
+            userId: (currentUser && currentUser.id) || ''
+          })
+        : {
+            id: uid(),
+            at: new Date().toISOString(),
+            method,
+            total,
+            items,
+            lines: cart.map(l => ({ ...l }))
+          };
+      if (!(Catalog && Catalog.addPaymentRecord)) {
+        sales.unshift(sale);
+        saveSales();
+      } else loadSales();
+      cart = [];
+      let catalogCloud = true;
+      try {
+        const result = saveProducts({ cloud: true, awaitCloud: true });
+        if (result && typeof result.then === 'function') {
+          const published = await result;
+          catalogCloud = !!(published && published.cloud);
+        }
+      } catch (_) {
+        catalogCloud = false;
+        stockBefore.forEach((s) => {
+          const p = products.find((x) => x.id === s.id);
+          if (p) p.stock = s.stock;
+        });
+        cart = cartSnapshot;
+        renderAll();
+        showToast(t('تعذّر تسجيل الدفعة — أُعيدت السلة', 'Could not record payment — cart restored'));
+        return;
+      }
+      renderAll();
+      openReceipt(sale);
+      let delivery = null;
+      try {
+        if (sale && sale.deliveryPromise) delivery = await sale.deliveryPromise;
+      } catch (_) {
+        delivery = null;
+      }
+      const paymentSynced = !!(delivery && (delivery.cloud || delivery.delivered));
+      showToast(paymentSynced && catalogCloud
         ? (method === 'card' ? t('تم تسجيل دفعة بالبطاقة','Card payment recorded') : t('تم تسجيل دفعة نقداً','Cash payment recorded'))
         : t('حُفظت الدفعة محلياً — تعذّرت مزامنة السحابة', 'Payment saved locally — cloud sync failed'));
-    };
-    if (sale && sale.deliveryPromise) {
-      sale.deliveryPromise.then(finishToast).catch(() => finishToast(null));
-    } else {
-      finishToast({ cloud: false });
+    } finally {
+      checkoutBusy = false;
+      if (payCashBtn) payCashBtn.disabled = false;
+      if (payCardBtn) payCardBtn.disabled = false;
     }
   }
-  document.getElementById('payCashBtn').addEventListener('click', () => checkout('cash'));
-  document.getElementById('payCardBtn').addEventListener('click', () => checkout('card'));
+  document.getElementById('payCashBtn').addEventListener('click', () => { checkout('cash'); });
+  document.getElementById('payCardBtn').addEventListener('click', () => { checkout('card'); });
 
   const manualDepositForm = document.getElementById('manualDepositForm');
   if (manualDepositForm) {
@@ -3225,30 +3287,59 @@ body.is-admin .client-only{display:none!important}
     }
   });
 
-  document.getElementById('storeForm').addEventListener('submit', (e) => {
+  document.getElementById('storeForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!requireAdmin('storeForm')) return;
+    const form = e.target;
+    if (form.dataset.submitting === '1') return;
+    const msg = document.getElementById('storeMsg');
+    const btn = form.querySelector('button[type="submit"]');
     store.name = document.getElementById('storeName').value.trim() || 'راسخ';
     store.phone = document.getElementById('storePhone').value.trim();
     store.webhookUrl = (document.getElementById('storeWebhook').value || '').trim();
     store.notifyEmail = (document.getElementById('storeNotifyEmail').value || '').trim().toLowerCase();
     const notifyLoginEl = document.getElementById('storeNotifyLogin');
     store.notifyOnLogin = notifyLoginEl ? !!notifyLoginEl.checked : true;
-    saveStore();
-    if (Catalog && Catalog.publishPublicNotify) {
-      Catalog.publishPublicNotify(store, { allowEmpty: !store.notifyEmail && !store.webhookUrl, forceCloud: true });
+    form.dataset.submitting = '1';
+    if (btn) { btn.disabled = true; btn.setAttribute('aria-busy', 'true'); }
+    msg.style.color = 'var(--muted)';
+    msg.textContent = t('جاري الحفظ...', 'Saving...');
+    let cloudOk = true;
+    try {
+      const result = saveStore({
+        allowEmpty: !store.notifyEmail && !store.webhookUrl,
+        forceCloud: true,
+        awaitCloud: true
+      });
+      if (result && typeof result.then === 'function') {
+        const published = await result;
+        cloudOk = !!(published && published.cloud);
+      }
+    } catch (_) {
+      cloudOk = false;
+    } finally {
+      form.dataset.submitting = '0';
+      if (btn) { btn.disabled = false; btn.removeAttribute('aria-busy'); }
     }
     renderDeliveryStatus();
-    document.getElementById('storeMsg').style.color = 'var(--ok)';
+    if (!cloudOk) {
+      msg.style.color = 'var(--danger)';
+      msg.textContent = t(
+        'حُفظ محلياً — تعذّرت مزامنة إعدادات الإشعار للسحابة',
+        'Saved locally — notify settings cloud sync failed'
+      );
+      return;
+    }
+    msg.style.color = 'var(--ok)';
     if (store.notifyEmail) {
-      document.getElementById('storeMsg').textContent = t(
+      msg.textContent = t(
         'تم الحفظ — الطلبات وتسجيل دخول العملاء يصلان لهذا البريد (فعّل FormSubmit إن لزم)',
         'Saved — requests and client logins email this address (activate FormSubmit if needed)'
       );
     } else if (store.webhookUrl) {
-      document.getElementById('storeMsg').textContent = t('تم الحفظ — إشعارات الطلبات مفعّلة عبر Webhook', 'Saved — request webhook notifications enabled');
+      msg.textContent = t('تم الحفظ — إشعارات الطلبات مفعّلة عبر Webhook', 'Saved — request webhook notifications enabled');
     } else {
-      document.getElementById('storeMsg').textContent = t('تم حفظ بيانات المتجر','Store details saved');
+      msg.textContent = t('تم حفظ بيانات المتجر','Store details saved');
     }
   });
 
