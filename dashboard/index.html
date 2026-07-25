@@ -393,6 +393,20 @@ body.is-client .home-bar{
   padding:12px 0;border-bottom:1px solid var(--line);font-size:.92rem;
 }
 .sale-row:last-child{border-bottom:none}
+.req-steps{display:flex;gap:4px;flex-wrap:wrap;margin:8px 0 4px}
+.req-step{font-size:.68rem;font-weight:700;padding:3px 7px;border-radius:2px;background:var(--ghost-bg);color:var(--muted);border:1px solid var(--line)}
+.req-step.on{background:rgba(42,111,122,.12);color:var(--harbor);border-color:rgba(42,111,122,.35)}
+.req-step.done{background:rgba(31,122,88,.1);color:var(--ok);border-color:rgba(31,122,88,.3)}
+.req-updated-badge{
+  display:inline-block;font-size:.68rem;font-weight:800;padding:2px 6px;border-radius:2px;
+  background:rgba(196,92,38,.14);color:#8A3E14;border:1px solid rgba(196,92,38,.35);margin-inline-start:6px;vertical-align:middle;
+}
+@media (max-width:560px){
+  .sale-row{flex-direction:column;align-items:stretch;gap:8px}
+  .sale-row > .status-chip,
+  .sale-row > [class*="status-chip"]{align-self:flex-start}
+  .sale-row > div:last-child{min-width:0!important;width:100%}
+}
 
 .modal-overlay{
   position:fixed;inset:0;background:rgba(16,35,58,.55);backdrop-filter:blur(4px);
@@ -622,6 +636,14 @@ body.is-client .home-bar{
           <div class="hint" data-ar="بانتظار المتابعة" data-en="awaiting follow-up">بانتظار المتابعة</div>
         </div>
       </div>
+      <div class="panel admin-only" id="adminDailySummary" style="margin-bottom:16px;padding:14px 16px">
+        <h3 style="margin:0 0 8px;font-size:.95rem" data-ar="ملخص اليوم" data-en="Today’s summary">ملخص اليوم</h3>
+        <div style="display:flex;flex-wrap:wrap;gap:14px;font-size:.88rem;color:var(--muted)">
+          <span><strong id="dailySummaryNew" style="color:var(--navy)">0</strong> · <span data-ar="طلبات جديدة" data-en="new requests">طلبات جديدة</span></span>
+          <span><strong id="dailySummaryProgress" style="color:var(--navy)">0</strong> · <span data-ar="قيد المعالجة" data-en="in progress">قيد المعالجة</span></span>
+          <span><strong id="dailySummaryLogins" style="color:var(--navy)">0</strong> · <span data-ar="دخول اليوم" data-en="logins today">دخول اليوم</span></span>
+        </div>
+      </div>
       <div class="stats admin-only audience-stats">
         <div class="stat clickable" data-goto="activity"><div class="label" data-ar="زوار الموقع" data-en="Site visitors">زوار الموقع</div><div class="value" id="statVisitorsTotal">0</div><div class="hint" data-ar="جلسات فريدة (إجمالي)" data-en="unique sessions (total)">جلسات فريدة (إجمالي)</div></div>
         <div class="stat clickable" data-goto="activity"><div class="label" data-ar="زوار اليوم" data-en="Visitors today">زوار اليوم</div><div class="value" id="statVisitorsToday">0</div><div class="hint" data-ar="حسب توقيت الرياض" data-en="Riyadh day bucket">حسب توقيت الرياض</div></div>
@@ -796,6 +818,8 @@ body.is-client .home-bar{
           <button type="button" data-lead-filter="in_progress" data-ar="قيد المعالجة" data-en="In progress">قيد المعالجة</button>
           <button type="button" data-lead-filter="done" data-ar="مكتمل" data-en="Done">مكتمل</button>
           <button type="button" data-lead-filter="closed" data-ar="مغلق" data-en="Closed">مغلق</button>
+          <button type="button" data-lead-filter="company" data-ar="شركات" data-en="Companies">شركات</button>
+          <button type="button" data-lead-filter="urgent" data-ar="عاجل" data-en="Urgent">عاجل</button>
         </div>
         <div id="adminLeadsList" style="margin-top:12px"></div>
       </div>
@@ -858,6 +882,7 @@ body.is-client .home-bar{
         <div class="toolbar">
           <h3 data-ar="كتالوج الخدمات" data-en="Service catalog">كتالوج الخدمات</h3>
           <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+            <button class="btn btn-ghost" type="button" id="exportCatalogBackupBtn" style="padding:10px 12px" data-ar="تصدير نسخة الكتالوج" data-en="Export catalog backup">تصدير نسخة الكتالوج</button>
             <a class="btn btn-ghost" href="/#products" style="padding:10px 12px" data-ar="معاينة العميل" data-en="Client preview">معاينة العميل</a>
             <input type="search" id="productSearch" style="padding:10px 12px;border:1px solid var(--line);border-radius:10px;min-width:200px" data-ar-placeholder="بحث..." data-en-placeholder="Search..." placeholder="بحث...">
           </div>
@@ -902,6 +927,10 @@ body.is-client .home-bar{
           <h1 data-ar="الإعدادات" data-en="Settings">الإعدادات</h1>
           <div class="crumb"><span data-ar="راسخ" data-en="Raseekh">راسخ</span> <span>/</span> <span data-ar="الإعدادات" data-en="Settings">الإعدادات</span></div>
         </div>
+      </div>
+      <div class="panel admin-only" id="settingsHealthPanel" style="margin-bottom:14px">
+        <h3 style="margin-bottom:6px" data-ar="فحص سريع" data-en="Quick check">فحص سريع</h3>
+        <p id="settingsHealthSummary" style="color:var(--muted);font-size:.9rem;margin:0" data-ar="افحصوا وصول البريد والسحابة من هنا." data-en="Check email and cloud delivery here.">افحصوا وصول البريد والسحابة من هنا.</p>
       </div>
       <div class="panel">
         <h3 data-ar="بيانات الحساب" data-en="Account details">بيانات الحساب</h3>
@@ -1440,7 +1469,25 @@ body.is-client .home-bar{
         : t('اضبط البريد من الإعدادات', 'Set email in Settings');
     }
     updateAdminSetupBanner({ status, cloudOk, settingsOk, activityOk, termsOk, notifyPublished });
+    updateSettingsHealthSummary({ status, cloudOk, settingsOk, activityOk, termsOk, notifyPublished });
     return { status, cloudOk, settingsOk, activityOk, termsOk, notifyPublished };
+  }
+
+  function updateSettingsHealthSummary(info){
+    const el = document.getElementById('settingsHealthSummary');
+    if (!el || !isAdminUser) return;
+    const status = (info && info.status) || {};
+    const emailOk = !!(status.hasEmail && info && info.notifyPublished);
+    const cloudOk = !!(info && info.cloudOk);
+    if (emailOk && cloudOk) {
+      el.textContent = t('فحص سريع: البريد والسحابة جاهزان لوصول الطلبات.', 'Quick check: email and cloud are ready for request delivery.');
+      return;
+    }
+    const gaps = [];
+    if (!status.hasEmail) gaps.push(t('بريد الإشعار غير مضبوط', 'notify email not set'));
+    else if (!(info && info.notifyPublished)) gaps.push(t('بريد الإشعار محلي فقط — انشروا الإعدادات / FormSubmit', 'notify email is local only — publish settings / FormSubmit'));
+    if (!cloudOk) gaps.push(t('سحابة الطلبات غير جاهزة (شغّلوا setup_all.sql)', 'request cloud not ready (run setup_all.sql)'));
+    el.textContent = t('فحص سريع: ', 'Quick check: ') + gaps.join(t(' · ', ' · '));
   }
 
   function updateAdminSetupBanner(info){
@@ -1451,6 +1498,7 @@ body.is-client .home-bar{
       return;
     }
     const localSession = authProvider === 'local' || (currentUser && currentUser.app_metadata && currentUser.app_metadata.provider === 'local');
+    const hasEmail = !!(info && info.status && info.status.hasEmail);
     const ready = !!(info && info.cloudOk && info.settingsOk && info.activityOk && info.notifyPublished && !localSession);
     banner.classList.add('show');
     banner.classList.toggle('ok', ready);
@@ -1459,6 +1507,10 @@ body.is-client .home-bar{
       text.textContent = t('الإعداد مكتمل — الطلبات وتسجيل الدخول يصلانكم عبر السحابة والبريد.', 'Setup complete — requests and logins reach you via cloud and email.');
     } else if (localSession) {
       text.textContent = t('جلستكم محلية حالياً. اخرجوا ثم ادخلوا بحساب الإدارة السحابي بعد تشغيل SQL.', 'You are on a local session. Sign out and sign in with the cloud admin account after running SQL.');
+    } else if (!hasEmail && !(info && info.cloudOk)) {
+      text.textContent = t('ناقص: بريد وصول الطلبات + سحابة Supabase. احفظوا البريد من الإعدادات وشغّلوا setup_all.sql.', 'Missing: notify email + Supabase cloud. Save the email in Settings and run setup_all.sql.');
+    } else if (!hasEmail) {
+      text.textContent = t('ناقص: احفظوا «بريد وصول الطلبات» من الإعدادات حتى تصلكم الطلبات بالبريد.', 'Missing: save “Request notify email” in Settings so requests reach you by email.');
     } else if (!(info && info.cloudOk && info.settingsOk && info.activityOk)) {
       text.textContent = t('الجداول السحابية غير جاهزة بعد. شغّلوا supabase/setup_all.sql ثم اضغطوا إعادة الفحص.', 'Cloud tables are not ready yet. Run supabase/setup_all.sql then tap Recheck.');
     } else if (!(info && info.notifyPublished)) {
@@ -1485,7 +1537,99 @@ body.is-client .home-bar{
     if (status === 'closed') return t('مغلق', 'Closed');
     return t('جديد', 'New');
   }
+  function requestStepIndex(status){
+    const s = status || 'new';
+    if (s === 'done' || s === 'closed') return 3;
+    if (s === 'in_progress') return 1;
+    return 0;
+  }
+  function requestStepsHtml(status){
+    const cur = requestStepIndex(status);
+    const labels = [
+      t('طلب جديد', 'New'),
+      t('قيد المراجعة', 'In review'),
+      t('عرض أو تنفيذ', 'Quote or work'),
+      t('مكتمل', 'Done')
+    ];
+    // closed maps as done — step index 3; prior steps marked done
+    return `<div class="req-steps" role="list" aria-label="${escapeHtml(t('مسار الطلب','Request progress'))}">${
+      labels.map((label, i) => {
+        let cls = 'req-step';
+        if (i < cur) cls += ' done';
+        else if (i === cur) cls += ' on';
+        return `<span class="${cls}" role="listitem">${escapeHtml(label)}</span>`;
+      }).join('')
+    }</div>`;
+  }
+  const REQUEST_SEEN_STATUS_KEY = 'raseekh_request_seen_status_v1';
+  function loadRequestSeenStatusMap(){
+    try { return JSON.parse(localStorage.getItem(REQUEST_SEEN_STATUS_KEY) || '{}') || {}; }
+    catch (_) { return {}; }
+  }
+  function saveRequestSeenStatusMap(map){
+    try { localStorage.setItem(REQUEST_SEEN_STATUS_KEY, JSON.stringify(map || {})); } catch (_) {}
+  }
+  function messagesSimilar(a, b){
+    const x = normalizeSearchText(a || '');
+    const y = normalizeSearchText(b || '');
+    if (!x && !y) return true;
+    if (!x || !y) return false;
+    if (x === y) return true;
+    if (x.includes(y) || y.includes(x)) return true;
+    const ax = x.split(/\s+/).filter(Boolean);
+    const ay = new Set(y.split(/\s+/).filter(Boolean));
+    if (ax.length < 3) return false;
+    let hit = 0;
+    ax.forEach((w) => { if (ay.has(w)) hit += 1; });
+    return (hit / ax.length) >= 0.7;
+  }
+  function isDuplicateRecentRequest(payload){
+    const email = String((payload && payload.email) || (currentUser && currentUser.email) || '').toLowerCase();
+    if (!email) return false;
+    const type = String((payload && payload.type) || '');
+    const message = (payload && payload.message) || '';
+    const cutoff = Date.now() - (3 * 60 * 1000);
+    const list = (Catalog && Catalog.getSharedRequests ? Catalog.getSharedRequests() : clientRequests) || [];
+    return list.some((r) => {
+      if (!r) return false;
+      if (String(r.email || '').toLowerCase() !== email) return false;
+      if (String(r.type || '') !== type) return false;
+      const at = new Date(r.at || 0).getTime();
+      if (!at || at < cutoff) return false;
+      return messagesSimilar(r.message || '', message);
+    });
+  }
+  function leadMatchesFilter(r, filter){
+    const status = r.status || 'new';
+    if (filter === 'all') return true;
+    if (filter === 'company') {
+      return r.segment === 'company' || r.segment === 'institution'
+        || r.type === 'business'
+        || !!(r.company && String(r.company).trim());
+    }
+    if (filter === 'urgent') {
+      if (status !== 'new') return false;
+      const at = new Date(r.at || 0).getTime();
+      return !!(at && (Date.now() - at) <= 24 * 60 * 60 * 1000);
+    }
+    return status === filter;
+  }
+  function replyTemplateText(key, r){
+    const name = (r && (r.name || r.email)) || '';
+    const greet = name ? (currentLang === 'ar' ? ('مرحباً ' + name + '،\n\n') : ('Hello ' + name + ',\n\n')) : '';
+    const body = key === 'need_info'
+      ? t('نحتاج تفاصيل إضافية قبل عرض السعر', 'We need additional details before a quote')
+      : (key === 'quote_ready'
+        ? t('عرض السعر جاهز وسنراسلهم', 'The quote is ready and we will send it')
+        : t('استلمنا طلبكم ونراجعه خلال يوم عمل', 'We received your request and will review it within one business day'));
+    const sign = currentLang === 'ar' ? '\n\n— راسخ' : '\n\n— Raseekh';
+    return greet + body + sign;
+  }
   function addClientRequest(payload){
+    if (isDuplicateRecentRequest(payload)) {
+      showToast(t('أرسلتم طلباً مشابهاً للتو — انتظروا لحظات قبل إعادة الإرسال', 'You just sent a similar request — wait a moment before sending again'));
+      return null;
+    }
     const row = Object.assign({
       id: uid(),
       at: new Date().toISOString(),
@@ -2113,6 +2257,11 @@ body.is-client .home-bar{
       loginTerms.focus();
       return;
     }
+    if (loginTerms && loginTerms.checked && Terms && Terms.setAuthAcceptedSession) {
+      Terms.setAuthAcceptedSession(true);
+    } else if (loginTerms && loginTerms.checked) {
+      // auth session: wired from terms.js
+    }
     const btn = form.querySelector('button[type="submit"]');
     form.dataset.submitting = '1';
     if (btn) { btn.disabled = true; btn.setAttribute('aria-busy', 'true'); }
@@ -2154,6 +2303,11 @@ body.is-client .home-bar{
       msg.style.color = 'var(--danger)';
       msg.textContent = t('يجب الموافقة على شروط تسجيل الدخول وإنشاء الحساب', 'You must accept the sign-in & registration terms');
       return;
+    }
+    if (termsCheck && termsCheck.checked && Terms && Terms.setAuthAcceptedSession) {
+      Terms.setAuthAcceptedSession(true);
+    } else if (termsCheck && termsCheck.checked) {
+      // auth session: wired from terms.js
     }
     const name = document.getElementById('dashRegisterName').value.trim();
     const email = document.getElementById('dashRegisterEmail').value.trim();
@@ -2323,6 +2477,27 @@ body.is-client .home-bar{
     });
   }
 
+  // Auth login/register terms session (mirror purchase session)
+  const dashLoginTermsCheck = document.getElementById('dashLoginTermsCheck');
+  const dashRegisterTermsCheck = document.getElementById('dashRegisterTermsCheck');
+  if (Terms && Terms.hasAuthAcceptedSession && Terms.setAuthAcceptedSession) {
+    const rememberedAuth = !!Terms.hasAuthAcceptedSession();
+    if (dashLoginTermsCheck && rememberedAuth) dashLoginTermsCheck.checked = true;
+    if (dashRegisterTermsCheck && rememberedAuth) dashRegisterTermsCheck.checked = true;
+    if (dashLoginTermsCheck) {
+      dashLoginTermsCheck.addEventListener('change', () => {
+        Terms.setAuthAcceptedSession(!!dashLoginTermsCheck.checked);
+      });
+    }
+    if (dashRegisterTermsCheck) {
+      dashRegisterTermsCheck.addEventListener('change', () => {
+        Terms.setAuthAcceptedSession(!!dashRegisterTermsCheck.checked);
+      });
+    }
+  } else {
+    // auth session: wired from terms.js
+  }
+
   function renderAll(){
     if (!currentUser) return;
     applyRoleUI();
@@ -2388,8 +2563,32 @@ body.is-client .home-bar{
       document.getElementById('statNewRequests').textContent = newCount;
       const dup = document.getElementById('statNewRequestsDup');
       if (dup) dup.textContent = newCount;
+      const dayStart = new Date();
+      dayStart.setHours(0, 0, 0, 0);
+      const dayMs = dayStart.getTime();
+      const todayNew = clientRequests.filter((r) => {
+        if ((r.status || 'new') !== 'new') return false;
+        const at = new Date(r.at || 0).getTime();
+        return at >= dayMs;
+      }).length;
+      const todayProgress = clientRequests.filter((r) => (r.status || 'new') === 'in_progress').length;
+      const dailyNewEl = document.getElementById('dailySummaryNew');
+      const dailyProgEl = document.getElementById('dailySummaryProgress');
+      const dailyLoginEl = document.getElementById('dailySummaryLogins');
+      if (dailyNewEl) dailyNewEl.textContent = String(todayNew);
+      if (dailyProgEl) dailyProgEl.textContent = String(todayProgress);
       updateLeadsBadge();
-      renderAudienceStats();
+      renderAudienceStats().then(() => {
+        if (!dailyLoginEl) return;
+        const logins = (lastActivityStats && typeof lastActivityStats.loginsToday === 'number')
+          ? lastActivityStats.loginsToday
+          : (document.getElementById('statLoginsToday') ? (parseInt(document.getElementById('statLoginsToday').textContent, 10) || 0) : 0);
+        dailyLoginEl.textContent = String(logins);
+      }).catch(() => {
+        if (dailyLoginEl) {
+          dailyLoginEl.textContent = String((lastActivityStats && lastActivityStats.loginsToday) || 0);
+        }
+      });
       renderDeliveryStatus();
       const holder = document.getElementById('recentSales');
       const recent = sales.slice(0, 5);
@@ -2517,11 +2716,24 @@ body.is-client .home-bar{
       box.innerHTML = `<div class="empty"><strong>${escapeHtml(t('لا توجد طلبات مرسلة بعد','No submitted requests yet'))}</strong><p>${escapeHtml(t('اطلب عرض سعر من الكتالوج أو الاقتراحات، وستظهر حالتها هنا.','Request a quote from catalog or suggestions — status will show here.'))}</p><div class="empty-actions"><button class="btn btn-primary" data-goto="catalog">${escapeHtml(t('تصفح الكتالوج','Browse catalog'))}</button><a class="btn btn-ghost" href="/#contact">${escapeHtml(t('نموذج الموقع','Site form'))}</a></div></div>`;
       return;
     }
+    const seenMap = loadRequestSeenStatusMap();
+    const nextSeen = Object.assign({}, seenMap);
     box.innerHTML = mine.map(r => {
       // pending_notify = cloud/webhook accepted; email still retrying — not a client-facing failure.
       const needsResend = r.deliveryStatus === 'local'
         || (!!r.syncPending && r.deliveryStatus !== 'pending_notify' && r.deliveryStatus !== 'delivered');
-      const chip = `<span class="status-chip ${escapeHtml(r.status || 'new')}">${escapeHtml(statusLabel(r.status))}</span>`;
+      const deliveryOk = !needsResend;
+      const status = r.status || 'new';
+      const statusChanged = !!(r.id && seenMap[r.id] && seenMap[r.id] !== status);
+      if (r.id) nextSeen[r.id] = status;
+      const updatedBadge = statusChanged
+        ? ` <span class="req-updated-badge" data-ack-status="${escapeHtml(r.id)}">${escapeHtml(t('تحديث','Updated'))}</span>`
+        : '';
+      const chip = `<span class="status-chip ${escapeHtml(status)}">${escapeHtml(statusLabel(status))}</span>`;
+      const canEdit = status === 'new' && deliveryOk;
+      const editBtn = canEdit
+        ? `<button type="button" class="btn btn-ghost" style="padding:4px 10px;font-size:.75rem;margin-top:8px" data-edit-request="${escapeHtml(r.id)}">${escapeHtml(t('تعديل','Edit'))}</button>`
+        : '';
       const syncNote = needsResend
         ? `<div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:8px;align-items:center">
              <span style="color:var(--muted);font-size:.78rem">${escapeHtml(t('لم يكتمل إرسال الطلب للإدارة بعد','Request was not fully sent to admin yet'))}</span>
@@ -2533,14 +2745,17 @@ body.is-client .home-bar{
       return `
       <div class="sale-row" style="align-items:flex-start">
         <div style="flex:1">
-          <div><strong>${escapeHtml(requestTitle(r))}</strong></div>
+          <div><strong>${escapeHtml(requestTitle(r))}</strong>${updatedBadge}</div>
+          ${requestStepsHtml(status)}
           <div style="color:var(--muted);font-size:.86rem;white-space:pre-wrap">${escapeHtml(r.message || '')}</div>
           <div style="color:var(--muted);font-size:.78rem;margin-top:4px">${new Date(r.at).toLocaleString(currentLang === 'ar' ? 'ar-SA' : 'en-US')}</div>
+          ${editBtn}
           ${syncNote}
         </div>
         ${chip}
       </div>`;
     }).join('');
+    saveRequestSeenStatusMap(nextSeen);
   }
 
   let adminNotifyBusy = false;
@@ -2690,7 +2905,7 @@ body.is-client .home-bar{
     await renderDeliveryStatus();
     const q = normalizeSearchText((document.getElementById('leadsSearch') && document.getElementById('leadsSearch').value) || '');
     const filtered = clientRequests.filter((r) => {
-      if (!(leadsFilter === 'all' || (r.status || 'new') === leadsFilter)) return false;
+      if (!leadMatchesFilter(r, leadsFilter)) return false;
       if (!q) return true;
       const blob = normalizeSearchText([
         r.name, r.phone, r.email, r.company, r.title, r.message, r.source, r.type, statusLabel(r.status)
@@ -2741,6 +2956,11 @@ body.is-client .home-bar{
           <div style="font-size:.92rem;margin-top:6px"><strong>${escapeHtml(requestTitle(r))}</strong></div>
           <div style="color:var(--muted);font-size:.86rem;white-space:pre-wrap">${escapeHtml(r.message || '')}</div>
           <div style="color:var(--muted);font-size:.78rem;margin-top:4px">${new Date(r.at).toLocaleString(currentLang === 'ar' ? 'ar-SA' : 'en-US')}</div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px">
+            <button type="button" class="btn btn-ghost" style="padding:6px 8px;font-size:.72rem" data-reply-tpl="received" data-reply-for="${escapeHtml(r.id)}">${escapeHtml(t('قالب: استلمنا','Tpl: received'))}</button>
+            <button type="button" class="btn btn-ghost" style="padding:6px 8px;font-size:.72rem" data-reply-tpl="need_info" data-reply-for="${escapeHtml(r.id)}">${escapeHtml(t('قالب: تفاصيل','Tpl: details'))}</button>
+            <button type="button" class="btn btn-ghost" style="padding:6px 8px;font-size:.72rem" data-reply-tpl="quote_ready" data-reply-for="${escapeHtml(r.id)}">${escapeHtml(t('قالب: عرض جاهز','Tpl: quote ready'))}</button>
+          </div>
         </div>
         <div style="display:flex;flex-direction:column;gap:6px;min-width:140px">
           <select data-status-for="${escapeHtml(r.id)}" data-prev-status="${escapeHtml(r.status || 'new')}" style="padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--ink)">
@@ -2826,7 +3046,7 @@ body.is-client .home-bar{
   function getFilteredLeads(){
     const q = normalizeSearchText((document.getElementById('leadsSearch') && document.getElementById('leadsSearch').value) || '');
     return clientRequests.filter((r) => {
-      if (!(leadsFilter === 'all' || (r.status || 'new') === leadsFilter)) return false;
+      if (!leadMatchesFilter(r, leadsFilter)) return false;
       if (!q) return true;
       const blob = normalizeSearchText([
         r.name, r.phone, r.email, r.company, r.title, r.message, r.source, r.type, statusLabel(r.status)
@@ -2889,6 +3109,24 @@ body.is-client .home-bar{
       renderOverview();
     });
     adminLeadsList.addEventListener('click', async (e) => {
+      const replyBtn = e.target.closest('[data-reply-tpl]');
+      if (replyBtn) {
+        const id = replyBtn.getAttribute('data-reply-for');
+        const tpl = replyBtn.getAttribute('data-reply-tpl') || 'received';
+        const r = clientRequests.find((x) => x.id === id);
+        if (!r) return;
+        const text = replyTemplateText(tpl, r);
+        const mailto = r.email
+          ? ('mailto:' + encodeURIComponent(r.email) + '?subject=' + encodeURIComponent(t('بخصوص طلبكم','Regarding your request')) + '&body=' + encodeURIComponent(text))
+          : '';
+        try {
+          await navigator.clipboard.writeText(mailto ? (text + '\n\n' + mailto) : text);
+          showToast(t('تم نسخ قالب الرد', 'Reply template copied'));
+        } catch (_) {
+          showToast(t('تعذّر النسخ', 'Could not copy'));
+        }
+        return;
+      }
       const btn = e.target.closest('[data-copy-lead]');
       if (!btn) return;
       const id = btn.getAttribute('data-copy-lead');
@@ -3016,6 +3254,16 @@ body.is-client .home-bar{
       return;
     }
     if (Terms && Terms.setPurchaseAcceptedSession) Terms.setPurchaseAcceptedSession(true);
+    const baseMsgEarly = draft.message || '';
+    const messageEarly = note ? (baseMsgEarly + '\n' + t('ملاحظة: ', 'Note: ') + note) : baseMsgEarly;
+    const dupPayload = Object.assign({}, draft, {
+      email: email || draft.email || '',
+      message: messageEarly
+    });
+    if (isDuplicateRecentRequest(dupPayload)) {
+      showToast(t('أرسلتم طلباً مشابهاً للتو — انتظروا لحظات قبل إعادة الإرسال', 'You just sent a similar request — wait a moment before sending again'));
+      return;
+    }
     const submitToken = ++requestConfirmSubmitToken;
     requestConfirmBusy = true;
     if (submitBtn) {
@@ -3056,6 +3304,9 @@ body.is-client .home-bar{
         company: company || draft.company || '',
         message
       }));
+      if (!saved) {
+        return;
+      }
       pendingClientRequest = null;
       setModalOpen(document.getElementById('requestConfirmModal'), false);
       showToast(t('جاري إرسال الطلب...', 'Sending request...'));
@@ -3067,9 +3318,7 @@ body.is-client .home-bar{
         delivery = null;
       }
       if (submitToken !== requestConfirmSubmitToken) return;
-      if (!saved) {
-        showToast(t('تعذّر إرسال الطلب — حاولوا مرة أخرى', 'Could not send the request — try again'));
-      } else if (delivery && delivery.delivered) {
+      if (delivery && delivery.delivered) {
         showToast(t('تم إرسال طلب عرض السعر', 'Quote request sent'));
       } else if (delivery && delivery.pendingNotify) {
         showToast(t('استلمنا الطلب — إشعار الإدارة قيد التفعيل', 'Request received — admin notify is activating'));
@@ -3166,6 +3415,58 @@ body.is-client .home-bar{
   });
   const clientRequestsList = document.getElementById('clientRequestsList');
   if (clientRequestsList) clientRequestsList.addEventListener('click', async (e) => {
+    const ack = e.target.closest('[data-ack-status]');
+    if (ack) {
+      const id = ack.getAttribute('data-ack-status');
+      if (id) {
+        const map = loadRequestSeenStatusMap();
+        const row = myRequests().find((r) => r && r.id === id);
+        if (row) {
+          map[id] = row.status || 'new';
+          saveRequestSeenStatusMap(map);
+        }
+        ack.remove();
+      }
+      return;
+    }
+    const editBtn = e.target.closest('[data-edit-request]');
+    if (editBtn) {
+      const id = editBtn.getAttribute('data-edit-request');
+      loadClientRequests();
+      const row = myRequests().find((r) => r && r.id === id);
+      if (!row || (row.status || 'new') !== 'new') {
+        showToast(t('لا يمكن تعديل هذا الطلب الآن', 'This request cannot be edited now'));
+        return;
+      }
+      const next = window.prompt(t('عدّلوا نص الطلب', 'Edit request message'), row.message || '');
+      if (next == null) return;
+      const message = String(next).trim();
+      if (!message) {
+        showToast(t('نص الطلب لا يمكن أن يكون فارغاً', 'Request message cannot be empty'));
+        return;
+      }
+      editBtn.disabled = true;
+      try {
+        if (Catalog && Catalog.updateSharedRequestFields) {
+          await Catalog.updateSharedRequestFields(id, { message });
+        } else {
+          const idx = clientRequests.findIndex((r) => r.id === id);
+          if (idx > -1) {
+            clientRequests[idx].message = message;
+            clientRequests[idx].updatedAt = new Date().toISOString();
+            saveClientRequests();
+          }
+        }
+        loadClientRequests();
+        showToast(t('تم تحديث الطلب', 'Request updated'));
+        await renderClientRequestsPage({ skipRetry: true });
+      } catch (_) {
+        showToast(t('تعذّر تحديث الطلب', 'Could not update request'));
+      } finally {
+        editBtn.disabled = false;
+      }
+      return;
+    }
     const btn = e.target.closest('[data-retry-request]');
     if (!btn || !Catalog) return;
     if (btn.dataset.busy === '1') return;
@@ -3772,6 +4073,28 @@ body.is-client .home-bar{
     URL.revokeObjectURL(a.href);
     showToast(t('تم التصدير','Exported'));
   });
+
+  const exportCatalogBackupBtn = document.getElementById('exportCatalogBackupBtn');
+  if (exportCatalogBackupBtn) {
+    exportCatalogBackupBtn.addEventListener('click', () => {
+      if (!requireAdmin('exportCatalogBackup')) return;
+      const catalogProducts = Catalog && Catalog.getClientProducts ? Catalog.getClientProducts() : products;
+      const catalogSuggestions = Catalog && Catalog.getClientSuggestions ? Catalog.getClientSuggestions() : [];
+      const payload = {
+        exportedAt: new Date().toISOString(),
+        version: (Catalog && Catalog.CATALOG_VERSION) || null,
+        products: catalogProducts || [],
+        suggestions: catalogSuggestions || []
+      };
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'raseekh-catalog-backup.json';
+      a.click();
+      URL.revokeObjectURL(a.href);
+      showToast(t('تم تصدير نسخة الكتالوج', 'Catalog backup exported'));
+    });
+  }
 
   document.getElementById('settingsForm').addEventListener('submit', async (e) => {
     e.preventDefault();
