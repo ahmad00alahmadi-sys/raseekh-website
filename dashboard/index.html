@@ -1015,6 +1015,7 @@ body.is-admin .client-only{display:none!important}
     document.getElementById('storePhone').value = store.phone || '';
     const webhookEl = document.getElementById('storeWebhook');
     if (webhookEl) webhookEl.value = store.webhookUrl || '';
+    if (isAdminUser && Catalog && Catalog.publishPublicNotify) Catalog.publishPublicNotify(store);
     cart = [];
     applyLang(currentLang);
     startClock();
