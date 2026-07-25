@@ -6,7 +6,7 @@
 <title id="pageTitle">لوحة التحكم — راسخ</title>
 <meta name="robots" content="noindex,nofollow">
 <link rel="icon" href="/icon.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="/icon.svg">
+<link rel="apple-touch-icon" href="/icon-192.png">
 <meta name="theme-color" content="#10233A">
 <link rel="manifest" href="/manifest.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -444,7 +444,7 @@ body.is-admin .client-only{display:none!important}
           <input type="email" id="dashRegisterEmail" required data-ar-placeholder="البريد الإلكتروني" data-en-placeholder="Email" placeholder="البريد الإلكتروني" autocomplete="email">
         </label>
         <label class="field"><span data-ar="رقم الجوال (اختياري)" data-en="Phone (optional)">رقم الجوال (اختياري)</span>
-          <input type="tel" id="dashRegisterPhone" data-ar-placeholder="05xxxxxxxx" data-en-placeholder="05xxxxxxxx" placeholder="05xxxxxxxx" autocomplete="tel">
+          <input type="tel" id="dashRegisterPhone" inputmode="tel" maxlength="20" data-ar-placeholder="05xxxxxxxx" data-en-placeholder="05xxxxxxxx" placeholder="05xxxxxxxx" autocomplete="tel">
         </label>
         <label class="field"><span data-ar="كلمة المرور (6+)" data-en="Password (6+)">كلمة المرور (6+)</span>
           <input type="password" id="dashRegisterPassword" minlength="6" required data-ar-placeholder="كلمة المرور (6+)" data-en-placeholder="Password (6+)" placeholder="كلمة المرور (6+)" autocomplete="new-password">
@@ -711,6 +711,7 @@ body.is-admin .client-only{display:none!important}
           <button class="btn btn-ghost" type="button" id="exportLeadsBtn" data-ar="تصدير CSV" data-en="Export CSV">تصدير CSV</button>
           <a class="btn btn-ghost" href="#page-settings" data-goto="settings" id="gotoNotifySettings" data-ar="إعدادات وصول الطلبات" data-en="Request delivery settings">إعدادات وصول الطلبات</a>
         </div>
+        <input type="search" id="leadsSearch" style="margin-bottom:10px;padding:12px 14px;width:100%;border:1px solid var(--line);border-radius:10px" data-ar-placeholder="ابحث بالاسم، الجوال، الشركة، أو نص الطلب..." data-en-placeholder="Search by name, phone, company, or request text..." placeholder="ابحث بالاسم، الجوال، الشركة، أو نص الطلب...">
         <div class="delivery-status" id="leadsDeliveryHint">
           <div class="row"><span data-ar="وصول الطلبات الآن" data-en="Delivery right now">وصول الطلبات الآن</span><span class="delivery-pill off" id="leadsDeliveryPill">—</span></div>
         </div>
@@ -1616,7 +1617,7 @@ body.is-admin .client-only{display:none!important}
     list.innerHTML = rows.map((u) => activityRowHtml(u, now, loc)).join('');
   }
 
-  async function showDashboard(user, demo){
+  async function showDashboard(user, demo, opts){
     const key = (demo ? 'demo:' : 'user:') + String((user && (user.email || user.id)) || '').toLowerCase();
     const now = Date.now();
     if (
@@ -1723,7 +1724,8 @@ body.is-admin .client-only{display:none!important}
       applyLang(currentLang);
       startClock();
       await ensureClientTerms();
-      switchPage('overview');
+      const initialPage = (opts && opts.initialPage) || resolveDashPageFromLocation() || 'overview';
+      switchPage(initialPage);
       if (isAdminUser) {
         renderAudienceStats();
         Promise.all([
@@ -1751,11 +1753,24 @@ body.is-admin .client-only{display:none!important}
       id: 'demo-user',
       email: 'demo@raseekh.local',
       user_metadata: { full_name: t('زائر تجريبي','Demo guest'), role: 'client' }
-    }, true);
+    }, true, { initialPage: 'catalog' });
     showToast(t('دخلت كعميل تجريبي (بدون تعديل)','Entered as demo client (no editing)'));
-    switchPage('catalog');
   }
   document.getElementById('demoBtn').addEventListener('click', enterDemo);
+
+  function resolveDashPageFromLocation(){
+    const params = new URLSearchParams(location.search);
+    let page = params.get('page') || '';
+    const hash = String(location.hash || '').replace(/^#/, '');
+    if (!page && hash) {
+      page = hash.replace(/^page-/, '').split('?')[0].split('&')[0];
+    }
+    const allowed = {
+      overview: 1, catalog: 1, suggestions: 1, requests: 1, settings: 1,
+      pos: 1, products: 1, sales: 1, leads: 1, activity: 1
+    };
+    return allowed[page] ? page : '';
+  }
 
   function switchPage(page){
     if (!isAdminUser && !isDemo && currentUser && Terms && !Terms.hasAccepted(currentUser)) {
@@ -1776,6 +1791,10 @@ body.is-admin .client-only{display:none!important}
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     const target = document.getElementById('page-' + page);
     if (target) target.classList.add('active');
+    try {
+      const nextHash = '#page-' + page;
+      if (location.hash !== nextHash) history.replaceState(null, '', location.pathname + location.search + nextHash);
+    } catch (_) {}
     if (page === 'pos') renderPos();
     if (page === 'products') renderProducts();
     if (page === 'sales') renderSales();
@@ -1787,6 +1806,10 @@ body.is-admin .client-only{display:none!important}
     if (page === 'activity') renderAudienceStats();
     if (page === 'settings' && isAdminUser) renderDeliveryStatus();
   }
+  window.addEventListener('hashchange', () => {
+    const page = resolveDashPageFromLocation();
+    if (page) switchPage(page);
+  });
   document.querySelectorAll('.nav-item').forEach(btn => btn.addEventListener('click', () => switchPage(btn.dataset.page)));
   document.addEventListener('click', (e) => {
     const el = e.target.closest('[data-goto]');
@@ -1855,6 +1878,12 @@ body.is-admin .client-only{display:none!important}
     const email = document.getElementById('dashRegisterEmail').value.trim();
     const phone = document.getElementById('dashRegisterPhone').value.trim();
     const password = document.getElementById('dashRegisterPassword').value;
+    if (phone && !isUsablePhone(phone)) {
+      msg.style.color = 'var(--danger)';
+      msg.textContent = t('رقم الجوال غير صالح — استخدموا صيغة مثل 05xxxxxxxx', 'Phone number looks invalid — use a format like 05xxxxxxxx');
+      document.getElementById('dashRegisterPhone').focus();
+      return;
+    }
     msg.style.color = 'var(--muted)';
     msg.textContent = t('جاري إنشاء الحساب...', 'Creating account...');
     try {
@@ -2203,7 +2232,15 @@ body.is-admin .client-only{display:none!important}
     updateLeadsBadge();
 
     await renderDeliveryStatus();
-    const filtered = clientRequests.filter((r) => leadsFilter === 'all' || (r.status || 'new') === leadsFilter);
+    const q = normalizeSearchText((document.getElementById('leadsSearch') && document.getElementById('leadsSearch').value) || '');
+    const filtered = clientRequests.filter((r) => {
+      if (!(leadsFilter === 'all' || (r.status || 'new') === leadsFilter)) return false;
+      if (!q) return true;
+      const blob = normalizeSearchText([
+        r.name, r.phone, r.email, r.company, r.title, r.message, r.source, r.type, statusLabel(r.status)
+      ].filter(Boolean).join(' '));
+      return blob.includes(q);
+    });
     if (!filtered.length) {
       if (!clientRequests.length) {
         box.innerHTML = `<div class="empty">
@@ -2216,7 +2253,7 @@ body.is-admin .client-only{display:none!important}
           </div>
         </div>`;
       } else {
-        box.innerHTML = `<div class="empty">${t('لا توجد طلبات ضمن هذا التصفية','No requests in this filter')}</div>`;
+        box.innerHTML = `<div class="empty">${t(q ? 'لا توجد نتائج للبحث' : 'لا توجد طلبات ضمن هذا التصفية', q ? 'No search results' : 'No requests in this filter')}</div>`;
       }
       return;
     }
@@ -2226,7 +2263,13 @@ body.is-admin .client-only{display:none!important}
       if (d !== 0) return d;
       return new Date(b.at || 0) - new Date(a.at || 0);
     });
-    box.innerHTML = sorted.slice(0, 80).map(r => `
+    const visible = sorted.slice(0, 80);
+    const moreNote = sorted.length > visible.length
+      ? `<p style="color:var(--muted);font-size:.82rem;margin:0 0 10px">${escapeHtml(t('عرض أول 80 من ' + sorted.length, 'Showing first 80 of ' + sorted.length))}</p>`
+      : (q || leadsFilter !== 'all'
+        ? `<p style="color:var(--muted);font-size:.82rem;margin:0 0 10px">${escapeHtml(t(sorted.length + ' نتيجة', sorted.length + ' result(s)'))}</p>`
+        : '');
+    box.innerHTML = moreNote + visible.map(r => `
       <div class="sale-row" style="align-items:flex-start">
         <div style="flex:1">
           <div><strong>${escapeHtml(r.name || r.email || '—')}</strong> · <span style="color:var(--muted)">${escapeHtml(r.source === 'site' ? t('نموذج الموقع','Website form') : t('حساب عميل','Client account'))}</span>
@@ -2295,6 +2338,26 @@ body.is-admin .client-only{display:none!important}
       leadsFilter = btn.getAttribute('data-lead-filter') || 'all';
       leadFilters.querySelectorAll('[data-lead-filter]').forEach((el) => el.classList.toggle('active', el === btn));
       renderAdminLeads();
+    });
+  }
+  const leadsSearch = document.getElementById('leadsSearch');
+  if (leadsSearch) {
+    let leadsSearchTimer = null;
+    leadsSearch.addEventListener('input', () => {
+      clearTimeout(leadsSearchTimer);
+      leadsSearchTimer = setTimeout(() => renderAdminLeads(), 180);
+    });
+  }
+
+  function getFilteredLeads(){
+    const q = normalizeSearchText((document.getElementById('leadsSearch') && document.getElementById('leadsSearch').value) || '');
+    return clientRequests.filter((r) => {
+      if (!(leadsFilter === 'all' || (r.status || 'new') === leadsFilter)) return false;
+      if (!q) return true;
+      const blob = normalizeSearchText([
+        r.name, r.phone, r.email, r.company, r.title, r.message, r.source, r.type, statusLabel(r.status)
+      ].filter(Boolean).join(' '));
+      return blob.includes(q);
     });
   }
   const statNewCard = document.getElementById('statNewRequestsCard');
@@ -3077,12 +3140,13 @@ body.is-admin .client-only{display:none!important}
     exportLeadsBtn.addEventListener('click', () => {
       if (!requireAdmin('exportLeads')) return;
       loadClientRequests();
-      if (!clientRequests.length) {
+      const rows = getFilteredLeads().slice().sort((a, b) => new Date(b.at || 0) - new Date(a.at || 0));
+      if (!rows.length) {
         showToast(t('لا توجد طلبات للتصدير', 'No requests to export'));
         return;
       }
       const header = ['id','at','status','source','name','phone','email','company','title','message'];
-      const lines = [header.join(',')].concat(clientRequests.map((r) => header.map((k) => {
+      const lines = [header.join(',')].concat(rows.map((r) => header.map((k) => {
         const raw = String(r[k] == null ? '' : r[k]).replace(/"/g, '""');
         return `"${raw}"`;
       }).join(',')));

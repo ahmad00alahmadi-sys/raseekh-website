@@ -24,7 +24,7 @@
 <link rel="alternate" hreflang="x-default" href="https://raseekh.com/">
 <link rel="manifest" href="/manifest.webmanifest">
 <link rel="icon" href="/icon.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="/icon.svg">
+<link rel="apple-touch-icon" href="/icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <script type="application/ld+json">
 {
@@ -630,7 +630,7 @@ body.terms-locked,body.auth-locked{overflow:hidden}
         <form class="form" id="registerForm">
           <input type="text" id="registerName" required autocomplete="name" data-ar-placeholder="الاسم الكامل" data-en-placeholder="Full name" placeholder="الاسم الكامل">
           <input type="email" id="registerEmail" required autocomplete="email" data-ar-placeholder="البريد الإلكتروني" data-en-placeholder="Email" placeholder="البريد الإلكتروني">
-          <input type="tel" id="registerPhone" autocomplete="tel" data-ar-placeholder="رقم الجوال (اختياري)" data-en-placeholder="Phone (optional)" placeholder="رقم الجوال (اختياري)">
+          <input type="tel" id="registerPhone" inputmode="tel" maxlength="20" autocomplete="tel" data-ar-placeholder="رقم الجوال (اختياري)" data-en-placeholder="Phone (optional)" placeholder="رقم الجوال (اختياري)">
           <input type="password" id="registerPassword" minlength="6" required autocomplete="new-password" data-ar-placeholder="كلمة المرور (6 أحرف على الأقل)" data-en-placeholder="Password (min 6 chars)" placeholder="كلمة المرور (6 أحرف على الأقل)">
           <label class="check" for="registerTermsCheck">
             <input type="checkbox" id="registerTermsCheck" required>
@@ -1352,31 +1352,31 @@ body.terms-locked,body.auth-locked{overflow:hidden}
     });
   }
 
-  document.querySelectorAll('[data-quote-type]').forEach((el) => {
-    el.addEventListener('click', async (e) => {
-      e.preventDefault();
-      if (el.getAttribute('aria-busy') === 'true') return;
-      const type = el.getAttribute('data-quote-type') || 'programming';
-      const message = currentLang === 'ar'
-        ? (el.getAttribute('data-quote-msg-ar') || '')
-        : (el.getAttribute('data-quote-msg-en') || '');
-      const prev = el.textContent;
-      el.setAttribute('aria-busy', 'true');
-      if (el.tagName === 'BUTTON' || el.classList.contains('btn')) {
-        el.setAttribute('disabled', 'disabled');
-        el.textContent = t('جاري الإرسال...', 'Sending...');
-      }
-      const result = await submitCatalogQuote({ type, message });
-      el.removeAttribute('aria-busy');
-      el.removeAttribute('disabled');
-      if (result && result.ok) {
-        el.textContent = t('تم الإرسال', 'Sent');
-        setTimeout(() => { el.textContent = prev; applyLang(currentLang); }, 1800);
-      } else {
-        el.textContent = prev;
-        applyLang(currentLang);
-      }
-    });
+  document.addEventListener('click', async (e) => {
+    const el = e.target.closest('[data-quote-type]');
+    if (!el) return;
+    e.preventDefault();
+    if (el.getAttribute('aria-busy') === 'true') return;
+    const type = el.getAttribute('data-quote-type') || 'programming';
+    const message = currentLang === 'ar'
+      ? (el.getAttribute('data-quote-msg-ar') || '')
+      : (el.getAttribute('data-quote-msg-en') || '');
+    const prev = el.textContent;
+    el.setAttribute('aria-busy', 'true');
+    if (el.tagName === 'BUTTON' || el.classList.contains('btn')) {
+      el.setAttribute('disabled', 'disabled');
+      el.textContent = t('جاري الإرسال...', 'Sending...');
+    }
+    const result = await submitCatalogQuote({ type, message });
+    el.removeAttribute('aria-busy');
+    el.removeAttribute('disabled');
+    if (result && result.ok) {
+      el.textContent = t('تم الإرسال', 'Sent');
+      setTimeout(() => { el.textContent = prev; applyLang(currentLang); }, 1800);
+    } else {
+      el.textContent = prev;
+      applyLang(currentLang);
+    }
   });
 
   (function mobileQuoteBar(){
@@ -1501,9 +1501,13 @@ body.terms-locked,body.auth-locked{overflow:hidden}
   })();
 
   (function bootQuoteParams(){
-    const params = new URLSearchParams(location.search);
-    const type = params.get('type');
-    const msg = params.get('msg') || params.get('message');
+    const searchParams = new URLSearchParams(location.search);
+    const hash = String(location.hash || '');
+    const hashQuery = hash.indexOf('?') >= 0 ? hash.slice(hash.indexOf('?') + 1) : '';
+    const hashParams = new URLSearchParams(hashQuery);
+    const type = searchParams.get('type') || hashParams.get('type');
+    const msg = searchParams.get('msg') || searchParams.get('message') || hashParams.get('msg') || hashParams.get('message');
+    const company = searchParams.get('company') || hashParams.get('company') || '';
     const allowed = ['maintenance','web-dev','programming','inventory','business','systems','api','system','hardware','electronics'];
     const typeEl = document.getElementById('contactType');
     if (typeEl) {
@@ -1519,11 +1523,11 @@ body.terms-locked,body.auth-locked{overflow:hidden}
         }
       });
     }
-    if (!type && !msg) return;
+    if (!type && !msg && !company) return;
     let normalized = type === 'electronics' ? 'hardware' : type;
     if (!allowed.includes(normalized)) normalized = 'programming';
     if (normalized === 'electronics') normalized = 'hardware';
-    requestFromCatalog({ type: normalized, message: msg || '' });
+    requestFromCatalog({ type: normalized, message: msg || '', company: company || '' });
   })();
 
   const navToggle = document.getElementById('navToggle');
@@ -1655,6 +1659,22 @@ body.terms-locked,body.auth-locked{overflow:hidden}
     return fromSearch;
   }
 
+  function readProcessedPays(){
+    try { return JSON.parse(sessionStorage.getItem('raseekh_processed_pays_v1') || '{}') || {}; }
+    catch (_) { return {}; }
+  }
+  function markProcessedPay(paymentId){
+    if (!paymentId) return;
+    const map = readProcessedPays();
+    map[String(paymentId)] = Date.now();
+    try { sessionStorage.setItem('raseekh_processed_pays_v1', JSON.stringify(map)); } catch (_) {}
+  }
+  function wasProcessedPay(paymentId){
+    if (!paymentId) return false;
+    const map = readProcessedPays();
+    return !!map[String(paymentId)];
+  }
+
   async function finalizePendingMoyasarPayment(user){
     if (!user || !Catalog || !Catalog.addPaymentRecord) return false;
     if (!hasCloudPaySession(user)) return false;
@@ -1669,8 +1689,13 @@ body.terms-locked,body.auth-locked{overflow:hidden}
       return false;
     }
     if (!paymentId) return false;
+    if (wasProcessedPay(paymentId)) {
+      showPayStep(payStatusSuccess);
+      return true;
+    }
     const total = Number(pendingPay.amount);
     if (!(total > 0) || total > 100000) return false;
+    markProcessedPay(paymentId);
     // Prefer session amount over query string (query is untrusted / in halalas).
     const row = Catalog.addPaymentRecord({
       method: 'card',
@@ -1818,13 +1843,20 @@ body.terms-locked,body.auth-locked{overflow:hidden}
       return;
     }
     const registerEmail = document.getElementById('registerEmail').value.trim();
+    const registerPhone = document.getElementById('registerPhone').value.trim();
+    if (registerPhone && !isUsablePhone(registerPhone)) {
+      msg.style.color = 'var(--danger)';
+      msg.textContent = t('رقم الجوال غير صالح — استخدموا صيغة مثل 05xxxxxxxx', 'Phone number looks invalid — use a format like 05xxxxxxxx');
+      document.getElementById('registerPhone').focus();
+      return;
+    }
     msg.style.color = 'var(--muted)'; msg.textContent = t('جاري إنشاء الحساب...', 'Creating account...');
     try {
       const result = await Auth.signUp({
         email: registerEmail,
         password: document.getElementById('registerPassword').value,
         full_name: document.getElementById('registerName').value.trim(),
-        phone: document.getElementById('registerPhone').value.trim()
+        phone: registerPhone
       });
       if (window.RaseekhTerms) {
         if (result && result.user) RaseekhTerms.acceptTerms(result.user);
@@ -2123,17 +2155,22 @@ body.terms-locked,body.auth-locked{overflow:hidden}
     } catch (_) {}
     async function recordMoyasarPayment(payment){
       if (!Catalog || !Catalog.addPaymentRecord || !payment || payment.status !== 'paid') return null;
+      const paymentId = payment.id || '';
+      if (paymentId && wasProcessedPay(paymentId)) return null;
       const payAmount = typeof payment.amount === 'number' ? payment.amount / 100 : amount;
+      if (!(payAmount > 0) || payAmount > 100000) return null;
+      if (Math.abs(payAmount - amount) > 0.05) return null;
+      if (paymentId) markProcessedPay(paymentId);
       const row = Catalog.addPaymentRecord({
         method: 'card',
-        total: payAmount,
+        total: amount,
         items: 1,
         note: note || t('عربون عبر الموقع', 'Site deposit'),
         name: name,
         email: (loggedInUser && loggedInUser.email) || '',
         userId: (loggedInUser && loggedInUser.id) || '',
         source: 'moyasar',
-        paymentId: payment.id || ''
+        paymentId
       });
       try { sessionStorage.removeItem('raseekh_pending_pay'); } catch (_) {}
       let delivery = null;

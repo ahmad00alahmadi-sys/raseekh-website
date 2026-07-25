@@ -107,6 +107,9 @@
       try { map = JSON.parse(localStorage.getItem(mapKey) || '{}') || {}; } catch (_) { map = {}; }
       const last = map[email] ? new Date(map[email]).getTime() : 0;
       if (last && (Date.now() - last) < 6 * 60 * 60 * 1000) return;
+      // Record the attempt before send so pendingConfirm/network retries do not spam.
+      map[email] = new Date().toISOString();
+      try { localStorage.setItem(mapKey, JSON.stringify(map)); } catch (_) {}
 
       const result = await Catalog.notifyAdminEmail({
         title: 'تسجيل دخول عميل',
@@ -119,9 +122,8 @@
         source: 'login',
         id: 'login-' + email
       });
-      if (result && result.ok) {
-        map[email] = new Date().toISOString();
-        localStorage.setItem(mapKey, JSON.stringify(map));
+      if (!(result && result.ok)) {
+        // Keep throttle window even on failure; next eligible window is still 6h.
       }
     } catch (_) {}
   }

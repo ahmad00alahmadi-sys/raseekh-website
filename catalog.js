@@ -726,6 +726,10 @@
     }, payload || {});
     row.total = Number(row.total) || 0;
     row.items = Number(row.items) || 1;
+    if (row.paymentId) {
+      const safeId = String(row.paymentId).replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 72);
+      if (safeId) row.id = 'pay-moyasar-' + safeId;
+    }
     if (!row.lines || !row.lines.length) {
       row.lines = [{
         id: 'deposit',
@@ -737,10 +741,16 @@
     const fingerprint = row.paymentId
       ? 'moyasar:' + row.paymentId
       : 'pay:' + row.at + ':' + row.total + ':' + (row.email || '') + ':' + (row.note || '');
-    if (list.some((x) => (x.paymentId && row.paymentId && x.paymentId === row.paymentId) || x.fingerprint === fingerprint)) {
-      return list.find((x) => (x.paymentId && row.paymentId && x.paymentId === row.paymentId) || x.fingerprint === fingerprint) || row;
-    }
     row.fingerprint = fingerprint;
+    const existing = list.find((x) =>
+      (x.paymentId && row.paymentId && x.paymentId === row.paymentId) ||
+      (x.fingerprint && x.fingerprint === fingerprint) ||
+      (x.id && row.id && x.id === row.id)
+    );
+    if (existing) {
+      existing.deliveryPromise = deliverPaymentRecord(existing);
+      return existing;
+    }
     list.unshift(row);
     savePaymentRecords(list);
     row.deliveryPromise = deliverPaymentRecord(row);
@@ -809,19 +819,28 @@
         .limit(200);
       if (error || !Array.isArray(data)) return getPaymentRecords();
       const local = getPaymentRecords();
-      const byId = new Map();
-      local.forEach((r) => { if (r && r.id) byId.set(r.id, r); });
-      data.map(cloudPaymentToRow).filter(Boolean).forEach((r) => {
-        if (!r.id) return;
-        const prev = byId.get(r.id);
-        if (!prev) byId.set(r.id, r);
-        else {
-          const prevTime = new Date(prev.at || 0).getTime();
-          const nextTime = new Date(r.at || 0).getTime();
-          byId.set(r.id, nextTime >= prevTime ? Object.assign({}, prev, r) : Object.assign({}, r, prev));
+      const byKey = new Map();
+      const keyOf = (r) => {
+        if (!r) return '';
+        if (r.paymentId) return 'pid:' + String(r.paymentId);
+        if (r.fingerprint) return 'fp:' + String(r.fingerprint);
+        return r.id ? 'id:' + String(r.id) : '';
+      };
+      const put = (r) => {
+        const key = keyOf(r);
+        if (!key) return;
+        const prev = byKey.get(key);
+        if (!prev) {
+          byKey.set(key, r);
+          return;
         }
-      });
-      const merged = Array.from(byId.values()).sort((a, b) => new Date(b.at || 0) - new Date(a.at || 0)).slice(0, 200);
+        const prevTime = new Date(prev.at || 0).getTime();
+        const nextTime = new Date(r.at || 0).getTime();
+        byKey.set(key, nextTime >= prevTime ? Object.assign({}, prev, r) : Object.assign({}, r, prev));
+      };
+      local.forEach(put);
+      data.map(cloudPaymentToRow).filter(Boolean).forEach(put);
+      const merged = Array.from(byKey.values()).sort((a, b) => new Date(b.at || 0) - new Date(a.at || 0)).slice(0, 200);
       savePaymentRecords(merged);
       return merged;
     } catch (_) {
