@@ -1139,7 +1139,13 @@ body.is-admin .client-only{display:none!important}
     isAdminUser = false;
     currentUser = null;
     clearInterval(heartbeatTimer);
-    closeTermsGate();
+    termsGateMode = 'view';
+    const gate = document.getElementById('termsGate');
+    if (gate) {
+      gate.classList.remove('open');
+      gate.setAttribute('aria-hidden', 'true');
+    }
+    document.body.classList.remove('terms-locked');
     setDemoFlag(false);
     document.body.classList.remove('is-admin', 'is-client');
     document.getElementById('loginView').classList.remove('hidden');
