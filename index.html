@@ -723,11 +723,6 @@ body.lang-en .footer-brand{font-family:'Space Grotesk',sans-serif}
 .reveal.stagger > *:nth-child(2){transition-delay:.1s}
 .reveal.stagger > *:nth-child(3){transition-delay:.16s}
 .reveal.stagger > *:nth-child(4){transition-delay:.22s}
-.mobile-quote-bar{
-  display:none;position:fixed;inset-inline:12px;bottom:12px;z-index:70;
-  transition:opacity .25s ease;
-}
-.mobile-quote-bar .btn{width:100%;box-shadow:0 12px 28px -12px rgba(16,35,58,.55)}
 #maintenanceBanner{
   display:none;position:sticky;top:0;z-index:120;padding:10px 16px;text-align:center;
   background:var(--navy);color:#fff;font-size:.9rem;font-weight:700;
@@ -771,10 +766,7 @@ body.terms-locked,body.auth-locked{overflow:hidden}
   .hero-quote .btn{width:100%}
 }
 @media (max-width:768px){
-  .mobile-quote-bar{display:block}
-  body{padding-bottom:76px}
   .float-cta .float-quote{display:none!important}
-  .float-cta{bottom:84px}
 }
 @media (max-width:560px){
   .nav-prefs{gap:4px}
@@ -838,7 +830,7 @@ body.pay-paused .pay-public-entry{display:none!important}
 }
 @media (max-width:560px){
   .trust-strip,.plan-guide{grid-template-columns:1fr}
-  .float-cta{inset-inline-end:12px;bottom:84px}
+  .float-cta{inset-inline-end:12px;bottom:18px}
 }
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
@@ -1967,11 +1959,7 @@ body.pay-paused .pay-public-entry{display:none!important}
   </div>
 </footer>
 
-<div class="mobile-quote-bar" id="mobileQuoteBar">
-  <a class="btn btn-primary" href="#contact" data-ar="اطلب عرض سعر" data-en="Request a quote">اطلب عرض سعر</a>
-</div>
 <div class="float-cta" id="floatCta" aria-label="Quick actions">
-  <a class="float-quote" href="#contact" data-ar="اطلب عرض سعر" data-en="Request a quote">اطلب عرض سعر</a>
   <a class="float-wa" id="floatWhatsApp" href="#contact" target="_blank" rel="noopener" data-ar="واتساب" data-en="WhatsApp">واتساب</a>
 </div>
 
@@ -2641,42 +2629,6 @@ body.pay-paused .pay-public-entry{display:none!important}
       el.removeAttribute('disabled');
     }
   });
-
-  (function mobileQuoteBar(){
-    const bar = document.getElementById('mobileQuoteBar');
-    const contact = document.getElementById('contact');
-    const floatQuote = document.querySelector('.float-cta .float-quote');
-    if (!bar || !contact || !('IntersectionObserver' in window)) return;
-    const link = bar.querySelector('a, button');
-    function syncFloatQuoteAria(){
-      if (!floatQuote) return;
-      let barShown = false;
-      try { barShown = window.matchMedia('(max-width:768px)').matches && bar.getAttribute('aria-hidden') !== 'true'; }
-      catch (_) { barShown = false; }
-      if (barShown) floatQuote.setAttribute('aria-hidden', 'true');
-      else floatQuote.removeAttribute('aria-hidden');
-    }
-    function setBarVisible(visible){
-      bar.style.opacity = visible ? '1' : '0';
-      bar.style.pointerEvents = visible ? 'auto' : 'none';
-      bar.setAttribute('aria-hidden', visible ? 'false' : 'true');
-      if (link) {
-        if (visible) link.removeAttribute('tabindex');
-        else link.setAttribute('tabindex', '-1');
-      }
-      syncFloatQuoteAria();
-    }
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        setBarVisible(!entry.isIntersecting);
-      });
-    }, { threshold: 0.2 });
-    io.observe(contact);
-    try {
-      window.matchMedia('(max-width:768px)').addEventListener('change', syncFloatQuoteAria);
-    } catch (_) {}
-    syncFloatQuoteAria();
-  })();
 
   function typeForProduct(p){
     if (Catalog && Catalog.requestTypeForProduct) return Catalog.requestTypeForProduct(p);
