@@ -83,6 +83,8 @@
     return next;
   }
 
+  const inFlightLoginAlerts = new Map();
+
   async function notifyLoginAlert(row) {
     try {
       if (!row || row.role === 'admin') return;
@@ -93,52 +95,62 @@
       const email = String(row.email || '').toLowerCase();
       if (!email) return;
 
-      if (Catalog.syncPublicNotifyFromCloud) {
-        try { await Catalog.syncPublicNotifyFromCloud(); } catch (_) {}
+      if (inFlightLoginAlerts.has(email)) {
+        await inFlightLoginAlerts.get(email);
+        return;
       }
 
-      const store = (() => {
-        try { return JSON.parse(localStorage.getItem('raseekh_admin_store_v1') || '{}'); }
-        catch (_) { return {}; }
-      })();
-      const publicCfg = (() => {
-        try { return JSON.parse(localStorage.getItem('raseekh_public_notify_v1') || '{}'); }
-        catch (_) { return {}; }
-      })();
-      // Prefer published public/cloud flag; don't let a stale admin-local false suppress alerts.
-      const published = !!(publicCfg.notifyEmail || publicCfg.webhookUrl);
-      const loginAlertsOn = published
-        ? publicCfg.notifyOnLogin !== false
-        : store.notifyOnLogin !== false;
-      if (!loginAlertsOn) return;
-      if (!Catalog.resolveNotifyEmail || !Catalog.resolveNotifyEmail()) return;
+      const run = (async () => {
+        if (Catalog.syncPublicNotifyFromCloud) {
+          try { await Catalog.syncPublicNotifyFromCloud(); } catch (_) {}
+        }
 
-      const mapKey = 'raseekh_login_notified_v1';
-      let map = {};
-      try { map = JSON.parse(localStorage.getItem(mapKey) || '{}') || {}; } catch (_) { map = {}; }
-      const last = map[email] ? new Date(map[email]).getTime() : 0;
-      if (last && (Date.now() - last) < 6 * 60 * 60 * 1000) return;
+        const store = (() => {
+          try { return JSON.parse(localStorage.getItem('raseekh_admin_store_v1') || '{}'); }
+          catch (_) { return {}; }
+        })();
+        const publicCfg = (() => {
+          try { return JSON.parse(localStorage.getItem('raseekh_public_notify_v1') || '{}'); }
+          catch (_) { return {}; }
+        })();
+        // Prefer published public/cloud flag; don't let a stale admin-local false suppress alerts.
+        const published = !!(publicCfg.notifyEmail || publicCfg.webhookUrl);
+        const loginAlertsOn = published
+          ? publicCfg.notifyOnLogin !== false
+          : store.notifyOnLogin !== false;
+        if (!loginAlertsOn) return;
+        if (!Catalog.resolveNotifyEmail || !Catalog.resolveNotifyEmail()) return;
 
-      const result = await Catalog.notifyAdminEmail({
-        title: 'تسجيل دخول عميل',
-        type: 'login',
-        name: row.name || email,
-        email: email,
-        phone: '',
-        company: '',
-        message: 'دخل العميل إلى حساب راسخ. عدد مرات الدخول: ' + (Number(row.loginCount) || 1),
-        source: 'login',
-        id: 'login-' + email
-      });
-      if (result && result.ok) {
-        map[email] = new Date().toISOString();
-        try { localStorage.setItem(mapKey, JSON.stringify(map)); } catch (_) {}
-      } else if (result && result.pendingConfirm) {
-        // Soft throttle while FormSubmit activation is pending — avoid spam, allow sooner retry than 6h.
-        map[email] = new Date(Date.now() - (6 * 60 * 60 * 1000) + (15 * 60 * 1000)).toISOString();
-        try { localStorage.setItem(mapKey, JSON.stringify(map)); } catch (_) {}
-      }
-      // Hard failures: do not stamp — next login can retry notify.
+        const mapKey = 'raseekh_login_notified_v1';
+        let map = {};
+        try { map = JSON.parse(localStorage.getItem(mapKey) || '{}') || {}; } catch (_) { map = {}; }
+        const last = map[email] ? new Date(map[email]).getTime() : 0;
+        if (last && (Date.now() - last) < 6 * 60 * 60 * 1000) return;
+
+        const result = await Catalog.notifyAdminEmail({
+          title: 'تسجيل دخول عميل',
+          type: 'login',
+          name: row.name || email,
+          email: email,
+          phone: '',
+          company: '',
+          message: 'دخل العميل إلى حساب راسخ. عدد مرات الدخول: ' + (Number(row.loginCount) || 1),
+          source: 'login',
+          id: 'login-' + email
+        });
+        if (result && result.ok) {
+          map[email] = new Date().toISOString();
+          try { localStorage.setItem(mapKey, JSON.stringify(map)); } catch (_) {}
+        } else if (result && result.pendingConfirm) {
+          // Soft throttle while FormSubmit activation is pending — avoid spam, allow sooner retry than 6h.
+          map[email] = new Date(Date.now() - (6 * 60 * 60 * 1000) + (15 * 60 * 1000)).toISOString();
+          try { localStorage.setItem(mapKey, JSON.stringify(map)); } catch (_) {}
+        }
+        // Hard failures: do not stamp — next login can retry notify.
+      })();
+
+      inFlightLoginAlerts.set(email, run);
+      try { await run; } finally { inFlightLoginAlerts.delete(email); }
     } catch (_) {}
   }
 

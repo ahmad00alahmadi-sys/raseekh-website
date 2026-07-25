@@ -1829,10 +1829,13 @@ body.is-admin .client-only{display:none!important}
 
   function resolveDashPageFromLocation(){
     const params = new URLSearchParams(location.search);
-    let page = params.get('page') || '';
     const hash = String(location.hash || '').replace(/^#/, '');
-    if (!page && hash) {
+    let page = '';
+    // Prefer hash after the user has navigated (#page-*); query ?page= is for first entry only.
+    if (hash.indexOf('page-') === 0) {
       page = hash.replace(/^page-/, '').split('?')[0].split('&')[0];
+    } else {
+      page = params.get('page') || '';
     }
     const allowed = {
       overview: 1, catalog: 1, suggestions: 1, requests: 1, settings: 1,
@@ -1862,7 +1865,15 @@ body.is-admin .client-only{display:none!important}
     if (target) target.classList.add('active');
     try {
       const nextHash = '#page-' + page;
-      if (location.hash !== nextHash) history.replaceState(null, '', location.pathname + location.search + nextHash);
+      const params = new URLSearchParams(location.search);
+      // Drop sticky ?page= so later hash navigation / refresh follow the active page.
+      if (params.has('page')) {
+        params.delete('page');
+        const qs = params.toString();
+        history.replaceState(null, '', location.pathname + (qs ? '?' + qs : '') + nextHash);
+      } else if (location.hash !== nextHash) {
+        history.replaceState(null, '', location.pathname + location.search + nextHash);
+      }
     } catch (_) {}
     if (page === 'pos') renderPos();
     if (page === 'products') renderProducts();
@@ -3141,13 +3152,9 @@ body.is-admin .client-only{display:none!important}
         const p = products.find(x => x.id === line.id);
         if (p) p.stock -= line.qty;
       });
-      let catalogCloud = true;
+      // Persist stock locally first — publish to cloud only after the payment row exists.
       try {
-        const result = saveProducts({ cloud: true, awaitCloud: true });
-        if (result && typeof result.then === 'function') {
-          const published = await result;
-          catalogCloud = !!(published && published.cloud);
-        }
+        saveProducts({ cloud: false });
       } catch (_) {
         stockBefore.forEach((s) => {
           const p = products.find((x) => x.id === s.id);
@@ -3192,6 +3199,16 @@ body.is-admin .client-only{display:none!important}
         if (sale && sale.deliveryPromise) delivery = await sale.deliveryPromise;
       } catch (_) {
         delivery = null;
+      }
+      let catalogCloud = true;
+      try {
+        const result = saveProducts({ cloud: true, awaitCloud: true });
+        if (result && typeof result.then === 'function') {
+          const published = await result;
+          catalogCloud = !!(published && published.cloud);
+        }
+      } catch (_) {
+        catalogCloud = false;
       }
       const paymentSynced = !!(delivery && (delivery.cloud || delivery.delivered));
       showToast(paymentSynced && catalogCloud

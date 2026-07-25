@@ -279,14 +279,13 @@
   async function getSession() {
     if (supabaseClient) {
       try {
-        const cloud = await probeCloud(1500);
-        if (cloud) {
-          const { data } = await supabaseClient.auth.getSession();
-          if (data?.session?.user) {
-            clearLocalSession();
-            const user = withRole(data.session.user);
-            return { user: user, session: data.session, provider: 'supabase' };
-          }
+        // Always read the persisted JWT when the client exists — do not gate on probeCloud
+        // (a stale negative probe would hide a valid cloud session from pay finalize).
+        const { data } = await supabaseClient.auth.getSession();
+        if (data?.session?.user) {
+          clearLocalSession();
+          const user = withRole(data.session.user);
+          return { user: user, session: data.session, provider: 'supabase' };
         }
       } catch (_) {}
     }

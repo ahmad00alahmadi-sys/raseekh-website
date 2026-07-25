@@ -1416,10 +1416,19 @@ body.terms-locked,body.auth-locked{overflow:hidden}
     const bar = document.getElementById('mobileQuoteBar');
     const contact = document.getElementById('contact');
     if (!bar || !contact || !('IntersectionObserver' in window)) return;
+    const link = bar.querySelector('a, button');
+    function setBarVisible(visible){
+      bar.style.opacity = visible ? '1' : '0';
+      bar.style.pointerEvents = visible ? 'auto' : 'none';
+      bar.setAttribute('aria-hidden', visible ? 'false' : 'true');
+      if (link) {
+        if (visible) link.removeAttribute('tabindex');
+        else link.setAttribute('tabindex', '-1');
+      }
+    }
     const io = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
-        bar.style.opacity = entry.isIntersecting ? '0' : '1';
-        bar.style.pointerEvents = entry.isIntersecting ? 'none' : 'auto';
+        setBarVisible(!entry.isIntersecting);
       });
     }, { threshold: 0.2 });
     io.observe(contact);
@@ -2119,6 +2128,18 @@ body.terms-locked,body.auth-locked{overflow:hidden}
         if (event === 'SIGNED_IN' && session?.user && location.hash !== '#reset') {
           authProvider = 'supabase';
           setPayUnlocked(session.user, 'supabase');
+          // Paid return may have opened auth after a probe miss — finalize once cloud session is live.
+          const params = paymentReturnParams();
+          if (params.get('status') === 'paid' || readPendingPay()) {
+            try { closeModal(); } catch (_) {}
+            finalizePendingMoyasarPayment(session.user).then((ok) => {
+              if (!ok && params.get('status') === 'paid') showPayStep(payStatusFailed);
+              const pay = document.getElementById('pay');
+              if (pay) scrollToEl(pay, { block: 'start' });
+            }).catch(() => {
+              if (params.get('status') === 'paid') showPayStep(payStatusFailed);
+            });
+          }
         }
       });
     }
