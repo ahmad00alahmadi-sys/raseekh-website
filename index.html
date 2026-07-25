@@ -1813,8 +1813,6 @@ body.terms-locked{overflow:hidden}
     const params = new URLSearchParams(window.location.search);
     const status = params.get('status');
     if (status !== 'paid' && status !== 'failed') return;
-    let pendingPay = null;
-    try { pendingPay = JSON.parse(sessionStorage.getItem('raseekh_pending_pay') || 'null'); } catch (_) {}
     const finish = (user) => {
       if (!user) {
         openAuth('pay');
