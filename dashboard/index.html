@@ -7,15 +7,15 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%230A4D3C'/%3E%3Ctext x='50' y='68' font-size='52' text-anchor='middle' fill='%23F2F6F4' font-family='sans-serif'%3Eر%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@600;700;800&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Syne:wght@600;700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@600;700;800&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="/auth.js"></script>
 <style>
 :root{
-  --ink:#0F1F1A;--forest:#0A4D3C;--leaf:#1F8A6A;--brass:#A67C1A;
-  --bg:#F2F6F4;--panel:#FFFFFF;--mist:#DCE8E1;--line:#C5D4CB;
-  --muted:#5A6F64;--danger:#B42318;--ok:#0E7A4B;
-  --shadow:0 20px 50px -28px rgba(15,31,26,.35);
+  --ink:#0A1612;--forest:#0C3F32;--leaf:#1A7A5C;--brass:#B08D2E;
+  --bg:#E9EFEC;--panel:#FFFFFF;--mist:#D5E3DC;--line:#C2D2CA;
+  --muted:#5E7168;--danger:#B42318;--ok:#0E7A4B;
+  --shadow:0 28px 70px -40px rgba(10,22,18,.45);
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{min-height:100%}
@@ -23,7 +23,7 @@ body{
   background:var(--bg);color:var(--ink);
   font-family:'IBM Plex Sans Arabic',sans-serif;line-height:1.65;
 }
-body.lang-en{font-family:'DM Sans',sans-serif}
+body.lang-en{font-family:'Outfit',sans-serif}
 body::before{
   content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
   background:
@@ -31,7 +31,7 @@ body::before{
     linear-gradient(180deg,#E8F1EC,var(--bg));
 }
 h1,h2,h3,.logo{font-family:'Noto Kufi Arabic',sans-serif}
-body.lang-en h1,body.lang-en h2,body.lang-en h3,body.lang-en .logo{font-family:'Syne',sans-serif}
+body.lang-en h1,body.lang-en h2,body.lang-en h3,body.lang-en .logo{font-family:'Outfit',sans-serif}
 button,input,select,textarea{font:inherit}
 a{color:inherit;text-decoration:none}
 .hidden{display:none!important}
