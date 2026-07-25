@@ -1,5 +1,5 @@
 /* Lightweight offline shell for Raseekh marketing site */
-const CACHE = 'raseekh-shell-v13';
+const CACHE = 'raseekh-shell-v14';
 const ASSETS = ['/', '/index.html', '/catalog.js', '/auth.js', '/terms.js', '/activity.js', '/terms/', '/terms/index.html', '/dashboard/', '/dashboard/index.html', '/manifest.webmanifest', '/icon.svg'];
 
 self.addEventListener('install', (event) => {
