@@ -2029,7 +2029,7 @@ body.is-admin .client-only{display:none!important}
         const action = isAdminUser
           ? ''
           : `<button class="btn btn-primary" style="margin-top:8px;padding:8px 12px;font-size:.82rem" data-client-suggest="${escapeHtml(s.id)}">${escapeHtml(t('اطلب عرض سعر','Request a quote'))}</button>`;
-        return `<div class="item"><strong>${escapeHtml(titleText)}</strong><span>${escapeHtml(items)}</span><div style="margin-top:6px;font-weight:700;color:var(--forest)">${escapeHtml(priceText)}</div>${action}</div>`;
+        return `<div class="item"><strong>${escapeHtml(titleText)}</strong><span>${escapeHtml(items)}</span><div style="margin-top:6px;font-weight:700;color:var(--harbor)">${escapeHtml(priceText)}</div>${action}</div>`;
       }).join('');
     }
   }
