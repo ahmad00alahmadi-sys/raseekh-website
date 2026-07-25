@@ -5,8 +5,8 @@
   const ADMIN_PRODUCTS_KEY = 'raseekh_admin_products_v1';
   const VERSION_KEY = 'raseekh_catalog_version';
   const SUGGESTIONS_VERSION_KEY = 'raseekh_suggestions_version';
-  const CATALOG_VERSION = 9;
-  const SUGGESTIONS_VERSION = 7;
+  const CATALOG_VERSION = 10;
+  const SUGGESTIONS_VERSION = 8;
   const CLIENT_REQUESTS_KEY = 'raseekh_all_client_requests_v1';
   const PAYMENTS_KEY = 'raseekh_admin_sales_v1';
   // In-flight deliveries must live outside localStorage row objects (re-parsed each call).
@@ -120,10 +120,10 @@
       price: 0, priceMode: 'quote', stock: 99, kind: 'service', client: true, region: 'online'
     },
     {
-      id: 'p12', name: 'حلول للشركات', name_en: 'Business solutions',
-      category: 'شركات', category_en: 'Business',
-      desc: 'باقة للشركات: موقع أو نظام تشغيلي، مخزون، صلاحيات أقسام، وتقارير — عرض سعر بعد فهم نشاط الشركة.',
-      desc_en: 'For companies: site or ops system, inventory, department roles, and reports — quote after we understand your business.',
+      id: 'p12', name: 'نسخة للمؤسسات', name_en: 'Institution edition',
+      category: 'مؤسسات', category_en: 'Institutions',
+      desc: 'باقة للمؤسسات: موقع أو نظام تشغيلي، مخزون، صلاحيات أقسام، وتقارير — عرض سعر بعد فهم نشاط المؤسسة.',
+      desc_en: 'Institution edition: site or ops system, inventory, department roles, and reports — quote after we understand your organization.',
       price: 0, priceMode: 'quote', stock: 99, kind: 'service', client: true, region: 'online'
     }
   ];
@@ -181,13 +181,13 @@
     },
     {
       id: 'sg7',
-      title: 'باقة الشركات',
-      title_en: 'Company package',
-      desc: 'حلول للشركات + مخزون + نظام تشغيلي — مناسبة للمنشآت التي تحتاج أكثر من موقع بسيط.',
-      desc_en: 'Business solutions + inventory + ops system — for companies that need more than a simple website.',
+      title: 'نسخة للمؤسسات',
+      title_en: 'Institution edition',
+      desc: 'نسخة للمؤسسات + مخزون + نظام تشغيلي — مناسبة للمؤسسات التي تحتاج أكثر من موقع بسيط.',
+      desc_en: 'Institution edition + inventory + ops system — for organizations that need more than a simple website.',
       productIds: ['p12', 'p11', 'p10'],
-      badge: 'للشركات',
-      badge_en: 'For companies'
+      badge: 'للمؤسسات',
+      badge_en: 'For institutions'
     }
   ];
 
@@ -813,12 +813,12 @@
       features_en: ['Products, quantities, and movements', 'Low-stock alerts', 'Simple ops reports', 'Scoped to your workflow']
     },
     business: {
-      ar: 'حلول للشركات',
-      en: 'Business solutions',
-      summary_ar: 'باقة للمنشآت: تشغيل ومخزون وصلاحيات حسب الهيكل.',
-      summary_en: 'For companies: ops, inventory, and roles by structure.',
-      features_ar: ['موقع أو نظام تشغيلي', 'مخزون وصلاحيات أقسام', 'تقارير للإدارة', 'عرض سعر بعد فهم النشاط'],
-      features_en: ['Site or operations system', 'Inventory and department roles', 'Management reports', 'Quote after we understand the business']
+      ar: 'نسخة للمؤسسات',
+      en: 'Institution edition',
+      summary_ar: 'باقة للمؤسسات والمنشآت: تشغيل ومخزون وصلاحيات حسب الهيكل.',
+      summary_en: 'Institution edition: ops, inventory, and roles by structure.',
+      features_ar: ['موقع أو نظام تشغيلي', 'مخزون وصلاحيات أقسام', 'تقارير للإدارة', 'عرض سعر بعد فهم نشاط المؤسسة'],
+      features_en: ['Site or operations system', 'Inventory and department roles', 'Management reports', 'Quote after we understand the organization']
     },
     systems: {
       ar: 'برمجة أنظمة ولوحات',
@@ -898,7 +898,7 @@
     if (cat.includes('maintenance') || cat.includes('صيانة')) return 'maintenance';
     if (cat.includes('website development') || cat.includes('تطوير مواقع') || cat.includes('web-dev')) return 'web-dev';
     if (cat.includes('inventory') || cat.includes('مخزون') || cat.includes('stock')) return 'inventory';
-    if (cat.includes('business') || cat.includes('company') || cat.includes('شركات') || cat.includes('منشآت')) return 'business';
+    if (cat.includes('business') || cat.includes('company') || cat.includes('institution') || cat.includes('شركات') || cat.includes('منشآت') || cat.includes('مؤسسات')) return 'business';
     if (cat.includes('api') || cat.includes('ربط')) return 'api';
     if (cat.includes('dashboard') || cat.includes('systems') || cat.includes('أنظمة') || cat.includes('لوحات')) return 'systems';
     if (cat.includes('system') || cat.includes('نظام')) return 'system';
