@@ -168,7 +168,8 @@ body.terms-locked{overflow:hidden}
 .terms-item:last-child{border-bottom:none}
 .terms-item h3{color:var(--navy);font-size:1rem;margin-bottom:6px}
 .terms-item p{color:var(--muted);font-size:.92rem;line-height:1.75}
-.audience-stats{margin-top:14px}
+.audience-stats{margin-top:14px;grid-template-columns:repeat(3,1fr)}
+@media (max-width:900px){.audience-stats{grid-template-columns:1fr 1fr}}
 .btn{
   display:inline-flex;align-items:center;justify-content:center;gap:8px;
   border:none;border-radius:var(--radius);padding:12px 18px;cursor:pointer;font-weight:700;
@@ -492,7 +493,7 @@ body.is-admin .client-only{display:none!important}
       <button class="nav-item admin-only" data-page="products"><span class="ico">▤</span><span data-ar="إدارة الخدمات" data-en="Manage services">إدارة الخدمات</span></button>
       <button class="nav-item admin-only" data-page="sales"><span class="ico">฿</span><span data-ar="سجل المدفوعات" data-en="Payments log">سجل المدفوعات</span></button>
       <button class="nav-item admin-only" data-page="leads"><span class="ico">✉</span><span data-ar="طلبات العملاء" data-en="Client requests">طلبات العملاء</span><span class="nav-badge" id="leadsNavBadge">0</span></button>
-      <button class="nav-item admin-only" data-page="activity"><span class="ico">◎</span><span data-ar="تسجيل الدخول" data-en="Logins">تسجيل الدخول</span><span class="nav-badge" id="activityNavBadge">0</span></button>
+      <button class="nav-item admin-only" data-page="activity"><span class="ico">◎</span><span data-ar="زوار ودخول" data-en="Visitors & logins">زوار ودخول</span><span class="nav-badge" id="activityNavBadge">0</span></button>
       <button class="nav-item" data-page="settings"><span class="ico">⚙</span><span data-ar="الإعدادات" data-en="Settings">الإعدادات</span></button>
     </nav>
     <div class="side-foot">
@@ -559,7 +560,9 @@ body.is-admin .client-only{display:none!important}
         </div>
       </div>
       <div class="stats admin-only audience-stats">
-        <div class="stat clickable" id="statRegisteredCard" role="button" tabindex="0" data-goto="activity"><div class="label" data-ar="سجّلوا دخول" data-en="Logged-in users">سجّلوا دخول</div><div class="value" id="statRegisteredUsers">0</div><div class="hint" data-ar="اضغط للتفاصيل" data-en="tap for details">اضغط للتفاصيل</div></div>
+        <div class="stat clickable" data-goto="activity"><div class="label" data-ar="زوار الموقع" data-en="Site visitors">زوار الموقع</div><div class="value" id="statVisitorsTotal">0</div><div class="hint" data-ar="جلسات فريدة (إجمالي)" data-en="unique sessions (total)">جلسات فريدة (إجمالي)</div></div>
+        <div class="stat clickable" data-goto="activity"><div class="label" data-ar="زوار اليوم" data-en="Visitors today">زوار اليوم</div><div class="value" id="statVisitorsToday">0</div><div class="hint" data-ar="حسب توقيت الرياض" data-en="Riyadh day bucket">حسب توقيت الرياض</div></div>
+        <div class="stat clickable" id="statRegisteredCard" role="button" tabindex="0" data-goto="activity"><div class="label" data-ar="سجّلوا دخول" data-en="Logged-in users">سجّلوا دخول</div><div class="value" id="statRegisteredUsers">0</div><div class="hint" data-ar="حسابات دخلت" data-en="accounts that signed in">حسابات دخلت</div></div>
         <div class="stat clickable" id="statActiveCard" role="button" tabindex="0" data-goto="activity"><div class="label" data-ar="نشط الآن" data-en="Active now">نشط الآن</div><div class="value" id="statActiveUsers">0</div><div class="hint" data-ar="آخر 15 دقيقة" data-en="last 15 minutes">آخر 15 دقيقة</div></div>
         <div class="stat clickable" data-goto="activity"><div class="label" data-ar="دخول اليوم" data-en="Logins today">دخول اليوم</div><div class="value" id="statLoginsToday">0</div><div class="hint" data-ar="حسابات اليوم" data-en="accounts today">حسابات اليوم</div></div>
         <div class="stat clickable" data-goto="leads"><div class="label" data-ar="طلبات جديدة" data-en="New requests">طلبات جديدة</div><div class="value" id="statNewRequestsDup">0</div><div class="hint" data-ar="صندوق الطلبات" data-en="request inbox">صندوق الطلبات</div></div>
@@ -567,11 +570,12 @@ body.is-admin .client-only{display:none!important}
       <div class="panel admin-only" style="margin-top:14px">
         <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center">
           <div>
-            <h3 data-ar="كيف تعرف الدخول والطلبات؟" data-en="How to track logins & requests">كيف تعرف الدخول والطلبات؟</h3>
-            <p style="color:var(--muted);font-size:.9rem;margin:4px 0 0" data-ar="تسجيل الدخول من قائمة «تسجيل الدخول». الطلبات من «طلبات العملاء» + بريد الإشعار في الإعدادات." data-en="Logins: open “Logins”. Requests: “Client requests” + notify email in Settings.">تسجيل الدخول من قائمة «تسجيل الدخول». الطلبات من «طلبات العملاء» + بريد الإشعار في الإعدادات.</p>
+            <h3 data-ar="لوحة المالك" data-en="Owner dashboard">لوحة المالك</h3>
+            <p style="color:var(--muted);font-size:.9rem;margin:4px 0 0" data-ar="يوزر المالك وحده يرى الزوار وتسجيلات الدخول، ويقدر يضيف/يعدّل الخدمات. العملاء يطلبون ويتابعون فقط." data-en="Only the owner account sees visitors and logins, and can add/edit services. Clients can only request and track.">يوزر المالك وحده يرى الزوار وتسجيلات الدخول، ويقدر يضيف/يعدّل الخدمات. العملاء يطلبون ويتابعون فقط.</p>
           </div>
           <div style="display:flex;gap:8px;flex-wrap:wrap">
-            <button class="btn btn-primary" type="button" data-goto="activity" data-ar="فتح تسجيل الدخول" data-en="Open logins">فتح تسجيل الدخول</button>
+            <button class="btn btn-primary" type="button" data-goto="activity" data-ar="فتح الزوار والدخول" data-en="Open visitors & logins">فتح الزوار والدخول</button>
+            <button class="btn btn-ghost" type="button" data-goto="products" data-ar="إدارة الخدمات" data-en="Manage services">إدارة الخدمات</button>
             <button class="btn btn-ghost" type="button" data-goto="leads" data-ar="فتح الطلبات" data-en="Open requests">فتح الطلبات</button>
           </div>
         </div>
@@ -668,8 +672,8 @@ body.is-admin .client-only{display:none!important}
     <div class="page admin-only" id="page-activity">
       <div class="topbar">
         <div>
-          <h1 data-ar="تسجيل الدخول والنشاط" data-en="Logins & activity">تسجيل الدخول والنشاط</h1>
-          <div class="crumb"><span data-ar="راسخ" data-en="Raseekh">راسخ</span> <span>/</span> <span data-ar="إدارة" data-en="Admin">إدارة</span></div>
+          <h1 data-ar="زوار الموقع وتسجيل الدخول" data-en="Site visitors & logins">زوار الموقع وتسجيل الدخول</h1>
+          <div class="crumb"><span data-ar="راسخ" data-en="Raseekh">راسخ</span> <span>/</span> <span data-ar="مالك" data-en="Owner">مالك</span></div>
         </div>
         <div style="display:flex;gap:8px;flex-wrap:wrap">
           <button class="btn btn-ghost" type="button" id="refreshActivityBtn" data-ar="↻ تحديث" data-en="↻ Refresh">↻ تحديث</button>
@@ -677,6 +681,8 @@ body.is-admin .client-only{display:none!important}
         </div>
       </div>
       <div class="stats admin-only">
+        <div class="stat"><div class="label" data-ar="زوار (إجمالي)" data-en="Visitors (total)">زوار (إجمالي)</div><div class="value" id="activityStatVisitorsTotal">0</div></div>
+        <div class="stat"><div class="label" data-ar="زوار اليوم" data-en="Visitors today">زوار اليوم</div><div class="value" id="activityStatVisitorsToday">0</div></div>
         <div class="stat"><div class="label" data-ar="حسابات سجّلت دخول" data-en="Accounts logged in">حسابات سجّلت دخول</div><div class="value" id="activityStatRegistered">0</div></div>
         <div class="stat"><div class="label" data-ar="نشط الآن" data-en="Active now">نشط الآن</div><div class="value" id="activityStatActive">0</div></div>
         <div class="stat"><div class="label" data-ar="دخول اليوم" data-en="Logins today">دخول اليوم</div><div class="value" id="activityStatToday">0</div></div>
@@ -684,7 +690,7 @@ body.is-admin .client-only{display:none!important}
       </div>
       <div class="panel" style="margin-top:14px">
         <h3 data-ar="سجل الدخول" data-en="Login log">سجل الدخول</h3>
-        <p style="color:var(--muted);font-size:.9rem;margin:4px 0 6px" data-ar="كل من دخل لحساب راسخ، ومن نشط خلال آخر 15 دقيقة. للمزامنة بين الأجهزة شغّل setup_all.sql." data-en="Everyone who signed into Raseekh, and who is active in the last 15 minutes. For cross-device sync run setup_all.sql.">كل من دخل لحساب راسخ، ومن نشط خلال آخر 15 دقيقة. للمزامنة بين الأجهزة شغّل setup_all.sql.</p>
+        <p style="color:var(--muted);font-size:.9rem;margin:4px 0 6px" data-ar="الزوار = فتح الموقع (جلسة واحدة لكل متصفح). الدخول = حساب سجّل دخول. يظهر للمالك فقط بعد setup_all.sql." data-en="Visitors = site opens (one session per browser). Logins = signed-in accounts. Owner-only after setup_all.sql.">الزوار = فتح الموقع (جلسة واحدة لكل متصفح). الدخول = حساب سجّل دخول. يظهر للمالك فقط بعد setup_all.sql.</p>
         <div id="activityCloudHint" style="font-size:.86rem;font-weight:700;margin-bottom:10px">—</div>
         <div class="lead-filters" id="activityFilters">
           <button type="button" class="active" data-activity-filter="all" data-ar="الكل" data-en="All">الكل</button>
@@ -774,11 +780,11 @@ body.is-admin .client-only{display:none!important}
       <div class="topbar">
         <div>
           <h1 data-ar="إدارة الخدمات" data-en="Manage services">إدارة الخدمات</h1>
-          <div class="crumb"><span data-ar="راسخ" data-en="Raseekh">راسخ</span> <span>/</span> <span data-ar="إدارة فقط" data-en="Admin only">إدارة فقط</span></div>
+          <div class="crumb"><span data-ar="راسخ" data-en="Raseekh">راسخ</span> <span>/</span> <span data-ar="المالك فقط" data-en="Owner only">المالك فقط</span></div>
         </div>
         <button class="btn btn-primary" id="addProductBtn" data-ar="+ خدمة جديدة" data-en="+ New service">+ خدمة جديدة</button>
       </div>
-      <div class="client-note" data-ar="إدارة فقط. الأجهزة المادية حالياً للرياض ومخفية عن العميل. أظهر للعميل الخدمات الإلكترونية فقط." data-en="Admin only. Physical devices are Riyadh-only and hidden from clients for now. Show clients digital services only.">إدارة فقط. الأجهزة المادية حالياً للرياض ومخفية عن العميل. أظهر للعميل الخدمات الإلكترونية فقط.</div>
+      <div class="client-note" data-ar="يوزر المالك وحده يضيف ويعدّل ويحذف الخدمات. العملاء يشوفون الكتالوج ويطلبون عرض سعر فقط. الأجهزة المادية حالياً للرياض ومخفية عن العميل." data-en="Only the owner account can add, edit, or delete services. Clients see the catalog and request quotes only. Physical devices are Riyadh-only and hidden from clients.">يوزر المالك وحده يضيف ويعدّل ويحذف الخدمات. العملاء يشوفون الكتالوج ويطلبون عرض سعر فقط. الأجهزة المادية حالياً للرياض ومخفية عن العميل.</div>
       <div class="panel">
         <div class="toolbar">
           <h3 data-ar="كتالوج الخدمات" data-en="Service catalog">كتالوج الخدمات</h3>
@@ -1095,6 +1101,7 @@ body.is-admin .client-only{display:none!important}
     }, 2800);
   }
   function requireAdmin(action){
+    // Single owner account only — clients never mutate catalog/sales/settings.
     if (isAdminUser) return true;
     showToast(t('التعديل متاح لحساب الإدارة فقط', 'Editing is available for the admin account only'));
     if (action) console.warn('Blocked client action:', action);
@@ -1115,11 +1122,11 @@ body.is-admin .client-only{display:none!important}
     document.body.classList.toggle('is-client', !isAdminUser);
     const pill = document.getElementById('dashRolePill');
     if (pill) {
-      pill.textContent = isAdminUser ? t('إدارة', 'Admin') : t('عميل', 'Client');
+      pill.textContent = isAdminUser ? t('مالك', 'Owner') : t('عميل', 'Client');
       pill.classList.toggle('admin', isAdminUser);
     }
     document.getElementById('pageTitle').textContent = isAdminUser
-      ? t('لوحة الإدارة — راسخ', 'Admin dashboard — Raseekh')
+      ? t('لوحة المالك — راسخ', 'Owner dashboard — Raseekh')
       : t('حساب العميل — راسخ', 'Client area — Raseekh');
     const banner = document.getElementById('adminSetupBanner');
     if (banner && !isAdminUser) banner.classList.remove('show', 'ok');
@@ -1614,10 +1621,14 @@ body.is-admin .client-only{display:none!important}
     set('statActiveUsers', stats.activeNow);
     set('statLoginsToday', stats.loginsToday);
     set('statTotalLogins', stats.totalLogins);
+    set('statVisitorsTotal', stats.visitorsTotal);
+    set('statVisitorsToday', stats.visitorsToday);
     set('activityStatRegistered', stats.registered);
     set('activityStatActive', stats.activeNow);
     set('activityStatToday', stats.loginsToday);
     set('activityStatTotal', stats.totalLogins);
+    set('activityStatVisitorsTotal', stats.visitorsTotal);
+    set('activityStatVisitorsToday', stats.visitorsToday);
     updateActivityBadge(stats.activeNow);
 
     const hint = document.getElementById('activityCloudHint');

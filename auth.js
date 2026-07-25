@@ -5,8 +5,9 @@
   const USERS_KEY = 'raseekh_local_users_v1';
   const SESSION_KEY = 'raseekh_local_session_v1';
   const SALT = 'raseekh-auth-v1';
-  /* Only these accounts can edit catalog / sales desk. Everyone else is a client. */
-  const ADMIN_EMAILS = ['ahmad00alahmadi@gmail.com'];
+  /* Single owner account — only this email can edit catalog / sales / see visitor stats. */
+  const OWNER_EMAIL = 'ahmad00alahmadi@gmail.com';
+  const ADMIN_EMAILS = [OWNER_EMAIL];
 
   let supabaseClient = null;
   let cloudReady = null;
@@ -46,6 +47,11 @@
   function isAdmin(user) {
     if (!user) return false;
     return isAdminEmail(user.email);
+  }
+
+  /** Alias: there is exactly one owner; same allowlist as admin. */
+  function isOwner(user) {
+    return isAdmin(user);
   }
 
   function withRole(user) {
@@ -464,6 +470,7 @@
     probeCloud,
     invalidateCloudProbe,
     isAdmin,
+    isOwner,
     isAdminEmail,
     withRole,
     get supabase() { return supabaseClient; }

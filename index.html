@@ -2689,6 +2689,12 @@ body.terms-locked,body.auth-locked{overflow:hidden}
     if (Catalog.retryPendingSharedRequests) Catalog.retryPendingSharedRequests().catch(() => {});
     if (Catalog.retryPendingPayments) Catalog.retryPendingPayments().catch(() => {});
   }
+  // Count one public visit per browser session (owner dashboard stats).
+  try {
+    if (window.RaseekhActivity && RaseekhActivity.recordVisit) {
+      RaseekhActivity.recordVisit().catch(() => {});
+    }
+  } catch (_) {}
 
   const revealEls = document.querySelectorAll('.reveal');
   if ('IntersectionObserver' in window) {
