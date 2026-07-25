@@ -432,6 +432,14 @@ body.lang-en .footer-brand{font-family:'Space Grotesk',sans-serif}
   background:rgba(247,249,252,.7);color:var(--muted);font-weight:700;font-size:.92rem;
 }
 .trust-note{text-align:center;margin-top:18px;color:var(--muted);font-size:.95rem}
+.terms-list{display:flex;flex-direction:column;gap:18px;color:var(--muted);font-size:.95rem}
+.terms-item{
+  padding:18px 0;border-bottom:1.5px solid var(--line);
+}
+.terms-item:last-child{border-bottom:none}
+.terms-item h3{color:var(--navy);font-size:1.05rem;margin-bottom:8px}
+.terms-item p{margin:0;line-height:1.8}
+.terms-updated{margin-top:8px;font-size:.82rem;color:var(--copper);font-weight:700}
 
 @media (max-width:960px){
   .nav-links{display:none;position:absolute;top:66px;inset-inline:16px;flex-direction:column;background:rgba(247,249,252,.98);border:1.5px solid var(--line);padding:16px;border-radius:10px;box-shadow:var(--shadow);gap:14px;z-index:90}
@@ -894,14 +902,58 @@ body.lang-en .footer-brand{font-family:'Space Grotesk',sans-serif}
 </section>
 
 <section id="terms">
-  <div class="wrap" style="max-width:760px">
+  <div class="wrap" style="max-width:800px">
     <div class="section-head">
       <div class="eyebrow" data-ar="الشروط" data-en="Terms">الشروط</div>
       <h2 data-ar="الشروط والأحكام" data-en="Terms & Conditions">الشروط والأحكام</h2>
+      <p data-ar="باستخدام موقع راسخ أو إنشاء حساب أو إرسال طلب، فإنكم توافقون على هذه الشروط." data-en="By using the Raseekh website, creating an account, or submitting a request, you agree to these terms.">باستخدام موقع راسخ أو إنشاء حساب أو إرسال طلب، فإنكم توافقون على هذه الشروط.</p>
+      <div class="terms-updated" data-ar="آخر تحديث: يوليو 2026" data-en="Last updated: July 2026">آخر تحديث: يوليو 2026</div>
     </div>
-    <div style="color:var(--muted);font-size:.95rem;display:flex;flex-direction:column;gap:14px">
-      <p data-ar="تقدّم راسخ بيع منتجات إلكترونية وخدمات صيانة مواقع وتعديل برمجة وتطوير أنظمة وفق الاتفاق مع كل عميل." data-en="Raseekh provides electronics sales and website maintenance, programming, and system development services per agreement with each client.">تقدّم راسخ بيع منتجات إلكترونية وخدمات صيانة مواقع وتعديل برمجة وتطوير أنظمة وفق الاتفاق مع كل عميل.</p>
-      <p data-ar="العميل مسؤول عن سرية بيانات الدخول. الدفع عبر Moyasar. البيانات لا تُشارك إلا لخدمة التشغيل أو ما يقتضيه النظام." data-en="Clients are responsible for login confidentiality. Payments via Moyasar. Data is shared only to operate the service or as required by law.">العميل مسؤول عن سرية بيانات الدخول. الدفع عبر Moyasar. البيانات لا تُشارك إلا لخدمة التشغيل أو ما يقتضيه النظام.</p>
+    <div class="terms-list reveal">
+      <article class="terms-item">
+        <h3 data-ar="1) طبيعة الخدمة" data-en="1) Nature of service">1) طبيعة الخدمة</h3>
+        <p data-ar="تقدّم راسخ بيع منتجات إلكترونية وخدمات تقنية تشمل: صيانة المواقع، تطوير وتعديل البرمجة، ربط الأنظمة وواجهات API، وبناء أنظمة ولوحات تحكم حسب احتياج العميل. نطاق كل عمل يُحدد في عرض السعر أو الاتفاق المعتمد مع العميل." data-en="Raseekh provides electronics sales and technical services including website maintenance, programming and code changes, API/system integrations, and custom systems/dashboards. The scope of each engagement is defined in the approved quote or agreement with the client.">تقدّم راسخ بيع منتجات إلكترونية وخدمات تقنية تشمل: صيانة المواقع، تطوير وتعديل البرمجة، ربط الأنظمة وواجهات API، وبناء أنظمة ولوحات تحكم حسب احتياج العميل. نطاق كل عمل يُحدد في عرض السعر أو الاتفاق المعتمد مع العميل.</p>
+      </article>
+      <article class="terms-item">
+        <h3 data-ar="2) الطلبات وعروض الأسعار" data-en="2) Requests and quotes">2) الطلبات وعروض الأسعار</h3>
+        <p data-ar="إرسال طلب عبر الموقع أو حساب العميل لا يُعد عقداً نهائياً. الأسعار الظاهرة كـ«حسب الطلب» تقديرية أو بانتظار المراجعة. يصبح العرض ملزماً بعد موافقة الطرفين على النطاق والتكلفة والمدة، وأي تغيير جوهري قد يعدّل السعر أو الجدول." data-en="Submitting a request via the website or client account is not a final contract. Prices shown as “on request” are provisional pending review. A quote becomes binding after both parties approve scope, cost, and timeline; material changes may adjust price or schedule.">إرسال طلب عبر الموقع أو حساب العميل لا يُعد عقداً نهائياً. الأسعار الظاهرة كـ«حسب الطلب» تقديرية أو بانتظار المراجعة. يصبح العرض ملزماً بعد موافقة الطرفين على النطاق والتكلفة والمدة، وأي تغيير جوهري قد يعدّل السعر أو الجدول.</p>
+      </article>
+      <article class="terms-item">
+        <h3 data-ar="3) حساب العميل والصلاحيات" data-en="3) Client account and roles">3) حساب العميل والصلاحيات</h3>
+        <p data-ar="حساب العميل مخصص للطلب والمتابعة والدفع عند التفعيل. تعديل الكتالوج والأسعار والمخزون والمبيعات وطلبات العملاء مخصص لحساب الإدارة فقط. العميل مسؤول عن سرية بيانات الدخول وأي نشاط يتم عبر حسابه." data-en="A client account is for requesting, tracking, and paying when enabled. Catalog, pricing, inventory, sales, and lead management are admin-only. Clients are responsible for login confidentiality and activity on their account.">حساب العميل مخصص للطلب والمتابعة والدفع عند التفعيل. تعديل الكتالوج والأسعار والمخزون والمبيعات وطلبات العملاء مخصص لحساب الإدارة فقط. العميل مسؤول عن سرية بيانات الدخول وأي نشاط يتم عبر حسابه.</p>
+      </article>
+      <article class="terms-item">
+        <h3 data-ar="4) المنتجات الإلكترونية" data-en="4) Electronics products">4) المنتجات الإلكترونية</h3>
+        <p data-ar="توفر المنتجات والكميات والمواصفات يخضع للمراجعة قبل التأكيد. قد تختلف مدة التوريد حسب النوع والكمية. أي إرجاع أو استبدال يتم وفق الاتفاق المكتوب مع راسخ وحالة المنتج عند الاستلام." data-en="Availability, quantities, and specifications are subject to confirmation. Delivery timing may vary by model and quantity. Returns or exchanges follow the written agreement with Raseekh and the product condition on receipt.">توفر المنتجات والكميات والمواصفات يخضع للمراجعة قبل التأكيد. قد تختلف مدة التوريد حسب النوع والكمية. أي إرجاع أو استبدال يتم وفق الاتفاق المكتوب مع راسخ وحالة المنتج عند الاستلام.</p>
+      </article>
+      <article class="terms-item">
+        <h3 data-ar="5) الخدمات البرمجية والأنظمة" data-en="5) Programming and systems">5) الخدمات البرمجية والأنظمة</h3>
+        <p data-ar="التنفيذ يتم على مراحل متفق عليها مع تحديثات للعميل. حقوق الاستخدام والتسليم للكود أو النظام تُحدد في الاتفاق الخاص بكل مشروع. يلتزم العميل بتزويد المتطلبات والبيانات والصلاحيات اللازمة في وقت مناسب حتى لا يتأخر التسليم." data-en="Work is delivered in agreed stages with client updates. Usage rights and delivery of code/systems are defined in each project agreement. Clients must provide requirements, data, and access in good time so delivery is not delayed.">التنفيذ يتم على مراحل متفق عليها مع تحديثات للعميل. حقوق الاستخدام والتسليم للكود أو النظام تُحدد في الاتفاق الخاص بكل مشروع. يلتزم العميل بتزويد المتطلبات والبيانات والصلاححات اللازمة في وقت مناسب حتى لا يتأخر التسليم.</p>
+      </article>
+      <article class="terms-item">
+        <h3 data-ar="6) الدفع والعربون" data-en="6) Payment and deposits">6) الدفع والعربون</h3>
+        <p data-ar="الدفع الإلكتروني عبر بوابة Moyasar (بطاقة / Apple Pay حسب التوفر) للعملاء المسجّلين عند تفعيل خاصية السداد. العربون أو الدفعات المرحلية قد تُطلب قبل بدء التنفيذ أو التوريد وفق عرض السعر. الرسوم أو الاسترداد تخضع لسياسة الدفع المعتمدة في الاتفاق." data-en="Online payments use Moyasar (card / Apple Pay when available) for signed-in clients when checkout is enabled. Deposits or milestone payments may be required before work or supply begins, per the quote. Fees or refunds follow the payment policy in the agreement.">الدفع الإلكتروني عبر بوابة Moyasar (بطاقة / Apple Pay حسب التوفر) للعملاء المسجّلين عند تفعيل خاصية السداد. العربون أو الدفعات المرحلية قد تُطلب قبل بدء التنفيذ أو التوريد وفق عرض السعر. الرسوم أو الاسترداد تخضع لسياسة الدفع المعتمدة في الاتفاق.</p>
+      </article>
+      <article class="terms-item">
+        <h3 data-ar="7) الخصوصية والبيانات" data-en="7) Privacy and data">7) الخصوصية والبيانات</h3>
+        <p data-ar="نجمع بيانات التواصل والطلب اللازمة للرد وتنفيذ الخدمة (مثل الاسم والجوال والبريد ووصف الطلب). لا نبيع بياناتكم لأطراف ثالثة. قد تُستخدم أدوات تشغيل ضرورية (مثل الاستضافة، الدفع، أو إشعارات الطلبات) فقط لغرض تقديم الخدمة أو ما يقتضيه النظام." data-en="We collect contact and request data needed to reply and deliver the service (such as name, phone, email, and request details). We do not sell your data. Essential operators (hosting, payments, or request notifications) may be used only to provide the service or as required by law.">نجمع بيانات التواصل والطلب اللازمة للرد وتنفيذ الخدمة (مثل الاسم والجوال والبريد ووصف الطلب). لا نبيع بياناتكم لأطراف ثالثة. قد تُستخدم أدوات تشغيل ضرورية (مثل الاستضافة، الدفع، أو إشعارات الطلبات) فقط لغرض تقديم الخدمة أو ما يقتضيه النظام.</p>
+      </article>
+      <article class="terms-item">
+        <h3 data-ar="8) حدود المسؤولية" data-en="8) Limitation of liability">8) حدود المسؤولية</h3>
+        <p data-ar="تبذل راسخ جهداً معقولاً لتقديم خدمة مهنية. لا تتحمل راسخ مسؤولية الأضرار غير المباشرة أو خسائر الأرباح الناتجة عن تأخير خارج سيطرتها، أو قرارات تشغيلية لدى العميل، أو أعطال طرف ثالث (استضافة، بوابات دفع، شبكات). المسؤولية تُحدد بما يتوافق مع الاتفاق وقيمة المشروع." data-en="Raseekh will use reasonable care to deliver a professional service. Raseekh is not liable for indirect damages or lost profits from delays beyond its control, client operational decisions, or third-party failures (hosting, payment gateways, networks). Liability is limited in line with the agreement and project value.">تبذل راسخ جهداً معقولاً لتقديم خدمة مهنية. لا تتحمل راسخ مسؤولية الأضرار غير المباشرة أو خسائر الأرباح الناتجة عن تأخير خارج سيطرتها، أو قرارات تشغيلية لدى العميل، أو أعطال طرف ثالث (استضافة، بوابات دفع، شبكات). المسؤولية تُحدد بما يتوافق مع الاتفاق وقيمة المشروع.</p>
+      </article>
+      <article class="terms-item">
+        <h3 data-ar="9) إساءة الاستخدام" data-en="9) Misuse">9) إساءة الاستخدام</h3>
+        <p data-ar="يُحظر استخدام الموقع أو الحساب لأي غرض غير مشروع، أو إرسال محتوى مسيء، أو محاولة اختراق أو تعطيل الخدمة. يحق لراسخ تعليق أو إنهاء الوصول عند المخالفة." data-en="You may not use the website or account for unlawful purposes, abusive content, or attempts to breach or disrupt the service. Raseekh may suspend or terminate access for violations.">يُحظر استخدام الموقع أو الحساب لأي غرض غير مشروع، أو إرسال محتوى مسيء، أو محاولة اختراق أو تعطيل الخدمة. يحق لراسخ تعليق أو إنهاء الوصول عند المخالفة.</p>
+      </article>
+      <article class="terms-item">
+        <h3 data-ar="10) القانون والتعديلات" data-en="10) Law and changes">10) القانون والتعديلات</h3>
+        <p data-ar="تخضع هذه الشروط لأنظمة المملكة العربية السعودية. قد نحدّث الشروط عند الحاجة، ويُنشر التحديث على هذه الصفحة مع تاريخ آخر تعديل. استمرار استخدام الموقع بعد التحديث يُعد موافقة على النسخة المحدّثة." data-en="These terms are governed by the laws of the Kingdom of Saudi Arabia. We may update the terms as needed; updates are posted on this page with a last-updated date. Continued use after an update constitutes acceptance of the revised terms.">تخضع هذه الشروط لأنظمة المملكة العربية السعودية. قد نحدّث الشروط عند الحاجة، ويُنشر التحديث على هذه الصفحة مع تاريخ آخر تعديل. استمرار استخدام الموقع بعد التحديث يُعد موافقة على النسخة المحدّثة.</p>
+      </article>
+      <article class="terms-item">
+        <h3 data-ar="11) التواصل" data-en="11) Contact">11) التواصل</h3>
+        <p data-ar="للاستفسار عن الشروط أو الطلبات، استخدموا نموذج «اطلب عرض سعر» في الموقع أو حساب العميل. الرد يتم خلال يوم عمل قدر الإمكان." data-en="For questions about these terms or your requests, use the “Request a quote” form on the website or your client account. We aim to reply within one business day.">للاستفسار عن الشروط أو الطلبات، استخدموا نموذج «اطلب عرض سعر» في الموقع أو حساب العميل. الرد يتم خلال يوم عمل قدر الإمكان.</p>
+      </article>
     </div>
   </div>
 </section>
