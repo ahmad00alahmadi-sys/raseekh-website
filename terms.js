@@ -1,6 +1,6 @@
 /* Shared Terms & Conditions + Privacy for Raseekh (page + client overlay). */
 (function (global) {
-  const TERMS_VERSION = '2026-07-25-v5';
+  const TERMS_VERSION = '2026-07-25-v6';
   const ACCEPT_KEY = 'raseekh_terms_accepted_v1';
 
   function termsHtml() {
@@ -9,7 +9,7 @@
         <div class="terms-doc-head">
           <div class="eyebrow" data-ar="الشروط" data-en="Terms">الشروط</div>
           <h2 data-ar="الشروط والأحكام" data-en="Terms & Conditions">الشروط والأحكام</h2>
-          <p data-ar="باستخدام موقع راسخ أو إنشاء حساب أو إرسال طلب أو سداد عربون، فإنكم توافقون على هذه الشروط بصيغة عادلة وواضحة للطرفين." data-en="By using the Raseekh website, creating an account, submitting a request, or paying a deposit, you agree to these fair and clear terms for both sides.">باستخدام موقع راسخ أو إنشاء حساب أو إرسال طلب أو سداد عربون، فإنكم توافقون على هذه الشروط بصيغة عادلة وواضحة للطرفين.</p>
+          <p data-ar="باستخدام موقع راسخ أو إنشاء حساب أو إرسال طلب أو الاتفاق على عربون وفق العرض المكتوب، فإنكم توافقون على هذه الشروط بصيغة عادلة وواضحة للطرفين." data-en="By using the Raseekh website, creating an account, submitting a request, or agreeing a deposit per the written quote, you agree to these fair and clear terms for both sides.">باستخدام موقع راسخ أو إنشاء حساب أو إرسال طلب أو الاتفاق على عربون وفق العرض المكتوب، فإنكم توافقون على هذه الشروط بصيغة عادلة وواضحة للطرفين.</p>
           <div class="terms-updated" data-ar="آخر تحديث: يوليو 2026" data-en="Last updated: July 2026">آخر تحديث: يوليو 2026</div>
         </div>
         <div class="terms-list">
@@ -23,7 +23,7 @@
           </article>
           <article class="terms-item">
             <h3 data-ar="3) حساب العميل والصلاحيات" data-en="3) Client account and roles">3) حساب العميل والصلاحيات</h3>
-            <p data-ar="حساب العميل مخصص للطلب والمتابعة وسداد العربون عند التفعيل. إدارة الكتالوج والخدمات وعروض الأسعار مخصصة لحساب المالك فقط. العميل مسؤول عن سرية بيانات الدخول وإبلاغنا فوراً عند الاشتباه بأي استخدام غير مصرّح." data-en="A client account is for requesting, tracking, and paying a deposit when enabled. Catalog, services, and quote management are owner-only. Clients are responsible for login confidentiality and must report suspected unauthorized use promptly.">حساب العميل مخصص للطلب والمتابعة وسداد العربون عند التفعيل. إدارة الكتالوج والخدمات وعروض الأسعار مخصصة لحساب المالك فقط. العميل مسؤول عن سرية بيانات الدخول وإبلاغنا فوراً عند الاشتباه بأي استخدام غير مصرّح.</p>
+            <p data-ar="حساب العميل مخصص للطلب والمتابعة، وسداد العربون عند تفعيل مسار الدفع الإلكتروني أو وفق طريقة متفق عليها في العرض المكتوب. إدارة الكتالوج والخدمات وعروض الأسعار مخصصة لحساب المالك فقط. العميل مسؤول عن سرية بيانات الدخول وإبلاغنا فوراً عند الاشتباه بأي استخدام غير مصرّح." data-en="A client account is for requesting and tracking, and for paying a deposit when online checkout is enabled or per the written quote. Catalog, services, and quote management are owner-only. Clients are responsible for login confidentiality and must report suspected unauthorized use promptly.">حساب العميل مخصص للطلب والمتابعة، وسداد العربون عند تفعيل مسار الدفع الإلكتروني أو وفق طريقة متفق عليها في العرض المكتوب. إدارة الكتالوج والخدمات وعروض الأسعار مخصصة لحساب المالك فقط. العميل مسؤول عن سرية بيانات الدخول وإبلاغنا فوراً عند الاشتباه بأي استخدام غير مصرّح.</p>
           </article>
           <article class="terms-item">
             <h3 data-ar="4) ملكية النظام والملكية الفكرية" data-en="4) System ownership and IP">4) ملكية النظام والملكية الفكرية</h3>

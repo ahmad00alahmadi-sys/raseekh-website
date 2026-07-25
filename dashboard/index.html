@@ -3482,7 +3482,8 @@ body.is-client .home-bar{
     holder.innerHTML = sales.map(s => {
       const methodLabel = s.method === 'card' ? t('بطاقة','Card') : (s.method === 'cash' ? t('نقداً','Cash') : escapeHtml(s.method || '—'));
       const sourceLabel = s.source === 'moyasar' || s.source === 'moyasar-return'
-        ? 'Moyasar'
+        ? t('بوابة دفع', 'Payment gateway')
+        : (s.source === 'manual' ? t('يدوي', 'Manual') : (s.source || t('مسجّل', 'Recorded')));
         : (s.source === 'admin-manual' ? t('يدوي','Manual') : (s.source === 'admin-pos' ? t('سعر ثابت','Fixed') : ''));
       const who = s.name || s.email || '';
       return `

@@ -1174,7 +1174,7 @@ body.pay-paused .pay-public-entry{display:none!important}
       <article class="now-item pay-public-entry">
         <span class="now-label" data-ar="سداد" data-en="Pay">سداد</span>
         <h3 data-ar="عربون آمن بعد تسجيل الدخول" data-en="Secure deposit after sign-in">عربون آمن بعد تسجيل الدخول</h3>
-        <p data-ar="بطاقة أو Apple Pay عبر Moyasar — للعملاء المسجّلين فقط." data-en="Card or Apple Pay via Moyasar — for signed-in clients only.">بطاقة أو Apple Pay عبر Moyasar — للعملاء المسجّلين فقط.</p>
+        <p data-ar="عبر بوابة دفع مرخّصة — للعملاء المسجّلين عند تفعيل السداد." data-en="Via a licensed payment gateway — for signed-in clients when checkout is enabled.">عبر بوابة دفع مرخّصة — للعملاء المسجّلين عند تفعيل السداد.</p>
       </article>
     </div>
     <div class="now-foot reveal">
@@ -1752,7 +1752,7 @@ body.pay-paused .pay-public-entry{display:none!important}
   <div class="wrap two-col">
     <div class="panel reveal">
       <h2 data-ar="سداد عربون أو دفعة" data-en="Pay a deposit">سداد عربون أو دفعة</h2>
-      <p data-ar="للعملاء المسجّلين — بطاقة أو Apple Pay عبر Moyasar." data-en="For registered clients — card or Apple Pay via Moyasar.">للعملاء المسجّلين — بطاقة أو Apple Pay عبر Moyasar.</p>
+      <p data-ar="للعملاء المسجّلين — عبر بوابة دفع مرخّصة عند تفعيل السداد." data-en="For registered clients — via a licensed payment gateway when checkout is enabled.">للعملاء المسجّلين — عبر بوابة دفع مرخّصة عند تفعيل السداد.</p>
       <div class="locked" id="payLockedMessage">
         <h3 id="payLockTitle" data-ar="سجّل دخولك أولاً" data-en="Please log in first">سجّل دخولك أولاً</h3>
         <p id="payLockText" data-ar="الدفع متاح بعد تسجيل الدخول أو إنشاء حساب." data-en="Payment unlocks after you sign in or create an account.">الدفع متاح بعد تسجيل الدخول أو إنشاء حساب.</p>
@@ -3095,7 +3095,7 @@ body.pay-paused .pay-public-entry{display:none!important}
     try {
       const result = await Auth.signIn({ email: document.getElementById('loginEmail').value.trim(), password: document.getElementById('loginPassword').value });
       authProvider = result.provider || null;
-      const stayForPay = authIntent === 'pay' || location.hash === '#pay';
+      const stayForPay = PUBLIC_PAY_ENABLED && (authIntent === 'pay' || location.hash === '#pay');
       msg.style.color = 'var(--ok)';
       msg.textContent = stayForPay
         ? (result.provider === 'local'
@@ -3145,7 +3145,7 @@ body.pay-paused .pay-public-entry{display:none!important}
         return;
       }
       authProvider = result.provider || null;
-      const stayForPay = authIntent === 'pay' || location.hash === '#pay';
+      const stayForPay = PUBLIC_PAY_ENABLED && (authIntent === 'pay' || location.hash === '#pay');
       msg.style.color = 'var(--ok)';
       msg.textContent = stayForPay
         ? (result.provider === 'local'
