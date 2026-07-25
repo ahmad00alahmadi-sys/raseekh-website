@@ -246,12 +246,15 @@ body.lang-en .product-row:hover{transform:translateX(3px)}
   position:fixed;inset:0;background:rgba(15,31,26,.55);backdrop-filter:blur(5px);
   z-index:200;display:none;align-items:center;justify-content:center;padding:20px;
 }
-.modal-overlay.open{display:flex}
-.modal{
-  background:var(--panel);border:1px solid var(--line);border-radius:16px;
-  width:100%;max-width:420px;padding:28px;position:relative;box-shadow:var(--shadow);
-  animation:rise .35s ease;
-}
+  .modal-overlay.open{display:flex}
+  .modal{
+    background:var(--panel);border:1px solid var(--line);border-radius:16px;
+    width:100%;max-width:420px;padding:28px;position:relative;box-shadow:var(--shadow);
+    animation:rise .35s ease;max-height:90vh;overflow-y:auto;
+  }
+  .btn:focus-visible,.lang-btn:focus-visible,.tab:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{
+    outline:3px solid rgba(31,138,106,.45);outline-offset:2px;
+  }
 .modal-close{
   position:absolute;top:14px;inset-inline-start:14px;border:none;background:none;
   font-size:1.3rem;color:var(--muted);cursor:pointer;line-height:1;
@@ -280,14 +283,16 @@ footer{
 }
 .beta b{color:#D4B45A}
 
-@media (max-width:900px){
+  @media (max-width:900px){
+  nav{flex-wrap:wrap}
   .nav-links{
     display:none;position:absolute;top:66px;inset-inline:16px;flex-direction:column;
     background:var(--panel);border:1px solid var(--line);padding:16px;border-radius:12px;
-    box-shadow:var(--shadow);align-items:stretch;gap:14px;
+    box-shadow:var(--shadow);align-items:stretch;gap:14px;z-index:90;
   }
   .nav-links.open{display:flex}
   .nav-toggle{display:flex}
+  .nav-actions{flex-wrap:wrap;justify-content:flex-end}
   .products-rail,.pos-split,.two-col{grid-template-columns:1fr}
   .process{grid-template-columns:1fr 1fr}
   .process-item{border-bottom:1px solid var(--line)}
@@ -307,7 +312,7 @@ footer{
 
 <header>
   <nav class="wrap">
-    <a class="logo" href="#" data-ar-html='را<em>سخ</em>' data-en-html='Ra<em>seekh</em>'>را<em>سخ</em></a>
+    <a class="logo" href="/" data-ar-html='را<em>سخ</em>' data-en-html='Ra<em>seekh</em>'>را<em>سخ</em></a>
     <div class="nav-links" id="navLinks">
       <a href="#products" data-ar="المنتجات" data-en="Products">المنتجات</a>
       <a href="#pos" data-ar="نقاط البيع" data-en="POS">نقاط البيع</a>
@@ -319,7 +324,7 @@ footer{
     <div class="nav-actions">
       <button class="lang-btn" id="langToggle" type="button">EN</button>
       <button class="btn btn-ghost" id="accountBtn" type="button" data-ar="تسجيل الدخول" data-en="Log in">تسجيل الدخول</button>
-      <a class="btn btn-primary" href="dashboard/" data-ar="لوحة التحكم" data-en="Dashboard">لوحة التحكم</a>
+      <a class="btn btn-primary" href="/dashboard/" id="navDashLink" data-ar="لوحة التحكم" data-en="Dashboard">لوحة التحكم</a>
       <button class="nav-toggle" id="navToggle" aria-label="menu" type="button"><span></span><span></span><span></span></button>
     </div>
   </nav>
@@ -392,7 +397,8 @@ footer{
     <h1 data-ar="أنظمة نقاط بيع ومنتجات تثبت أعمالكم وتنمو معها" data-en="POS and product systems that ground your business and grow with it">أنظمة نقاط بيع ومنتجات تثبت أعمالكم وتنمو معها</h1>
     <p data-ar="نبني لكم واجهة شركة واضحة، كاشير سريع، وإدارة منتجات ومخزون — عربي وإنجليزي — في نظام واحد." data-en="We build a clear company front, fast checkout, and product inventory — Arabic and English — in one system.">نبني لكم واجهة شركة واضحة، كاشير سريع، وإدارة منتجات ومخزون — عربي وإنجليزي — في نظام واحد.</p>
     <div class="hero-ctas">
-      <a class="btn btn-primary" href="dashboard/" data-ar="دخول نقطة البيع" data-en="Open POS">دخول نقطة البيع</a>
+      <a class="btn btn-primary" href="/dashboard/" data-ar="دخول نقطة البيع" data-en="Open POS">دخول نقطة البيع</a>
+      <a class="btn btn-ghost" href="/dashboard/?demo=1" data-ar="تجربة فورية" data-en="Try demo">تجربة فورية</a>
       <a class="btn btn-ghost" href="#products" data-ar="استعرض المنتجات" data-en="Browse products">استعرض المنتجات</a>
     </div>
   </div>
@@ -411,7 +417,7 @@ footer{
         <h3 data-ar="نظام نقاط البيع راسخ POS" data-en="Raseekh POS System">نظام نقاط البيع راسخ POS</h3>
         <p data-ar="كاشير سريع، فواتير فورية، إدارة منتجات وأصناف، وتقارير مبيعات يومية — يعمل على الجوال والكمبيوتر." data-en="Fast checkout, instant receipts, product catalog, and daily sales reports — on phone and desktop.">كاشير سريع، فواتير فورية، إدارة منتجات وأصناف، وتقارير مبيعات يومية — يعمل على الجوال والكمبيوتر.</p>
         <div style="margin-top:22px;position:relative">
-          <a class="btn btn-brass" href="dashboard/" data-ar="جرّب نقطة البيع" data-en="Try the POS">جرّب نقطة البيع</a>
+          <a class="btn btn-brass" href="/dashboard/?demo=1" data-ar="جرّب نقطة البيع" data-en="Try the POS">جرّب نقطة البيع</a>
         </div>
       </article>
       <div class="product-list">
@@ -505,7 +511,7 @@ footer{
         <div><strong data-ar="التركيز" data-en="Focus">التركيز</strong><p style="color:var(--muted);margin-top:4px" data-ar="كاشير، منتجات، مخزون، وفواتير يومية." data-en="Checkout, products, stock, and daily receipts.">كاشير، منتجات، مخزون، وفواتير يومية.</p></div>
         <div><strong data-ar="اللغات" data-en="Languages">اللغات</strong><p style="color:var(--muted);margin-top:4px" data-ar="عربي وإنجليزي في الموقع واللوحة معاً." data-en="Arabic and English across site and dashboard.">عربي وإنجليزي في الموقع واللوحة معاً.</p></div>
         <div><strong data-ar="التشغيل" data-en="Operations">التشغيل</strong><p style="color:var(--muted);margin-top:4px" data-ar="سجّل دخولك وابدأ البيع من أول يوم." data-en="Sign in and start selling from day one.">سجّل دخولك وابدأ البيع من أول يوم.</p></div>
-        <a class="btn btn-primary" href="dashboard/?demo=1" style="width:fit-content" data-ar="تجربة فورية بدون حساب" data-en="Try instantly without an account">تجربة فورية بدون حساب</a>
+        <a class="btn btn-primary" href="/dashboard/?demo=1" style="width:fit-content" data-ar="تجربة فورية بدون حساب" data-en="Try instantly without an account">تجربة فورية بدون حساب</a>
       </div>
     </div>
   </div>
@@ -589,7 +595,7 @@ footer{
       <p data-ar="صف احتياجكم وسنعود إليكم خلال يوم عمل." data-en="Tell us what you need — we reply within a business day.">صف احتياجكم وسنعود إليكم خلال يوم عمل.</p>
       <div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px">
         <a class="btn btn-ghost" href="mailto:ahmad00alahmadi@gmail.com">ahmad00alahmadi@gmail.com</a>
-        <a class="btn btn-ghost" href="https://wa.me/966500000000" target="_blank" rel="noopener" data-ar="واتساب" data-en="WhatsApp">واتساب</a>
+        <a class="btn btn-ghost" href="https://wa.me/?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D8%8C%20%D8%A3%D8%B1%D9%8A%D8%AF%20%D8%A7%D9%84%D8%A7%D8%B3%D8%AA%D9%81%D8%B3%D8%A7%D8%B1%20%D8%B9%D9%86%20%D8%A3%D9%86%D8%B8%D9%85%D8%A9%20%D8%B1%D8%A7%D8%B3%D8%AE" target="_blank" rel="noopener" data-ar="مشاركة واتساب" data-en="Share on WhatsApp">مشاركة واتساب</a>
       </div>
       <form class="form" id="contactForm">
         <input type="text" required data-ar-placeholder="الاسم الكامل" data-en-placeholder="Full name" placeholder="الاسم الكامل" id="contactName">
@@ -628,7 +634,7 @@ footer{
   <div class="wrap" data-ar="راسخ — أنظمة نقاط البيع والمنتجات © 2026" data-en="Raseekh — POS & Product Systems © 2026">راسخ — أنظمة نقاط البيع والمنتجات © 2026</div>
   <div class="footer-links">
     <a href="#terms" data-ar="الشروط والأحكام" data-en="Terms">الشروط والأحكام</a>
-    <a href="dashboard/" data-ar="لوحة التحكم" data-en="Dashboard">لوحة التحكم</a>
+    <a href="/dashboard/" data-ar="لوحة التحكم" data-en="Dashboard">لوحة التحكم</a>
   </div>
 </footer>
 
@@ -637,7 +643,7 @@ footer{
 (function(){
   const SUPABASE_URL = 'https://dupdkohciluepwrfuhod.supabase.co';
   const SUPABASE_ANON_KEY = 'sb_publishable_UVbMT7eplHHBNdZbOpLssw_UUEYTxFA';
-  const DASHBOARD_URL = 'dashboard/';
+  const DASHBOARD_URL = '/dashboard/';
   const MOYASAR_PUBLISHABLE_KEY = 'pk_live_U94Vg5e2kjJY557CU8qjnxv83shQJx6o125RrRey';
 
   let supabaseClient = null;
@@ -719,6 +725,7 @@ footer{
   });
   document.getElementById('modalCloseBtn').addEventListener('click', closeModal);
   authModal.addEventListener('click', e => { if (e.target === authModal) closeModal(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && authModal.classList.contains('open')) closeModal(); });
   document.getElementById('modalLoginTabBtn').addEventListener('click', () => showAuthPanel('login'));
   document.getElementById('modalRegisterTabBtn').addEventListener('click', () => showAuthPanel('register'));
   document.getElementById('forgotPasswordLink').addEventListener('click', () => showAuthPanel('forgot'));
@@ -816,7 +823,7 @@ footer{
     msg.textContent = t('جاري الإرسال...', 'Sending...');
     const email = document.getElementById('forgotEmail').value.trim();
     const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
-      redirectTo: window.location.origin + window.location.pathname
+      redirectTo: window.location.origin + '/#reset'
     });
     msg.style.color = error ? 'var(--danger)' : 'var(--ok)';
     msg.textContent = error
@@ -838,11 +845,15 @@ footer{
 
   if (supabaseClient) {
     supabaseClient.auth.onAuthStateChange((event, session) => {
-      if (event === 'PASSWORD_RECOVERY') { openModal(); showAuthPanel('reset'); }
+      if (event === 'PASSWORD_RECOVERY' || (event === 'SIGNED_IN' && location.hash === '#reset')) {
+        openModal(); showAuthPanel('reset');
+      }
       if (event === 'SIGNED_OUT') setPayUnlocked(null);
+      if (event === 'SIGNED_IN' && session?.user && location.hash !== '#reset') setPayUnlocked(session.user);
     });
     supabaseClient.auth.getSession().then(({ data: { session } }) => {
       if (session?.user) setPayUnlocked(session.user);
+      if (location.hash === '#reset') { openModal(); showAuthPanel('reset'); }
     });
   }
 

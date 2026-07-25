@@ -271,7 +271,7 @@ a{color:inherit;text-decoration:none}
 
     <div class="login-actions">
       <button class="btn btn-brass" type="button" id="demoBtn" data-ar="تجربة فورية" data-en="Try demo">تجربة فورية</button>
-      <a class="btn btn-ghost" href="../" data-ar="← الموقع الرئيسي" data-en="← Main site">← الموقع الرئيسي</a>
+      <a class="btn btn-ghost" href="/" data-ar="← الموقع الرئيسي" data-en="← Main site">← الموقع الرئيسي</a>
     </div>
   </div>
 </div>
@@ -304,7 +304,7 @@ a{color:inherit;text-decoration:none}
     <div class="top-actions" style="justify-content:flex-end;margin-bottom:8px">
       <div class="clock" id="dashClock">—</div>
       <button class="lang-btn" id="dashLangBtn" type="button">EN</button>
-      <a class="btn btn-ghost" href="../" data-ar="الموقع" data-en="Website">الموقع</a>
+      <a class="btn btn-ghost" href="/" data-ar="الموقع" data-en="Website">الموقع</a>
     </div>
 
     <div class="page active" id="page-overview">
@@ -487,6 +487,18 @@ a{color:inherit;text-decoration:none}
   try { if (window.supabase) supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); }
   catch (e) { console.warn(e); }
 
+  function setDemoFlag(on){
+    try {
+      if (on) sessionStorage.setItem(DEMO_FLAG, '1');
+      else sessionStorage.removeItem(DEMO_FLAG);
+      localStorage.removeItem(DEMO_FLAG);
+    } catch (_) {}
+  }
+  function hasDemoFlag(){
+    try { return sessionStorage.getItem(DEMO_FLAG) === '1'; }
+    catch (_) { return false; }
+  }
+
   let currentLang = localStorage.getItem('raseekh_lang') || 'ar';
   let currentUser = null;
   let isDemo = false;
@@ -604,7 +616,7 @@ a{color:inherit;text-decoration:none}
 
   function showLogin(){
     isDemo = false;
-    localStorage.removeItem(DEMO_FLAG);
+    setDemoFlag(false);
     document.getElementById('loginView').classList.remove('hidden');
     document.getElementById('dashboardView').classList.remove('active');
   }
@@ -612,8 +624,7 @@ a{color:inherit;text-decoration:none}
   function showDashboard(user, demo){
     currentUser = user;
     isDemo = !!demo;
-    if (isDemo) localStorage.setItem(DEMO_FLAG, '1');
-    else localStorage.removeItem(DEMO_FLAG);
+    setDemoFlag(isDemo);
 
     document.getElementById('loginView').classList.add('hidden');
     document.getElementById('dashboardView').classList.add('active');
@@ -736,7 +747,7 @@ a{color:inherit;text-decoration:none}
     const email = document.getElementById('dashForgotEmail').value.trim();
     msg.textContent = t('جاري الإرسال...', 'Sending...');
     const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
-      redirectTo: window.location.origin + '/'
+      redirectTo: window.location.origin + '/#reset'
     });
     msg.style.color = error ? 'var(--danger)' : 'var(--ok)';
     msg.textContent = error
@@ -793,7 +804,7 @@ a{color:inherit;text-decoration:none}
         </div>
         <div style="display:flex;gap:8px;align-items:center">
           <strong>${money(s.total)}</strong>
-          <button class="btn btn-ghost" style="padding:6px 10px" data-view-sale="${s.id}">🧾</button>
+          <button class="btn btn-ghost" style="padding:6px 10px;font-size:.78rem" data-view-sale="${s.id}">${t('إيصال','Receipt')}</button>
         </div>
       </div>
     `).join('');
@@ -1056,7 +1067,7 @@ a{color:inherit;text-decoration:none}
         </div>
         <div style="display:flex;gap:8px;align-items:center">
           <strong>${money(s.total)}</strong>
-          <button class="btn btn-ghost" style="padding:6px 10px" data-view-sale="${s.id}">🧾</button>
+          <button class="btn btn-ghost" style="padding:6px 10px;font-size:.78rem" data-view-sale="${s.id}">${t('إيصال','Receipt')}</button>
         </div>
       </div>
     `).join('');
@@ -1122,22 +1133,45 @@ a{color:inherit;text-decoration:none}
 
   applyLang(currentLang);
 
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    document.getElementById('productModal').classList.remove('open');
+    document.getElementById('receiptModal').classList.remove('open');
+  });
+
   (async function init(){
     const params = new URLSearchParams(window.location.search);
-    if (params.get('demo') === '1' || localStorage.getItem(DEMO_FLAG) === '1') {
+    const wantDemo = params.get('demo') === '1';
+
+    function bindAuthListener(){
+      if (!supabaseClient) return;
+      supabaseClient.auth.onAuthStateChange((event, session) => {
+        if (event === 'SIGNED_OUT' && !isDemo) showLogin();
+        if (event === 'SIGNED_IN' && session?.user) showDashboard(session.user, false);
+      });
+    }
+
+    // Real account always wins over sticky demo, unless ?demo=1 was requested.
+    if (supabaseClient && !wantDemo) {
+      try {
+        const { data } = await supabaseClient.auth.getSession();
+        if (data?.session?.user) {
+          setDemoFlag(false);
+          showDashboard(data.session.user, false);
+          bindAuthListener();
+          return;
+        }
+      } catch (_) {}
+    }
+
+    if (wantDemo || hasDemoFlag()) {
       enterDemo();
+      bindAuthListener();
       return;
     }
-    if (!supabaseClient) { showLogin(); return; }
-    try {
-      const { data } = await supabaseClient.auth.getSession();
-      if (data?.session?.user) showDashboard(data.session.user, false);
-      else showLogin();
-    } catch (_) { showLogin(); }
-    supabaseClient.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_OUT' && !isDemo) showLogin();
-      if (event === 'SIGNED_IN' && session?.user && !currentUser) showDashboard(session.user, false);
-    });
+
+    showLogin();
+    bindAuthListener();
   })();
 })();
 </script>
