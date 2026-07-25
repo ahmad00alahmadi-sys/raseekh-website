@@ -228,6 +228,11 @@ nav{display:flex;align-items:center;justify-content:space-between;gap:16px;paddi
 }
 .nav-links a:hover::after,.nav-links a.is-active::after{transform:scaleX(1);transform-origin:left}
 .nav-actions{display:flex;align-items:center;gap:8px}
+.nav-prefs{display:inline-flex;align-items:center;gap:6px;flex:0 0 auto}
+.nav-prefs .lang-btn,.nav-prefs .theme-btn{
+  min-width:44px;padding:10px 12px;border-radius:var(--radius);border:1.5px solid var(--line);
+  background:var(--ghost-bg,rgba(247,249,252,.8));color:var(--ink);font-weight:700;cursor:pointer;font-size:.78rem;
+}
 .btn{
   display:inline-flex;align-items:center;justify-content:center;gap:8px;
   border:none;border-radius:var(--radius);padding:12px 20px;cursor:pointer;
@@ -846,8 +851,10 @@ body.pay-paused .pay-public-entry{display:none!important}
       <a href="#pay" class="pay-public-entry" data-ar="سداد" data-en="Pay">سداد</a>
     </div>
     <div class="nav-actions">
-      <button class="theme-btn" type="button" data-theme-toggle data-ar="ليلي" data-en="Night" aria-pressed="true" aria-label="تفعيل النظام الليلي">ليلي</button>
-      <button class="lang-btn" id="langToggle" type="button">EN</button>
+      <div class="nav-prefs" role="group" data-ar-aria="اللغة والمظهر" data-en-aria="Language and theme" aria-label="اللغة والمظهر">
+        <button class="lang-btn" id="langToggle" type="button">EN</button>
+        <button class="lang-btn theme-btn" type="button" data-theme-toggle data-ar="ليلي" data-en="Night" aria-pressed="true" aria-label="تفعيل النظام الليلي">ليلي</button>
+      </div>
       <button class="btn btn-primary" id="accountBtn" type="button" data-ar="تسجيل الدخول" data-en="Log in">تسجيل الدخول</button>
       <button class="nav-toggle" id="navToggle" type="button" aria-controls="navLinks" aria-expanded="false" data-ar-aria="القائمة" data-en-aria="Menu" aria-label="القائمة"><span></span><span></span><span></span></button>
     </div>
