@@ -2,8 +2,9 @@
 <html lang="ar" dir="rtl">
 <head>
 <script>
-(function(){try{var t=localStorage.getItem("raseekh_theme");document.documentElement.setAttribute("data-theme",t==="off"||t==="base"||t==="white"?"off":"soft");}catch(e){document.documentElement.setAttribute("data-theme","soft");}})();
+(function(){try{var t=localStorage.getItem("raseekh_theme");document.documentElement.setAttribute("data-theme",t==="night"||t==="dark"?"night":"soft");}catch(e){document.documentElement.setAttribute("data-theme","soft");}})();
 </script>
+
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,8 +19,8 @@
 <link rel="icon" href="/icon.svg" type="image/svg+xml">
 <link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;500;600;700&family=Tajawal:wght@500;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/shared-page.css">
-<link rel="stylesheet" href="/theme.css?v=80">
-<script src="/theme.js?v=80" defer></script>
+<link rel="stylesheet" href="/theme.css?v=81">
+<script src="/theme.js?v=81" defer></script>
 <script src="/shared-page.js" defer></script>
 <script type="application/ld+json">
 {
@@ -49,10 +50,7 @@
       <div class="actions">
       <div class="nav-prefs" role="group" data-ar-aria="اللغة والمظهر" data-en-aria="Language and look" aria-label="اللغة والمظهر">
         <button class="lang-btn" id="langToggle" type="button">EN</button>
-        <div class="theme-switch" role="group" data-ar-aria="ناعم أو إيقاف" data-en-aria="Soft or Off" aria-label="ناعم أو إيقاف">
-          <button type="button" data-theme-set="soft" class="is-active" aria-pressed="true" data-ar-aria="المظهر الناعم" data-en-aria="Soft look" aria-label="المظهر الناعم"><span data-theme-label data-ar="ناعم" data-en="Soft">ناعم</span></button>
-          <button type="button" data-theme-set="off" aria-pressed="false" data-ar-aria="وضع الإيقاف" data-en-aria="Off mode" aria-label="وضع الإيقاف"><span data-theme-label data-ar="إيقاف" data-en="Off">إيقاف</span></button>
-        </div>
+        <button type="button" class="lang-btn theme-icon-btn" data-theme-toggle aria-pressed="false" data-ar-aria="تبديل المظهر" data-en-aria="Switch look" aria-label="تبديل المظهر" title="تبديل المظهر"></button>
       </div>
         <a class="btn btn-ghost" href="/industries/" data-ar="القطاعات" data-en="Industries">القطاعات</a>
         <a class="btn btn-ghost" href="/#contact" data-ar="اطلب عرض سعر" data-en="Request a quote">اطلب عرض سعر</a>

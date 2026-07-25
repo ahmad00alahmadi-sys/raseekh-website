@@ -2,8 +2,9 @@
 <html lang="ar" dir="rtl" id="htmlRoot">
 <head>
 <script>
-(function(){try{var t=localStorage.getItem("raseekh_theme");document.documentElement.setAttribute("data-theme",t==="off"||t==="base"||t==="white"?"off":"soft");}catch(e){document.documentElement.setAttribute("data-theme","soft");}})();
+(function(){try{var t=localStorage.getItem("raseekh_theme");document.documentElement.setAttribute("data-theme",t==="night"||t==="dark"?"night":"soft");}catch(e){document.documentElement.setAttribute("data-theme","soft");}})();
 </script>
+
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -21,7 +22,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;500;600;700&family=Tajawal:wght@500;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="/terms.js"></script>
-<script src="/theme.js?v=80"></script>
+<script src="/theme.js?v=81"></script>
 <style>
 :root{
   --ink:#10233A;--navy:#16324F;--harbor:#2A6F7A;--copper:#C45C26;--sand:#E8A05A;
@@ -54,11 +55,10 @@ body.lang-en .logo{font-family:'Space Grotesk',sans-serif}
 .logo em{font-style:normal;color:var(--copper)}
 .actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .nav-prefs{display:inline-flex;align-items:center;gap:6px}
-.theme-switch{display:inline-flex;align-items:stretch;border:1.5px solid var(--line);border-radius:999px;background:var(--ghost-bg,rgba(247,249,252,.88));overflow:hidden;padding:3px;gap:2px}
-.theme-switch [data-theme-set]{border:0;background:transparent;color:var(--muted);font:inherit;font-size:.72rem;font-weight:700;padding:6px 11px;border-radius:999px;cursor:pointer}
-.theme-switch [data-theme-set].is-active,.theme-switch [data-theme-set][aria-pressed="true"]{background:var(--panel);color:var(--harbor);box-shadow:0 1px 0 rgba(16,35,58,.06)}
-.theme-switch [data-theme-set="soft"].is-active{color:var(--copper)}
-.theme-switch [data-theme-set="off"].is-active{color:var(--muted)}
+.theme-icon-btn{width:40px;height:40px;padding:0;display:inline-grid;place-items:center;border:1.5px solid var(--line);border-radius:999px;background:var(--ghost-bg,rgba(247,249,252,.88));color:var(--ink);cursor:pointer;min-width:40px}
+.theme-icon-btn:hover{border-color:rgba(196,92,38,.45);color:var(--copper)}
+.theme-icon-btn .theme-ico{width:18px;height:18px;display:block}
+
 
 .btn{
   display:inline-flex;align-items:center;justify-content:center;
@@ -88,7 +88,7 @@ body.lang-en .logo{font-family:'Space Grotesk',sans-serif}
 h1,h2,h3{font-family:'Tajawal',sans-serif}
 body.lang-en h1,body.lang-en h2,body.lang-en h3{font-family:'Space Grotesk',sans-serif}
 </style>
-  <link rel="stylesheet" href="/theme.css?v=80">
+  <link rel="stylesheet" href="/theme.css?v=81">
 </head>
 <body>
   <div class="wrap">
@@ -97,10 +97,7 @@ body.lang-en h1,body.lang-en h2,body.lang-en h3{font-family:'Space Grotesk',sans
       <div class="actions">
       <div class="nav-prefs" role="group" data-ar-aria="اللغة والمظهر" data-en-aria="Language and look" aria-label="اللغة والمظهر">
         <button class="lang-btn" id="langToggle" type="button">EN</button>
-        <div class="theme-switch" role="group" data-ar-aria="ناعم أو إيقاف" data-en-aria="Soft or Off" aria-label="ناعم أو إيقاف">
-          <button type="button" data-theme-set="soft" class="is-active" aria-pressed="true" data-ar-aria="المظهر الناعم" data-en-aria="Soft look" aria-label="المظهر الناعم"><span data-theme-label data-ar="ناعم" data-en="Soft">ناعم</span></button>
-          <button type="button" data-theme-set="off" aria-pressed="false" data-ar-aria="وضع الإيقاف" data-en-aria="Off mode" aria-label="وضع الإيقاف"><span data-theme-label data-ar="إيقاف" data-en="Off">إيقاف</span></button>
-        </div>
+        <button type="button" class="lang-btn theme-icon-btn" data-theme-toggle aria-pressed="false" data-ar-aria="تبديل المظهر" data-en-aria="Switch look" aria-label="تبديل المظهر" title="تبديل المظهر"></button>
       </div>
         <a class="btn btn-ghost" href="/privacy/" data-ar="الخصوصية" data-en="Privacy">الخصوصية</a>
         <a class="btn btn-ghost" href="/security/" data-ar="الأمان" data-en="Security">الأمان</a>

@@ -1,4 +1,4 @@
-/* Raseekh: soft (default) + off mode. No sun/moon naming. */
+/* Raseekh: soft (default) ↔ night — one icon toggle, no text labels. */
 :root,
 html[data-theme="soft"]{
   --ink:#10233A;
@@ -29,20 +29,32 @@ html[data-theme="soft"]{
   color-scheme:light;
 }
 
-/* Off mode = atmosphere off, flat white surfaces */
-html[data-theme="off"]{
-  --bg:#FFFFFF;
-  --panel:#FFFFFF;
-  --mist:#F2F4F7;
-  --line:#E4E8EE;
-  --shadow:0 10px 28px -24px rgba(16,35,58,.22);
-  --header-bg:rgba(255,255,255,.94);
-  --surface-tint:#FAFBFC;
-  --ghost-bg:rgba(247,249,252,.75);
-  --elevated:#FFFFFF;
-  --chip:#F2F4F7;
-  --table-head:#F7F9FC;
-  --hairline:rgba(16,35,58,.08);
+html[data-theme="night"]{
+  --ink:#E8EEF6;
+  --navy:#C5D4E4;
+  --harbor:#5BB8C4;
+  --copper:#E8894F;
+  --sand:#E8A05A;
+  --bg:#0B1219;
+  --panel:#141C26;
+  --mist:#1A2430;
+  --line:#2C3948;
+  --muted:#9AABC0;
+  --danger:#F97066;
+  --ok:#3DDC97;
+  --shadow:0 20px 44px -22px rgba(0,0,0,.7);
+  --header-bg:rgba(11,18,25,.94);
+  --surface-tint:#0F1620;
+  --ghost-bg:rgba(26,36,48,.85);
+  --elevated:#1A2430;
+  --chip:#1F2B38;
+  --table-head:#182230;
+  --forest:var(--navy);
+  --leaf:var(--harbor);
+  --brass:var(--copper);
+  --on-dark:#F4F7FA;
+  --hairline:rgba(255,255,255,.08);
+  color-scheme:dark;
 }
 
 html[data-theme="soft"] body::before,
@@ -55,11 +67,18 @@ html[data-theme="soft"] body::before,
 html[data-theme="soft"] body::after,
 :root body::after{opacity:.18 !important}
 
-html[data-theme="off"] body::before{
+html[data-theme="night"] body::before{
   background:
-    linear-gradient(180deg,#FFFFFF 0%, #FAFBFC 55%, #FFFFFF 100%) !important;
+    radial-gradient(ellipse 75% 48% at 100% 0%, rgba(232,137,79,.14), transparent 55%),
+    radial-gradient(ellipse 65% 42% at 0% 12%, rgba(91,184,196,.12), transparent 50%),
+    linear-gradient(180deg,#070C12 0%, var(--bg) 42%, var(--surface-tint) 100%) !important;
 }
-html[data-theme="off"] body::after{opacity:.06 !important}
+html[data-theme="night"] body::after{
+  opacity:.14 !important;
+  background-image:
+    linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px) !important;
+}
 
 .nav-prefs{
   display:inline-flex;
@@ -67,46 +86,71 @@ html[data-theme="off"] body::after{opacity:.06 !important}
   gap:6px;
   flex:0 0 auto;
 }
-.theme-switch{
-  display:inline-flex;
-  align-items:stretch;
+
+/* Single icon control — no text */
+.theme-icon-btn{
+  width:40px;
+  height:40px;
+  padding:0;
+  display:inline-grid;
+  place-items:center;
   border:1.5px solid var(--line);
   border-radius:999px;
   background:var(--ghost-bg);
-  overflow:hidden;
-  padding:3px;
-  gap:2px;
-}
-.theme-switch [data-theme-set]{
-  border:0;
-  background:transparent;
-  color:var(--muted);
-  font:inherit;
-  font-size:.72rem;
-  font-weight:700;
-  padding:6px 11px;
-  border-radius:999px;
+  color:var(--ink);
   cursor:pointer;
-  min-width:0;
-  line-height:1.2;
 }
-.theme-switch [data-theme-set]:hover{color:var(--ink)}
-.theme-switch [data-theme-set].is-active,
-.theme-switch [data-theme-set][aria-pressed="true"]{
-  background:var(--panel);
-  color:var(--harbor);
-  box-shadow:0 1px 0 rgba(16,35,58,.06);
-}
-.theme-switch [data-theme-set="soft"].is-active{
+.theme-icon-btn:hover{
+  border-color:rgba(196,92,38,.45);
   color:var(--copper);
 }
-.theme-switch [data-theme-set="off"].is-active{
-  color:var(--muted);
+.theme-icon-btn[aria-pressed="true"]{
+  border-color:rgba(91,184,196,.5);
+  color:var(--harbor);
+}
+.theme-ico{
+  width:18px;
+  height:18px;
+  display:block;
 }
 
-html[data-theme="off"] .theme-switch{
-  background:rgba(242,244,247,.9);
+/* Night surface remaps for common hardcoded lights */
+html[data-theme="night"] input,
+html[data-theme="night"] textarea,
+html[data-theme="night"] select{
+  background:var(--mist) !important;
+  color:var(--ink) !important;
+  border-color:var(--line) !important;
 }
-html[data-theme="off"] .theme-switch [data-theme-set].is-active{
-  background:#fff;
+html[data-theme="night"] .btn-ghost,
+html[data-theme="night"] .lang-btn,
+html[data-theme="night"] .theme-icon-btn{
+  background:var(--ghost-bg) !important;
+  border-color:var(--line) !important;
+  color:var(--ink) !important;
+}
+html[data-theme="night"] .panel,
+html[data-theme="night"] .card,
+html[data-theme="night"] .login-card,
+html[data-theme="night"] .stat,
+html[data-theme="night"] .faq-item,
+html[data-theme="night"] .service-block{
+  background:var(--panel) !important;
+  border-color:var(--line) !important;
+}
+html[data-theme="night"] header,
+html[data-theme="night"] .site-header{
+  background:var(--header-bg) !important;
+  border-bottom-color:var(--hairline) !important;
+}
+html[data-theme="night"] .logo,
+html[data-theme="night"] h1,
+html[data-theme="night"] h2,
+html[data-theme="night"] h3{color:var(--ink)}
+
+html,body,header,.panel,.card,.login-card,.btn-ghost,.lang-btn,.theme-icon-btn,input,textarea,select{
+  transition:background-color .2s ease, color .2s ease, border-color .2s ease, box-shadow .2s ease;
+}
+@media (prefers-reduced-motion: reduce){
+  html,body,header,.panel,.card,.login-card,.btn-ghost,.lang-btn,.theme-icon-btn,input,textarea,select{transition:none}
 }
