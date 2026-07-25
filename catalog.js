@@ -779,24 +779,109 @@
     }
   }
 
+  const REQUEST_TYPE_META = {
+    maintenance: {
+      ar: 'صيانة مواقع',
+      en: 'Website maintenance',
+      summary_ar: 'متابعة دورية لموقعكم الحالي بدون إعادة بناء.',
+      summary_en: 'Ongoing care for your current site — no rebuild required.',
+      features_ar: ['تحديثات وإصلاح أعطال', 'تحسين السرعة والأداء', 'متابعة أمان ونسخ احتياطي', 'عرض شهري حسب حجم الموقع'],
+      features_en: ['Updates and bug fixes', 'Speed and performance tuning', 'Security checks and backups', 'Monthly quote by site size']
+    },
+    'web-dev': {
+      ar: 'تطوير مواقع',
+      en: 'Website development',
+      summary_ar: 'موقع جديد جاهز للتشغيل بالعربية والإنجليزية.',
+      summary_en: 'A new AR/EN site ready to launch.',
+      features_ar: ['مواقع شركات ومتاجر', 'تصميم متجاوب للجوال', 'نماذج تواصل وربط أساسي', 'التسعير حسب نطاق الصفحات'],
+      features_en: ['Company and store sites', 'Mobile-responsive layout', 'Contact forms and basic wiring', 'Priced by page scope']
+    },
+    programming: {
+      ar: 'خدمات البرمجة / تعديل كود',
+      en: 'Programming / code changes',
+      summary_ar: 'تعديل عملي على مشروعكم الحالي بعد مراجعة الكود.',
+      summary_en: 'Practical changes on your current project after a code review.',
+      features_ar: ['إصلاح أخطاء وإضافة مزايا', 'تحسين أداء الكود', 'مراجعة المشروع قبل التنفيذ', 'نطاق تسليم واضح'],
+      features_en: ['Bug fixes and new features', 'Code performance improvements', 'Review before implementation', 'Clear delivery scope']
+    },
+    inventory: {
+      ar: 'تطبيق مخزون',
+      en: 'Inventory app',
+      summary_ar: 'تطبيق لإدارة المنتجات والكميات والحركات حسب نشاطكم.',
+      summary_en: 'Software for products, quantities, and stock movements.',
+      features_ar: ['منتجات وكميات وحركات مخزون', 'تنبيهات نقص المخزون', 'تقارير مبسطة للتشغيل', 'مخصص لسير عمل منشأتكم'],
+      features_en: ['Products, quantities, and movements', 'Low-stock alerts', 'Simple ops reports', 'Scoped to your workflow']
+    },
+    business: {
+      ar: 'حلول للشركات',
+      en: 'Business solutions',
+      summary_ar: 'باقة للمنشآت: تشغيل ومخزون وصلاحيات حسب الهيكل.',
+      summary_en: 'For companies: ops, inventory, and roles by structure.',
+      features_ar: ['موقع أو نظام تشغيلي', 'مخزون وصلاحيات أقسام', 'تقارير للإدارة', 'عرض سعر بعد فهم النشاط'],
+      features_en: ['Site or operations system', 'Inventory and department roles', 'Management reports', 'Quote after we understand the business']
+    },
+    systems: {
+      ar: 'برمجة أنظمة ولوحات',
+      en: 'Systems & dashboards',
+      summary_ar: 'نظام إدارة ولوحة متابعة بصلاحيات واضحة.',
+      summary_en: 'Management system and dashboard with clear roles.',
+      features_ar: ['إدارة وعملاء وتقارير', 'صلاحيات مستخدمين', 'لوحات متابعة يومية', 'يبنى حسب نشاطكم'],
+      features_en: ['Ops, CRM, and reports', 'User permissions', 'Daily monitoring dashboards', 'Built around your activity']
+    },
+    api: {
+      ar: 'ربط API وأنظمة',
+      en: 'API & integrations',
+      summary_ar: 'ربط الدفع والرسائل والأنظمة الخارجية بمشروعكم.',
+      summary_en: 'Connect payments, messaging, and external systems.',
+      features_ar: ['دفع ورسائل وإشعارات', 'مزامنة بيانات بين الأنظمة', 'معالجة أخطاء وإعادة محاولة', 'التسعير حسب عدد الربط والتعقيد'],
+      features_en: ['Payments, messaging, and alerts', 'Data sync between systems', 'Error handling and retries', 'Priced by integration complexity']
+    },
+    system: {
+      ar: 'نظام كامل',
+      en: 'Complete system',
+      summary_ar: 'بناء نظام متكامل من الدراسة حتى التشغيل.',
+      summary_en: 'Full system from discovery through go-live.',
+      features_ar: ['تحليل احتياج ونطاق واضح', 'تطوير على مراحل', 'اختبار وتسليم تشغيلي', 'عقد ومتطلبات متفق عليها'],
+      features_en: ['Discovery and clear scope', 'Phased development', 'Testing and operational handoff', 'Agreed contract and requirements']
+    },
+    hardware: {
+      ar: 'أجهزة (الرياض فقط)',
+      en: 'Hardware (Riyadh only)',
+      summary_ar: 'شاشات وتخزين وملحقات — متوفر حالياً داخل الرياض.',
+      summary_en: 'Monitors, storage, and accessories — Riyadh only for now.',
+      features_ar: ['شاشات وتخزين وملحقات', 'عرض حسب التوفر', 'توصيل داخل الرياض فقط', 'ليس بديلاً عن الخدمات البرمجية'],
+      features_en: ['Monitors, storage, and accessories', 'Quote by availability', 'Delivery inside Riyadh only', 'Not a substitute for software services']
+    }
+  };
+  REQUEST_TYPE_META.electronics = REQUEST_TYPE_META.hardware;
+
+  function requestTypeMeta(type) {
+    const key = type === 'electronics' ? 'hardware' : type;
+    return REQUEST_TYPE_META[key] || null;
+  }
+
   function requestTypeLabel(type, lang) {
-    const map = {
-      electronics: { ar: 'أجهزة (الرياض فقط)', en: 'Hardware (Riyadh only)' },
-      hardware: { ar: 'أجهزة (الرياض فقط)', en: 'Hardware (Riyadh only)' },
-      maintenance: { ar: 'صيانة مواقع', en: 'Website maintenance' },
-      'web-dev': { ar: 'تطوير مواقع', en: 'Website development' },
-      programming: { ar: 'خدمات البرمجة', en: 'Programming' },
-      inventory: { ar: 'تطبيق مخزون', en: 'Inventory app' },
-      business: { ar: 'حلول للشركات', en: 'Business solutions' },
-      systems: { ar: 'أنظمة ولوحات', en: 'Systems & dashboards' },
-      api: { ar: 'ربط API', en: 'API & integrations' },
-      system: { ar: 'نظام كامل', en: 'Complete system' },
+    const meta = requestTypeMeta(type);
+    if (meta) return lang === 'en' ? meta.en : meta.ar;
+    const fallback = {
       product: { ar: 'منتج', en: 'Product' },
       suggestion: { ar: 'اقتراح', en: 'Suggestion' },
       site: { ar: 'طلب موقع', en: 'Website request' }
     };
-    const row = map[type] || { ar: type || 'طلب', en: type || 'Request' };
+    const row = fallback[type] || { ar: type || 'طلب', en: type || 'Request' };
     return lang === 'en' ? row.en : row.ar;
+  }
+
+  function requestTypeFeatures(type, lang) {
+    const meta = requestTypeMeta(type);
+    if (!meta) return [];
+    return lang === 'en' ? (meta.features_en || []).slice() : (meta.features_ar || []).slice();
+  }
+
+  function requestTypeSummary(type, lang) {
+    const meta = requestTypeMeta(type);
+    if (!meta) return '';
+    return lang === 'en' ? (meta.summary_en || '') : (meta.summary_ar || '');
   }
 
   const PRODUCT_REQUEST_TYPES = {
@@ -822,17 +907,19 @@
   }
 
   function requestTypeOptions() {
-    return [
-      { value: 'maintenance', ar: 'صيانة مواقع', en: 'Website maintenance' },
-      { value: 'web-dev', ar: 'تطوير مواقع', en: 'Website development' },
-      { value: 'programming', ar: 'خدمات البرمجة / تعديل كود', en: 'Programming / code changes' },
-      { value: 'inventory', ar: 'تطبيق مخزون', en: 'Inventory app' },
-      { value: 'business', ar: 'حلول للشركات', en: 'Business solutions' },
-      { value: 'systems', ar: 'برمجة أنظمة ولوحات', en: 'Systems & dashboards' },
-      { value: 'api', ar: 'ربط API وأنظمة', en: 'API & integrations' },
-      { value: 'system', ar: 'نظام كامل', en: 'Complete system' },
-      { value: 'hardware', ar: 'أجهزة (الرياض فقط)', en: 'Hardware (Riyadh only)' }
-    ];
+    return ['maintenance', 'web-dev', 'programming', 'inventory', 'business', 'systems', 'api', 'system', 'hardware']
+      .map((value) => {
+        const meta = REQUEST_TYPE_META[value];
+        return {
+          value: value,
+          ar: meta.ar,
+          en: meta.en,
+          summary_ar: meta.summary_ar,
+          summary_en: meta.summary_en,
+          features_ar: (meta.features_ar || []).slice(),
+          features_en: (meta.features_en || []).slice()
+        };
+      });
   }
 
   function getPaymentRecords() {
@@ -1411,6 +1498,9 @@
     probeCloudRequests,
     probePublicNotifyCloud,
     requestTypeLabel,
+    requestTypeFeatures,
+    requestTypeSummary,
+    requestTypeMeta,
     requestTypeForProduct,
     requestTypeOptions,
     PAYMENTS_KEY,

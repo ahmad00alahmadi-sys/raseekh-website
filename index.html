@@ -351,6 +351,19 @@ section{padding:100px 0;position:relative;z-index:1}
 .service-block.featured .service-list li{color:rgba(244,247,250,.86)}
 .service-block.featured .service-list li::before{background:var(--sand)}
 
+.type-features{
+  margin-top:10px;padding:14px 16px;border-radius:12px;
+  background:linear-gradient(160deg,rgba(22,50,79,.06),rgba(184,115,51,.08));
+  border:1px solid rgba(22,50,79,.12);
+}
+.type-features[hidden]{display:none!important}
+.type-features-title{font-size:.78rem;font-weight:800;color:var(--harbor);letter-spacing:.04em;margin-bottom:6px}
+.type-features-summary{font-size:.9rem;color:var(--ink);margin:0 0 10px;line-height:1.45}
+.type-features .service-list{margin-top:0;gap:6px}
+.type-features .service-list li{font-size:.86rem;color:var(--muted)}
+.product-item .service-list{margin-top:8px;gap:5px;flex:1}
+.product-item .service-list li{font-size:.82rem}
+
 .products-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
 .product-item{
   background:rgba(247,249,252,.88);border:1.5px solid var(--line);border-radius:var(--radius);
@@ -716,15 +729,33 @@ body.terms-locked,body.auth-locked{overflow:hidden}
     <div class="services-grid reveal stagger">
       <article class="service-block">
         <h3 data-ar="صيانة المواقع" data-en="Website maintenance">صيانة المواقع</h3>
-        <p data-ar="إصلاح، تحديث، وأمان بشكل دوري." data-en="Fixes, updates, and security on a schedule.">إصلاح، تحديث، وأمان بشكل دوري.</p>
+        <p data-ar="متابعة دورية لموقعكم الحالي بدون إعادة بناء." data-en="Ongoing care for your current site — no rebuild required.">متابعة دورية لموقعكم الحالي بدون إعادة بناء.</p>
+        <ul class="service-list">
+          <li data-ar="تحديثات وإصلاح أعطال" data-en="Updates and bug fixes">تحديثات وإصلاح أعطال</li>
+          <li data-ar="تحسين السرعة والأداء" data-en="Speed and performance tuning">تحسين السرعة والأداء</li>
+          <li data-ar="متابعة أمان ونسخ احتياطي" data-en="Security checks and backups">متابعة أمان ونسخ احتياطي</li>
+          <li data-ar="عرض شهري حسب حجم الموقع" data-en="Monthly quote by site size">عرض شهري حسب حجم الموقع</li>
+        </ul>
       </article>
       <a class="service-block featured" href="#programming" style="text-decoration:none;color:inherit;display:block">
         <h3 data-ar="خدمات البرمجة" data-en="Programming services">خدمات البرمجة</h3>
-        <p data-ar="مواقع، تعديلات، وأنظمة حسب طلبكم." data-en="Sites, edits, and systems built to request.">مواقع، تعديلات، وأنظمة حسب طلبكم.</p>
+        <p data-ar="تعديل عملي على مشروعكم أو بناء خدمة جديدة حسب الطلب." data-en="Practical edits on your project or a new build to request.">تعديل عملي على مشروعكم أو بناء خدمة جديدة حسب الطلب.</p>
+        <ul class="service-list">
+          <li data-ar="مواقع وتعديلات كود" data-en="Sites and code changes">مواقع وتعديلات كود</li>
+          <li data-ar="تطبيقات مخزون وأنظمة" data-en="Inventory apps and systems">تطبيقات مخزون وأنظمة</li>
+          <li data-ar="ربط API ولوحات متابعة" data-en="API wiring and dashboards">ربط API ولوحات متابعة</li>
+          <li data-ar="نطاق تسليم واضح قبل البدء" data-en="Clear scope before work starts">نطاق تسليم واضح قبل البدء</li>
+        </ul>
       </a>
       <a class="service-block" href="#contact" data-quote-type="business" data-quote-msg-ar="أرغب بحلول للشركات — موقع/نظام/مخزون حسب نشاط منشأتنا." data-quote-msg-en="I want business solutions — site/system/inventory for our company." style="text-decoration:none;color:inherit;display:block">
         <h3 data-ar="حلول للشركات" data-en="For companies">حلول للشركات</h3>
-        <p data-ar="أنظمة ومخزون وصلاحيات أقسام حسب نشاط المنشأة." data-en="Systems, inventory, and department roles for your company.">أنظمة ومخزون وصلاحيات أقسام حسب نشاط المنشأة.</p>
+        <p data-ar="باقة للمنشآت: تشغيل ومخزون وصلاحيات حسب الهيكل." data-en="For companies: ops, inventory, and roles by structure.">باقة للمنشآت: تشغيل ومخزون وصلاحيات حسب الهيكل.</p>
+        <ul class="service-list">
+          <li data-ar="موقع أو نظام تشغيلي" data-en="Site or operations system">موقع أو نظام تشغيلي</li>
+          <li data-ar="مخزون وصلاحيات أقسام" data-en="Inventory and department roles">مخزون وصلاحيات أقسام</li>
+          <li data-ar="تقارير للإدارة" data-en="Management reports">تقارير للإدارة</li>
+          <li data-ar="عرض سعر بعد فهم النشاط" data-en="Quote after we understand the business">عرض سعر بعد فهم النشاط</li>
+        </ul>
       </a>
     </div>
   </div>
@@ -740,27 +771,57 @@ body.terms-locked,body.auth-locked{overflow:hidden}
     <div class="services-grid four reveal stagger">
       <article class="service-block">
         <h3 data-ar="تطوير مواقع" data-en="Website development">تطوير مواقع</h3>
-        <p data-ar="مواقع شركات ومتاجر عربية/إنجليزية جاهزة للتشغيل." data-en="AR/EN company and store sites ready to launch.">مواقع شركات ومتاجر عربية/إنجليزية جاهزة للتشغيل.</p>
+        <p data-ar="موقع جديد جاهز للتشغيل بالعربية والإنجليزية." data-en="A new AR/EN site ready to launch.">موقع جديد جاهز للتشغيل بالعربية والإنجليزية.</p>
+        <ul class="service-list">
+          <li data-ar="مواقع شركات ومتاجر" data-en="Company and store sites">مواقع شركات ومتاجر</li>
+          <li data-ar="تصميم متجاوب للجوال" data-en="Mobile-responsive layout">تصميم متجاوب للجوال</li>
+          <li data-ar="نماذج تواصل وربط أساسي" data-en="Contact forms and basic wiring">نماذج تواصل وربط أساسي</li>
+        </ul>
       </article>
       <article class="service-block">
         <h3 data-ar="تعديل برمجة" data-en="Code changes">تعديل برمجة</h3>
-        <p data-ar="إصلاح أخطاء وإضافة مزايا على مشروعكم الحالي." data-en="Bug fixes and new features on your existing project.">إصلاح أخطاء وإضافة مزايا على مشروعكم الحالي.</p>
+        <p data-ar="تعديل عملي على مشروعكم الحالي بعد مراجعة الكود." data-en="Practical changes on your current project after a code review.">تعديل عملي على مشروعكم الحالي بعد مراجعة الكود.</p>
+        <ul class="service-list">
+          <li data-ar="إصلاح أخطاء وإضافة مزايا" data-en="Bug fixes and new features">إصلاح أخطاء وإضافة مزايا</li>
+          <li data-ar="تحسين أداء الكود" data-en="Code performance improvements">تحسين أداء الكود</li>
+          <li data-ar="نطاق تسليم واضح" data-en="Clear delivery scope">نطاق تسليم واضح</li>
+        </ul>
       </article>
       <article class="service-block">
         <h3 data-ar="تطبيق مخزون" data-en="Inventory app">تطبيق مخزون</h3>
-        <p data-ar="إدارة منتجات وكميات وحركات مخزون حسب نشاطكم." data-en="Products, quantities, and stock movements for your workflow.">إدارة منتجات وكميات وحركات مخزون حسب نشاطكم.</p>
+        <p data-ar="تطبيق لإدارة المنتجات والكميات والحركات حسب نشاطكم." data-en="Software for products, quantities, and stock movements.">تطبيق لإدارة المنتجات والكميات والحركات حسب نشاطكم.</p>
+        <ul class="service-list">
+          <li data-ar="منتجات وكميات وحركات مخزون" data-en="Products, quantities, and movements">منتجات وكميات وحركات مخزون</li>
+          <li data-ar="تنبيهات نقص المخزون" data-en="Low-stock alerts">تنبيهات نقص المخزون</li>
+          <li data-ar="تقارير مبسطة للتشغيل" data-en="Simple ops reports">تقارير مبسطة للتشغيل</li>
+        </ul>
       </article>
       <article class="service-block">
         <h3 data-ar="حلول للشركات" data-en="Business solutions">حلول للشركات</h3>
-        <p data-ar="تشغيل، مخزون، وصلاحيات أقسام حسب هيكل منشأتكم." data-en="Ops, inventory, and department roles for your company structure.">تشغيل، مخزون، وصلاحيات أقسام حسب هيكل منشأتكم.</p>
+        <p data-ar="باقة للمنشآت: تشغيل ومخزون وصلاحيات حسب الهيكل." data-en="For companies: ops, inventory, and roles by structure.">باقة للمنشآت: تشغيل ومخزون وصلاحيات حسب الهيكل.</p>
+        <ul class="service-list">
+          <li data-ar="موقع أو نظام تشغيلي" data-en="Site or operations system">موقع أو نظام تشغيلي</li>
+          <li data-ar="مخزون وصلاحيات أقسام" data-en="Inventory and department roles">مخزون وصلاحيات أقسام</li>
+          <li data-ar="تقارير للإدارة" data-en="Management reports">تقارير للإدارة</li>
+        </ul>
       </article>
       <article class="service-block">
         <h3 data-ar="أنظمة ولوحات" data-en="Systems & dashboards">أنظمة ولوحات</h3>
-        <p data-ar="إدارة وعملاء وتقارير مع صلاحيات واضحة." data-en="Ops, CRM, and reports with clear roles.">إدارة وعملاء وتقارير مع صلاحيات واضحة.</p>
+        <p data-ar="نظام إدارة ولوحة متابعة بصلاحيات واضحة." data-en="Management system and dashboard with clear roles.">نظام إدارة ولوحة متابعة بصلاحيات واضحة.</p>
+        <ul class="service-list">
+          <li data-ar="إدارة وعملاء وتقارير" data-en="Ops, CRM, and reports">إدارة وعملاء وتقارير</li>
+          <li data-ar="صلاحيات مستخدمين" data-en="User permissions">صلاحيات مستخدمين</li>
+          <li data-ar="لوحات متابعة يومية" data-en="Daily monitoring dashboards">لوحات متابعة يومية</li>
+        </ul>
       </article>
       <article class="service-block">
         <h3 data-ar="ربط API" data-en="API integrations">ربط API</h3>
-        <p data-ar="دفع، رسائل، ومزامنة بين أنظمتكم." data-en="Payments, messaging, and system sync.">دفع، رسائل، ومزامنة بين أنظمتكم.</p>
+        <p data-ar="ربط الدفع والرسائل والأنظمة الخارجية بمشروعكم." data-en="Connect payments, messaging, and external systems.">ربط الدفع والرسائل والأنظمة الخارجية بمشروعكم.</p>
+        <ul class="service-list">
+          <li data-ar="دفع ورسائل وإشعارات" data-en="Payments, messaging, and alerts">دفع ورسائل وإشعارات</li>
+          <li data-ar="مزامنة بيانات بين الأنظمة" data-en="Data sync between systems">مزامنة بيانات بين الأنظمة</li>
+          <li data-ar="التسعير حسب عدد الربط والتعقيد" data-en="Priced by integration complexity">التسعير حسب عدد الربط والتعقيد</li>
+        </ul>
       </article>
     </div>
     <div class="reveal" style="margin-top:28px">
@@ -1034,7 +1095,7 @@ body.terms-locked,body.auth-locked{overflow:hidden}
           <input type="text" data-ar-placeholder="اسم الشركة" data-en-placeholder="Company name" placeholder="اسم الشركة" id="contactCompany" autocomplete="organization">
         </label>
         <label class="field"><span data-ar="نوع الطلب" data-en="Request type">نوع الطلب</span>
-          <select id="contactType">
+          <select id="contactType" aria-describedby="contactTypeFeatures">
             <option value="maintenance" data-ar="صيانة مواقع" data-en="Website maintenance">صيانة مواقع</option>
             <option value="web-dev" data-ar="تطوير مواقع" data-en="Website development">تطوير مواقع</option>
             <option value="programming" data-ar="خدمات البرمجة / تعديل كود" data-en="Programming / code changes">خدمات البرمجة / تعديل كود</option>
@@ -1046,6 +1107,11 @@ body.terms-locked,body.auth-locked{overflow:hidden}
             <option value="hardware" data-ar="أجهزة (الرياض فقط)" data-en="Hardware (Riyadh only)">أجهزة (الرياض فقط)</option>
           </select>
         </label>
+        <div class="type-features" id="contactTypeFeatures" role="region" aria-live="polite">
+          <div class="type-features-title" id="contactTypeFeaturesTitle"></div>
+          <p class="type-features-summary" id="contactTypeFeaturesSummary"></p>
+          <ul class="service-list" id="contactTypeFeaturesList"></ul>
+        </div>
         <label class="field"><span data-ar="تفاصيل الطلب" data-en="Request details">تفاصيل الطلب</span>
           <textarea required data-ar-placeholder="صف طلبكم باختصار" data-en-placeholder="Briefly describe your request" placeholder="صف طلبكم باختصار" id="contactMsg"></textarea>
         </label>
@@ -1175,6 +1241,8 @@ body.terms-locked,body.auth-locked{overflow:hidden}
     } catch (_) {}
     if (loggedInUser) document.getElementById('accountBtn').textContent = t('حسابي', 'My account');
     else document.getElementById('accountBtn').textContent = t('تسجيل الدخول', 'Log in');
+    const typeEl = document.getElementById('contactType');
+    if (typeEl) syncContactTypeFeatures(typeEl.value);
     renderClientCatalog();
   }
 
@@ -1215,6 +1283,36 @@ body.terms-locked,body.auth-locked{overflow:hidden}
       company.setAttribute('data-en-placeholder', 'Company name');
     }
     company.placeholder = t('اسم الشركة', 'Company name');
+    syncContactTypeFeatures(type);
+  }
+
+  function syncContactTypeFeatures(type){
+    const box = document.getElementById('contactTypeFeatures');
+    const titleEl = document.getElementById('contactTypeFeaturesTitle');
+    const summaryEl = document.getElementById('contactTypeFeaturesSummary');
+    const listEl = document.getElementById('contactTypeFeaturesList');
+    if (!box || !titleEl || !summaryEl || !listEl) return;
+    const key = type === 'electronics' ? 'hardware' : type;
+    const features = (Catalog && Catalog.requestTypeFeatures)
+      ? Catalog.requestTypeFeatures(key, currentLang)
+      : [];
+    const summary = (Catalog && Catalog.requestTypeSummary)
+      ? Catalog.requestTypeSummary(key, currentLang)
+      : '';
+    const label = (Catalog && Catalog.requestTypeLabel)
+      ? Catalog.requestTypeLabel(key, currentLang)
+      : key;
+    if (!features.length && !summary) {
+      box.hidden = true;
+      listEl.innerHTML = '';
+      summaryEl.textContent = '';
+      titleEl.textContent = '';
+      return;
+    }
+    box.hidden = false;
+    titleEl.textContent = t('مميزات هذا الطلب', 'What this request includes');
+    summaryEl.textContent = summary || label;
+    listEl.innerHTML = features.map((f) => `<li>${escapeHtml(f)}</li>`).join('');
   }
 
   function isUsablePhone(value){
@@ -1458,6 +1556,13 @@ body.terms-locked,body.auth-locked{overflow:hidden}
         const name = Catalog.label(p, currentLang, 'name', 'name_en');
         const desc = Catalog.label(p, currentLang, 'desc', 'desc_en') || t('متاح للطلب','Available to order');
         const cat = Catalog.label(p, currentLang, 'category', 'category_en');
+        const reqType = Catalog.requestTypeForProduct ? Catalog.requestTypeForProduct(p) : '';
+        const features = (Catalog.requestTypeFeatures && reqType)
+          ? Catalog.requestTypeFeatures(reqType, currentLang).slice(0, 3)
+          : [];
+        const featuresHtml = features.length
+          ? `<ul class="service-list">${features.map((f) => `<li>${escapeHtml(f)}</li>`).join('')}</ul>`
+          : `<p>${escapeHtml(desc)}</p>`;
         const status = p.kind === 'service' || p.priceMode === 'quote' || !(Number(p.price) > 0)
           ? t('متاح لعرض السعر','Available for quote')
           : t('سعر ثابت متاح','Fixed price available');
@@ -1465,7 +1570,7 @@ body.terms-locked,body.auth-locked{overflow:hidden}
           <article class="product-item">
             <span class="tag">${escapeHtml(cat || (p.kind === 'service' ? t('خدمة','Service') : t('خدمة','Service')))}</span>
             <h3>${escapeHtml(name)}</h3>
-            <p>${escapeHtml(desc)}</p>
+            ${featuresHtml}
             <div class="meta">${escapeHtml(status)}</div>
             <div class="price">${escapeHtml(Catalog.formatPrice ? Catalog.formatPrice(p, currentLang) : t('حسب الطلب','Quote on request'))}</div>
             <button type="button" class="btn btn-ghost" data-request-product="${escapeHtml(p.id)}">${escapeHtml(t('اطلب عرض سعر','Request a quote'))}</button>
@@ -1615,6 +1720,7 @@ body.terms-locked,body.auth-locked{overflow:hidden}
     if (typeEl) {
       typeEl.addEventListener('change', () => syncCompanyFieldForType(typeEl.value));
       syncCompanyFieldForType(typeEl.value);
+      syncContactTypeFeatures(typeEl.value);
     }
     const heroType = document.getElementById('heroQuoteType');
     if (heroType) {
