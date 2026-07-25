@@ -3840,6 +3840,55 @@ body.is-client .home-bar{
           : t('ما زال هناك إعداد ناقص — راجعوا الخطوات', 'Setup still incomplete — check the steps')));
     });
   }
+  const SETUP_SQL_URL = 'https://raw.githubusercontent.com/ahmad00alahmadi-sys/raseekh-website/main/supabase/setup_all.sql';
+  const copySetupSqlBtn = document.getElementById('copySetupSqlBtn');
+  const copySetupSqlMsg = document.getElementById('copySetupSqlMsg');
+  if (copySetupSqlBtn) {
+    copySetupSqlBtn.addEventListener('click', async () => {
+      if (copySetupSqlBtn.dataset.busy === '1') return;
+      copySetupSqlBtn.dataset.busy = '1';
+      copySetupSqlBtn.disabled = true;
+      if (copySetupSqlMsg) {
+        copySetupSqlMsg.hidden = false;
+        copySetupSqlMsg.style.color = 'var(--muted)';
+        copySetupSqlMsg.textContent = t('جاري جلب ملف SQL...', 'Fetching SQL file...');
+      }
+      try {
+        const res = await fetch(SETUP_SQL_URL, { cache: 'no-store' });
+        if (!res.ok) throw new Error('fetch');
+        const sql = await res.text();
+        if (!sql || sql.indexOf('client_requests') < 0) throw new Error('empty');
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          await navigator.clipboard.writeText(sql);
+        } else {
+          const ta = document.createElement('textarea');
+          ta.value = sql;
+          ta.setAttribute('readonly', '');
+          ta.style.position = 'fixed';
+          ta.style.insetInlineStart = '-9999px';
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          document.body.removeChild(ta);
+        }
+        showToast(t('تم نسخ SQL — الصقوه في Supabase → SQL ثم Run', 'SQL copied — paste in Supabase → SQL then Run'));
+        if (copySetupSqlMsg) {
+          copySetupSqlMsg.style.color = 'var(--ok)';
+          copySetupSqlMsg.textContent = t('تم النسخ. افتحوا Supabase → SQL → New query → الصقوا → Run.', 'Copied. Open Supabase → SQL → New query → paste → Run.');
+        }
+      } catch (_) {
+        showToast(t('تعذّر النسخ — افتحوا ملف SQL يدوياً', 'Could not copy — open the SQL file manually'));
+        if (copySetupSqlMsg) {
+          copySetupSqlMsg.style.color = 'var(--danger)';
+          copySetupSqlMsg.textContent = t('افتحوا «فتح ملف SQL» وانسخوا المحتوى يدوياً.', 'Use “Open SQL file” and copy the content manually.');
+        }
+        try { window.open(SETUP_SQL_URL, '_blank', 'noopener'); } catch (_) {}
+      } finally {
+        copySetupSqlBtn.dataset.busy = '0';
+        copySetupSqlBtn.disabled = false;
+      }
+    });
+  }
 
   const refreshLeadsBtn = document.getElementById('refreshLeadsBtn');
   if (refreshLeadsBtn) {
