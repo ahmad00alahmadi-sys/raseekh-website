@@ -803,6 +803,7 @@
           email: row.email || 'client@raseekh.local',
           phone: row.phone || '',
           company: row.company || '',
+          segment: row.segment || '',
           type: row.type || '',
           title: row.title || '',
           message: row.message || '',

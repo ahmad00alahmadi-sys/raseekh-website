@@ -213,6 +213,35 @@ body.terms-locked{overflow:hidden}
 .role-pill.admin{background:rgba(196,92,38,.18);color:#8A3E14}
 body.is-client .admin-only{display:none!important}
 body.is-admin .client-only{display:none!important}
+body.is-admin .sidebar{
+  background:linear-gradient(180deg,#1A120C 0%, #3A2418 55%, #16324F 100%);
+  box-shadow:inset -3px 0 0 var(--copper);
+}
+body.is-admin .home-bar{
+  background:rgba(196,92,38,.12);border-color:rgba(196,92,38,.35);
+  border-inline-start-color:var(--copper);
+}
+body.is-admin .home-bar::before{
+  content:attr(data-admin-label);font-size:.72rem;font-weight:800;color:#8A3E14;
+  margin-inline-end:8px;letter-spacing:.02em
+}
+body.is-client .sidebar{
+  background:linear-gradient(180deg,#10233A 0%, #16324F 100%);
+}
+body.is-client .home-bar{
+  border-inline-start-color:var(--harbor);
+}
+.product-cards{display:none;flex-direction:column;gap:10px}
+.product-card{
+  border:1.5px solid var(--line);border-radius:10px;padding:14px;background:#fff;
+  display:flex;flex-direction:column;gap:8px
+}
+.product-card .meta-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
+.product-card .muted{color:var(--muted);font-size:.86rem}
+@media (max-width:720px){
+  .product-table-wrap{display:none}
+  .product-cards{display:flex}
+}
 .home-bar{
   display:flex;gap:8px;align-items:center;justify-content:space-between;
   margin-bottom:14px;padding:12px 14px;background:var(--panel);border:1.5px solid var(--line);
@@ -491,7 +520,6 @@ body.is-admin .client-only{display:none!important}
       <button class="nav-item client-only" data-page="requests"><span class="ico">✉</span><span data-ar="طلباتي" data-en="My requests">طلباتي</span></button>
       <button class="nav-item admin-only" data-page="pos"><span class="ico">▣</span><span data-ar="تسجيل دفعة" data-en="Record payment">تسجيل دفعة</span></button>
       <button class="nav-item admin-only" data-page="products"><span class="ico">▤</span><span data-ar="إدارة الخدمات" data-en="Manage services">إدارة الخدمات</span></button>
-      <button class="nav-item admin-only" data-page="voices"><span class="ico">★</span><span data-ar="آراء وهمية" data-en="Fake voices">آراء وهمية</span></button>
       <button class="nav-item admin-only" data-page="sales"><span class="ico">฿</span><span data-ar="سجل المدفوعات" data-en="Payments log">سجل المدفوعات</span></button>
       <button class="nav-item admin-only" data-page="leads"><span class="ico">✉</span><span data-ar="طلبات العملاء" data-en="Client requests">طلبات العملاء</span><span class="nav-badge" id="leadsNavBadge">0</span></button>
       <button class="nav-item admin-only" data-page="activity"><span class="ico">◎</span><span data-ar="زوار ودخول" data-en="Visitors & logins">زوار ودخول</span><span class="nav-badge" id="activityNavBadge">0</span></button>
@@ -511,10 +539,10 @@ body.is-admin .client-only{display:none!important}
   </aside>
 
   <main class="main">
-    <div class="home-bar">
+    <div class="home-bar" id="dashHomeBar" data-admin-label="وضع المالك">
       <div>
-        <strong data-ar="حساب راسخ" data-en="Raseekh account">حساب راسخ</strong>
-        <div style="color:var(--muted);font-size:.82rem" data-ar="يمكنك الرجوع للموقع في أي وقت" data-en="You can return to the website anytime">يمكنك الرجوع للموقع في أي وقت</div>
+        <strong id="dashHomeBarTitle" data-ar="حساب راسخ" data-en="Raseekh account">حساب راسخ</strong>
+        <div style="color:var(--muted);font-size:.82rem" id="dashHomeBarSub" data-ar="يمكنك الرجوع للموقع في أي وقت" data-en="You can return to the website anytime">يمكنك الرجوع للموقع في أي وقت</div>
       </div>
       <a class="btn btn-primary" href="/" data-ar="← الصفحة الرئيسية" data-en="← Home page">← الصفحة الرئيسية</a>
     </div>
@@ -577,7 +605,6 @@ body.is-admin .client-only{display:none!important}
           <div style="display:flex;gap:8px;flex-wrap:wrap">
             <button class="btn btn-primary" type="button" data-goto="activity" data-ar="فتح الزوار والدخول" data-en="Open visitors & logins">فتح الزوار والدخول</button>
             <button class="btn btn-ghost" type="button" data-goto="products" data-ar="إدارة الخدمات" data-en="Manage services">إدارة الخدمات</button>
-            <button class="btn btn-ghost" type="button" data-goto="voices" data-ar="آراء وهمية" data-en="Fake voices">آراء وهمية</button>
             <button class="btn btn-ghost" type="button" data-goto="leads" data-ar="فتح الطلبات" data-en="Open requests">فتح الطلبات</button>
           </div>
         </div>
@@ -585,7 +612,7 @@ body.is-admin .client-only{display:none!important}
       </div>
       <div class="stats client-only">
         <div class="stat"><div class="label" data-ar="خدمات متاحة" data-en="Available services">خدمات متاحة</div><div class="value" id="statClientProducts">0</div><div class="hint" data-ar="للطلب" data-en="to request">للطلب</div></div>
-        <div class="stat"><div class="label" data-ar="اقتراحات" data-en="Suggestions">اقتراحات</div><div class="value" id="statClientSuggestions">0</div><div class="hint" data-ar="جاهزة" data-en="ready">جاهزة</div></div>
+        <div class="stat"><div class="label" data-ar="باقات" data-en="Packages">باقات</div><div class="value" id="statClientSuggestions">0</div><div class="hint" data-ar="منشورة" data-en="published">منشورة</div></div>
         <div class="stat"><div class="label" data-ar="طلباتي" data-en="My requests">طلباتي</div><div class="value" id="statClientRequests">0</div><div class="hint" data-ar="مرسلة" data-en="sent">مرسلة</div></div>
         <div class="stat"><div class="label" data-ar="المسار" data-en="Path">المسار</div><div class="value" style="font-size:1.05rem" data-ar="طلب ← عرض" data-en="Ask → Quote">طلب ← عرض</div><div class="hint" data-ar="نرد خلال يوم عمل" data-en="Reply in one business day">نرد خلال يوم عمل</div></div>
       </div>
@@ -601,9 +628,8 @@ body.is-admin .client-only{display:none!important}
             <button class="btn btn-primary" data-goto="leads" data-ar="طلبات العملاء" data-en="Client requests">طلبات العملاء</button>
             <button class="btn btn-ghost" data-goto="pos" data-ar="تسجيل دفعة / عربون" data-en="Record deposit / payment">تسجيل دفعة / عربون</button>
             <button class="btn btn-ghost" data-goto="products" data-ar="إدارة الخدمات" data-en="Manage services">إدارة الخدمات</button>
-            <button class="btn btn-ghost" data-goto="voices" data-ar="آراء وهمية" data-en="Fake voices">آراء وهمية</button>
             <a class="btn btn-ghost" href="/#products" data-ar="معاينة واجهة العميل" data-en="Preview client view">معاينة واجهة العميل</a>
-            <a class="btn btn-ghost" href="/#cases" data-ar="دراسات الحالة" data-en="Case studies">دراسات الحالة</a>
+            <a class="btn btn-ghost" href="/#cases" data-ar="نماذج توضيحية" data-en="Illustrative scenarios">نماذج توضيحية</a>
             <a class="btn btn-ghost" href="/blog/" data-ar="المدونة" data-en="Blog">المدونة</a>
           </div>
         </div>
@@ -793,7 +819,7 @@ body.is-admin .client-only{display:none!important}
         </div>
         <button class="btn btn-primary" id="addProductBtn" data-ar="+ خدمة جديدة" data-en="+ New service">+ خدمة جديدة</button>
       </div>
-      <div class="client-note" data-ar="يوزر المالك وحده يضيف ويعدّل ويحذف الخدمات. العملاء يشوفون الكتالوج ويطلبون عرض سعر فقط. الأجهزة المادية حالياً للرياض ومخفية عن العميل." data-en="Only the owner account can add, edit, or delete services. Clients see the catalog and request quotes only. Physical devices are Riyadh-only and hidden from clients.">يوزر المالك وحده يضيف ويعدّل ويحذف الخدمات. العملاء يشوفون الكتالوج ويطلبون عرض سعر فقط. الأجهزة المادية حالياً للرياض ومخفية عن العميل.</div>
+      <div class="client-note" data-ar="المالك وحده يضيف ويعدّل الخدمات. العملاء يطلبون عرض سعر فقط. الأجهزة المادية: للرياض فقط ومخفية عن العميل عمداً (لا تظهر في الكتالوج العام)." data-en="Only the owner adds/edits services. Clients request quotes only. Physical devices: Riyadh-only and intentionally hidden from clients (not shown in the public catalog).">المالك وحده يضيف ويعدّل الخدمات. العملاء يطلبون عرض سعر فقط. الأجهزة المادية: للرياض فقط ومخفية عن العميل عمداً (لا تظهر في الكتالوج العام).</div>
       <div class="panel">
         <div class="toolbar">
           <h3 data-ar="كتالوج الخدمات" data-en="Service catalog">كتالوج الخدمات</h3>
@@ -802,7 +828,7 @@ body.is-admin .client-only{display:none!important}
             <input type="search" id="productSearch" style="padding:10px 12px;border:1px solid var(--line);border-radius:10px;min-width:200px" data-ar-placeholder="بحث..." data-en-placeholder="Search..." placeholder="بحث...">
           </div>
         </div>
-        <div style="overflow-x:auto">
+        <div class="product-table-wrap" style="overflow-x:auto">
           <table class="product-table">
             <thead>
               <tr>
@@ -810,69 +836,17 @@ body.is-admin .client-only{display:none!important}
                 <th data-ar="القسم" data-en="Category">القسم</th>
                 <th data-ar="السعر" data-en="Price">السعر</th>
                 <th data-ar="المخزون" data-en="Stock">المخزون</th>
-                <th data-ar="الحالة" data-en="Status">الحالة</th>
+                <th data-ar="الظهور" data-en="Visibility">الظهور</th>
                 <th data-ar="إجراءات" data-en="Actions">إجراءات</th>
               </tr>
             </thead>
             <tbody id="productsBody"></tbody>
           </table>
         </div>
+        <div class="product-cards" id="productsCards" aria-live="polite"></div>
       </div>
     </div>
 
-    <div class="page admin-only" id="page-voices">
-      <div class="topbar">
-        <div>
-          <h1 data-ar="آراء عملاء وهمية" data-en="Fake client voices">آراء عملاء وهمية</h1>
-          <div class="crumb"><span data-ar="راسخ" data-en="Raseekh">راسخ</span> <span>/</span> <span data-ar="المالك فقط" data-en="Owner only">المالك فقط</span></div>
-        </div>
-        <a class="btn btn-ghost" href="/#voices" data-ar="معاينة الموقع" data-en="Site preview">معاينة الموقع</a>
-      </div>
-      <div class="client-note" data-ar="هذه الآراء تظهر في قسم «آراء العملاء» في الصفحة الرئيسية. أضيفوا أو احذفوا كما تريدون — للمالك فقط." data-en="These voices appear in the homepage “Client voices” section. Add or delete as you like — owner only.">هذه الآراء تظهر في قسم «آراء العملاء» في الصفحة الرئيسية. أضيفوا أو احذفوا كما تريدون — للمالك فقط.</div>
-      <div class="grid-2">
-        <div class="panel">
-          <h3 data-ar="إضافة رأي وهمي" data-en="Add a fake voice">إضافة رأي وهمي</h3>
-          <form class="form" id="voiceForm" onsubmit="return false" style="margin-top:12px">
-            <label class="field"><span data-ar="الاسم (عربي)" data-en="Name (Arabic)">الاسم (عربي)</span>
-              <input type="text" id="voiceNameAr" required maxlength="80" data-ar-placeholder="مثال: فهد العتيبي" data-en-placeholder="e.g. Fahad" placeholder="مثال: فهد العتيبي">
-            </label>
-            <label class="field"><span data-ar="الاسم (إنجليزي)" data-en="Name (English)">الاسم (إنجليزي)</span>
-              <input type="text" id="voiceNameEn" maxlength="80" data-ar-placeholder="اختياري" data-en-placeholder="Optional" placeholder="اختياري">
-            </label>
-            <label class="field"><span data-ar="الدور / القطاع (عربي)" data-en="Role / sector (Arabic)">الدور / القطاع (عربي)</span>
-              <input type="text" id="voiceRoleAr" maxlength="120" data-ar-placeholder="مدير تشغيل · تجزئة · الرياض" data-en-placeholder="Ops · Retail · Riyadh" placeholder="مدير تشغيل · تجزئة · الرياض">
-            </label>
-            <label class="field"><span data-ar="الدور (إنجليزي)" data-en="Role (English)">الدور (إنجليزي)</span>
-              <input type="text" id="voiceRoleEn" maxlength="120" data-ar-placeholder="اختياري" data-en-placeholder="Optional" placeholder="اختياري">
-            </label>
-            <label class="field"><span data-ar="نص الرأي (عربي)" data-en="Quote (Arabic)">نص الرأي (عربي)</span>
-              <textarea id="voiceQuoteAr" required maxlength="500" style="min-height:90px" data-ar-placeholder="اكتبوا الرأي هنا..." data-en-placeholder="Write the quote..." placeholder="اكتبوا الرأي هنا..."></textarea>
-            </label>
-            <label class="field"><span data-ar="نص الرأي (إنجليزي)" data-en="Quote (English)">نص الرأي (إنجليزي)</span>
-              <textarea id="voiceQuoteEn" maxlength="500" style="min-height:70px" data-ar-placeholder="اختياري" data-en-placeholder="Optional" placeholder="اختياري"></textarea>
-            </label>
-            <label class="field"><span data-ar="التقييم" data-en="Stars">التقييم</span>
-              <select id="voiceStars">
-                <option value="5">★★★★★ 5</option>
-                <option value="4">★★★★ 4</option>
-                <option value="3">★★★ 3</option>
-                <option value="2">★★ 2</option>
-                <option value="1">★ 1</option>
-              </select>
-            </label>
-            <button type="button" class="btn btn-primary" id="voiceAddBtn" data-ar="إضافة ونشر في الموقع" data-en="Add & publish on site">إضافة ونشر في الموقع</button>
-            <div class="msg" id="voiceFormMsg" role="status" aria-live="polite"></div>
-          </form>
-        </div>
-        <div class="panel">
-          <div class="toolbar" style="margin-bottom:10px">
-            <h3 data-ar="الآراء المنشورة" data-en="Published voices">الآراء المنشورة</h3>
-            <button type="button" class="btn btn-ghost" id="voiceRefreshBtn" data-ar="تحديث" data-en="Refresh">تحديث</button>
-          </div>
-          <div id="voicesAdminList"></div>
-        </div>
-      </div>
-    </div>
 
     <div class="page admin-only" id="page-sales">
       <div class="topbar">
@@ -1192,6 +1166,25 @@ body.is-admin .client-only{display:none!important}
     if (pill) {
       pill.textContent = isAdminUser ? t('مالك', 'Owner') : t('عميل', 'Client');
       pill.classList.toggle('admin', isAdminUser);
+    }
+    const homeBar = document.getElementById('dashHomeBar');
+    if (homeBar) {
+      homeBar.setAttribute('data-admin-label', t('وضع المالك', 'Owner mode'));
+      homeBar.style.display = '';
+    }
+    const homeTitle = document.getElementById('dashHomeBarTitle');
+    if (homeTitle) {
+      homeTitle.setAttribute('data-ar', isAdminUser ? 'لوحة المالك — راسخ' : 'حساب راسخ');
+      homeTitle.setAttribute('data-en', isAdminUser ? 'Owner dashboard — Raseekh' : 'Raseekh account');
+      homeTitle.textContent = isAdminUser ? t('لوحة المالك — راسخ', 'Owner dashboard — Raseekh') : t('حساب راسخ', 'Raseekh account');
+    }
+    const homeSub = document.getElementById('dashHomeBarSub');
+    if (homeSub) {
+      homeSub.setAttribute('data-ar', isAdminUser ? 'إدارة الطلبات والخدمات والمدفوعات' : 'يمكنك الرجوع للموقع في أي وقت');
+      homeSub.setAttribute('data-en', isAdminUser ? 'Manage requests, services, and payments' : 'You can return to the website anytime');
+      homeSub.textContent = isAdminUser
+        ? t('إدارة الطلبات والخدمات والمدفوعات', 'Manage requests, services, and payments')
+        : t('يمكنك الرجوع للموقع في أي وقت', 'You can return to the website anytime');
     }
     document.getElementById('pageTitle').textContent = isAdminUser
       ? t('لوحة المالك — راسخ', 'Owner dashboard — Raseekh')
@@ -1894,14 +1887,12 @@ body.is-admin .client-only{display:none!important}
         renderAudienceStats();
         Promise.all([
           refreshClientRequestsFromCloud(),
-          refreshSalesFromCloud(),
-          (Catalog && Catalog.syncTestimonialsFromCloud ? Catalog.syncTestimonialsFromCloud() : Promise.resolve(null))
+          refreshSalesFromCloud()
         ]).then(() => {
           updateLeadsBadge();
           renderOverview();
           renderSales();
           if (document.getElementById('page-leads')?.classList.contains('active')) renderAdminLeads();
-          if (document.getElementById('page-voices')?.classList.contains('active')) renderVoicesAdmin();
         });
       } else if (!isDemo) {
         refreshClientRequestsFromCloud().then(() => {
@@ -1936,7 +1927,7 @@ body.is-admin .client-only{display:none!important}
     }
     const allowed = {
       overview: 1, catalog: 1, suggestions: 1, requests: 1, settings: 1,
-      pos: 1, products: 1, voices: 1, sales: 1, leads: 1, activity: 1
+      pos: 1, products: 1, sales: 1, leads: 1, activity: 1
     };
     return allowed[page] ? page : '';
   }
@@ -1974,8 +1965,7 @@ body.is-admin .client-only{display:none!important}
     } catch (_) {}
     if (page === 'pos') renderPos();
     if (page === 'products') renderProducts();
-    if (page === 'voices') renderVoicesAdmin();
-    if (page === 'sales') renderSales();
+        if (page === 'sales') renderSales();
     if (page === 'overview') renderOverview();
     if (page === 'catalog') renderClientCatalog();
     if (page === 'suggestions') renderClientSuggestionsPage();
@@ -2667,6 +2657,7 @@ body.is-admin .client-only{display:none!important}
       const r = clientRequests.find((x) => x.id === id);
       if (!r) return;
       const text = [
+        r.segment === 'company' ? 'شركة' : (r.segment === 'institution' ? 'مؤسسة' : (r.segment === 'individual' ? 'فرد' : '')),
         r.name || '',
         r.phone || '',
         r.email || '',
@@ -2931,161 +2922,70 @@ body.is-admin .client-only{display:none!important}
     if (sale) openReceipt(sale);
   });
 
-  function starsText(n){
-    const count = Math.max(1, Math.min(5, parseInt(n, 10) || 5));
-    return '★'.repeat(count) + '☆'.repeat(5 - count);
-  }
-
-  function renderVoicesAdmin(){
-    if (!requireAdmin('renderVoicesAdmin')) return;
-    const box = document.getElementById('voicesAdminList');
-    if (!box || !Catalog || !Catalog.getTestimonials) return;
-    const list = Catalog.getTestimonials();
-    if (!list.length) {
-      box.innerHTML = `<div class="empty"><strong>${escapeHtml(t('لا توجد آراء حالياً','No voices yet'))}</strong><p>${escapeHtml(t('أضيفوا رأياً من النموذج بجانب القائمة.','Add a voice from the form beside the list.'))}</p></div>`;
-      return;
-    }
-    box.innerHTML = list.map((row) => {
-      const name = currentLang === 'en' ? (row.name_en || row.name_ar) : (row.name_ar || row.name_en);
-      const role = currentLang === 'en' ? (row.role_en || row.role_ar) : (row.role_ar || row.role_en);
-      const quote = currentLang === 'en' ? (row.quote_en || row.quote_ar) : (row.quote_ar || row.quote_en);
-      return `<article class="panel" style="margin:0 0 10px;padding:14px;box-shadow:none">
-        <div style="color:var(--copper);letter-spacing:1px;margin-bottom:6px">${escapeHtml(starsText(row.stars))}</div>
-        <p style="margin:0 0 10px;color:var(--ink);line-height:1.7">«${escapeHtml(quote)}»</p>
-        <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center">
-          <div>
-            <strong>${escapeHtml(name)}</strong>
-            <div style="color:var(--muted);font-size:.82rem">${escapeHtml(role || '—')}</div>
-          </div>
-          <button type="button" class="btn btn-ghost" data-del-voice="${escapeHtml(row.id)}" data-ar="حذف" data-en="Delete">${escapeHtml(t('حذف','Delete'))}</button>
-        </div>
-      </article>`;
-    }).join('');
-  }
-
-  async function addVoiceFromForm(){
-    if (!requireAdmin('addVoiceFromForm')) return;
-    if (!Catalog || !Catalog.addTestimonial) return;
-    const msg = document.getElementById('voiceFormMsg');
-    const nameAr = (document.getElementById('voiceNameAr').value || '').trim();
-    const nameEn = (document.getElementById('voiceNameEn').value || '').trim();
-    const roleAr = (document.getElementById('voiceRoleAr').value || '').trim();
-    const roleEn = (document.getElementById('voiceRoleEn').value || '').trim();
-    const quoteAr = (document.getElementById('voiceQuoteAr').value || '').trim();
-    const quoteEn = (document.getElementById('voiceQuoteEn').value || '').trim();
-    const stars = document.getElementById('voiceStars').value || '5';
-    if (!nameAr && !nameEn) {
-      if (msg) { msg.style.color = 'var(--danger)'; msg.textContent = t('أدخلوا الاسم', 'Enter a name'); }
-      return;
-    }
-    if (!quoteAr && !quoteEn) {
-      if (msg) { msg.style.color = 'var(--danger)'; msg.textContent = t('أدخلوا نص الرأي', 'Enter the quote'); }
-      return;
-    }
-    const btn = document.getElementById('voiceAddBtn');
-    if (btn) { btn.disabled = true; btn.setAttribute('aria-busy', 'true'); }
-    try {
-      const result = Catalog.addTestimonial({
-        name_ar: nameAr,
-        name_en: nameEn || nameAr,
-        role_ar: roleAr,
-        role_en: roleEn || roleAr,
-        quote_ar: quoteAr,
-        quote_en: quoteEn || quoteAr,
-        stars: stars
-      }, { cloud: true, awaitCloud: true });
-      const saved = result && result.saved && typeof result.saved.then === 'function'
-        ? await result.saved
-        : result && result.saved;
-      if (!result || !result.ok) {
-        if (msg) { msg.style.color = 'var(--danger)'; msg.textContent = t('تعذّر الحفظ', 'Could not save'); }
-        return;
-      }
-      document.getElementById('voiceForm').reset();
-      document.getElementById('voiceStars').value = '5';
-      renderVoicesAdmin();
-      const cloudOk = !!(saved && saved.cloud);
-      if (msg) {
-        msg.style.color = 'var(--ok)';
-        msg.textContent = cloudOk
-          ? t('تمت الإضافة والنشر على الموقع', 'Added and published on the site')
-          : t('حُفظ محلياً — النشر السحابي قد يحتاج إعادة تشغيل SQL للصلاحيات', 'Saved locally — cloud publish may need the SQL policy update');
-      }
-      showToast(t('تمت إضافة الرأي', 'Voice added'));
-    } finally {
-      if (btn) { btn.disabled = false; btn.removeAttribute('aria-busy'); }
-    }
-  }
-
-  async function deleteVoiceById(id){
-    if (!requireAdmin('deleteVoiceById')) return;
-    if (!Catalog || !Catalog.deleteTestimonial) return;
-    if (!confirm(t('حذف هذا الرأي من الموقع؟', 'Delete this voice from the site?'))) return;
-    const result = Catalog.deleteTestimonial(id, { cloud: true, awaitCloud: true });
-    if (result && result.saved && typeof result.saved.then === 'function') await result.saved;
-    renderVoicesAdmin();
-    showToast(t('تم الحذف', 'Deleted'));
-  }
-
-  const voiceAddBtn = document.getElementById('voiceAddBtn');
-  if (voiceAddBtn) voiceAddBtn.addEventListener('click', () => { addVoiceFromForm().catch(() => {}); });
-  const voiceRefreshBtn = document.getElementById('voiceRefreshBtn');
-  if (voiceRefreshBtn) voiceRefreshBtn.addEventListener('click', () => {
-    const p = Catalog && Catalog.syncTestimonialsFromCloud ? Catalog.syncTestimonialsFromCloud() : Promise.resolve(null);
-    Promise.resolve(p).then(() => {
-      renderVoicesAdmin();
-      showToast(t('تم التحديث', 'Refreshed'));
-    }).catch(() => renderVoicesAdmin());
-  });
-  const voicesAdminList = document.getElementById('voicesAdminList');
-  if (voicesAdminList) voicesAdminList.addEventListener('click', (e) => {
-    const btn = e.target.closest('[data-del-voice]');
-    if (!btn) return;
-    deleteVoiceById(btn.getAttribute('data-del-voice')).catch(() => {});
-  });
-
   function renderProducts(){
     const q = normalizeSearchText(document.getElementById('productSearch').value || '');
     const list = products.filter(p => !q || productSearchBlob(p).includes(q));
     const body = document.getElementById('productsBody');
+    const cards = document.getElementById('productsCards');
     if (!list.length) {
       body.innerHTML = `<tr><td colspan="6" class="empty">${t('لا توجد خدمات','No services')}</td></tr>`;
+      if (cards) cards.innerHTML = `<div class="empty">${t('لا توجد خدمات','No services')}</div>`;
       return;
     }
+    const visibilityLabel = (p) => {
+      if (p.client === false) return t('مخفي عن العميل · الرياض فقط', 'Hidden from clients · Riyadh only');
+      if (p.kind === 'service') return t('ظاهر للعميل · خدمة', 'Visible · service');
+      return p.stock <= 5 ? t('ظاهر · مخزون منخفض', 'Visible · low stock') : t('ظاهر · متوفر', 'Visible · in stock');
+    };
+    const stockLabel = (p) => {
+      if (p.kind === 'service' || p.priceMode === 'quote') return t('غير منطبق', 'N/A');
+      return String(p.stock);
+    };
+    const actions = (p) => `
+      <div class="row-actions">
+        <button class="btn btn-ghost" style="padding:6px 10px" data-edit="${p.id}">✎</button>
+        <button class="btn btn-ghost" style="padding:6px 10px" data-restock="${p.id}" title="+10" ${p.kind === 'service' ? 'disabled' : ''}>+10</button>
+        <button class="btn btn-danger" style="padding:6px 10px" data-del="${p.id}">×</button>
+      </div>`;
     body.innerHTML = list.map(p => `
       <tr>
         <td><strong>${escapeHtml(productLabel(p))}</strong></td>
         <td>${escapeHtml(categoryLabel(p))}</td>
         <td>${escapeHtml(priceLabel(p))}</td>
-        <td>${p.kind === 'service' ? '—' : p.stock}</td>
-        <td><span class="badge ${p.client === false ? 'low' : ''}">${
-          p.client === false
-            ? t('مخفي / الرياض', 'Hidden / Riyadh')
-            : (p.kind === 'service'
-              ? t('خدمة ظاهرة','Visible service')
-              : (p.stock <= 5 ? t('منخفض','Low') : t('متوفر','In stock')))
-        }</span></td>
-        <td>
-          <div class="row-actions">
-            <button class="btn btn-ghost" style="padding:6px 10px" data-edit="${p.id}">✎</button>
-            <button class="btn btn-ghost" style="padding:6px 10px" data-restock="${p.id}" title="+10">+10</button>
-            <button class="btn btn-danger" style="padding:6px 10px" data-del="${p.id}">×</button>
-          </div>
-        </td>
+        <td>${escapeHtml(stockLabel(p))}</td>
+        <td><span class="badge ${p.client === false ? 'low' : ''}">${escapeHtml(visibilityLabel(p))}</span></td>
+        <td>${actions(p)}</td>
       </tr>
     `).join('');
+    if (cards) {
+      cards.innerHTML = list.map(p => `
+        <article class="product-card">
+          <div class="meta-row">
+            <strong>${escapeHtml(productLabel(p))}</strong>
+            <span class="badge ${p.client === false ? 'low' : ''}">${escapeHtml(visibilityLabel(p))}</span>
+          </div>
+          <div class="muted">${escapeHtml(categoryLabel(p))}</div>
+          <div class="meta-row">
+            <span>${escapeHtml(t('السعر','Price'))}: <strong>${escapeHtml(priceLabel(p))}</strong></span>
+            <span>${escapeHtml(t('المخزون','Stock'))}: ${escapeHtml(stockLabel(p))}</span>
+          </div>
+          ${actions(p)}
+        </article>
+      `).join('');
+    }
   }
 
   document.getElementById('productSearch').addEventListener('input', renderProducts);
-  document.getElementById('productsBody').addEventListener('click', async (e) => {
+  async function onAdminProductAction(e) {
     if (!requireAdmin('productsActions')) return;
     const edit = e.target.closest('[data-edit]');
     const del = e.target.closest('[data-del]');
     const restock = e.target.closest('[data-restock]');
+    if (!edit && !del && !restock) return;
     if (edit) openProductModal(edit.dataset.edit);
     if (restock) {
       const p = products.find(x => x.id === restock.dataset.restock);
-      if (!p) return;
+      if (!p || p.kind === 'service') return;
       const prevStock = p.stock;
       p.stock += 10;
       restock.disabled = true;
@@ -3128,7 +3028,10 @@ body.is-admin .client-only{display:none!important}
         ? t('تم الحذف','Deleted')
         : t('حُفظ محلياً — تعذّر نشر الكتالوج للسحابة', 'Saved locally — catalog cloud publish failed'));
     }
-  });
+  }
+  document.getElementById('productsBody').addEventListener('click', onAdminProductAction);
+  const productsCardsEl = document.getElementById('productsCards');
+  if (productsCardsEl) productsCardsEl.addEventListener('click', onAdminProductAction);
 
   function openProductModal(id){
     if (!requireAdmin('openProductModal')) return;

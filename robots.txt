@@ -8,6 +8,7 @@ Allow: /security/
 Allow: /updates/
 Allow: /privacy/
 Allow: /terms/
+# Marketing pages are crawlable; only the signed-in dashboard is blocked.
 Disallow: /dashboard/
 Disallow: /dashboard
 
