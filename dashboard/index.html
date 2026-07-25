@@ -2538,6 +2538,7 @@ body.is-client .home-bar{
         <div style="flex:1">
           <div><strong>${escapeHtml(r.name || r.email || '—')}</strong> · <span style="color:var(--muted)">${escapeHtml(r.source === 'site' ? t('نموذج الموقع','Website form') : t('حساب عميل','Client account'))}</span>
             <span class="status-chip ${escapeHtml(r.status || 'new')}" style="margin-inline-start:8px">${escapeHtml(statusLabel(r.status))}</span>
+            ${r.deliveryStatus === 'local' ? `<span class="status-chip new" style="margin-inline-start:6px">${escapeHtml(t('إرسال معلّق','Send pending'))}</span>` : (r.deliveryStatus === 'pending_notify' ? `<span class="status-chip new" style="margin-inline-start:6px">${escapeHtml(t('إشعار معلّق','Notify pending'))}</span>` : '')}
           </div>
           <div style="color:var(--muted);font-size:.86rem;margin-top:2px">
             ${escapeHtml([

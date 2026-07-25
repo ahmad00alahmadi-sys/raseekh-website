@@ -951,18 +951,10 @@
           const prevTime = new Date(prev.updatedAt || prev.at || 0).getTime();
           const nextTime = new Date(r.updatedAt || r.at || 0).getTime();
           const merged = nextTime >= prevTime ? Object.assign({}, prev, r) : Object.assign({}, r, prev);
-          // Never let a newer status-only cloud row wipe local email-retry marks.
-          if (prev.deliveryStatus === 'pending_notify') {
+          // Preserve email-retry marks; if the row exists in cloud, promote hard-local → pending_notify.
+          if (prev.deliveryStatus === 'pending_notify' || prev.deliveryStatus === 'local') {
             merged.deliveryStatus = 'pending_notify';
             merged.syncPending = true;
-          } else if (prev.deliveryStatus === 'local') {
-            // Row exists in cloud now — promote out of hard-local so clients stop seeing a failure.
-            merged.deliveryStatus = prev.deliveryStatus === 'local' ? 'pending_notify' : prev.deliveryStatus;
-            merged.syncPending = true;
-            if (prev.deliveryStatus === 'local') {
-              // Cloud presence means insert succeeded earlier or via another device.
-              merged.deliveryStatus = 'pending_notify';
-            }
           }
           byId.set(r.id, merged);
         }
