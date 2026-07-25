@@ -316,37 +316,23 @@ nav{display:flex;align-items:center;justify-content:space-between;gap:16px;paddi
 .hero-quote input::placeholder{color:rgba(244,247,250,.55)}
 .hero-quote select:focus,.hero-quote input:focus{outline:2px solid rgba(232,160,90,.5);border-color:var(--sand)}
 .hero-quote .btn{white-space:nowrap;min-height:52px}
-.hero-contact-panel{
-  display:block;margin-top:14px;max-width:640px;padding:16px;
-  border:1.5px solid rgba(232,160,90,.55);border-radius:var(--radius);
-  background:rgba(12,27,46,.72);backdrop-filter:blur(12px);
-  box-shadow:0 0 0 3px rgba(232,160,90,.18);
-}
-.hero-contact-panel.is-pulse{animation:heroPanelPulse .9s ease}
-@keyframes heroPanelPulse{
-  0%,100%{box-shadow:0 0 0 3px rgba(232,160,90,.18)}
-  40%{box-shadow:0 0 0 8px rgba(232,160,90,.35)}
-}
-.hero-contact-panel .hero-contact-title{
-  color:#fff;font-weight:700;font-size:1rem;margin:0 0 12px;line-height:1.45;
-}
-.hero-contact-panel .hero-contact-grid{
-  display:grid;grid-template-columns:1fr 1fr;gap:10px;
-}
-.hero-contact-panel .field{display:flex;flex-direction:column;gap:6px;font-size:.8rem;font-weight:700;color:rgba(244,247,250,.78)}
-.hero-contact-panel .field-full{grid-column:1 / -1}
-.hero-contact-panel input{
-  width:100%;padding:12px 14px;border:1.5px solid rgba(244,247,250,.3);border-radius:var(--radius);
-  background:rgba(12,27,46,.55);color:#F4F7FA;
-}
-.hero-contact-panel input::placeholder{color:rgba(244,247,250,.55)}
-.hero-contact-panel .msg{min-height:1.2em;margin-top:10px;font-size:.9rem}
 .hero-note{
   margin-top:14px;display:flex;flex-wrap:wrap;align-items:center;gap:14px;
   color:rgba(232,237,242,.78);font-size:.92rem;
 }
 .hero-note a{color:#fff;font-weight:700;border-bottom:1.5px solid rgba(232,160,90,.7);padding-bottom:1px}
 .hero-note a:hover{color:var(--sand)}
+#quote.quote-band{padding:48px 0 56px}
+#contact.contact-focus{
+  outline:3px solid rgba(196,92,38,.45);
+  box-shadow:0 0 0 8px rgba(196,92,38,.16);
+  transition:box-shadow .35s ease, outline-color .35s ease;
+}
+@keyframes contactPulse{
+  0%,100%{box-shadow:0 0 0 8px rgba(196,92,38,.16)}
+  40%{box-shadow:0 0 0 14px rgba(196,92,38,.28)}
+}
+#contact.contact-focus.is-pulse{animation:contactPulse .9s ease}
 .btn.sent{background:var(--ok)!important;pointer-events:none}
 .msg.ok-pulse{animation:okPulse .55s ease}
 @keyframes okPulse{0%{opacity:.35;transform:translateY(4px)}100%{opacity:1;transform:none}}
@@ -814,7 +800,6 @@ body.terms-locked,body.auth-locked{overflow:hidden}
   .price-card.featured{transform:none}
   .hero-quote{grid-template-columns:1fr}
   .hero-quote .btn{width:100%}
-  .hero-contact-panel .hero-contact-grid{grid-template-columns:1fr}
 }
 @media (max-width:768px){
 }
@@ -1041,7 +1026,7 @@ body.pay-paused .pay-public-entry{display:none!important}
           <option value="hardware" data-ar="أجهزة (الرياض فقط)" data-en="Hardware (Riyadh only)">أجهزة (الرياض فقط)</option>
         </select>
         <input type="text" id="heroQuoteMsg" required maxlength="220" data-ar-placeholder="اكتبوا ملخص الطلب في سطر واحد" data-en-placeholder="Summarize your request in one line" placeholder="اكتبوا ملخص الطلب في سطر واحد" data-ar-aria="وصف الطلب" data-en-aria="Request summary" aria-label="وصف الطلب">
-        <button class="btn btn-primary" type="submit" id="heroQuoteBtn" data-ar="إرسال الطلب" data-en="Send request">إرسال الطلب</button>
+        <button class="btn btn-primary" type="submit" id="heroQuoteBtn" data-ar="اطلبوا عرض سعر" data-en="Request a quote">اطلبوا عرض سعر</button>
         <label class="check" for="heroPurchaseTermsCheck">
           <input type="checkbox" id="heroPurchaseTermsCheck" required>
           <span class="check-text">
@@ -1051,27 +1036,8 @@ body.pay-paused .pay-public-entry{display:none!important}
           </span>
         </label>
       </form>
-      <div class="hero-contact-panel is-open" id="heroContactPanel" aria-live="polite">
-        <p class="hero-contact-title" id="heroContactTitle" data-ar="نموذج طلب السعر — أكملوا البيانات تحت واضغطوا إرسال" data-en="Quote form — complete the fields below and press Send">نموذج طلب السعر — أكملوا البيانات تحت واضغطوا إرسال</p>
-        <div class="hero-contact-grid">
-          <label class="field"><span data-ar="الاسم الكامل" data-en="Full name">الاسم الكامل</span>
-            <input type="text" id="heroContactName" autocomplete="name" data-ar-placeholder="الاسم الكامل" data-en-placeholder="Full name" placeholder="الاسم الكامل">
-          </label>
-          <label class="field" id="heroContactCompanyField" hidden>
-            <span id="heroContactCompanyLabel" data-ar="اسم المؤسسة / المنشأة" data-en="Institution / organization name">اسم المؤسسة / المنشأة</span>
-            <input type="text" id="heroContactCompany" autocomplete="organization" data-ar-placeholder="اسم المؤسسة أو المنشأة" data-en-placeholder="Institution or organization name" placeholder="اسم المؤسسة أو المنشأة">
-          </label>
-          <label class="field"><span data-ar="البريد الإلكتروني" data-en="Email">البريد الإلكتروني</span>
-            <input type="email" id="heroContactEmail" autocomplete="email" data-ar-placeholder="you@domain.com" data-en-placeholder="you@domain.com" placeholder="you@domain.com">
-          </label>
-          <label class="field"><span data-ar="رقم الجوال" data-en="Phone">رقم الجوال</span>
-            <input type="tel" id="heroContactPhone" inputmode="tel" maxlength="20" autocomplete="tel" data-ar-placeholder="05xxxxxxxx" data-en-placeholder="05xxxxxxxx" placeholder="05xxxxxxxx">
-          </label>
-        </div>
-        <div class="msg" id="heroContactMsg" role="status"></div>
-      </div>
       <div class="hero-note">
-        <a href="#contact" id="heroOpenFullForm" data-ar="أو انتقلوا إلى النموذج الكامل" data-en="Or go to the full form">أو انتقلوا إلى النموذج الكامل</a>
+        <a href="#contact" id="heroOpenFullForm" data-ar="أو انتقلوا إلى النموذج الكامل تحت" data-en="Or go to the full form below">أو انتقلوا إلى النموذج الكامل تحت</a>
         <span aria-hidden="true">·</span>
         <a href="#pricing" data-ar="قارنوا مسارات الأسعار" data-en="Compare pricing paths">قارنوا مسارات الأسعار</a>
         <span aria-hidden="true">·</span>
@@ -1095,6 +1061,81 @@ body.pay-paused .pay-public-entry{display:none!important}
     <span data-ar="المتابعة عبر حساب العميل" data-en="Track via the client account">المتابعة عبر حساب العميل</span>
   </div>
 </div>
+
+<section id="quote" class="quote-band band-mist">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow" data-ar="نموذج الطلب" data-en="Request form">نموذج الطلب</div>
+      <h2 data-ar="أكملوا الطلب هنا" data-en="Complete your request here">أكملوا الطلب هنا</h2>
+      <p data-ar="بعد اختيار نوع الخدمة من الأعلى، انزلوا إلى هذا النموذج وأكملوا البيانات ثم أرسلوا." data-en="After choosing a service type above, scroll to this form, complete the details, and send.">بعد اختيار نوع الخدمة من الأعلى، انزلوا إلى هذا النموذج وأكملوا البيانات ثم أرسلوا.</p>
+    </div>
+    <div class="panel reveal" id="contact">
+      <h2 data-ar="اطلبوا عرض سعر" data-en="Request a quote">اطلبوا عرض سعر</h2>
+      <p data-ar="نراجع طلبكم ونردّ عليكم عبر البريد الإلكتروني أو رقم الجوال." data-en="We review your request and respond via email or phone.">نراجع طلبكم ونردّ عليكم عبر البريد الإلكتروني أو رقم الجوال.</p>
+      <p class="hint-inline" style="margin-bottom:8px" data-ar="يُتوقَّع الرد عادةً خلال يوم عمل واحد." data-en="A reply is typically expected within one business day.">يُتوقَّع الرد عادةً خلال يوم عمل واحد.</p>
+      <p class="hint-inline" style="margin-bottom:14px" data-ar="ساعات العمل المعتادة: من الأحد إلى الخميس · الرياض، المملكة العربية السعودية" data-en="Usual business hours: Sunday to Thursday · Riyadh, Saudi Arabia">ساعات العمل المعتادة: من الأحد إلى الخميس · الرياض، المملكة العربية السعودية</p>
+      <form class="form" id="contactForm" novalidate>
+        <label class="field"><span data-ar="الاسم الكامل" data-en="Full name">الاسم الكامل</span>
+          <input type="text" required data-ar-placeholder="الاسم الكامل" data-en-placeholder="Full name" placeholder="الاسم الكامل" id="contactName" autocomplete="name">
+        </label>
+        <label class="field"><span data-ar="البريد الإلكتروني" data-en="Email">البريد الإلكتروني</span>
+          <input type="email" required data-ar-placeholder="you@domain.com" data-en-placeholder="you@domain.com" placeholder="you@domain.com" id="contactEmail" autocomplete="email">
+        </label>
+        <label class="field"><span data-ar="رقم الجوال" data-en="Phone">رقم الجوال</span>
+          <input type="tel" required inputmode="tel" maxlength="20" data-ar-placeholder="05xxxxxxxx" data-en-placeholder="05xxxxxxxx" placeholder="05xxxxxxxx" id="contactPhone" autocomplete="tel">
+        </label>
+        <label class="field"><span data-ar="أقدّم الطلب بصفة" data-en="I am requesting as">أقدّم الطلب بصفة</span>
+          <select id="contactSegment" required>
+            <option value="individual" data-ar="أفراد" data-en="Individuals" selected>أفراد</option>
+            <option value="company" data-ar="شركات" data-en="Companies">شركات</option>
+            <option value="institution" data-ar="مؤسسات" data-en="Institutions">مؤسسات</option>
+            <option value="other" data-ar="أخرى" data-en="Other">أخرى</option>
+          </select>
+        </label>
+        <label class="field" id="contactCompanyField" hidden>
+          <span id="contactCompanyLabel" data-ar="اسم الشركة / المنشأة" data-en="Company / organization name">اسم الشركة / المنشأة</span>
+          <input type="text" data-ar-placeholder="اسم الشركة أو المنشأة" data-en-placeholder="Company or organization name" placeholder="اسم الشركة أو المنشأة" id="contactCompany" autocomplete="organization">
+        </label>
+        <label class="field" id="contactOtherField" hidden>
+          <span data-ar="وضّحوا باختصار" data-en="Briefly describe">وضّحوا باختصار</span>
+          <input type="text" data-ar-placeholder="مثلاً: جهة حكومية، فريق، مشروع…" data-en-placeholder="e.g. government body, team, project…" placeholder="مثلاً: جهة حكومية، فريق، مشروع…" id="contactOtherNote" maxlength="120" autocomplete="off">
+        </label>
+        <label class="field"><span data-ar="نوع الطلب" data-en="Request type">نوع الطلب</span>
+          <select id="contactType">
+            <option value="maintenance" data-ar="صيانة المواقع الإلكترونية" data-en="Website maintenance">صيانة المواقع الإلكترونية</option>
+            <option value="web-dev" data-ar="تطوير المواقع الإلكترونية" data-en="Website development">تطوير المواقع الإلكترونية</option>
+            <option value="programming" data-ar="خدمات البرمجة وتعديل الكود" data-en="Coding / changes">خدمات البرمجة وتعديل الكود</option>
+            <option value="inventory" data-ar="تطبيق إدارة المخزون" data-en="Inventory management app">تطبيق إدارة المخزون</option>
+            <option value="business" data-ar="نسخة المؤسسات" data-en="Institution edition">نسخة المؤسسات</option>
+            <option value="systems" data-ar="الأنظمة ولوحات التحكم" data-en="Systems and dashboards">الأنظمة ولوحات التحكم</option>
+            <option value="api" data-ar="ربط واجهات البرمجة (API)" data-en="API connections and integrations">ربط واجهات البرمجة (API)</option>
+            <option value="hardware" data-ar="أجهزة (الرياض فقط)" data-en="Hardware (Riyadh only)">أجهزة (الرياض فقط)</option>
+          </select>
+        </label>
+        <label class="field"><span data-ar="تفاصيل الطلب" data-en="Request details">تفاصيل الطلب</span>
+          <textarea required data-ar-placeholder="اكتبوا تفاصيل طلبكم باختصار" data-en-placeholder="Describe your request briefly" placeholder="اكتبوا تفاصيل طلبكم باختصار" id="contactMsg"></textarea>
+        </label>
+        <p class="hint-inline" id="contactTrustLine" style="margin:0 0 10px">
+          <span data-ar="لا نبيع بياناتكم، ونستخدمها للرد على طلبكم فقط. راجعوا " data-en="We do not sell your data and use it only to reply to your request. See ">لا نبيع بياناتكم، ونستخدمها للرد على طلبكم فقط. راجعوا </span>
+          <a href="/privacy/" data-ar="سياسة الخصوصية" data-en="Privacy Policy">سياسة الخصوصية</a>
+          <span aria-hidden="true"> · </span>
+          <a href="/terms/" id="openShortTermsLink" data-ar="ملخص الشروط" data-en="Terms summary">ملخص الشروط</a>
+        </p>
+        <label class="check" for="contactPurchaseTermsCheck">
+          <input type="checkbox" id="contactPurchaseTermsCheck" required>
+          <span class="check-text">
+            <span data-ar="أوافق على " data-en="I agree to the ">أوافق على </span>
+            <a href="/terms/#purchase" id="contactPurchaseTermsLink" data-ar="شروط شراء المنتجات" data-en="product purchase terms">شروط شراء المنتجات</a>
+            <span data-ar="." data-en=".">.</span>
+          </span>
+        </label>
+        <button class="btn btn-primary" type="submit" data-ar="إرسال الطلب" data-en="Send request">إرسال الطلب</button>
+        <div class="msg" id="contactResult" role="status" aria-live="polite"></div>
+        <div id="contactSuccessActions" style="display:none;margin-top:12px"></div>
+      </form>
+    </div>
+  </div>
+</section>
 
 <section id="services">
   <div class="wrap">
@@ -1752,7 +1793,7 @@ body.pay-paused .pay-public-entry{display:none!important}
   <div class="wrap">
     <div>
       <h3 data-ar="هل أنتم جاهزون للخطوة التالية؟" data-en="Are you ready for the next step?">هل أنتم جاهزون للخطوة التالية؟</h3>
-      <p data-ar="يمكنكم مراجعة صفحات المزايا أو مركز المساعدة، ثم إكمال نموذج الطلب أسفل الصفحة." data-en="You may review the feature pages or help center, then complete the request form at the bottom of the page.">يمكنكم مراجعة صفحات المزايا أو مركز المساعدة، ثم إكمال نموذج الطلب أسفل الصفحة.</p>
+      <p data-ar="يمكنكم مراجعة صفحات المزايا أو مركز المساعدة، ثم إكمال نموذج الطلب تحت الهيرو مباشرة." data-en="You may review the feature pages or help center, then complete the request form just below the hero.">يمكنكم مراجعة صفحات المزايا أو مركز المساعدة، ثم إكمال نموذج الطلب تحت الهيرو مباشرة.</p>
     </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
       <a class="btn btn-primary" href="#contact" data-ar="الانتقال إلى نموذج الطلب" data-en="Go to the request form">الانتقال إلى نموذج الطلب</a>
@@ -1847,8 +1888,8 @@ body.pay-paused .pay-public-entry{display:none!important}
 </section>
 
 <section id="pay" class="contact-band band-mist pay-public-entry" style="padding:88px 0">
-  <div class="wrap two-col">
-    <div class="panel reveal">
+  <div class="wrap">
+    <div class="panel reveal" style="max-width:560px">
       <h2 data-ar="سداد عربون أو دفعة" data-en="Pay a deposit">سداد عربون أو دفعة</h2>
       <p data-ar="مخصّص للعملاء المسجّلين عبر بوابة دفع مرخّصة عند تفعيل السداد." data-en="For registered clients — via a licensed payment gateway when checkout is enabled.">مخصّص للعملاء المسجّلين عبر بوابة دفع مرخّصة عند تفعيل السداد.</p>
       <div class="locked" id="payLockedMessage">
@@ -1898,72 +1939,6 @@ body.pay-paused .pay-public-entry{display:none!important}
           <button type="button" class="btn btn-primary" id="payRetryBtn" data-ar="إعادة المحاولة" data-en="Retry">إعادة المحاولة</button>
         </div>
       </div>
-    </div>
-
-    <div class="panel reveal" id="contact">
-      <h2 data-ar="اطلبوا عرض سعر" data-en="Request a quote">اطلبوا عرض سعر</h2>
-      <p data-ar="نراجع طلبكم ونردّ عليكم عبر البريد الإلكتروني أو رقم الجوال." data-en="We review your request and respond via email or phone.">نراجع طلبكم ونردّ عليكم عبر البريد الإلكتروني أو رقم الجوال.</p>
-      <p class="hint-inline" style="margin-bottom:8px" data-ar="يُتوقَّع الرد عادةً خلال يوم عمل واحد." data-en="A reply is typically expected within one business day.">يُتوقَّع الرد عادةً خلال يوم عمل واحد.</p>
-      <p class="hint-inline" style="margin-bottom:14px" data-ar="ساعات العمل المعتادة: من الأحد إلى الخميس · الرياض، المملكة العربية السعودية" data-en="Usual business hours: Sunday to Thursday · Riyadh, Saudi Arabia">ساعات العمل المعتادة: من الأحد إلى الخميس · الرياض، المملكة العربية السعودية</p>
-      <form class="form" id="contactForm" novalidate>
-        <label class="field"><span data-ar="الاسم الكامل" data-en="Full name">الاسم الكامل</span>
-          <input type="text" required data-ar-placeholder="الاسم الكامل" data-en-placeholder="Full name" placeholder="الاسم الكامل" id="contactName" autocomplete="name">
-        </label>
-        <label class="field"><span data-ar="البريد الإلكتروني" data-en="Email">البريد الإلكتروني</span>
-          <input type="email" required data-ar-placeholder="you@domain.com" data-en-placeholder="you@domain.com" placeholder="you@domain.com" id="contactEmail" autocomplete="email">
-        </label>
-        <label class="field"><span data-ar="رقم الجوال" data-en="Phone">رقم الجوال</span>
-          <input type="tel" required inputmode="tel" maxlength="20" data-ar-placeholder="05xxxxxxxx" data-en-placeholder="05xxxxxxxx" placeholder="05xxxxxxxx" id="contactPhone" autocomplete="tel">
-        </label>
-        <label class="field"><span data-ar="أقدّم الطلب بصفة" data-en="I am requesting as">أقدّم الطلب بصفة</span>
-          <select id="contactSegment" required>
-            <option value="individual" data-ar="أفراد" data-en="Individuals" selected>أفراد</option>
-            <option value="company" data-ar="شركات" data-en="Companies">شركات</option>
-            <option value="institution" data-ar="مؤسسات" data-en="Institutions">مؤسسات</option>
-            <option value="other" data-ar="أخرى" data-en="Other">أخرى</option>
-          </select>
-        </label>
-        <label class="field" id="contactCompanyField" hidden>
-          <span id="contactCompanyLabel" data-ar="اسم الشركة / المنشأة" data-en="Company / organization name">اسم الشركة / المنشأة</span>
-          <input type="text" data-ar-placeholder="اسم الشركة أو المنشأة" data-en-placeholder="Company or organization name" placeholder="اسم الشركة أو المنشأة" id="contactCompany" autocomplete="organization">
-        </label>
-        <label class="field" id="contactOtherField" hidden>
-          <span data-ar="وضّحوا باختصار" data-en="Briefly describe">وضّحوا باختصار</span>
-          <input type="text" data-ar-placeholder="مثلاً: جهة حكومية، فريق، مشروع…" data-en-placeholder="e.g. government body, team, project…" placeholder="مثلاً: جهة حكومية، فريق، مشروع…" id="contactOtherNote" maxlength="120" autocomplete="off">
-        </label>
-        <label class="field"><span data-ar="نوع الطلب" data-en="Request type">نوع الطلب</span>
-          <select id="contactType">
-            <option value="maintenance" data-ar="صيانة المواقع الإلكترونية" data-en="Website maintenance">صيانة المواقع الإلكترونية</option>
-            <option value="web-dev" data-ar="تطوير المواقع الإلكترونية" data-en="Website development">تطوير المواقع الإلكترونية</option>
-            <option value="programming" data-ar="خدمات البرمجة وتعديل الكود" data-en="Coding / changes">خدمات البرمجة وتعديل الكود</option>
-            <option value="inventory" data-ar="تطبيق إدارة المخزون" data-en="Inventory management app">تطبيق إدارة المخزون</option>
-            <option value="business" data-ar="نسخة المؤسسات" data-en="Institution edition">نسخة المؤسسات</option>
-            <option value="systems" data-ar="الأنظمة ولوحات التحكم" data-en="Systems and dashboards">الأنظمة ولوحات التحكم</option>
-            <option value="api" data-ar="ربط واجهات البرمجة (API)" data-en="API connections and integrations">ربط واجهات البرمجة (API)</option>
-            <option value="hardware" data-ar="أجهزة (الرياض فقط)" data-en="Hardware (Riyadh only)">أجهزة (الرياض فقط)</option>
-          </select>
-        </label>
-        <label class="field"><span data-ar="تفاصيل الطلب" data-en="Request details">تفاصيل الطلب</span>
-          <textarea required data-ar-placeholder="اكتبوا تفاصيل طلبكم باختصار" data-en-placeholder="Describe your request briefly" placeholder="اكتبوا تفاصيل طلبكم باختصار" id="contactMsg"></textarea>
-        </label>
-        <p class="hint-inline" id="contactTrustLine" style="margin:0 0 10px">
-          <span data-ar="لا نبيع بياناتكم، ونستخدمها للرد على طلبكم فقط. راجعوا " data-en="We do not sell your data and use it only to reply to your request. See ">لا نبيع بياناتكم، ونستخدمها للرد على طلبكم فقط. راجعوا </span>
-          <a href="/privacy/" data-ar="سياسة الخصوصية" data-en="Privacy Policy">سياسة الخصوصية</a>
-          <span aria-hidden="true"> · </span>
-          <a href="/terms/" id="openShortTermsLink" data-ar="ملخص الشروط" data-en="Terms summary">ملخص الشروط</a>
-        </p>
-        <label class="check" for="contactPurchaseTermsCheck">
-          <input type="checkbox" id="contactPurchaseTermsCheck" required>
-          <span class="check-text">
-            <span data-ar="أوافق على " data-en="I agree to the ">أوافق على </span>
-            <a href="/terms/#purchase" id="contactPurchaseTermsLink" data-ar="شروط شراء المنتجات" data-en="product purchase terms">شروط شراء المنتجات</a>
-            <span data-ar="." data-en=".">.</span>
-          </span>
-        </label>
-        <button class="btn btn-primary" type="submit" data-ar="إرسال الطلب" data-en="Send request">إرسال الطلب</button>
-        <div class="msg" id="contactResult" role="status" aria-live="polite"></div>
-        <div id="contactSuccessActions" style="display:none;margin-top:12px"></div>
-      </form>
     </div>
   </div>
 </section>
@@ -2305,74 +2280,15 @@ body.pay-paused .pay-public-entry{display:none!important}
     setModalOpenState(document.getElementById('guestQuoteModal'), false);
   }
 
-  function heroNeedsOrg(type){
-    return type === 'business' || type === 'institution';
-  }
-
-  function syncHeroCompanyVisibility(type){
-    const field = document.getElementById('heroContactCompanyField');
-    const input = document.getElementById('heroContactCompany');
-    const needs = heroNeedsOrg(type || (document.getElementById('heroQuoteType') && document.getElementById('heroQuoteType').value));
-    if (field) field.hidden = !needs;
-    if (input) input.required = !!needs;
-  }
-
-  function revealHeroContactPanel(opts){
-    const panel = document.getElementById('heroContactPanel');
-    if (!panel) return false;
-    const type = (opts && opts.type) || (document.getElementById('heroQuoteType') && document.getElementById('heroQuoteType').value) || 'programming';
-    syncHeroCompanyVisibility(type);
-    const draft = readContactDraft() || {};
-    const setIfEmpty = (id, value) => {
-      const el = document.getElementById(id);
-      if (el && !el.value.trim() && value) el.value = value;
-    };
-    setIfEmpty('heroContactName', (document.getElementById('contactName') && document.getElementById('contactName').value) || draft.name || '');
-    setIfEmpty('heroContactEmail', (document.getElementById('contactEmail') && document.getElementById('contactEmail').value) || draft.email || '');
-    setIfEmpty('heroContactPhone', (document.getElementById('contactPhone') && document.getElementById('contactPhone').value) || draft.phone || '');
-    setIfEmpty('heroContactCompany', (opts && opts.company) || (document.getElementById('contactCompany') && document.getElementById('contactCompany').value) || draft.company || '');
-    const title = document.getElementById('heroContactTitle');
-    if (title) {
-      title.textContent = t('نموذج طلب السعر — أكملوا البيانات تحت واضغطوا إرسال', 'Quote form — complete the fields below and press Send');
-    }
-    const msg = document.getElementById('heroContactMsg');
-    if (msg) { msg.textContent = ''; msg.style.color = ''; }
-    panel.classList.add('is-open');
+  function highlightContactForm(){
+    const panel = document.getElementById('contact');
+    if (!panel) return;
+    panel.classList.add('contact-focus');
     panel.classList.remove('is-pulse');
     void panel.offsetWidth;
     panel.classList.add('is-pulse');
-    setTimeout(() => panel.classList.remove('is-pulse'), 1000);
-    scrollToEl(panel, { block: 'center' });
-    const btn = document.getElementById('heroQuoteBtn');
-    if (btn) {
-      btn.setAttribute('data-ar', 'إرسال الطلب');
-      btn.setAttribute('data-en', 'Send request');
-      btn.textContent = t('إرسال الطلب', 'Send request');
-    }
-    try {
-      const nameEl = document.getElementById('heroContactName');
-      const companyEl = document.getElementById('heroContactCompany');
-      const emailEl = document.getElementById('heroContactEmail');
-      const phoneEl = document.getElementById('heroContactPhone');
-      if (nameEl && !nameEl.value.trim()) nameEl.focus();
-      else if (heroNeedsOrg(type) && companyEl && !companyEl.value.trim()) companyEl.focus();
-      else if (emailEl && !emailEl.value.trim()) emailEl.focus();
-      else if (phoneEl && !phoneEl.value.trim()) phoneEl.focus();
-    } catch (_) {}
-    return true;
-  }
-
-  function applyHeroContactToForm(){
-    const name = (document.getElementById('heroContactName') && document.getElementById('heroContactName').value.trim()) || '';
-    const email = (document.getElementById('heroContactEmail') && document.getElementById('heroContactEmail').value.trim()) || '';
-    const phone = (document.getElementById('heroContactPhone') && document.getElementById('heroContactPhone').value.trim()) || '';
-    const company = (document.getElementById('heroContactCompany') && document.getElementById('heroContactCompany').value.trim()) || '';
-    const setVal = (id, v) => { const el = document.getElementById(id); if (el && v) el.value = v; };
-    setVal('contactName', name);
-    setVal('contactEmail', email);
-    setVal('contactPhone', phone);
-    if (company) setVal('contactCompany', company);
-    return { name, email, phone, company };
+    setTimeout(() => panel.classList.remove('is-pulse'), 1200);
+    scrollToEl(panel, { block: 'start' });
   }
 
   function openGuestQuoteModal(opts){
@@ -2462,7 +2378,7 @@ body.pay-paused .pay-public-entry{display:none!important}
     }
     if (opts.company && companyEl && !companyEl.value.trim()) companyEl.value = opts.company;
     syncCompanyFieldForSegment(getContactSegment());
-    scrollToEl(document.getElementById('contact'), { block: 'start' });
+    highlightContactForm();
     const needsOrg = getContactSegment() === 'company' || getContactSegment() === 'institution';
     const focusEl = (nameEl && !nameEl.value.trim())
       ? nameEl
@@ -2684,13 +2600,19 @@ body.pay-paused .pay-public-entry{display:none!important}
       || (loggedInUser && loggedInUser.user_metadata && loggedInUser.user_metadata.full_name)
       || '';
     const guestReady = !!(fullName && isUsableEmail(email) && isUsablePhone(phone) && (!needsCompany || company));
-    // Guests: from hero → expand visible contact panel under the hero (no buried form).
-    // From elsewhere → guest modal. Never leave a vague “complete the form” button.
+    // Guests missing details: scroll to the form below (hero) or open quick modal (elsewhere).
     if ((!loggedInUser && !guestReady) || (needsCompany && !company) || !Catalog || !Catalog.addSharedRequest) {
-      if (!loggedInUser && Catalog && Catalog.addSharedRequest) {
-        if (opts.focusHero && revealHeroContactPanel({ type, message, company })) {
-          return { ok: false, heroContact: true };
+      if (opts.focusHero) {
+        requestFromCatalog({ type, message, company, segment });
+        highlightContactForm();
+        const resultEl = document.getElementById('contactResult');
+        if (resultEl) {
+          resultEl.style.color = 'var(--copper)';
+          resultEl.textContent = t('النموذج هنا تحت — أكملوا البيانات ثم اضغطوا إرسال الطلب', 'The form is here below — complete the details, then send the request');
         }
+        return { ok: false, redirected: true };
+      }
+      if (!loggedInUser && Catalog && Catalog.addSharedRequest) {
         const segForModal = (type === 'business' || type === 'institution')
           ? ((segment === 'company') ? 'company' : 'institution')
           : segment;
@@ -2698,6 +2620,7 @@ body.pay-paused .pay-public-entry{display:none!important}
         return { ok: false, guestModal: true };
       }
       requestFromCatalog({ type, message, company, segment });
+      highlightContactForm();
       const resultEl = document.getElementById('contactResult');
       if (resultEl) {
         resultEl.style.color = 'var(--muted)';
@@ -2817,7 +2740,7 @@ body.pay-paused .pay-public-entry{display:none!important}
     const message = document.getElementById('heroQuoteMsg').value.trim();
     if (!message) return;
     if (maintenanceBlocksSubmit(document.getElementById('contactResult'))) {
-      scrollToEl(document.getElementById('contact'), { block: 'start' });
+      highlightContactForm();
       return;
     }
     if (!purchaseTermsAccepted()) {
@@ -2825,72 +2748,29 @@ body.pay-paused .pay-public-entry{display:none!important}
       return;
     }
     syncPurchaseTermsChecks(true);
-    const panel = document.getElementById('heroContactPanel');
-    const panelOpen = !!(panel && panel.classList.contains('is-open'));
-    const heroContact = applyHeroContactToForm();
-    const needsOrg = heroNeedsOrg(type);
-    if (needsOrg) setContactSegment('institution');
-    const heroMsg = document.getElementById('heroContactMsg');
-    if (!panelOpen || !heroContact.name || !isUsableEmail(heroContact.email) || !isUsablePhone(heroContact.phone) || (needsOrg && !heroContact.company)) {
-      revealHeroContactPanel({ type, message, company: heroContact.company });
-      if (heroMsg) {
-        heroMsg.style.color = 'var(--sand)';
-        if (!heroContact.name) heroMsg.textContent = t('أكملوا الاسم في النموذج الظاهر تحت', 'Complete your name in the form shown below');
-        else if (needsOrg && !heroContact.company) heroMsg.textContent = t('أدخلوا اسم المؤسسة ثم أرسلوا', 'Enter the organization name, then send');
-        else if (!isUsableEmail(heroContact.email)) heroMsg.textContent = t('أدخلوا بريداً صالحاً ثم أرسلوا', 'Enter a valid email, then send');
-        else if (!isUsablePhone(heroContact.phone)) heroMsg.textContent = t('أدخلوا رقم جوال صالح ثم أرسلوا', 'Enter a valid phone, then send');
-        else heroMsg.textContent = t('أكملوا الحقول الظاهرة ثم اضغطوا إرسال الطلب', 'Complete the fields shown, then press Send request');
-      }
-      return;
-    }
+    if (type === 'business' || type === 'institution') setContactSegment('institution');
     const btn = document.getElementById('heroQuoteBtn');
     if (btn.getAttribute('aria-busy') === 'true') return;
     btn.disabled = true;
     btn.setAttribute('aria-busy', 'true');
-    btn.textContent = t('جاري الإرسال...', 'Sending...');
-    if (heroMsg) {
-      heroMsg.style.color = 'rgba(244,247,250,.8)';
-      heroMsg.textContent = t('جاري إرسال الطلب...', 'Sending request...');
-    }
+    btn.textContent = t('جاري التجهيز...', 'Preparing...');
     try {
-      const result = await submitCatalogQuote({
-        type,
-        message,
-        focusHero: true,
-        company: heroContact.company,
-        segment: needsOrg ? 'institution' : undefined
-      });
+      const result = await submitCatalogQuote({ type, message, focusHero: true });
       if (result && result.needPurchaseTerms) {
         restoreQuoteBtn(btn);
-        return;
-      }
-      if (result && result.heroContact) {
-        restoreQuoteBtn(btn);
-        btn.setAttribute('data-ar', 'إرسال الطلب');
-        btn.setAttribute('data-en', 'Send request');
-        btn.textContent = t('إرسال الطلب', 'Send request');
         return;
       }
       if (result && result.ok) {
         btn.classList.add('sent');
         btn.textContent = t('تم الإرسال', 'Sent');
-        if (heroMsg) {
-          heroMsg.style.color = 'var(--ok)';
-          heroMsg.textContent = t('تم إرسال الطلب — نرد على بريدكم أو جوالكم.', 'Request sent — we will reply on your email or phone.');
-        }
         setTimeout(() => restoreQuoteBtn(btn), 2200);
       } else if (result && result.saved) {
         btn.textContent = t('حُفظ الطلب', 'Request saved');
-        if (heroMsg) {
-          heroMsg.style.color = 'rgba(244,247,250,.9)';
-          heroMsg.textContent = t('حُفظ الطلب — يمكن المتابعة لاحقاً بدون حساب.', 'Request saved — you can continue later without an account.');
-        }
         setTimeout(() => restoreQuoteBtn(btn), 2200);
-      } else if (result && result.guestModal) {
+      } else if (result && (result.redirected || result.guestModal || result.heroContact)) {
         restoreQuoteBtn(btn);
-      } else if (result && result.redirected) {
-        restoreQuoteBtn(btn);
-        revealHeroContactPanel({ type, message, company: heroContact.company });
+        btn.textContent = t('أكملوا النموذج تحت ↓', 'Complete the form below ↓');
+        setTimeout(() => restoreQuoteBtn(btn), 2600);
       } else {
         restoreQuoteBtn(btn);
       }
@@ -2899,17 +2779,6 @@ body.pay-paused .pay-public-entry{display:none!important}
     }
   });
 
-  const heroTypeEl = document.getElementById('heroQuoteType');
-  if (heroTypeEl) {
-    heroTypeEl.addEventListener('change', () => {
-      syncHeroCompanyVisibility(heroTypeEl.value);
-      const panel = document.getElementById('heroContactPanel');
-      if (panel && panel.classList.contains('is-open')) {
-        revealHeroContactPanel({ type: heroTypeEl.value });
-      }
-    });
-  }
-
   const heroOpenFullForm = document.getElementById('heroOpenFullForm');
   if (heroOpenFullForm) {
     heroOpenFullForm.addEventListener('click', (e) => {
@@ -2917,6 +2786,7 @@ body.pay-paused .pay-public-entry{display:none!important}
       const type = document.getElementById('heroQuoteType').value;
       const message = document.getElementById('heroQuoteMsg').value.trim();
       requestFromCatalog({ type, message });
+      highlightContactForm();
     });
   }
 
@@ -4612,7 +4482,6 @@ body.pay-paused .pay-public-entry{display:none!important}
   });
   restorePurchaseTermsChecks();
   restoreAuthTermsChecks();
-  syncHeroCompanyVisibility(document.getElementById('heroQuoteType') && document.getElementById('heroQuoteType').value);
   if (PUBLIC_PAY_ENABLED) {
     const payNote = document.getElementById('payPurchaseTermsNote');
     const payLabel = document.getElementById('payPurchaseTermsLabel');
