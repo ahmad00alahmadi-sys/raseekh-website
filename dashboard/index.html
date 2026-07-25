@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl" id="htmlRoot">
 <head>
 <script>
-(function(){try{var t=localStorage.getItem("raseekh_theme");document.documentElement.setAttribute("data-theme",t==="night"||t==="dark"?"night":"base");}catch(e){document.documentElement.setAttribute("data-theme","base");}})();
+(function(){try{var t=localStorage.getItem("raseekh_theme");document.documentElement.setAttribute("data-theme",t==="soft"?"soft":"base");}catch(e){document.documentElement.setAttribute("data-theme","base");}})();
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -306,6 +306,9 @@ body.is-client .home-bar{
 .crumb span{color:var(--copper)}
 .top-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .nav-prefs{display:inline-flex;align-items:center;gap:6px}
+.theme-switch{display:inline-flex;align-items:stretch;border:1.5px solid var(--line);border-radius:var(--radius);background:var(--ghost-bg,rgba(247,249,252,.8));overflow:hidden;padding:2px;gap:2px}
+.theme-switch [data-theme-set]{border:0;background:transparent;color:var(--muted);font:inherit;font-size:.74rem;font-weight:700;padding:7px 10px;border-radius:calc(var(--radius) - 2px);cursor:pointer;min-width:3.4rem}
+.theme-switch [data-theme-set].is-active,.theme-switch [data-theme-set][aria-pressed="true"]{background:var(--panel);color:var(--harbor)}
 .lang-btn,.theme-btn,.clock{
   border:1.5px solid var(--line);background:var(--panel);border-radius:var(--radius);
   padding:9px 12px;font-size:.82rem;font-weight:700;cursor:pointer;color:var(--ink);min-width:3.2rem;
@@ -455,7 +458,10 @@ body.is-client .home-bar{
       <div class="logo" data-ar-html='را<em>سخ</em>' data-en-html='Ra<em>seekh</em>'>را<em>سخ</em></div>
       <div class="nav-prefs" role="group" data-ar-aria="اللغة والمظهر" data-en-aria="Language and theme" aria-label="اللغة والمظهر">
         <button class="lang-btn" id="loginLangBtn" type="button">EN</button>
-        <button class="lang-btn theme-btn" type="button" data-theme-toggle data-ar="ليلي" data-en="Night" aria-pressed="true" aria-label="تفعيل النظام الليلي">ليلي</button>
+        <div class="theme-switch" role="group" data-ar-aria="اختيار المظهر" data-en-aria="Choose look" aria-label="اختيار المظهر">
+          <button type="button" data-theme-set="base" class="is-active" aria-pressed="true" data-ar="أساسي" data-en="Base">أساسي</button>
+          <button type="button" data-theme-set="soft" aria-pressed="false" data-ar="ناعم" data-en="Soft">ناعم</button>
+        </div>
       </div>
     </div>
     <p class="sub" data-ar="سجّل كعميل لمتابعة الطلبات والاقتراحات. التعديل مخصص لحساب الإدارة فقط." data-en="Sign in as a client to follow requests and suggestions. Editing is admin-only.">سجّل كعميل لمتابعة الطلبات والاقتراحات. التعديل مخصص لحساب الإدارة فقط.</p>
@@ -565,7 +571,10 @@ body.is-client .home-bar{
       <div class="clock" id="dashClock">—</div>
       <div class="nav-prefs" role="group" data-ar-aria="اللغة والمظهر" data-en-aria="Language and theme" aria-label="اللغة والمظهر">
         <button class="lang-btn" id="dashLangBtn" type="button">EN</button>
-        <button class="lang-btn theme-btn" type="button" data-theme-toggle data-ar="ليلي" data-en="Night" aria-pressed="true" aria-label="تفعيل النظام الليلي">ليلي</button>
+        <div class="theme-switch" role="group" data-ar-aria="اختيار المظهر" data-en-aria="Choose look" aria-label="اختيار المظهر">
+          <button type="button" data-theme-set="base" class="is-active" aria-pressed="true" data-ar="أساسي" data-en="Base">أساسي</button>
+          <button type="button" data-theme-set="soft" aria-pressed="false" data-ar="ناعم" data-en="Soft">ناعم</button>
+        </div>
       </div>
       <button class="btn btn-ghost client-only" id="viewTermsBtn" type="button" data-ar="الشروط" data-en="Terms">الشروط</button>
       <a class="btn btn-ghost" href="/" data-ar="الصفحة الرئيسية" data-en="Home">الصفحة الرئيسية</a>

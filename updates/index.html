@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <script>
-(function(){try{var t=localStorage.getItem("raseekh_theme");document.documentElement.setAttribute("data-theme",t==="night"||t==="dark"?"night":"base");}catch(e){document.documentElement.setAttribute("data-theme","base");}})();
+(function(){try{var t=localStorage.getItem("raseekh_theme");document.documentElement.setAttribute("data-theme",t==="soft"?"soft":"base");}catch(e){document.documentElement.setAttribute("data-theme","base");}})();
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -27,7 +27,10 @@
       <div class="actions">
       <div class="nav-prefs" role="group" data-ar-aria="اللغة والمظهر" data-en-aria="Language and theme" aria-label="اللغة والمظهر">
         <button class="lang-btn" id="langToggle" type="button">EN</button>
-        <button class="lang-btn theme-btn" type="button" data-theme-toggle data-ar="ليلي" data-en="Night" aria-pressed="true" aria-label="تفعيل النظام الليلي">ليلي</button>
+        <div class="theme-switch" role="group" data-ar-aria="اختيار المظهر" data-en-aria="Choose look" aria-label="اختيار المظهر">
+          <button type="button" data-theme-set="base" class="is-active" aria-pressed="true" data-ar="أساسي" data-en="Base">أساسي</button>
+          <button type="button" data-theme-set="soft" aria-pressed="false" data-ar="ناعم" data-en="Soft">ناعم</button>
+        </div>
       </div>
         <a class="btn btn-ghost" href="/help/" data-ar="المساعدة" data-en="Help">المساعدة</a>
         <a class="btn btn-ghost" href="/#contact" data-ar="اطلب عرض سعر" data-en="Request a quote">اطلب عرض سعر</a>
@@ -37,7 +40,13 @@
       <div class="eyebrow" data-ar="تحديثات" data-en="Updates">تحديثات</div>
       <h1 class="hero-title" data-ar="المنتج يتطور باستمرار" data-en="The product keeps evolving">المنتج يتطور باستمرار</h1>
       <p class="lead" data-ar="ملخص إصدارات واضحة — ماذا أضفنا وماذا حسّنّا." data-en="Clear release notes — what we added and improved.">ملخص إصدارات واضحة — ماذا أضفنا وماذا حسّنّا.</p>
-                              <article class="card" style="margin-bottom:12px">
+                                    <article class="card" style="margin-bottom:12px">
+    <h2>v76</h2>
+    <ul>
+      <li data-ar="بدل الوضع الليلي: اختيار مظهر أوضح بجانب اللغة — أساسي أو ناعم." data-en="Instead of night mode: a clearer look chooser beside language — Base or Soft.">بدل الوضع الليلي: اختيار مظهر أوضح بجانب اللغة — أساسي أو ناعم.</li>
+    </ul>
+  </article>
+  <article class="card" style="margin-bottom:12px">
     <h2>v75</h2>
     <ul>
       <li data-ar="زر المظهر (ليلي/أساسي) ظاهر مباشرة بجانب زر اللغة في الهيدر." data-en="Theme toggle (Night/Base) sits directly beside the language button in the header.">زر المظهر (ليلي/أساسي) ظاهر مباشرة بجانب زر اللغة في الهيدر.</li>

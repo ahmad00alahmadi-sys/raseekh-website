@@ -1,5 +1,4 @@
-/* Raseekh themes: base (default / أساسي) + night (ليلي)
-   Full surface remapping — not a single accent swap. */
+/* Raseekh themes: base (أساسي) + soft (ناعم) — full surface remap, no night mode. */
 :root,
 html[data-theme="base"],
 html[data-theme="white"]{
@@ -31,33 +30,32 @@ html[data-theme="white"]{
   color-scheme:light;
 }
 
-html[data-theme="night"],
-html[data-theme="dark"]{
-  --ink:#E8EEF6;
-  --navy:#C5D4E4;
-  --harbor:#5BB8C4;
-  --copper:#E8894F;
+html[data-theme="soft"]{
+  --ink:#10233A;
+  --navy:#16324F;
+  --harbor:#2A6F7A;
+  --copper:#C45C26;
   --sand:#E8A05A;
-  --bg:#0B1219;
-  --panel:#141C26;
-  --mist:#1A2430;
-  --line:#2C3948;
-  --muted:#9AABC0;
-  --danger:#F97066;
-  --ok:#3DDC97;
-  --shadow:0 20px 44px -22px rgba(0,0,0,.7);
-  --header-bg:rgba(11,18,25,.94);
-  --surface-tint:#0F1620;
-  --ghost-bg:rgba(26,36,48,.85);
-  --elevated:#1A2430;
-  --chip:#1F2B38;
-  --table-head:#182230;
+  --bg:#E8EDF2;
+  --panel:#F7F9FC;
+  --mist:#D5DEE8;
+  --line:#B8C4D1;
+  --muted:#5A6B7C;
+  --danger:#B42318;
+  --ok:#1F7A58;
+  --shadow:0 18px 40px -28px rgba(16,35,58,.45);
+  --header-bg:rgba(232,237,242,.9);
+  --surface-tint:#F0F4F8;
+  --ghost-bg:rgba(247,249,252,.88);
+  --elevated:#FFFFFF;
+  --chip:#E8EDF2;
+  --table-head:#EEF3F7;
   --forest:var(--navy);
   --leaf:var(--harbor);
   --brass:var(--copper);
   --on-dark:#F4F7FA;
-  --hairline:rgba(255,255,255,.08);
-  color-scheme:dark;
+  --hairline:rgba(16,35,58,.1);
+  color-scheme:light;
 }
 
 /* Atmosphere */
@@ -71,22 +69,51 @@ html[data-theme="white"] body::before{
 html[data-theme="base"] body::after,
 html[data-theme="white"] body::after{opacity:.1 !important}
 
-html[data-theme="night"] body::before,
-html[data-theme="dark"] body::before{
+html[data-theme="soft"] body::before{
   background:
-    radial-gradient(ellipse 75% 48% at 100% 0%, rgba(232,137,79,.14), transparent 55%),
-    radial-gradient(ellipse 65% 42% at 0% 12%, rgba(91,184,196,.12), transparent 50%),
-    linear-gradient(180deg,#070C12 0%, var(--bg) 42%, var(--surface-tint) 100%) !important;
+    radial-gradient(ellipse 80% 50% at 100% -10%, rgba(196,92,38,.14), transparent 55%),
+    radial-gradient(ellipse 70% 45% at -10% 20%, rgba(42,111,122,.14), transparent 50%),
+    linear-gradient(165deg,#DCE4EC 0%, var(--bg) 42%, var(--surface-tint) 100%) !important;
 }
-html[data-theme="night"] body::after,
-html[data-theme="dark"] body::after{
-  opacity:.14 !important;
-  background-image:
-    linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px) !important;
-}
+html[data-theme="soft"] body::after{opacity:.18 !important}
 
-.nav-prefs{display:inline-flex;align-items:center;gap:6px;flex:0 0 auto}
+/* Prefs cluster beside language */
+.nav-prefs{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  flex:0 0 auto;
+}
+.theme-switch{
+  display:inline-flex;
+  align-items:stretch;
+  border:1.5px solid var(--line);
+  border-radius:var(--radius);
+  background:var(--ghost-bg);
+  overflow:hidden;
+  padding:2px;
+  gap:2px;
+}
+.theme-switch [data-theme-set]{
+  border:0;
+  background:transparent;
+  color:var(--muted);
+  font:inherit;
+  font-size:.74rem;
+  font-weight:700;
+  padding:7px 10px;
+  border-radius:calc(var(--radius) - 2px);
+  cursor:pointer;
+  min-width:3.4rem;
+  line-height:1.2;
+}
+.theme-switch [data-theme-set]:hover{color:var(--ink)}
+.theme-switch [data-theme-set].is-active,
+.theme-switch [data-theme-set][aria-pressed="true"]{
+  background:var(--panel);
+  color:var(--harbor);
+  box-shadow:0 1px 0 rgba(16,35,58,.06);
+}
 .theme-btn{
   border:1.5px solid var(--line);
   background:var(--ghost-bg);
@@ -103,265 +130,51 @@ html[data-theme="dark"] body::after{
   border-color:rgba(42,111,122,.45);
   color:var(--harbor);
 }
-html[data-theme="night"] .theme-btn[aria-pressed="true"],
-html[data-theme="dark"] .theme-btn[aria-pressed="true"]{
-  border-color:rgba(91,184,196,.55);
-  color:var(--harbor);
+
+html[data-theme="soft"] .theme-switch{
+  background:rgba(255,255,255,.55);
+}
+html[data-theme="soft"] .theme-switch [data-theme-set].is-active,
+html[data-theme="soft"] .theme-switch [data-theme-set][aria-pressed="true"]{
+  background:#fff;
+  color:var(--copper);
 }
 
-/* —— Night: remapped surfaces sitewide —— */
-html[data-theme="night"] body,
-html[data-theme="dark"] body{
-  background:var(--bg) !important;
-  color:var(--ink);
-}
-
-html[data-theme="night"] header,
-html[data-theme="dark"] header,
-html[data-theme="night"] .site-header,
-html[data-theme="dark"] .site-header{
-  background:var(--header-bg) !important;
-  border-bottom-color:var(--hairline) !important;
-}
-
-html[data-theme="night"] .logo,
-html[data-theme="dark"] .logo{color:var(--ink)}
-
-html[data-theme="night"] .lang-btn,
-html[data-theme="dark"] .lang-btn,
-html[data-theme="night"] .btn-ghost,
-html[data-theme="dark"] .btn-ghost{
-  background:var(--ghost-bg) !important;
-  border-color:var(--line) !important;
-  color:var(--ink) !important;
-}
-html[data-theme="night"] .btn-ghost:hover,
-html[data-theme="dark"] .btn-ghost:hover{
-  background:var(--mist) !important;
-  border-color:var(--harbor) !important;
-  color:var(--harbor) !important;
-}
-html[data-theme="night"] .btn-navy,
-html[data-theme="dark"] .btn-navy{
-  background:#1E3A54 !important;
-  color:var(--on-dark) !important;
-}
-html[data-theme="night"] .btn-navy:hover,
-html[data-theme="dark"] .btn-navy:hover{
-  background:#274A68 !important;
-}
-
-html[data-theme="night"] .panel,
-html[data-theme="dark"] .panel,
-html[data-theme="night"] .login-card,
-html[data-theme="dark"] .login-card,
-html[data-theme="night"] .card,
-html[data-theme="dark"] .card,
-html[data-theme="night"] .stat,
-html[data-theme="dark"] .stat,
-html[data-theme="night"] .service-block,
-html[data-theme="dark"] .service-block,
-html[data-theme="night"] .suggest-card,
-html[data-theme="dark"] .suggest-card,
-html[data-theme="night"] .faq-item,
-html[data-theme="dark"] .faq-item,
-html[data-theme="night"] .browser-chrome,
-html[data-theme="dark"] .browser-chrome,
-html[data-theme="night"] .tour-panel,
-html[data-theme="dark"] .tour-panel,
-html[data-theme="night"] .trust-proof,
-html[data-theme="dark"] .trust-proof,
-html[data-theme="night"] .plan-card,
-html[data-theme="dark"] .plan-card,
-html[data-theme="night"] .feature-card,
-html[data-theme="dark"] .feature-card{
-  background:var(--panel) !important;
-  border-color:var(--line) !important;
-  color:var(--ink);
+/* Soft remaps for hardcoded light-only surfaces */
+html[data-theme="soft"] .panel,
+html[data-theme="soft"] .card,
+html[data-theme="soft"] .login-card,
+html[data-theme="soft"] .stat,
+html[data-theme="soft"] .service-block,
+html[data-theme="soft"] .faq-item,
+html[data-theme="soft"] .suggest-card{
+  background:var(--panel);
+  border-color:var(--line);
   box-shadow:var(--shadow);
 }
-
-html[data-theme="night"] .service-block:hover,
-html[data-theme="dark"] .service-block:hover,
-html[data-theme="night"] .card:hover,
-html[data-theme="dark"] .card:hover{
-  background:var(--elevated) !important;
+html[data-theme="soft"] header,
+html[data-theme="soft"] .site-header{
+  background:var(--header-bg);
+  border-bottom-color:var(--hairline);
 }
-
-html[data-theme="night"] input,
-html[data-theme="dark"] input,
-html[data-theme="night"] textarea,
-html[data-theme="dark"] textarea,
-html[data-theme="night"] select,
-html[data-theme="dark"] select,
-html[data-theme="night"] .field input,
-html[data-theme="dark"] .field input,
-html[data-theme="night"] .field textarea,
-html[data-theme="dark"] .field textarea,
-html[data-theme="night"] .field select,
-html[data-theme="dark"] .field select,
-html[data-theme="night"] .tabs,
-html[data-theme="dark"] .tabs{
-  background:var(--mist) !important;
-  color:var(--ink) !important;
-  border-color:var(--line) !important;
-}
-
-html[data-theme="night"] table th,
-html[data-theme="dark"] table th{
-  background:var(--table-head) !important;
-  color:var(--ink);
-}
-html[data-theme="night"] table td,
-html[data-theme="dark"] table td{
-  border-color:var(--line) !important;
-  color:var(--ink);
-}
-
-html[data-theme="night"] .chip,
-html[data-theme="dark"] .chip,
-html[data-theme="night"] .tag,
-html[data-theme="dark"] .tag,
-html[data-theme="night"] .badge,
-html[data-theme="dark"] .badge{
-  background:var(--chip) !important;
-  color:var(--ink) !important;
-  border-color:var(--line) !important;
-}
-
-html[data-theme="night"] .nav-links a:hover,
-html[data-theme="dark"] .nav-links a:hover,
-html[data-theme="night"] .nav-links a.is-active,
-html[data-theme="dark"] .nav-links a.is-active{
-  color:var(--sand) !important;
-}
-
-html[data-theme="night"] h1,
-html[data-theme="dark"] h1,
-html[data-theme="night"] h2,
-html[data-theme="dark"] h2,
-html[data-theme="night"] h3,
-html[data-theme="dark"] h3,
-html[data-theme="night"] .topbar h1,
-html[data-theme="dark"] .topbar h1{
-  color:var(--ink);
-}
-
-html[data-theme="night"] .hero-visual::after,
-html[data-theme="dark"] .hero-visual::after{
-  background:linear-gradient(180deg, transparent, var(--bg)) !important;
-}
-
-html[data-theme="night"] .hero-quote select option,
-html[data-theme="dark"] .hero-quote select option{
-  background:var(--panel);
-  color:var(--ink);
-}
-
-html[data-theme="night"] .clock,
-html[data-theme="dark"] .clock{
+html[data-theme="soft"] .lang-btn,
+html[data-theme="soft"] .btn-ghost{
   background:var(--ghost-bg);
   border-color:var(--line);
-  color:var(--muted);
 }
-
-html[data-theme="night"] .main,
-html[data-theme="dark"] .main{
-  color:var(--ink);
-}
-
-html[data-theme="night"] .home-bar,
-html[data-theme="dark"] .home-bar,
-html[data-theme="night"] .demo-banner,
-html[data-theme="dark"] .demo-banner{
-  background:var(--mist) !important;
-  border-color:var(--line) !important;
-  color:var(--ink);
-}
-
-html[data-theme="night"] .tab,
-html[data-theme="dark"] .tab{
-  background:var(--mist);
-  color:var(--muted);
-}
-html[data-theme="night"] .tab.active,
-html[data-theme="dark"] .tab.active{
-  background:#1E3A54 !important;
-  color:var(--on-dark) !important;
-}
-
-html[data-theme="night"] .band-mist,
-html[data-theme="dark"] .band-mist{
-  background:rgba(26,36,48,.55) !important;
-}
-html[data-theme="night"] .nav-links,
-html[data-theme="dark"] .nav-links{
-  background:var(--panel);
-  border-color:var(--line);
-}
-html[data-theme="night"] .ui-mock,
-html[data-theme="dark"] .ui-mock,
-html[data-theme="night"] .ui-mock-kpis b,
-html[data-theme="dark"] .ui-mock-kpis b,
-html[data-theme="night"] .ui-mock-table span,
-html[data-theme="dark"] .ui-mock-table span{
-  background:var(--panel) !important;
-  border-color:var(--line) !important;
-  color:var(--ink);
-}
-html[data-theme="night"] .ui-mock-side i,
-html[data-theme="dark"] .ui-mock-side i{
-  background:rgba(255,255,255,.12) !important;
-}
-html[data-theme="night"] .product-card,
-html[data-theme="dark"] .product-card,
-html[data-theme="night"] .catalog-card,
-html[data-theme="dark"] .catalog-card,
-html[data-theme="night"] .rail-card,
-html[data-theme="dark"] .rail-card,
-html[data-theme="night"] .now-item,
-html[data-theme="dark"] .now-item,
-html[data-theme="night"] .work-item,
-html[data-theme="dark"] .work-item,
-html[data-theme="night"] footer,
-html[data-theme="dark"] footer,
-html[data-theme="night"] .site-foot,
-html[data-theme="dark"] .site-foot,
-html[data-theme="night"] .page-legal-foot,
-html[data-theme="dark"] .page-legal-foot{
+html[data-theme="soft"] input,
+html[data-theme="soft"] textarea,
+html[data-theme="soft"] select{
+  background:var(--elevated);
   border-color:var(--line);
   color:var(--ink);
 }
-html[data-theme="night"] .msg,
-html[data-theme="dark"] .msg,
-html[data-theme="night"] .hint-inline,
-html[data-theme="dark"] .hint-inline,
-html[data-theme="night"] .crumb,
-html[data-theme="dark"] .crumb,
-html[data-theme="night"] .lead,
-html[data-theme="dark"] .lead{
-  color:var(--muted);
-}
-html[data-theme="night"] .faq-item summary,
-html[data-theme="dark"] .faq-item summary,
-html[data-theme="night"] .voice-who h3,
-html[data-theme="dark"] .voice-who h3{
-  color:var(--ink) !important;
-}
-html[data-theme="night"] .carousel-btn,
-html[data-theme="dark"] .carousel-btn,
-html[data-theme="night"] .snap-arrow,
-html[data-theme="dark"] .snap-arrow{
-  background:var(--panel) !important;
-  border-color:var(--line) !important;
-  color:var(--ink) !important;
-}
 
-/* Smooth theme crossfade on root surfaces */
-html{transition:color .2s ease, background-color .2s ease}
-body,header,.panel,.card,.login-card,.btn-ghost,.lang-btn,.theme-btn,input,textarea,select{
-  transition:background-color .22s ease, color .22s ease, border-color .22s ease, box-shadow .22s ease;
+html,body,header,.panel,.card,.login-card,.btn-ghost,.lang-btn,.theme-btn,.theme-switch,
+input,textarea,select{
+  transition:background-color .2s ease, color .2s ease, border-color .2s ease, box-shadow .2s ease;
 }
 @media (prefers-reduced-motion: reduce){
-  html,body,header,.panel,.card,.login-card,.btn-ghost,.lang-btn,.theme-btn,input,textarea,select{transition:none}
+  html,body,header,.panel,.card,.login-card,.btn-ghost,.lang-btn,.theme-btn,.theme-switch,
+  input,textarea,select{transition:none}
 }
