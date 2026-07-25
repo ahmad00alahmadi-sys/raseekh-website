@@ -30,7 +30,17 @@ drop policy if exists "raseekh_requests_select_own" on public.client_requests;
 drop policy if exists "raseekh_requests_select_admin" on public.client_requests;
 drop policy if exists "raseekh_requests_update" on public.client_requests;
 drop policy if exists "raseekh_requests_update_admin" on public.client_requests;
-create policy "raseekh_requests_insert" on public.client_requests for insert to anon, authenticated with check (true);
+create policy "raseekh_requests_insert" on public.client_requests for insert to anon, authenticated with check (
+  char_length(coalesce(name, '')) <= 200
+  and char_length(coalesce(email, '')) <= 320
+  and char_length(coalesce(phone, '')) <= 40
+  and char_length(coalesce(company, '')) <= 200
+  and char_length(coalesce(title, '')) <= 200
+  and char_length(coalesce(message, '')) <= 8000
+  and char_length(coalesce(type, '')) <= 80
+  and char_length(coalesce(source, '')) <= 80
+  and char_length(coalesce(fingerprint, '')) <= 200
+);
 create policy "raseekh_requests_select_own" on public.client_requests for select to authenticated using (
   lower(coalesce(email, '')) = lower(coalesce(auth.jwt() ->> 'email', ''))
   or coalesce(user_id, '') = coalesce(auth.uid()::text, '')
@@ -57,20 +67,26 @@ drop policy if exists "raseekh_settings_auth_write" on public.site_settings;
 drop policy if exists "raseekh_settings_auth_update" on public.site_settings;
 drop policy if exists "raseekh_settings_admin_write" on public.site_settings;
 drop policy if exists "raseekh_settings_admin_update" on public.site_settings;
+drop policy if exists "raseekh_settings_admin_read_notify" on public.site_settings;
+-- Safe public keys only — never expose notifyEmail / webhookUrl to anon.
 create policy "raseekh_settings_public_read" on public.site_settings for select to anon, authenticated using (
-  key in ('public_notify', 'public_catalog', 'public_testimonials')
+  key in ('public_catalog', 'public_testimonials', 'public_contact')
+);
+create policy "raseekh_settings_admin_read_notify" on public.site_settings for select to authenticated using (
+  key = 'public_notify'
+  and lower(coalesce(auth.jwt() ->> 'email', '')) = 'ahmad00alahmadi@gmail.com'
 );
 create policy "raseekh_settings_admin_write" on public.site_settings for insert to authenticated with check (
-  key in ('public_notify', 'public_catalog', 'public_testimonials')
+  key in ('public_notify', 'public_catalog', 'public_testimonials', 'public_contact')
   and lower(coalesce(auth.jwt() ->> 'email', '')) = 'ahmad00alahmadi@gmail.com'
 );
 create policy "raseekh_settings_admin_update" on public.site_settings for update to authenticated
   using (
-    key in ('public_notify', 'public_catalog', 'public_testimonials')
+    key in ('public_notify', 'public_catalog', 'public_testimonials', 'public_contact')
     and lower(coalesce(auth.jwt() ->> 'email', '')) = 'ahmad00alahmadi@gmail.com'
   )
   with check (
-    key in ('public_notify', 'public_catalog', 'public_testimonials')
+    key in ('public_notify', 'public_catalog', 'public_testimonials', 'public_contact')
     and lower(coalesce(auth.jwt() ->> 'email', '')) = 'ahmad00alahmadi@gmail.com'
   );
 grant select on table public.site_settings to anon, authenticated;

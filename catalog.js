@@ -554,6 +554,7 @@
   }
 
   const PUBLIC_NOTIFY_KEY = 'raseekh_public_notify_v1';
+  const PUBLIC_CONTACT_KEY = 'raseekh_public_contact_v1';
 
   function readObject(key) {
     try {
@@ -577,6 +578,42 @@
     return digits;
   }
 
+  async function pushPublicContactToCloud(whatsapp) {
+    const sb = getSupabase();
+    if (!sb) return false;
+    const digits = normalizeWhatsAppDigits(whatsapp);
+    try {
+      const { error } = await sb.from('site_settings').upsert({
+        key: 'public_contact',
+        value: { whatsapp: digits || String(whatsapp || '').trim() },
+        updated_at: new Date().toISOString()
+      }, { onConflict: 'key' });
+      return !error;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  async function syncPublicContactFromCloud() {
+    const sb = getSupabase();
+    if (!sb) return readObject(PUBLIC_CONTACT_KEY);
+    try {
+      const { data, error } = await sb
+        .from('site_settings')
+        .select('value')
+        .eq('key', 'public_contact')
+        .maybeSingle();
+      if (error || !data || !data.value) return readObject(PUBLIC_CONTACT_KEY);
+      const value = data.value && typeof data.value === 'object' ? data.value : {};
+      const wa = String(value.whatsapp || value.phone || '').trim();
+      const merged = { whatsapp: wa };
+      writeJson(PUBLIC_CONTACT_KEY, merged);
+      return merged;
+    } catch (_) {
+      return readObject(PUBLIC_CONTACT_KEY);
+    }
+  }
+
   function publishPublicNotify(settings, opts) {
     const webhookUrl = String((settings && settings.webhookUrl) || '').trim();
     const notifyEmail = String((settings && settings.notifyEmail) || '').trim().toLowerCase();
@@ -596,13 +633,18 @@
       if (!cfg.whatsapp && existing.whatsapp) cfg.whatsapp = String(existing.whatsapp);
     }
     writeJson(PUBLIC_NOTIFY_KEY, cfg);
+    // Public visitors only get WhatsApp (business number) — never email/webhook secrets.
+    writeJson(PUBLIC_CONTACT_KEY, { whatsapp: cfg.whatsapp || '' });
     const shouldPush = !!(cfg.notifyEmail || cfg.webhookUrl || cfg.whatsapp || (opts && opts.forceCloud) || (opts && opts.allowEmpty));
     if (!shouldPush) return opts && opts.awaitCloud ? Promise.resolve({ cfg, cloud: false }) : cfg;
     if (opts && opts.awaitCloud) {
-      return pushPublicNotifyToCloud(cfg, { allowEmpty: !!(opts && opts.allowEmpty) })
-        .then((ok) => ({ cfg, cloud: !!ok }));
+      return Promise.all([
+        pushPublicNotifyToCloud(cfg, { allowEmpty: !!(opts && opts.allowEmpty) }),
+        pushPublicContactToCloud(cfg.whatsapp)
+      ]).then((results) => ({ cfg, cloud: !!(results && results[0]) }));
     }
     pushPublicNotifyToCloud(cfg, { allowEmpty: !!(opts && opts.allowEmpty) }).catch(() => {});
+    pushPublicContactToCloud(cfg.whatsapp).catch(() => {});
     return cfg;
   }
 
@@ -612,6 +654,7 @@
     const allowEmpty = !!(opts && opts.allowEmpty);
     if (!cfg.notifyEmail && !cfg.webhookUrl && !cfg.whatsapp && !allowEmpty) return false;
     try {
+      // Requires admin JWT — anon can no longer read or write notify secrets.
       const { error } = await sb.from('site_settings').upsert({
         key: 'public_notify',
         value: {
@@ -632,12 +675,16 @@
     const sb = getSupabase();
     if (!sb) return readObject(PUBLIC_NOTIFY_KEY);
     try {
+      // Only succeeds for owner JWT after RLS lockdown.
       const { data, error } = await sb
         .from('site_settings')
         .select('value')
         .eq('key', 'public_notify')
         .maybeSingle();
-      if (error || !data || !data.value) return readObject(PUBLIC_NOTIFY_KEY);
+      if (error || !data || !data.value) {
+        await syncPublicContactFromCloud();
+        return readObject(PUBLIC_NOTIFY_KEY);
+      }
       const value = data.value && typeof data.value === 'object' ? data.value : {};
       const cloudEmail = String(value.notifyEmail || '').trim().toLowerCase();
       const cloudWebhook = String(value.webhookUrl || '').trim();
@@ -654,6 +701,8 @@
           : local.notifyOnLogin !== false
       };
       writeJson(PUBLIC_NOTIFY_KEY, merged);
+      writeJson(PUBLIC_CONTACT_KEY, { whatsapp: merged.whatsapp || '' });
+      await pushPublicContactToCloud(merged.whatsapp);
       return merged;
     } catch (_) {
       return readObject(PUBLIC_NOTIFY_KEY);
@@ -664,9 +713,12 @@
     const fromWindow = typeof global !== 'undefined' && global.RASEEKH_WHATSAPP
       ? String(global.RASEEKH_WHATSAPP).trim()
       : '';
+    const publicContact = readObject(PUBLIC_CONTACT_KEY);
     const publicCfg = readObject(PUBLIC_NOTIFY_KEY);
     const store = readObject('raseekh_admin_store_v1');
-    const raw = fromWindow || String(publicCfg.whatsapp || store.phone || '').trim();
+    const raw = fromWindow
+      || String(publicContact.whatsapp || '').trim()
+      || String(publicCfg.whatsapp || store.phone || '').trim();
     const digits = normalizeWhatsAppDigits(raw);
     if (!digits) return null;
     return { digits: digits, href: 'https://wa.me/' + digits };
@@ -676,6 +728,7 @@
     const fromWindow = typeof global !== 'undefined' && global.RASEEKH_WEBHOOK
       ? String(global.RASEEKH_WEBHOOK).trim()
       : '';
+    // Secrets stay in admin local storage / owner-synced notify — never rely on anon cloud read.
     const publicCfg = readObject(PUBLIC_NOTIFY_KEY);
     const store = readObject('raseekh_admin_store_v1');
     return fromWindow || String(publicCfg.webhookUrl || '').trim() || String(store.webhookUrl || '').trim();
@@ -1053,7 +1106,7 @@
   const PRODUCT_REQUEST_TYPES = {
     p1: 'hardware', p2: 'hardware', p3: 'hardware', p4: 'hardware',
     p5: 'maintenance', p6: 'web-dev', p7: 'programming',
-    p8: 'systems', p9: 'api', p10: 'system', p11: 'inventory', p12: 'business'
+    p8: 'systems', p9: 'api', p10: 'systems', p11: 'inventory', p12: 'business'
   };
 
   function requestTypeForProduct(product) {
@@ -1073,7 +1126,7 @@
   }
 
   function requestTypeOptions() {
-    return ['maintenance', 'web-dev', 'programming', 'inventory', 'business', 'systems', 'api', 'system', 'hardware']
+    return ['maintenance', 'web-dev', 'programming', 'inventory', 'business', 'systems', 'api', 'hardware']
       .map((value) => {
         const meta = REQUEST_TYPE_META[value];
         return {
@@ -1658,6 +1711,7 @@
     notifyAdminEmail,
     publishPublicNotify,
     syncPublicNotifyFromCloud,
+    syncPublicContactFromCloud,
     resolveWebhookUrl,
     resolveNotifyEmail,
     resolvePublicWhatsApp,

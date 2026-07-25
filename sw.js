@@ -1,5 +1,5 @@
-/* Lightweight offline shell for Raseekh marketing site */
-const CACHE = 'raseekh-shell-v61';
+/* Lightweight offline shell for Raseekh marketing site (dashboard excluded). */
+const CACHE = 'raseekh-shell-v62';
 const ASSETS = [
   '/', '/index.html', '/catalog.js', '/auth.js', '/terms.js', '/activity.js', '/shared-page.css', '/shared-page.js',
   '/terms/', '/terms/index.html', '/privacy/', '/privacy/index.html',
@@ -9,7 +9,7 @@ const ASSETS = [
   '/industries/pharmacy.html', '/industries/warehouse.html', '/industries/supermarket.html', '/industries/accounting.html', '/industries/companies.html',
   '/features/', '/features/index.html', '/features/inventory.html', '/features/sales.html', '/features/reports.html', '/features/customers.html', '/features/roles.html',
   '/help/', '/help/index.html', '/security/', '/security/index.html', '/updates/', '/updates/index.html', '/404.html',
-  '/dashboard/', '/dashboard/index.html', '/manifest.webmanifest', '/icon.svg', '/icon-192.png', '/icon-512.png', '/icon-512-maskable.png'
+  '/manifest.webmanifest', '/icon.svg', '/icon-192.png', '/icon-512.png', '/icon-512-maskable.png'
 ];
 
 self.addEventListener('install', (event) => {
@@ -30,9 +30,13 @@ function isShellScript(url) {
   return /\/(catalog|auth|terms|activity|shared-page)\.js$/.test(url.pathname) || /\/shared-page\.css$/.test(url.pathname);
 }
 
+function isDashboard(url) {
+  return (url.pathname || '').indexOf('/dashboard') === 0;
+}
+
 function offlineShellFor(url) {
   const path = (url && url.pathname) || '/';
-  if (path.indexOf('/dashboard') === 0) return '/dashboard/index.html';
+  if (path.indexOf('/dashboard') === 0) return null;
   if (path.indexOf('/terms') === 0) return '/terms/index.html';
   if (path.indexOf('/privacy') === 0) return '/privacy/index.html';
   if (path.indexOf('/blog') === 0) return '/blog/index.html';
@@ -49,6 +53,12 @@ self.addEventListener('fetch', (event) => {
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
   if (url.origin !== self.location.origin) return;
+
+  // Never cache dashboard (auth/session UI must stay fresh).
+  if (isDashboard(url)) {
+    event.respondWith(fetch(req).catch(() => new Response('Dashboard unavailable offline', { status: 503, statusText: 'Service Unavailable' })));
+    return;
+  }
 
   // HTML + core JS: network-first so deploys are not stuck on stale cache
   if (isNavigate(req) || isShellScript(url)) {

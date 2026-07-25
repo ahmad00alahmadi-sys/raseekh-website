@@ -156,9 +156,11 @@
     global.addEventListener('online', () => { invalidateCloudProbe(); });
   }
 
+  const MIN_PASSWORD_LEN = 8;
+
   async function localSignUp({ email, password, full_name, phone }) {
     const normalized = String(email || '').trim().toLowerCase();
-    if (!normalized || !password || password.length < 6) {
+    if (!normalized || !password || password.length < MIN_PASSWORD_LEN) {
       throw new Error('INVALID_INPUT');
     }
     const users = readUsers();
@@ -215,6 +217,9 @@
   }
 
   async function signUp({ email, password, full_name, phone }) {
+    if (!password || String(password).length < MIN_PASSWORD_LEN) {
+      throw new Error('INVALID_INPUT');
+    }
     const cloud = await probeCloud(2000);
     if (cloud && supabaseClient) {
       try {
@@ -319,66 +324,55 @@
         if (error) {
           if (isNetworkAuthError(error)) {
             invalidateCloudProbe();
-          } else {
-            throw error;
+            throw new Error('NETWORK');
           }
-        } else {
-          return { provider: 'supabase' };
+          throw error;
         }
+        return { provider: 'supabase' };
       } catch (err) {
-        if (!isNetworkAuthError(err)) throw err;
-        invalidateCloudProbe();
+        if (String(err && err.message) === 'NETWORK' || isNetworkAuthError(err)) {
+          invalidateCloudProbe();
+          throw new Error('NETWORK');
+        }
+        throw err;
       }
     }
-    // Local fallback: stash email for reset panel
-    const users = readUsers();
-    const exists = users.some(u => u.email === String(email || '').trim().toLowerCase());
-    if (!exists) throw new Error('NOT_FOUND');
-    sessionStorage.setItem('raseekh_reset_email', String(email || '').trim().toLowerCase());
-    return { provider: 'local' };
+    // Never allow email-only local password reset (knowing an address must not reset anything).
+    throw new Error('NETWORK');
   }
 
   async function completePasswordReset(newPassword) {
+    if (!newPassword || String(newPassword).length < MIN_PASSWORD_LEN) {
+      throw new Error('INVALID_INPUT');
+    }
     const recovery = (() => {
       try { return sessionStorage.getItem('raseekh_password_recovery') === '1'; } catch (_) { return false; }
     })();
-    const resetEmail = (() => {
-      try { return sessionStorage.getItem('raseekh_reset_email') || ''; } catch (_) { return ''; }
-    })();
 
-    if (supabaseClient) {
-      let session = null;
-      try {
-        const { data } = await supabaseClient.auth.getSession();
-        session = data && data.session ? data.session : null;
-      } catch (_) {}
-      if (session) {
-        // Only change a cloud password from an email recovery session — not any logged-in JWT on #reset.
-        if (!recovery) throw new Error('RECOVERY_REQUIRED');
-        try {
-          const { error } = await supabaseClient.auth.updateUser({ password: newPassword });
-          if (error) {
-            if (isNetworkAuthError(error)) throw new Error('NETWORK');
-            throw error;
-          }
-          try { sessionStorage.removeItem('raseekh_password_recovery'); } catch (_) {}
-          return { provider: 'supabase' };
-        } catch (err) {
-          if (String(err && err.message) === 'NETWORK' || isNetworkAuthError(err)) throw new Error('NETWORK');
-          throw err;
-        }
-      }
-      // Cloud client is up but there is no recovery session — do not silently reset a local twin.
-      if (!resetEmail) throw new Error('RECOVERY_REQUIRED');
-    }
-    const email = resetEmail || (getLocalSession() && getLocalSession().user && getLocalSession().user.email) || '';
-    if (!email) throw new Error('NOT_FOUND');
-    await localUpdatePassword(email, newPassword);
+    if (!supabaseClient) throw new Error('NETWORK');
+    let session = null;
     try {
-      sessionStorage.removeItem('raseekh_reset_email');
-      sessionStorage.removeItem('raseekh_password_recovery');
+      const { data } = await supabaseClient.auth.getSession();
+      session = data && data.session ? data.session : null;
     } catch (_) {}
-    return { provider: 'local' };
+    if (!session) throw new Error('RECOVERY_REQUIRED');
+    // Only change a cloud password from an email recovery session — not any logged-in JWT on #reset.
+    if (!recovery) throw new Error('RECOVERY_REQUIRED');
+    try {
+      const { error } = await supabaseClient.auth.updateUser({ password: newPassword });
+      if (error) {
+        if (isNetworkAuthError(error)) throw new Error('NETWORK');
+        throw error;
+      }
+      try {
+        sessionStorage.removeItem('raseekh_password_recovery');
+        sessionStorage.removeItem('raseekh_reset_email');
+      } catch (_) {}
+      return { provider: 'supabase' };
+    } catch (err) {
+      if (String(err && err.message) === 'NETWORK' || isNetworkAuthError(err)) throw new Error('NETWORK');
+      throw err;
+    }
   }
 
   async function updateUser({ full_name, phone, company, password }) {
@@ -435,7 +429,7 @@
       return ar ? 'البريد أو كلمة المرور غير صحيحة' : 'Incorrect email or password';
     }
     if (code === 'INVALID_INPUT') {
-      return ar ? 'تأكد من البريد وكلمة المرور (6 أحرف على الأقل)' : 'Check email and password (min 6 chars)';
+      return ar ? 'تأكد من البريد وكلمة المرور (8 أحرف على الأقل)' : 'Check email and password (min 8 chars)';
     }
     if (code === 'NOT_FOUND') {
       return ar ? 'الحساب غير موجود' : 'Account not found';

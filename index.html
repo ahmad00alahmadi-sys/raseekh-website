@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>راسخ — نظام مخزون | أنظمة شركات ولوحات تشغيل في السعودية</title>
-<meta name="description" content="راسخ: نظام مخزون، دراسة أنظمة شركات، لوحات تشغيل، نسخة للمؤسسات، ومتابعة الطلبات من حساب العميل — نطاق مكتوب وعرض سعر واضح. عربي وإنجليزي.">
-<meta name="keywords" content="راسخ, نظام مخزون, أنظمة شركات, لوحة تحكم عملاء, تطبيق مخزون, أنظمة تشغيل, برمجة سعودية, نسخة للمؤسسات, دراسة نظام تشغيلي, Raseekh, inventory system Saudi, business operations system, ops dashboard">
-<meta property="og:title" content="راسخ — نظام مخزون وأنظمة شركات في السعودية">
-    <meta property="og:description" content="مخزون، لوحات تشغيل، ومتابعة طلبات بنطاق مكتوب — عربي وإنجليزي.">
+<title>راسخ — صيانة وبرمجة ومخزون وأنظمة في السعودية</title>
+<meta name="description" content="راسخ: صيانة مواقع، برمجة، تطبيقات مخزون، وأنظمة تشغيل للمؤسسات في السعودية — نطاق مكتوب وعرض سعر واضح.">
+<meta name="keywords" content="راسخ, نظام مخزون, أنظمة شركات, لوحة تحكم عملاء, تطبيق مخزون, أنظمة تشغيل, برمجة سعودية, نسخة للمؤسسات, Raseekh, inventory system Saudi, ops dashboard">
+<meta property="og:title" content="راسخ — صيانة وبرمجة ومخزون وأنظمة">
+<meta property="og:description" content="صيانة مواقع، برمجة، مخزون، وأنظمة تشغيل — من الطلب حتى التسليم مع حساب عميل للمتابعة.">
 <meta name="theme-color" content="#10233A">
 <meta name="robots" content="index,follow">
 <link rel="canonical" href="https://raseekh.com/">
@@ -17,8 +17,8 @@
 <meta property="og:locale:alternate" content="en_US">
 <meta property="og:image" content="https://raseekh.com/icon.svg">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="راسخ — نظام مخزون وأنظمة شركات في السعودية">
-<meta name="twitter:description" content="مخزون، لوحات تشغيل، ومتابعة طلبات بنطاق مكتوب — عربي وإنجليزي.">
+<meta name="twitter:title" content="راسخ — صيانة وبرمجة ومخزون وأنظمة">
+<meta name="twitter:description" content="صيانة مواقع، برمجة، مخزون، وأنظمة تشغيل — من الطلب حتى التسليم.">
 <link rel="alternate" hreflang="ar" href="https://raseekh.com/">
 <link rel="alternate" hreflang="en" href="https://raseekh.com/?lang=en">
 <link rel="alternate" hreflang="x-default" href="https://raseekh.com/">
@@ -113,10 +113,10 @@
         },
         {
           "@type": "Question",
-          "name": "هل تعملون عربي وإنجليزي؟",
+          "name": "هل تدعمون العربية والإنجليزية؟",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "نعم. الموقع وحساب العميل يدعمون التبديل الفوري بين العربية والإنجليزية."
+            "text": "نعم. الموقع وحساب العميل عربي/إنجليزي، ويمكن بناء واجهة النظام بالعربية أو الإنجليزية أو كليهما حسب النطاق."
           }
         },
         {
@@ -726,12 +726,12 @@ body.terms-locked,body.auth-locked{overflow:hidden}
   body{padding-bottom:76px}
   .float-cta .float-quote{display:none!important}
   .float-cta{bottom:84px}
-  /* Sticky bar owns the quote CTA on mobile — hide section duplicates */
-  a.quote-cta-dup{display:none!important}
   .now-rail{padding-inline-start:24px}
   .now-item::before{inset-inline-start:-21px;width:10px;height:10px}
   .now-foot .btn{width:100%}
 }
+/* One quote CTA surface — hide section duplicates on all viewports */
+a.quote-cta-dup{display:none!important}
 .float-cta{
   position:fixed;inset-inline-end:16px;bottom:18px;z-index:80;
   display:flex;flex-direction:column;gap:8px;align-items:flex-end
@@ -838,7 +838,7 @@ body.terms-locked,body.auth-locked{overflow:hidden}
           <input type="text" id="registerName" required autocomplete="name" data-ar-placeholder="الاسم الكامل" data-en-placeholder="Full name" placeholder="الاسم الكامل">
           <input type="email" id="registerEmail" required autocomplete="email" data-ar-placeholder="البريد الإلكتروني" data-en-placeholder="Email" placeholder="البريد الإلكتروني">
           <input type="tel" id="registerPhone" inputmode="tel" maxlength="20" autocomplete="tel" data-ar-placeholder="رقم الجوال (اختياري)" data-en-placeholder="Phone (optional)" placeholder="رقم الجوال (اختياري)">
-          <input type="password" id="registerPassword" minlength="6" required autocomplete="new-password" data-ar-placeholder="كلمة المرور (6 أحرف على الأقل)" data-en-placeholder="Password (min 6 chars)" placeholder="كلمة المرور (6 أحرف على الأقل)">
+          <input type="password" id="registerPassword" minlength="8" required autocomplete="new-password" data-ar-placeholder="كلمة المرور (8 أحرف على الأقل)" data-en-placeholder="Password (min 8 chars)" placeholder="كلمة المرور (8 أحرف على الأقل)">
           <label class="check" for="registerTermsCheck">
             <input type="checkbox" id="registerTermsCheck" required>
             <span class="check-text">
@@ -864,7 +864,7 @@ body.terms-locked,body.auth-locked{overflow:hidden}
       <div class="panel-auth" id="modalResetPanel">
         <h3 data-ar="كلمة مرور جديدة" data-en="New password">كلمة مرور جديدة</h3>
         <form class="form" id="resetForm">
-          <input type="password" id="resetPassword" minlength="6" required autocomplete="new-password" data-ar-placeholder="كلمة المرور الجديدة" data-en-placeholder="New password" placeholder="كلمة المرور الجديدة">
+          <input type="password" id="resetPassword" minlength="8" required autocomplete="new-password" data-ar-placeholder="كلمة المرور الجديدة (8+)" data-en-placeholder="New password (8+)" placeholder="كلمة المرور الجديدة (8+)">
           <button class="btn btn-primary" type="submit" data-ar="حفظ" data-en="Save">حفظ</button>
         </form>
         <div class="msg" id="resetMsg" role="status" aria-live="polite"></div>
@@ -884,12 +884,11 @@ body.terms-locked,body.auth-locked{overflow:hidden}
         <select id="heroQuoteType" data-ar-aria="نوع الخدمة" data-en-aria="Service type" aria-label="نوع الخدمة">
           <option value="maintenance" data-ar="صيانة مواقع" data-en="Website maintenance">صيانة مواقع</option>
           <option value="web-dev" data-ar="تطوير مواقع" data-en="Website development">تطوير مواقع</option>
-          <option value="programming" data-ar="برمجة / تعديل كود" data-en="Programming / code changes" selected>برمجة / تعديل كود</option>
+          <option value="programming" data-ar="برمجة / تعديل" data-en="Coding / changes" selected>برمجة / تعديل</option>
           <option value="inventory" data-ar="تطبيق مخزون" data-en="Inventory app">تطبيق مخزون</option>
           <option value="business" data-ar="نسخة للمؤسسات" data-en="Institution edition">نسخة للمؤسسات</option>
           <option value="systems" data-ar="أنظمة ولوحات" data-en="Systems & dashboards">أنظمة ولوحات</option>
           <option value="api" data-ar="ربط API" data-en="API & integrations">ربط API</option>
-          <option value="system" data-ar="نظام كامل" data-en="Complete system">نظام كامل</option>
           <option value="hardware" data-ar="أجهزة (الرياض فقط)" data-en="Hardware (Riyadh only)">أجهزة (الرياض فقط)</option>
         </select>
         <input type="text" id="heroQuoteMsg" required maxlength="220" data-ar-placeholder="صف طلبكم في سطر واحد" data-en-placeholder="Describe your request in one line" placeholder="صف طلبكم في سطر واحد" data-ar-aria="وصف الطلب" data-en-aria="Request summary" aria-label="وصف الطلب">
@@ -902,7 +901,7 @@ body.terms-locked,body.auth-locked{overflow:hidden}
       </div>
       <div class="trust-strip reveal" aria-label="Trust signals">
         <article><strong data-ar="تقدير أولي" data-en="Quick estimate">تقدير أولي</strong><span data-ar="حاسبة تقريبية قبل إرسال الطلب" data-en="Indicative calculator before you send a request">حاسبة تقريبية قبل إرسال الطلب</span></article>
-        <article><strong data-ar="نطاق مكتوب" data-en="Written scope">نطاق مكتوب</strong><span data-ar="قبل التنفيذ — بدون مفاجآت" data-en="Before build — no surprises">قبل التنفيذ — بدون مفاجآت</span></article>
+        <article><strong data-ar="نطاق مكتوب" data-en="Written scope">نطاق مكتوب</strong><span data-ar="قبل التنفيذ — واضح ومتفق عليه" data-en="Before build — clear and agreed">قبل التنفيذ — واضح ومتفق عليه</span></article>
         <article><strong data-ar="عربي / EN" data-en="AR / EN">عربي / EN</strong><span data-ar="واجهة الموقع وحساب العميل" data-en="Site and client account UI">واجهة الموقع وحساب العميل</span></article>
         <article><strong data-ar="لوحة عميل" data-en="Client board">لوحة عميل</strong><span data-ar="متابعة حالة الطلب خطوة بخطوة" data-en="Track request status step by step">متابعة حالة الطلب خطوة بخطوة</span></article>
       </div>
@@ -1063,7 +1062,7 @@ body.terms-locked,body.auth-locked{overflow:hidden}
       </article>
       <article>
         <h3 data-ar="تسعير قبل التنفيذ" data-en="Price before build">تسعير قبل التنفيذ</h3>
-        <p data-ar="تعرف التكلفة المتوقعة أو نطاق الباقة قبل أن نبدأ — بدون مفاجآت لاحقة." data-en="Know the expected cost or plan range before we start — no late surprises.">تعرف التكلفة المتوقعة أو نطاق الباقة قبل أن نبدأ — بدون مفاجآت لاحقة.</p>
+        <p data-ar="تعرفون نطاق التكلفة أو الباقة قبل البدء — والتفاصيل النهائية تُثبت في العرض المكتوب." data-en="You see the cost or plan range before work starts — final details are locked in the written quote.">تعرفون نطاق التكلفة أو الباقة قبل البدء — والتفاصيل النهائية تُثبت في العرض المكتوب.</p>
       </article>
       <article>
         <h3 data-ar="متابعة من لوحتكم" data-en="Track from your account">متابعة من لوحتكم</h3>
@@ -1534,11 +1533,11 @@ body.terms-locked,body.auth-locked{overflow:hidden}
     <div class="section-head reveal">
       <div class="eyebrow" data-ar="لوحة العميل" data-en="Client portal">لوحة العميل</div>
       <h2 data-ar="متابعة الطلبات من حسابكم" data-en="Track requests from your account">متابعة الطلبات من حسابكم</h2>
-      <p data-ar="ارفعوا الطلب، تابعوا الحالة، وادفعوا العربون عند الحاجة — أو جرّبوا الوضع التجريبي قبل التسجيل الكامل." data-en="Raise a request, track status, and pay a deposit when needed — or try the sandbox before full signup.">ارفعوا الطلب، تابعوا الحالة، وادفعوا العربون عند الحاجة — أو جرّبوا الوضع التجريبي قبل التسجيل الكامل.</p>
+      <p data-ar="ارفعوا الطلب وتابعوا الحالة من حسابكم، وادفعوا العربون عند الحاجة." data-en="Raise a request and track status from your account, and pay a deposit when needed.">ارفعوا الطلب وتابعوا الحالة من حسابكم، وادفعوا العربون عند الحاجة.</p>
     </div>
     <div class="reveal" style="display:flex;flex-wrap:wrap;gap:10px">
       <a class="btn btn-primary" href="/dashboard/" data-ar="فتح لوحة العميل" data-en="Open client dashboard">فتح لوحة العميل</a>
-      <a class="btn btn-ghost" href="/dashboard/?demo=1" data-ar="تجربة بدون تسجيل" data-en="Try without signup">تجربة بدون تسجيل</a>
+      <a class="btn btn-ghost" href="#video" data-ar="شاهدوا الجولة" data-en="Watch the tour">شاهدوا الجولة</a>
     </div>
   </div>
 </section>
@@ -1606,7 +1605,7 @@ body.terms-locked,body.auth-locked{overflow:hidden}
     </div>
     <div class="reveal" style="margin-top:22px;text-align:center">
       <a class="btn btn-primary" href="/dashboard/?demo=1" data-ar="جرّبوا اللوحة الآن" data-en="Try the board now">جرّبوا اللوحة الآن</a>
-      <a class="btn btn-ghost" href="#portal" data-ar="حساب العميل" data-en="Client account">حساب العميل</a>
+      <a class="btn btn-ghost" href="#contact" data-ar="اطلب عرض سعر" data-en="Request a quote">اطلب عرض سعر</a>
     </div>
   </div>
 </section>
@@ -1657,9 +1656,9 @@ body.terms-locked,body.auth-locked{overflow:hidden}
         <summary data-ar="هل يمكن الدفع أونلاين؟" data-en="Can I pay online?">هل يمكن الدفع أونلاين؟</summary>
         <p data-ar="نعم — بعد تسجيل الدخول عبر Moyasar (بطاقة / Apple Pay)." data-en="Yes — after sign-in via Moyasar (card / Apple Pay).">نعم — بعد تسجيل الدخول عبر Moyasar (بطاقة / Apple Pay).</p>
       </details>
-      <details class="faq-item">
-        <summary data-ar="هل تعملون عربي وإنجليزي؟" data-en="Do you support Arabic and English?">هل تعملون عربي وإنجليزي؟</summary>
-        <p data-ar="نعم. الموقع وحساب العميل يدعمون التبديل الفوري بين العربية والإنجليزية." data-en="Yes. The site and client account support instant AR/EN switching.">نعم. الموقع وحساب العميل يدعمون التبديل الفوري بين العربية والإنجليزية.</p>
+      <details class="faq-item" id="faq-language">
+        <summary data-ar="هل تدعمون العربية والإنجليزية؟" data-en="Do you support Arabic and English?">هل تدعمون العربية والإنجليزية؟</summary>
+        <p data-ar="نعم. الموقع وحساب العميل عربي/إنجليزي، ويمكن بناء واجهة النظام بالعربية أو الإنجليزية أو كليهما حسب النطاق." data-en="Yes. The site and client account are AR/EN, and the system UI can be Arabic, English, or bilingual per scope.">نعم. الموقع وحساب العميل عربي/إنجليزي، ويمكن بناء واجهة النظام بالعربية أو الإنجليزية أو كليهما حسب النطاق.</p>
       </details>
       <details class="faq-item" id="faq-timeline">
         <summary data-ar="كم تستغرق مدة التنفيذ؟" data-en="What is the typical timeline?">كم تستغرق مدة التنفيذ؟</summary>
@@ -1685,10 +1684,6 @@ body.terms-locked,body.auth-locked{overflow:hidden}
         <summary data-ar="هل توقّعون اتفاقية سرية (NDA)؟" data-en="Do you sign an NDA?">هل توقّعون اتفاقية سرية (NDA)؟</summary>
         <p data-ar="نعم عند الحاجة — قبل مشاركة تفاصيل حساسة. اطلبوا ذلك من نموذج التواصل أو حساب العميل." data-en="Yes when needed — before sharing sensitive details. Request it via the contact form or client account.">نعم عند الحاجة — قبل مشاركة تفاصيل حساسة. اطلبوا ذلك من نموذج التواصل أو حساب العميل.</p>
       </details>
-      <details class="faq-item" id="faq-english-ui">
-        <summary data-ar="هل يمكن واجهة إنجليزية؟" data-en="Can you deliver an English UI?">هل يمكن واجهة إنجليزية؟</summary>
-        <p data-ar="نعم. نقدّم واجهات عربية، أو إنجليزية، أو ثنائية اللغة حسب نطاق المشروع — كما في الموقع وحساب العميل." data-en="Yes. We deliver Arabic, English, or bilingual UIs per project scope — as on the site and client account.">نعم. نقدّم واجهات عربية، أو إنجليزية، أو ثنائية اللغة حسب نطاق المشروع — كما في الموقع وحساب العميل.</p>
-      </details>
       <details class="faq-item" id="faq-cost">
         <summary data-ar="ما نطاق التكلفة الابتدائية؟" data-en="What are starting cost ranges?">ما نطاق التكلفة الابتدائية؟</summary>
         <p>
@@ -1704,10 +1699,6 @@ body.terms-locked,body.auth-locked{overflow:hidden}
       <details class="faq-item" id="faq-files">
         <summary data-ar="ما أنواع الملفات المدعومة وهل يوجد حد للحجم؟" data-en="What file types are supported and is there a size limit?">ما أنواع الملفات المدعومة وهل يوجد حد للحجم؟</summary>
         <p data-ar="للطلبات عبر النموذج: نص الطلب هو الأساس. أي ملفات مشروع (مثل PDF أو جداول) تُتفق عند الحاجة عبر قناة المشروع بعد قبول الطلب، مع حدود حجم حسب قناة النقل والاتفاق — ويمكن حذفها بعد التسليم بمدة مكتوبة." data-en="For form requests: the request text is primary. Project files (e.g. PDF or spreadsheets) are arranged via the project channel after acceptance, with size limits per transfer channel and agreement — and can be deleted after delivery per a written period.">للطلبات عبر النموذج: نص الطلب هو الأساس. أي ملفات مشروع (مثل PDF أو جداول) تُتفق عند الحاجة عبر قناة المشروع بعد قبول الطلب، مع حدود حجم حسب قناة النقل والاتفاق — ويمكن حذفها بعد التسليم بمدة مكتوبة.</p>
-      </details>
-      <details class="faq-item" id="faq-arabic">
-        <summary data-ar="هل النظام يدعم العربية؟" data-en="Does the system support Arabic?">هل النظام يدعم العربية؟</summary>
-        <p data-ar="نعم. الموقع وحساب العميل عربي/إنجليزي، ويمكن بناء واجهة النظام بالعربية أو الإنجليزية أو كليهما حسب النطاق." data-en="Yes. The site and client account are AR/EN, and the system UI can be Arabic, English, or bilingual per scope.">نعم. الموقع وحساب العميل عربي/إنجليزي، ويمكن بناء واجهة النظام بالعربية أو الإنجليزية أو كليهما حسب النطاق.</p>
       </details>
       <details class="faq-item" id="faq-mobile">
         <summary data-ar="هل يوجد تطبيق جوال؟" data-en="Is there a mobile app?">هل يوجد تطبيق جوال؟</summary>
@@ -1780,7 +1771,7 @@ body.terms-locked,body.auth-locked{overflow:hidden}
             <option value="individual" data-ar="أفراد" data-en="Individuals" selected>أفراد</option>
             <option value="company" data-ar="شركات" data-en="Companies">شركات</option>
             <option value="institution" data-ar="مؤسسات" data-en="Institutions">مؤسسات</option>
-            <option value="other" data-ar="شي ثاني" data-en="Something else">شي ثاني</option>
+            <option value="other" data-ar="أخرى" data-en="Other">أخرى</option>
           </select>
         </label>
         <label class="field" id="contactCompanyField" hidden>
@@ -1797,10 +1788,10 @@ body.terms-locked,body.auth-locked{overflow:hidden}
             <option value="web-dev" data-ar="تطوير مواقع" data-en="Website development">تطوير مواقع</option>
             <option value="programming" data-ar="برمجة / تعديل" data-en="Coding / changes">برمجة / تعديل</option>
             <option value="inventory" data-ar="تطبيق مخزون" data-en="Inventory app">تطبيق مخزون</option>
-            <option value="systems" data-ar="أنظمة ولوحات" data-en="Systems & dashboards">أنظمة ولوحات</option>
             <option value="business" data-ar="نسخة للمؤسسات" data-en="Institution edition">نسخة للمؤسسات</option>
+            <option value="systems" data-ar="أنظمة ولوحات" data-en="Systems & dashboards">أنظمة ولوحات</option>
             <option value="api" data-ar="ربط API" data-en="API & integrations">ربط API</option>
-            <option value="hardware" data-ar="أجهزة (الرياض)" data-en="Hardware (Riyadh)">أجهزة (الرياض)</option>
+            <option value="hardware" data-ar="أجهزة (الرياض فقط)" data-en="Hardware (Riyadh only)">أجهزة (الرياض فقط)</option>
           </select>
         </label>
         <label class="field"><span data-ar="تفاصيل الطلب" data-en="Request details">تفاصيل الطلب</span>
@@ -1914,14 +1905,14 @@ body.terms-locked,body.auth-locked{overflow:hidden}
       if (v !== null) el.setAttribute('aria-label', v);
     });
     document.getElementById('langToggle').textContent = lang === 'ar' ? 'EN' : 'AR';
-    const title = lang === 'ar' ? 'راسخ — صيانة وبرمجة وتطبيقات مخزون' : 'Raseekh — Maintenance, coding & inventory apps';
+    const title = lang === 'ar' ? 'راسخ — صيانة وبرمجة ومخزون وأنظمة' : 'Raseekh — Maintenance, coding, inventory & systems';
     const desc = lang === 'ar'
-      ? 'راسخ في السعودية: صيانة مواقع، خدمات برمجة، تطبيقات مخزون، وتطوير أنظمة ولوحات تحكم — من الطلب حتى التشغيل.'
-      : 'Raseekh in Saudi Arabia: website maintenance, programming, inventory apps, and custom systems — from request to launch.';
+      ? 'راسخ في السعودية: صيانة مواقع، برمجة، تطبيقات مخزون، وأنظمة ولوحات — نطاق مكتوب من الطلب حتى التشغيل.'
+      : 'Raseekh in Saudi Arabia: website maintenance, programming, inventory apps, and ops systems — written scope from request to launch.';
     document.title = title;
     const metaDesc = document.querySelector('meta[name="description"]');
     if (metaDesc) metaDesc.setAttribute('content', desc);
-    const ogTitleText = lang === 'ar' ? 'راسخ — خدمات رقمية وأنظمة ومخزون' : 'Raseekh — Digital services, systems & inventory';
+    const ogTitleText = title;
     const ogTitle = document.querySelector('meta[property="og:title"]');
     if (ogTitle) ogTitle.setAttribute('content', ogTitleText);
     const ogDesc = document.querySelector('meta[property="og:description"]');
@@ -1978,7 +1969,7 @@ body.terms-locked,body.auth-locked{overflow:hidden}
   function segmentLabel(seg){
     if (seg === 'company') return t('شركات', 'Companies');
     if (seg === 'institution') return t('مؤسسات', 'Institutions');
-    if (seg === 'other') return t('شي ثاني', 'Something else');
+    if (seg === 'other') return t('أخرى', 'Other');
     return t('أفراد', 'Individuals');
   }
 
@@ -2428,7 +2419,7 @@ body.terms-locked,body.auth-locked{overflow:hidden}
       ? Catalog.suggestionPriceLabel(s, clientProducts, currentLang)
       : t('عرض سعر بعد المراجعة', 'Custom quote after review');
     const ids = Array.isArray(s.productIds) ? s.productIds : [];
-    const priority = { business: 4, system: 3, inventory: 2, systems: 2, programming: 1 };
+    const priority = { business: 4, systems: 3, inventory: 2, programming: 1 };
     let reqType = 'programming';
     let best = 0;
     ids.forEach((id) => {
@@ -2542,7 +2533,7 @@ body.terms-locked,body.auth-locked{overflow:hidden}
       if (!type) type = row.type;
       if (!msg) msg = currentLang === 'en' ? row.en : row.ar;
     }
-    const allowed = ['maintenance','web-dev','programming','inventory','business','systems','api','system','hardware','electronics'];
+    const allowed = ['maintenance','web-dev','programming','inventory','business','systems','api','hardware','electronics'];
     const typeEl = document.getElementById('contactType');
     if (typeEl) {
       typeEl.addEventListener('change', () => syncCompanyFieldForType(typeEl.value));
@@ -2562,6 +2553,7 @@ body.terms-locked,body.auth-locked{overflow:hidden}
     }
     if (!type && !msg && !company && !industry) return;
     let normalized = type === 'electronics' ? 'hardware' : type;
+    if (normalized === 'system') normalized = 'systems';
     if (!allowed.includes(normalized)) normalized = 'programming';
     if (normalized === 'electronics') normalized = 'hardware';
     const segHint = (industry === 'companies' || normalized === 'business')
@@ -2839,6 +2831,11 @@ body.terms-locked,body.auth-locked{overflow:hidden}
     const total = Number(pendingPay.amount);
     if (!(total > 0) || total > 100000) return false;
     // Prefer session amount over query string (query is untrusted / in halalas).
+    const safePaymentId = String(paymentId).replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 72);
+    if (!safePaymentId || safePaymentId.length < 8) return false;
+    if (pendingPay.email && user.email && String(pendingPay.email).toLowerCase() !== String(user.email).toLowerCase()) {
+      return false;
+    }
     const row = Catalog.addPaymentRecord({
       method: 'card',
       total,
@@ -2848,9 +2845,10 @@ body.terms-locked,body.auth-locked{overflow:hidden}
       email: user.email || pendingPay.email || '',
       userId: user.id || pendingPay.userId || '',
       source: 'moyasar-return',
-      paymentId
+      paymentId: safePaymentId,
+      verification: 'client-return-pending-ops'
     });
-    if (paymentId) markProcessedPay(paymentId);
+    if (safePaymentId) markProcessedPay(safePaymentId);
     try { sessionStorage.removeItem('raseekh_pending_pay'); } catch (_) {}
     try {
       const url = new URL(location.href);
@@ -3667,7 +3665,11 @@ body.terms-locked,body.auth-locked{overflow:hidden}
     if (authModal && authModal.classList.contains('open')) closeModal();
   });
 
-  if (window.RaseekhCatalog && RaseekhCatalog.syncPublicNotifyFromCloud) {
+  if (window.RaseekhCatalog && RaseekhCatalog.syncPublicContactFromCloud) {
+    RaseekhCatalog.syncPublicContactFromCloud()
+      .then(() => { applyFloatWhatsApp(); })
+      .catch(() => { applyFloatWhatsApp(); });
+  } else if (window.RaseekhCatalog && RaseekhCatalog.syncPublicNotifyFromCloud) {
     RaseekhCatalog.syncPublicNotifyFromCloud()
       .then(() => { applyFloatWhatsApp(); })
       .catch(() => { applyFloatWhatsApp(); });

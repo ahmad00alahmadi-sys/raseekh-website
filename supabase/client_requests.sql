@@ -33,11 +33,21 @@ drop policy if exists "raseekh_requests_select_admin" on public.client_requests;
 drop policy if exists "raseekh_requests_update" on public.client_requests;
 drop policy if exists "raseekh_requests_update_admin" on public.client_requests;
 
--- Public quote form + signed-in clients can create rows
+-- Public quote form + signed-in clients can create rows (size-capped to limit spam/abuse)
 create policy "raseekh_requests_insert"
   on public.client_requests for insert
   to anon, authenticated
-  with check (true);
+  with check (
+    char_length(coalesce(name, '')) <= 200
+    and char_length(coalesce(email, '')) <= 320
+    and char_length(coalesce(phone, '')) <= 40
+    and char_length(coalesce(company, '')) <= 200
+    and char_length(coalesce(title, '')) <= 200
+    and char_length(coalesce(message, '')) <= 8000
+    and char_length(coalesce(type, '')) <= 80
+    and char_length(coalesce(source, '')) <= 80
+    and char_length(coalesce(fingerprint, '')) <= 200
+  );
 
 -- Clients read only their own requests
 create policy "raseekh_requests_select_own"

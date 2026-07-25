@@ -477,7 +477,7 @@ body.is-client .home-bar{
           <input type="tel" id="dashRegisterPhone" inputmode="tel" maxlength="20" data-ar-placeholder="05xxxxxxxx" data-en-placeholder="05xxxxxxxx" placeholder="05xxxxxxxx" autocomplete="tel">
         </label>
         <label class="field"><span data-ar="كلمة المرور (6+)" data-en="Password (6+)">كلمة المرور (6+)</span>
-          <input type="password" id="dashRegisterPassword" minlength="6" required data-ar-placeholder="كلمة المرور (6+)" data-en-placeholder="Password (6+)" placeholder="كلمة المرور (6+)" autocomplete="new-password">
+          <input type="password" id="dashRegisterPassword" minlength="8" required data-ar-placeholder="كلمة المرور (8+)" data-en-placeholder="Password (8+)" placeholder="كلمة المرور (8+)" autocomplete="new-password">
         </label>
         <label class="check" for="dashRegisterTermsCheck">
           <input type="checkbox" id="dashRegisterTermsCheck" required>
@@ -671,7 +671,7 @@ body.is-client .home-bar{
         </div>
         <a class="btn btn-ghost" href="/" data-ar="← الرئيسية" data-en="← Home">← الرئيسية</a>
       </div>
-      <div class="client-note" data-ar="خدمات رقمية للطلب أونلاين. التسعير بعد مراجعة احتياجكم — بدون مفاجآت." data-en="Digital services available online. Pricing after we review your need — no surprises.">خدمات رقمية للطلب أونلاين. التسعير بعد مراجعة احتياجكم — بدون مفاجآت.</div>
+      <div class="client-note" data-ar="خدمات رقمية للطلب أونلاين. التسعير بعد مراجعة احتياجكم — وفق العرض المكتوب." data-en="Digital services available online. Pricing after we review your need — per the written quote.">خدمات رقمية للطلب أونلاين. التسعير بعد مراجعة احتياجكم — وفق العرض المكتوب.</div>
       <div class="panel">
         <input type="search" id="clientCatalogSearch" style="margin-bottom:14px;padding:12px 14px;width:100%;border:1px solid var(--line);border-radius:10px" data-ar-placeholder="ابحث..." data-en-placeholder="Search..." placeholder="ابحث...">
         <div class="browse-grid" id="clientCatalogGrid"></div>
@@ -894,7 +894,7 @@ body.is-client .home-bar{
           <label class="field"><span data-ar="بريد وصول الطلبات" data-en="Request notify email">بريد وصول الطلبات</span>
             <input type="email" id="storeNotifyEmail" data-ar-placeholder="you@example.com" data-en-placeholder="you@example.com" placeholder="you@example.com" autocomplete="email">
           </label>
-          <p style="color:var(--muted);font-size:.82rem" data-ar="يُرسل ملخص الطلبات الجديدة هنا (FormSubmit). أول مرة يؤكد FormSubmit البريد برسالة تفعيل. كذلك يُرسل تنبيه عند دخول عميل جديد (مرة كل ٦ ساعات لكل بريد)." data-en="New requests email a summary here (FormSubmit). First time needs activation. Client logins also notify here (once every 6 hours per email).">يُرسل ملخص الطلبات الجديدة هنا (FormSubmit). أول مرة يؤكد FormSubmit البريد برسالة تفعيل. كذلك يُرسل تنبيه عند دخول عميل جديد (مرة كل ٦ ساعات لكل بريد).</p>
+          <p style="color:var(--muted);font-size:.82rem" data-ar="يُرسل ملخص الطلبات الجديدة هنا بعد حفظ الإعدادات وأنتم مسجّلون كمالك (FormSubmit). أول مرة يؤكد FormSubmit البريد. كذلك تنبيه دخول عميل (مرة كل ٦ ساعات لكل بريد). لا يُنشر البريد لزوار الموقع." data-en="New requests email a summary here after you save settings while signed in as owner (FormSubmit). First time needs activation. Client logins also notify (once every 6 hours per email). The address is not published to visitors.">يُرسل ملخص الطلبات الجديدة هنا بعد حفظ الإعدادات وأنتم مسجّلون كمالك (FormSubmit). أول مرة يؤكد FormSubmit البريد. كذلك تنبيه دخول عميل (مرة كل ٦ ساعات لكل بريد). لا يُنشر البريد لزوار الموقع.</p>
           <label class="check" style="align-items:center;margin:8px 0 12px">
             <input type="checkbox" id="storeNotifyLogin" checked>
             <span data-ar="أرسل تنبيه بريد عند تسجيل دخول عميل" data-en="Email me when a client signs in">أرسل تنبيه بريد عند تسجيل دخول عميل</span>
@@ -1416,7 +1416,7 @@ body.is-client .home-bar{
     } else if (!(info && info.cloudOk && info.settingsOk && info.activityOk)) {
       text.textContent = t('الجداول السحابية غير جاهزة بعد. شغّلوا supabase/setup_all.sql ثم اضغطوا إعادة الفحص.', 'Cloud tables are not ready yet. Run supabase/setup_all.sql then tap Recheck.');
     } else if (!(info && info.notifyPublished)) {
-      text.textContent = t('احفظوا بريد وصول الطلبات من الإعدادات حتى يُنشر للزوار، ثم فعّلوا FormSubmit.', 'Save the notify email in Settings so it publishes to visitors, then activate FormSubmit.');
+      text.textContent = t('احفظوا بريد وصول الطلبات من الإعدادات (يبقى سرياً للمالك)، ثم فعّلوا FormSubmit من جهازكم.', 'Save the notify email in Settings (owner-only secret), then activate FormSubmit from your device.');
     } else {
       text.textContent = t('أكملوا الخطوات أدناه مرة واحدة.', 'Complete the steps below once.');
     }
@@ -2524,7 +2524,7 @@ body.is-client .home-bar{
           </div>
           <div style="color:var(--muted);font-size:.86rem;margin-top:2px">
             ${escapeHtml([
-              r.segment === 'company' ? t('شركات','Companies') : (r.segment === 'institution' ? t('مؤسسات','Institutions') : (r.segment === 'other' ? t('شي ثاني','Something else') : (r.segment === 'individual' ? t('أفراد','Individuals') : ''))),
+              r.segment === 'company' ? t('شركات','Companies') : (r.segment === 'institution' ? t('مؤسسات','Institutions') : (r.segment === 'other' ? t('أخرى','Other') : (r.segment === 'individual' ? t('أفراد','Individuals') : ''))),
               r.phone, r.email, r.company
             ].filter(Boolean).join(' · ') || t('بدون بيانات تواصل إضافية','No extra contact details'))}
           </div>
@@ -2685,7 +2685,7 @@ body.is-client .home-bar{
       const r = clientRequests.find((x) => x.id === id);
       if (!r) return;
       const text = [
-        r.segment === 'company' ? 'شركات' : (r.segment === 'institution' ? 'مؤسسات' : (r.segment === 'other' ? 'شي ثاني' : (r.segment === 'individual' ? 'أفراد' : ''))),
+        r.segment === 'company' ? 'شركات' : (r.segment === 'institution' ? 'مؤسسات' : (r.segment === 'other' ? 'أخرى' : (r.segment === 'individual' ? 'أفراد' : ''))),
         r.name || '',
         r.phone || '',
         r.email || '',
