@@ -642,7 +642,7 @@ body.is-client .home-bar{
             <button class="btn btn-primary" data-goto="catalog" data-ar="تصفح الخدمات الإلكترونية" data-en="Browse digital services">تصفح الخدمات الإلكترونية</button>
             <button class="btn btn-ghost" data-goto="suggestions" data-ar="عرض الاقتراحات" data-en="View suggestions">عرض الاقتراحات</button>
             <button class="btn btn-ghost" data-goto="requests" data-ar="متابعة طلباتي" data-en="Track my requests">متابعة طلباتي</button>
-            <a class="btn btn-ghost" href="/#pay" data-ar="سداد عربون" data-en="Pay a deposit">سداد عربون</a>
+            <a class="btn btn-ghost pay-public-entry" href="/#pay" data-ar="سداد عربون" data-en="Pay a deposit" hidden>سداد عربون</a>
             <a class="btn btn-ghost" href="/dashboard/?demo=1" data-ar="وضع التجربة" data-en="Demo mode">وضع التجربة</a>
             <a class="btn btn-ghost" href="/industries/" data-ar="حلول القطاعات" data-en="Industry solutions">حلول القطاعات</a>
             <a class="btn btn-ghost" href="/blog/" data-ar="مدونة راسخ" data-en="Raseekh blog">مدونة راسخ</a>
@@ -780,7 +780,7 @@ body.is-client .home-bar{
           <button class="btn btn-ghost" id="clearCartBtn" data-ar="تفريغ القائمة" data-en="Clear list">تفريغ القائمة</button>
         </div>
       </div>
-      <div class="client-note admin-only" data-ar="سجّلوا عربوناً يدوياً أدناه، أو استقبلوا دفعات Moyasar من صفحة السداد في الموقع. الشبكة السفلية للخدمات بسعر ثابت فقط." data-en="Record a manual deposit below, or receive Moyasar payments from the site pay page. The grid below is for fixed-price services only.">سجّلوا عربوناً يدوياً أدناه، أو استقبلوا دفعات Moyasar من صفحة السداد في الموقع. الشبكة السفلية للخدمات بسعر ثابت فقط.</div>
+      <div class="client-note admin-only" data-ar="سجّلوا عربوناً يدوياً أدناه عند الحاجة. السداد الإلكتروني العام من الموقع متوقف مؤقتاً. الشبكة السفلية للخدمات بسعر ثابت فقط." data-en="Record a manual deposit below when needed. Public online checkout is temporarily paused. The grid below is for fixed-price services only.">سجّلوا عربوناً يدوياً أدناه عند الحاجة. السداد الإلكتروني العام من الموقع متوقف مؤقتاً. الشبكة السفلية للخدمات بسعر ثابت فقط.</div>
       <div class="panel" style="margin-bottom:16px">
         <h3 data-ar="تسجيل عربون يدوي" data-en="Record manual deposit">تسجيل عربون يدوي</h3>
         <form class="form" id="manualDepositForm" style="margin-top:12px;max-width:560px">
@@ -921,7 +921,7 @@ body.is-client .home-bar{
       </div>
       <div class="panel client-only">
         <h3 data-ar="عن حسابكم" data-en="About your account">عن حسابكم</h3>
-        <p style="color:var(--muted);font-size:.95rem" data-ar="من هنا تطلبون عرض سعر وتتابعون طلباتكم وتسدّدون العربون عند التفعيل." data-en="From here you can request quotes, track your requests, and pay a deposit when enabled.">من هنا تطلبون عرض سعر وتتابعون طلباتكم وتسدّدون العربون عند التفعيل.</p>
+        <p style="color:var(--muted);font-size:.95rem" data-ar="من هنا تطلبون عرض سعر وتتابعون طلباتكم. السداد الإلكتروني العام متوقف مؤقتاً." data-en="From here you can request quotes and track your requests. Public online checkout is temporarily paused.">من هنا تطلبون عرض سعر وتتابعون طلباتكم. السداد الإلكتروني العام متوقف مؤقتاً.</p>
       </div>
     </div>
   </main>
@@ -2293,7 +2293,7 @@ body.is-client .home-bar{
       const holder = document.getElementById('recentSales');
       const recent = sales.slice(0, 5);
       if (!recent.length) {
-        holder.innerHTML = `<div class="empty"><strong>${t('لا توجد مدفوعات مسجّلة بعد','No recorded payments yet')}</strong><p>${t('سجّلوا عربونًا من الموقع أو دفعة لخدمة بسعر ثابت.' ,'Record a site deposit or a fixed-price service payment.')}</p><div class="empty-actions"><button class="btn btn-primary" data-goto="leads">${t('فتح الطلبات','Open requests')}</button><a class="btn btn-ghost" href="/#pay">${t('صفحة السداد','Pay page')}</a></div></div>`;
+        holder.innerHTML = `<div class="empty"><strong>${t('لا توجد مدفوعات مسجّلة بعد','No recorded payments yet')}</strong><p>${t('سجّلوا عربونًا من الموقع أو دفعة لخدمة بسعر ثابت.' ,'Record a site deposit or a fixed-price service payment.')}</p><div class="empty-actions"><button class="btn btn-primary" data-goto="leads">${t('فتح الطلبات','Open requests')}</button><a class="btn btn-ghost" href="/#contact">${t('نموذج الطلب','Request form')}</a></div></div>`;
       } else {
         holder.innerHTML = recent.map(s => `
           <div class="sale-row">
@@ -3193,7 +3193,7 @@ body.is-client .home-bar{
     // Quote-first catalog: keep manual deposit primary; only show fixed-price grid when useful.
     if (layout) layout.style.display = (fixedSellable.length || cart.length) ? '' : 'none';
     if (!list.length) {
-      catalog.innerHTML = `<div class="empty" style="grid-column:1/-1"><strong>${t('لا توجد خدمات بسعر ثابت','No fixed-price services')}</strong><p>${t('معظم البنود حسب الطلب. حدّدوا سعراً ثابتاً من إدارة الخدمات، أو سجّلوا العربون يدوياً أعلاه.','Most items are quote-based. Set a fixed price in service management, or record a deposit above.')}</p><div class="empty-actions"><button class="btn btn-primary" data-goto="products">${t('إدارة الخدمات','Manage services')}</button><a class="btn btn-ghost" href="/#pay">${t('صفحة السداد','Pay page')}</a></div></div>`;
+      catalog.innerHTML = `<div class="empty" style="grid-column:1/-1"><strong>${t('لا توجد خدمات بسعر ثابت','No fixed-price services')}</strong><p>${t('معظم البنود حسب الطلب. حدّدوا سعراً ثابتاً من إدارة الخدمات، أو سجّلوا العربون يدوياً أعلاه.','Most items are quote-based. Set a fixed price in service management, or record a deposit above.')}</p><div class="empty-actions"><button class="btn btn-primary" data-goto="products">${t('إدارة الخدمات','Manage services')}</button><a class="btn btn-ghost" href="/#contact">${t('نموذج الطلب','Request form')}</a></div></div>`;
     } else {
       catalog.innerHTML = list.map(p => `
         <button type="button" class="pos-item" data-add="${p.id}">

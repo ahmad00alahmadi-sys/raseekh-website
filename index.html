@@ -108,7 +108,7 @@
           "name": "هل يمكن الدفع أونلاين؟",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "نعم — بعد تسجيل الدخول عبر Moyasar (بطاقة / Apple Pay)."
+            "text": "السداد الإلكتروني العام متوقف مؤقتاً. طريقة الدفع تُتفق ضمن عرض السعر المكتوب."
           }
         },
         {
@@ -759,6 +759,11 @@ body.terms-locked,body.auth-locked{overflow:hidden}
 }
 /* One quote CTA surface — hide section duplicates on all viewports */
 a.quote-cta-dup{display:none!important}
+/* Temporary: public online checkout paused until the new payment flow ships. */
+body.pay-paused #pay,
+body.pay-paused a[href="#pay"],
+body.pay-paused a[href="/#pay"],
+body.pay-paused .pay-public-entry{display:none!important}
 .float-cta{
   position:fixed;inset-inline-end:16px;bottom:18px;z-index:80;
   display:flex;flex-direction:column;gap:8px;align-items:flex-end
@@ -830,7 +835,7 @@ a.quote-cta-dup{display:none!important}
       <a href="/help/" data-ar="مساعدة" data-en="Help">مساعدة</a>
       <a href="#faq" data-ar="أسئلة" data-en="FAQ">أسئلة</a>
       <a href="#contact" data-ar="تواصل" data-en="Contact">تواصل</a>
-      <a href="#pay" data-ar="سداد" data-en="Pay">سداد</a>
+      <a href="#pay" class="pay-public-entry" data-ar="سداد" data-en="Pay">سداد</a>
     </div>
     <div class="nav-actions">
       <button class="lang-btn" id="langToggle" type="button">EN</button>
@@ -1153,7 +1158,7 @@ a.quote-cta-dup{display:none!important}
     <div class="section-head reveal">
       <div class="eyebrow" data-ar="الآن في راسخ" data-en="Now on Raseekh">الآن في راسخ</div>
       <h2 data-ar="ما يعمل لكم من أول يوم" data-en="What works for you from day one">ما يعمل لكم من أول يوم</h2>
-      <p data-ar="مسار واحد: اطلبوا عرض سعر، تابعوا الحالة، وادفعوا العربون عند الحاجة." data-en="One path: request a quote, track status, and pay a deposit when needed.">مسار واحد: اطلبوا عرض سعر، تابعوا الحالة، وادفعوا العربون عند الحاجة.</p>
+      <p data-ar="مسار واحد: اطلبوا عرض سعر وتابعوا الحالة من حساب العميل." data-en="One path: request a quote and track status from the client account.">مسار واحد: اطلبوا عرض سعر وتابعوا الحالة من حساب العميل.</p>
     </div>
     <div class="now-rail reveal stagger">
       <article class="now-item">
@@ -1166,7 +1171,7 @@ a.quote-cta-dup{display:none!important}
         <h3 data-ar="حالة الطلب ظاهرة في حسابكم" data-en="Request status visible in your account">حالة الطلب ظاهرة في حسابكم</h3>
         <p data-ar="بدل الرسائل المتفرقة — تدخلون وترون الجديد وقيد المعالجة والمكتمل." data-en="Instead of scattered chats — sign in and see new, in progress, and done.">بدل الرسائل المتفرقة — تدخلون وترون الجديد وقيد المعالجة والمكتمل.</p>
       </article>
-      <article class="now-item">
+      <article class="now-item pay-public-entry">
         <span class="now-label" data-ar="سداد" data-en="Pay">سداد</span>
         <h3 data-ar="عربون آمن بعد تسجيل الدخول" data-en="Secure deposit after sign-in">عربون آمن بعد تسجيل الدخول</h3>
         <p data-ar="بطاقة أو Apple Pay عبر Moyasar — للعملاء المسجّلين فقط." data-en="Card or Apple Pay via Moyasar — for signed-in clients only.">بطاقة أو Apple Pay عبر Moyasar — للعملاء المسجّلين فقط.</p>
@@ -1568,7 +1573,7 @@ a.quote-cta-dup{display:none!important}
     <div class="section-head reveal">
       <div class="eyebrow" data-ar="لوحة العميل" data-en="Client portal">لوحة العميل</div>
       <h2 data-ar="متابعة الطلبات من حسابكم" data-en="Track requests from your account">متابعة الطلبات من حسابكم</h2>
-      <p data-ar="ارفعوا الطلب وتابعوا الحالة من حسابكم، وادفعوا العربون عند الحاجة." data-en="Raise a request and track status from your account, and pay a deposit when needed.">ارفعوا الطلب وتابعوا الحالة من حسابكم، وادفعوا العربون عند الحاجة.</p>
+      <p data-ar="ارفعوا الطلب وتابعوا الحالة من حسابكم." data-en="Raise a request and track status from your account.">ارفعوا الطلب وتابعوا الحالة من حسابكم.</p>
     </div>
     <div class="reveal" style="display:flex;flex-wrap:wrap;gap:10px">
       <a class="btn btn-primary" href="/dashboard/" data-ar="فتح لوحة العميل" data-en="Open client dashboard">فتح لوحة العميل</a>
@@ -1689,7 +1694,7 @@ a.quote-cta-dup{display:none!important}
       </details>
       <details class="faq-item">
         <summary data-ar="هل يمكن الدفع أونلاين؟" data-en="Can I pay online?">هل يمكن الدفع أونلاين؟</summary>
-        <p data-ar="نعم — بعد تسجيل الدخول عبر Moyasar (بطاقة / Apple Pay)." data-en="Yes — after sign-in via Moyasar (card / Apple Pay).">نعم — بعد تسجيل الدخول عبر Moyasar (بطاقة / Apple Pay).</p>
+        <p data-ar="السداد الإلكتروني العام متوقف مؤقتاً. طريقة الدفع تُتفق ضمن عرض السعر المكتوب، ويمكن تسجيل العربون من الإدارة عند الحاجة." data-en="Public online checkout is temporarily paused. Payment method is agreed in the written quote, and a deposit can be recorded by admin when needed.">السداد الإلكتروني العام متوقف مؤقتاً. طريقة الدفع تُتفق ضمن عرض السعر المكتوب، ويمكن تسجيل العربون من الإدارة عند الحاجة.</p>
       </details>
       <details class="faq-item" id="faq-language">
         <summary data-ar="هل تدعمون العربية والإنجليزية؟" data-en="Do you support Arabic and English?">هل تدعمون العربية والإنجليزية؟</summary>
@@ -1743,7 +1748,7 @@ a.quote-cta-dup{display:none!important}
   </div>
 </section>
 
-<section id="pay" class="contact-band band-mist" style="padding:88px 0">
+<section id="pay" class="contact-band band-mist pay-public-entry" style="padding:88px 0">
   <div class="wrap two-col">
     <div class="panel reveal">
       <h2 data-ar="سداد عربون أو دفعة" data-en="Pay a deposit">سداد عربون أو دفعة</h2>
@@ -1889,6 +1894,8 @@ a.quote-cta-dup{display:none!important}
 <script src="/auth.js"></script>
 <script>
 (function(){
+  /* Flip to true when the new public checkout is ready. */
+  const PUBLIC_PAY_ENABLED = false;
   const DASHBOARD_URL = '/dashboard/';
   const MOYASAR_PUBLISHABLE_KEY = 'pk_live_U94Vg5e2kjJY557CU8qjnxv83shQJx6o125RrRey';
   const Auth = window.RaseekhAuth;
@@ -1898,6 +1905,18 @@ a.quote-cta-dup{display:none!important}
   let authProvider = null;
   let clientProducts = [];
   let clientSuggestions = [];
+
+  if (!PUBLIC_PAY_ENABLED) {
+    document.body.classList.add('pay-paused');
+    try {
+      const url = new URL(location.href);
+      const payReturn = url.searchParams.get('status') || url.searchParams.get('pay') || url.searchParams.get('id') || url.searchParams.get('payment_id');
+      if (location.hash === '#pay' || payReturn) {
+        ['status', 'id', 'payment_id', 'amount', 'message', 'pay'].forEach((k) => url.searchParams.delete(k));
+        history.replaceState(null, '', url.pathname + url.search + '#contact');
+      }
+    } catch (_) {}
+  }
 
   function isLocalAuthUser(user){
     return authProvider === 'local' || !!(user && user.app_metadata && user.app_metadata.provider === 'local');
@@ -2946,8 +2965,18 @@ a.quote-cta-dup{display:none!important}
     setPayUnlocked(user);
     closeModal();
     const params = paymentReturnParams();
-    const paidReturn = params.get('status') === 'paid';
-    const failedReturn = params.get('status') === 'failed';
+    const paidReturn = PUBLIC_PAY_ENABLED && params.get('status') === 'paid';
+    const failedReturn = PUBLIC_PAY_ENABLED && params.get('status') === 'failed';
+    if (!PUBLIC_PAY_ENABLED && (authIntent === 'pay' || location.hash === '#pay' || params.get('pay') === '1')) {
+      authIntent = 'dashboard';
+      try {
+        const url = new URL(location.href);
+        ['status', 'id', 'payment_id', 'amount', 'message', 'pay'].forEach((k) => url.searchParams.delete(k));
+        history.replaceState(null, '', url.pathname + url.search + '#contact');
+      } catch (_) {}
+      setTimeout(goDashboard, 400);
+      return;
+    }
     if (failedReturn) {
       try { sessionStorage.removeItem('raseekh_pending_pay'); } catch (_) {}
       showPayStep(payStatusFailed);
@@ -3352,7 +3381,7 @@ a.quote-cta-dup{display:none!important}
           } else {
             successActions.innerHTML = `
               <button type="button" class="btn btn-primary" id="contactCreateAccountBtn">${escapeHtml(t('إنشاء حساب للمتابعة','Create an account to track'))}</button>
-              <a class="btn btn-ghost" href="#pay">${escapeHtml(t('سداد عربون','Pay a deposit'))}</a>`;
+              <a class="btn btn-ghost" href="/dashboard/">${escapeHtml(t('حساب العميل','Client account'))}</a>`;
             const createBtn = document.getElementById('contactCreateAccountBtn');
             if (createBtn) createBtn.addEventListener('click', () => { openAuth('dashboard'); showAuthPanel('register'); });
           }
@@ -3430,6 +3459,7 @@ a.quote-cta-dup{display:none!important}
     return moyasarLoading;
   }
   (function prefetchPayGateway(){
+    if (!PUBLIC_PAY_ENABLED) return;
     const pay = document.getElementById('pay');
     if (!pay || !('IntersectionObserver' in window)) return;
     const io = new IntersectionObserver((entries) => {
@@ -3455,6 +3485,7 @@ a.quote-cta-dup{display:none!important}
     } catch (_) {}
   }
   document.getElementById('payContinueBtn').addEventListener('click', async () => {
+    if (!PUBLIC_PAY_ENABLED) return;
     const btn = document.getElementById('payContinueBtn');
     if (btn && btn.dataset.submitting === '1') return;
     const amount = parseFloat(document.getElementById('payAmount').value);
