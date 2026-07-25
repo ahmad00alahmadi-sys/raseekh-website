@@ -71,7 +71,7 @@
           </article>
           <article class="terms-item">
             <h3 data-ar="15) التواصل" data-en="15) Contact">15) التواصل</h3>
-            <p data-ar="للاستفسار عن الشروط أو الخدمات استخدموا نموذج طلب عرض السعر في الموقع أو حساب العميل (البريد ورقم الجوال مطلوبان في الطلب). نهدف للرد خلال يوم عمل قدر الإمكان." data-en="For questions about these terms or services, use the quote form on the website or client account (email and phone are required on requests). We aim to reply within one business day.">للاستفسار عن الشروط أو الخدمات استخدموا نموذج طلب عرض السعر في الموقع أو حساب العميل (البريد ورقم الجوال مطلوبان في الطلب). نهدف للرد خلال يوم عمل قدر الإمكان.</p>
+            <p data-ar="للاستفسار عن الشروط أو الخدمات استخدموا نموذج طلب عرض السعر في الموقع أو حساب العميل (البريد ورقم الجوال مطلوبان في الطلب). نرد على بريدكم أو جوالكم بعد مراجعة الطلب." data-en="For questions about these terms or services, use the quote form on the website or client account (email and phone are required on requests). We reply on your email or phone after reviewing the request.">للاستفسار عن الشروط أو الخدمات استخدموا نموذج طلب عرض السعر في الموقع أو حساب العميل (البريد ورقم الجوال مطلوبان في الطلب). نرد على بريدكم أو جوالكم بعد مراجعة الطلب.</p>
           </article>
         </div>
       </div>
