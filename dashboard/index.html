@@ -574,9 +574,13 @@ body.is-client .home-bar{
           <li data-ar="ادخلوا بحساب الإدارة السحابي (ليس جلسة محلية)" data-en="Sign in with the cloud admin account (not a local session)">ادخلوا بحساب الإدارة السحابي (ليس جلسة محلية)</li>
         </ol>
         <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <button class="btn btn-primary" type="button" data-goto="settings" data-ar="فتح الإعدادات" data-en="Open settings">فتح الإعدادات</button>
+          <button class="btn btn-primary" type="button" id="copySetupSqlBtn" data-ar="نسخ أوامر SQL" data-en="Copy SQL script">نسخ أوامر SQL</button>
+          <a class="btn btn-ghost" id="openSetupSqlBtn" href="https://raw.githubusercontent.com/ahmad00alahmadi-sys/raseekh-website/main/supabase/setup_all.sql" target="_blank" rel="noopener" data-ar="فتح ملف SQL" data-en="Open SQL file">فتح ملف SQL</a>
+          <a class="btn btn-ghost" href="https://supabase.com/dashboard" target="_blank" rel="noopener" data-ar="فتح Supabase" data-en="Open Supabase">فتح Supabase</a>
+          <button class="btn btn-ghost" type="button" data-goto="settings" data-ar="فتح الإعدادات" data-en="Open settings">فتح الإعدادات</button>
           <button class="btn btn-ghost" type="button" id="recheckSetupBtn" data-ar="إعادة الفحص" data-en="Recheck">إعادة الفحص</button>
         </div>
+        <p id="copySetupSqlMsg" style="color:var(--muted);font-size:.82rem;margin:8px 0 0" hidden></p>
       </div>
 
       <div class="stats admin-only">
@@ -3834,6 +3838,55 @@ body.is-client .home-bar{
         : (localSession
           ? t('جلسة محلية — ادخلوا بحساب الإدارة السحابي', 'Local session — sign in with the cloud admin account')
           : t('ما زال هناك إعداد ناقص — راجعوا الخطوات', 'Setup still incomplete — check the steps')));
+    });
+  }
+  const SETUP_SQL_URL = 'https://raw.githubusercontent.com/ahmad00alahmadi-sys/raseekh-website/main/supabase/setup_all.sql';
+  const copySetupSqlBtn = document.getElementById('copySetupSqlBtn');
+  const copySetupSqlMsg = document.getElementById('copySetupSqlMsg');
+  if (copySetupSqlBtn) {
+    copySetupSqlBtn.addEventListener('click', async () => {
+      if (copySetupSqlBtn.dataset.busy === '1') return;
+      copySetupSqlBtn.dataset.busy = '1';
+      copySetupSqlBtn.disabled = true;
+      if (copySetupSqlMsg) {
+        copySetupSqlMsg.hidden = false;
+        copySetupSqlMsg.style.color = 'var(--muted)';
+        copySetupSqlMsg.textContent = t('جاري جلب ملف SQL...', 'Fetching SQL file...');
+      }
+      try {
+        const res = await fetch(SETUP_SQL_URL, { cache: 'no-store' });
+        if (!res.ok) throw new Error('fetch');
+        const sql = await res.text();
+        if (!sql || sql.indexOf('client_requests') < 0) throw new Error('empty');
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          await navigator.clipboard.writeText(sql);
+        } else {
+          const ta = document.createElement('textarea');
+          ta.value = sql;
+          ta.setAttribute('readonly', '');
+          ta.style.position = 'fixed';
+          ta.style.insetInlineStart = '-9999px';
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          document.body.removeChild(ta);
+        }
+        showToast(t('تم نسخ SQL — الصقوه في Supabase → SQL ثم Run', 'SQL copied — paste in Supabase → SQL then Run'));
+        if (copySetupSqlMsg) {
+          copySetupSqlMsg.style.color = 'var(--ok)';
+          copySetupSqlMsg.textContent = t('تم النسخ. افتحوا Supabase → SQL → New query → الصقوا → Run.', 'Copied. Open Supabase → SQL → New query → paste → Run.');
+        }
+      } catch (_) {
+        showToast(t('تعذّر النسخ — افتحوا ملف SQL يدوياً', 'Could not copy — open the SQL file manually'));
+        if (copySetupSqlMsg) {
+          copySetupSqlMsg.style.color = 'var(--danger)';
+          copySetupSqlMsg.textContent = t('افتحوا «فتح ملف SQL» وانسخوا المحتوى يدوياً.', 'Use “Open SQL file” and copy the content manually.');
+        }
+        try { window.open(SETUP_SQL_URL, '_blank', 'noopener'); } catch (_) {}
+      } finally {
+        copySetupSqlBtn.dataset.busy = '0';
+        copySetupSqlBtn.disabled = false;
+      }
     });
   }
 
